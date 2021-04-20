@@ -5,6 +5,7 @@
 
 	<modules>
 		<module>persistence</module>
+		<module>enricher</module>
 	</modules>
 
 	<parent>
