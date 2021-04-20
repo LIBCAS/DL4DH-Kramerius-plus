@@ -3,6 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<modules>
+		<module>persistence</module>
+	</modules>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -24,7 +28,7 @@
 		<java.version>11</java.version>
 	</properties>
 
-<!--	<dependencies>-->
+	<dependencies>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-actuator</artifactId>-->
@@ -42,11 +46,11 @@
 <!--			<artifactId>spring-boot-starter-websocket</artifactId>-->
 <!--		</dependency>-->
 
-<!--		<dependency>-->
-<!--			<groupId>org.projectlombok</groupId>-->
-<!--			<artifactId>lombok</artifactId>-->
-<!--			<optional>true</optional>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-test</artifactId>-->
@@ -62,7 +66,7 @@
 <!--			<artifactId>spring-restdocs-mockmvc</artifactId>-->
 <!--			<scope>test</scope>-->
 <!--		</dependency>-->
-<!--	</dependencies>-->
+	</dependencies>
 
 	<build>
 		<plugins>
