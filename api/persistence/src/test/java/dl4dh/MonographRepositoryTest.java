@@ -1,11 +1,11 @@
 package dl4dh;
 
-import cz.inqool.dl4dh.PersistenceApplicationContext;
-import cz.inqool.dl4dh.dao.MonographRepository;
-import cz.inqool.dl4dh.dao.PageRepository;
-import cz.inqool.dl4dh.entity.Monograph;
-import cz.inqool.dl4dh.entity.Page;
-import cz.inqool.dl4dh.entity.Token;
+import cz.inqool.dl4dh.persistence.PersistenceApplicationContext;
+import cz.inqool.dl4dh.persistence.dao.MonographRepository;
+import cz.inqool.dl4dh.persistence.dao.PageRepository;
+import cz.inqool.dl4dh.persistence.entity.Monograph;
+import cz.inqool.dl4dh.persistence.entity.Page;
+import cz.inqool.dl4dh.persistence.entity.Token;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

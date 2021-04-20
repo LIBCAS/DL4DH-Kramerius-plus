@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh;
+package cz.inqool.dl4dh.persistence;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

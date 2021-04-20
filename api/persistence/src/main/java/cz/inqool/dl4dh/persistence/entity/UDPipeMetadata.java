@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.entity;
+package cz.inqool.dl4dh.persistence.entity;
 
 import lombok.Getter;
 import lombok.Setter;

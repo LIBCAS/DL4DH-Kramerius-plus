@@ -1,6 +1,6 @@
-package cz.inqool.dl4dh.dao;
+package cz.inqool.dl4dh.persistence.dao;
 
-import cz.inqool.dl4dh.entity.Monograph;
+import cz.inqool.dl4dh.persistence.entity.Monograph;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
