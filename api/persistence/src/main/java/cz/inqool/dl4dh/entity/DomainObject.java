@@ -14,7 +14,7 @@ import org.springframework.data.annotation.Id;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class DomainObject {
+public abstract class DomainObject {
 
     @Id
     private String pid;
