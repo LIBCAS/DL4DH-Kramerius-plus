@@ -10,10 +10,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>enricher</artifactId>
+    <packaging>jar</packaging>
+    <name>Component for enriching publications with external data and services</name>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
