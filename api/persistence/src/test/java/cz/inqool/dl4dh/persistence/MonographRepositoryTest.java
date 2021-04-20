@@ -1,6 +1,5 @@
-package dl4dh;
+package cz.inqool.dl4dh.persistence;
 
-import cz.inqool.dl4dh.persistence.PersistenceApplicationContext;
 import cz.inqool.dl4dh.persistence.dao.MonographRepository;
 import cz.inqool.dl4dh.persistence.dao.PageRepository;
 import cz.inqool.dl4dh.persistence.entity.Monograph;
