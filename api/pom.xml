@@ -4,8 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<modules>
-		<module>persistence</module>
-	</modules>
+		<module>krameriusplus-service</module>
+		<module>krameriusplus-domain</module>
+        <module>krameriusplus-api</module>
+    </modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -15,7 +17,7 @@
 	</parent>
 
 	<groupId>cz.inqool.dl4dh</groupId>
-	<artifactId>kramerius-plus</artifactId>
+	<artifactId>krameriusplus</artifactId>
     <packaging>pom</packaging>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>Kramerius+</name>
@@ -33,19 +35,26 @@
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-actuator</artifactId>-->
 <!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-data-mongodb</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-web</artifactId>-->
-<!--		</dependency>-->
+
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-websocket</artifactId>-->
 <!--		</dependency>-->
 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.9.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -54,11 +63,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.flapdoodle.embed</groupId>
-			<artifactId>de.flapdoodle.embed.mongo</artifactId>
 			<scope>test</scope>
 		</dependency>
 <!--		<dependency>-->
@@ -94,18 +98,6 @@
 						<version>${spring-restdocs.version}</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
