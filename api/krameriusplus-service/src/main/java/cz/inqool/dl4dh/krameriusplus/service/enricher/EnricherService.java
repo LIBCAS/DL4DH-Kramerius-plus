@@ -28,7 +28,7 @@ public class EnricherService {
     }
 
     public Monograph enrich(KrameriusMonographDto dto) {
-        EnrichmentTask task = SchedulerService.getTasks().get(dto.getPid());
+        EnrichmentTask task = SchedulerService.getTask(dto.getPid());
 
         log.info("Enriching monograph: PID=" + dto.getPid() + ", " + dto.getTitle());
         Monograph monograph = Monograph.from(dto);

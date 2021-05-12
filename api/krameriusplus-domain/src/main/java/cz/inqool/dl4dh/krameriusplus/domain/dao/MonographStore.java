@@ -2,6 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.domain.dao;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -11,6 +13,8 @@ import java.util.Optional;
  */
 @Repository
 public class MonographStore {
+
+    private final int DEFAULT_PAGE_SIZE = 10;
 
     private final MonographRepository monographRepository;
 
@@ -40,13 +44,20 @@ public class MonographStore {
     }
 
     public Monograph findWithPages(String pid) {
+        return findWithPages(pid, null);
+    }
+
+    public Monograph findWithPages(String pid, Pageable pageable) {
+        if (pageable == null) {
+            pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
+        }
         Optional<Monograph> monograph = monographRepository.findById(pid);
         if (monograph.isEmpty()) {
             throw new IllegalArgumentException("Monograph with pid=" + pid + " not found.");
         }
 
         Monograph found = monograph.get();
-        found.setPages(pageRepository.findAllByRootIdOrderByPageIndexAsc(pid));
+        found.setPages(pageRepository.findAllByRootIdOrderByPageIndexAsc(pid, pageable));
         return found;
     }
 }

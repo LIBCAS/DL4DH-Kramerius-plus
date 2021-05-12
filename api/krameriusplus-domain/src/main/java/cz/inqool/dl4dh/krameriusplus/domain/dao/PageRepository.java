@@ -15,5 +15,5 @@ public interface PageRepository extends MongoRepository<Page, String> {
 
     List<Page> findAllByRootIdOrderByPageIndexAsc(String rootId);
 
-    List<Page> findByRootIdOrderByPageIndexAsc(String rootId, Pageable pageable);
+    List<Page> findAllByRootIdOrderByPageIndexAsc(String rootId, Pageable pageable);
 }

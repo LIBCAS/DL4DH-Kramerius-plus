@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographStore;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Periodical;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,8 +24,8 @@ public class PublicationService {
         monographStore.save(monograph);
     }
 
-    public Monograph findMonograph(String pid, boolean includePages) {
-        return includePages ? monographStore.findWithPages(pid) : monographStore.find(pid);
+    public Monograph findMonograph(String pid, Pageable pageable) {
+        return monographStore.findWithPages(pid, pageable);
     }
 
     public void save(Periodical periodical) {

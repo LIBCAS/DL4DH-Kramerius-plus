@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+    username:
+    password:
+
+logging:
+  level:
+    cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService: OFF
+
+springdoc:
+  swagger-ui.path: /swagger

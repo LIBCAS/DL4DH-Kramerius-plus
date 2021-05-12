@@ -4,7 +4,9 @@ import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographDto;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPeriodicalDto;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPublicationDto;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
+import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,7 @@ public class KrameriusDataProviderService {
 
     private KrameriusMonographDto processMonograph(KrameriusMonographDto monographDto) {
         log.info("Downloading pages for PID=" + monographDto.getPid() + ", " + monographDto.getTitle());
+        SchedulerService.getTask(monographDto.getPid()).setState(EnrichmentTask.State.DOWNLOADING_PAGES);
         monographDto.setPages(getPagesForRootPid(monographDto.getPid()));
 
         return monographDto;

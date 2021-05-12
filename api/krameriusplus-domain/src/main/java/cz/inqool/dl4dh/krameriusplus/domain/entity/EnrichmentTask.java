@@ -28,7 +28,6 @@ public class EnrichmentTask {
 
     private Instant finished;
 
-    @JsonIgnore
     private long took;
 
     @JsonIgnore
@@ -38,6 +37,8 @@ public class EnrichmentTask {
     private int totalPages;
 
     private State state;
+
+    private String errorMessage;
 
     @Transient
     @JsonIgnore
@@ -66,6 +67,9 @@ public class EnrichmentTask {
     }
 
     public String getDone() {
+        if (state == State.SUCCESSFUL) {
+            return "Done";
+        }
         return percentDone + "%";
     }
 }

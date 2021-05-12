@@ -58,7 +58,6 @@ public class FillerService {
         long start = System.currentTimeMillis();
 
         try {
-            task.setState(EnrichmentTask.State.DOWNLOADING_PAGES);
             KrameriusPublicationDto publicationDto = dataProviderService.getPublication(pid);
 
             switch (publicationDto.getModel()) {
@@ -70,10 +69,10 @@ public class FillerService {
                 default:
                     throw new IllegalStateException("No such model");
             }
-
         } catch (Exception e) {
-            log.error("Task wid pid: " + pid + " failed with error", e);
-            SchedulerService.getTasks().get(pid).setState(EnrichmentTask.State.FAILED);
+            log.error("Task wid PID=" + pid + " failed with error", e);
+            SchedulerService.getTask(pid).setErrorMessage(e.getMessage());
+            SchedulerService.getTask(pid).setState(EnrichmentTask.State.FAILED);
             return;
         }
 
@@ -82,7 +81,7 @@ public class FillerService {
         task.setState(EnrichmentTask.State.SUCCESSFUL);
         enrichmentTaskRepository.save(task);
 
-        SchedulerService.getTasks().remove(pid);
+        SchedulerService.removeTask(pid);
     }
 
     private void processMonograph(KrameriusMonographDto monographDto) {

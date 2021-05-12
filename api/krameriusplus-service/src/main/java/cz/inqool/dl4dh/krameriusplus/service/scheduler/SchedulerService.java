@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.scheduler;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.service.filler.FillerService;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class SchedulerService {
 
     private final EnrichmentTaskRepository enrichmentTaskRepository;
 
+    @Getter
     private static final Map<String, EnrichmentTask> tasks = new HashMap<>();
 
     @Autowired
@@ -55,7 +57,13 @@ public class SchedulerService {
         return enrichmentTaskRepository.findEnrichmentTaskByState(EnrichmentTask.State.SUCCESSFUL);
     }
 
-    public static Map<String, EnrichmentTask> getTasks() {
-        return tasks;
+    public static EnrichmentTask getTask(String pid) {
+        EnrichmentTask result = tasks.get(pid);
+
+        return result == null ? new EnrichmentTask("empty task") : result;
+    }
+
+    public static void removeTask(String pid) {
+        tasks.remove(pid);
     }
 }

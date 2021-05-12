@@ -20,7 +20,7 @@ import java.util.List;
 public class Monograph extends cz.inqool.dl4dh.krameriusplus.domain.entity.Publication {
 
     @Transient
-    private List<cz.inqool.dl4dh.krameriusplus.domain.entity.Page> pages = new ArrayList<>();
+    private List<Page> pages = new ArrayList<>();
 
     public static Monograph from(KrameriusMonographDto dto) {
         Monograph monograph = new Monograph();
