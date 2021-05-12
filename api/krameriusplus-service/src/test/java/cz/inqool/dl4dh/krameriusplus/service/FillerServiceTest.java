@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.service.filler.FillerServiceImpl;
+import cz.inqool.dl4dh.krameriusplus.service.filler.FillerService;
 import cz.inqool.dl4dh.krameriusplus.service.filler.PublicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class FillerServiceTest {
 
     @Autowired
-    private FillerServiceImpl fillerService;
+    private FillerService fillerService;
 
     @Autowired
     private PublicationService publicationService;

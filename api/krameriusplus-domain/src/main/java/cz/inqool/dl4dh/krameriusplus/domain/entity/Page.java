@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.domain.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

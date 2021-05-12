@@ -13,6 +13,6 @@ public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 
     @Override
     public void handleUncaughtException(Throwable throwable, Method method, Object... objects) {
-        log.error("Exception occurred in thread" + Thread.currentThread().getName(), throwable);
+        log.error("Exception occurred in thread " + Thread.currentThread().getName(), throwable);
     }
 }

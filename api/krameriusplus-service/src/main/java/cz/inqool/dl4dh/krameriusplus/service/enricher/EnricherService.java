@@ -13,17 +13,16 @@ import org.springframework.stereotype.Service;
 /**
  * @author Norbert Bodnar
  */
-//TODO: rename class
 @Service
 @Slf4j
-public class EnricherServiceImpl {
+public class EnricherService {
 
-    private final UDPipeTokenizerService tokenizerService;
+    private final UDPipeService tokenizerService;
 
     private final NameTagService nameTagService;
 
     @Autowired
-    public EnricherServiceImpl(UDPipeTokenizerService tokenizerService, NameTagService nameTagService) {
+    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService) {
         this.tokenizerService = tokenizerService;
         this.nameTagService = nameTagService;
     }

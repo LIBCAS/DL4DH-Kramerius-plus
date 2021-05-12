@@ -4,7 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographDto;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeTokenizerService;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Token;
 import org.assertj.core.api.SoftAssertions;
@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Norbert Bodnar
  */
 @SpringBootTest(classes = EnricherApplicationContext.class)
-public class UDPipeTokenizerServiceTest {
+public class UDPipeServiceTest {
 
     @Autowired
-    private UDPipeTokenizerService tokenizer;
+    private UDPipeService tokenizer;
 
     @Test
     public void testTokenize() {

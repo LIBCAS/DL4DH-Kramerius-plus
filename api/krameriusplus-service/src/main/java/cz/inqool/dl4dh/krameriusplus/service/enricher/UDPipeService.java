@@ -27,7 +27,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException.Err
  */
 @Service
 @Slf4j
-public class UDPipeTokenizerService {
+public class UDPipeService {
 
     private final RestTemplate restTemplate;
 
@@ -38,7 +38,7 @@ public class UDPipeTokenizerService {
     private long UDPipeExecutionTime;
 
     @Autowired
-    public UDPipeTokenizerService(RestTemplate restTemplate) {
+    public UDPipeService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
 
         headers = new HttpHeaders();
