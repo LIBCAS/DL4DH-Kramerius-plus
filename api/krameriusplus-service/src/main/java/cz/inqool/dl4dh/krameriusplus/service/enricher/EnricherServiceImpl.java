@@ -5,8 +5,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.service.EnricherService;
-import cz.inqool.dl4dh.krameriusplus.domain.service.TokenizerService;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +16,18 @@ import org.springframework.stereotype.Service;
 //TODO: rename class
 @Service
 @Slf4j
-public class EnricherServiceImpl implements EnricherService {
+public class EnricherServiceImpl {
 
-    private final TokenizerService tokenizerService;
+    private final UDPipeTokenizerService tokenizerService;
 
     private final NameTagService nameTagService;
 
     @Autowired
-    public EnricherServiceImpl(TokenizerService tokenizerService, NameTagService nameTagService) {
+    public EnricherServiceImpl(UDPipeTokenizerService tokenizerService, NameTagService nameTagService) {
         this.tokenizerService = tokenizerService;
         this.nameTagService = nameTagService;
     }
 
-    @Override
     public Monograph enrich(KrameriusMonographDto dto) {
         EnrichmentTask task = SchedulerService.getTasks().get(dto.getPid());
 

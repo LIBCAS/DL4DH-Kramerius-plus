@@ -5,7 +5,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException;
-import cz.inqool.dl4dh.krameriusplus.domain.service.TokenizerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -28,7 +27,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException.Err
  */
 @Service
 @Slf4j
-public class UDPipeTokenizerService implements TokenizerService {
+public class UDPipeTokenizerService {
 
     private final RestTemplate restTemplate;
 
@@ -53,11 +52,10 @@ public class UDPipeTokenizerService implements TokenizerService {
     }
 
     /**
-     * Tokenize input text and returns a List of Tokens
-     * @param content
-     * @return
+     * Processes the input text content and returns a list of tokens.
+     * @param content String content to tokenize
+     * @return list of Tokens produced by the external service. Tokens might contain additional metadata
      */
-    @Override
     public List<Token> tokenize(String content) {
         List<Token> result = new ArrayList<>();
 
@@ -83,14 +81,20 @@ public class UDPipeTokenizerService implements TokenizerService {
         return processPageResponse(response.getResult());
     }
 
-    @Override
+    /**
+     * Processes textContent of the page and sets its {@code List<Token> tokens} field
+     * @param krameriusPageDto dto from Kramerius with text content
+     */
     public Page tokenizePage(KrameriusPageDto krameriusPageDto) {
         Page page = krameriusPageDto.toEntity();
         page.setTokens(tokenize(krameriusPageDto.getTextOcr()));
         return page;
     }
 
-    @Override
+    /**
+     * Processes textContent of multiple pages.
+     * @param krameriusPageDtos list of pages, every page's {@code List<Token> tokens} field will be overridden
+     */
     public List<Page> tokenizePages(List<KrameriusPageDto> krameriusPageDtos) {
         List<Page> result = new ArrayList<>();
 
@@ -101,7 +105,10 @@ public class UDPipeTokenizerService implements TokenizerService {
         return result;
     }
 
-    @Override
+    /**
+     * Processes textContent of multiple pages in a bulk operation.
+     * @param krameriusPageDtos list of pages, every page's {@code List<Token> tokens} field will be overridden
+     */
     public List<Page> tokenizePagesBulk(List<KrameriusPageDto> krameriusPageDtos) {
         log.info("Processing pages in UDPipe in bulk");
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();

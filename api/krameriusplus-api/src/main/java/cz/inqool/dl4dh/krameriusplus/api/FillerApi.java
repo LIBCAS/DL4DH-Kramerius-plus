@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
-import cz.inqool.dl4dh.krameriusplus.domain.service.FillerService;
+import cz.inqool.dl4dh.krameriusplus.service.filler.FillerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/filler")
 public class FillerApi {
 
-    private final FillerService fillerService;
+    private final FillerServiceImpl fillerService;
 
     @Autowired
-    public FillerApi(FillerService fillerService) {
+    public FillerApi(FillerServiceImpl fillerService) {
         this.fillerService = fillerService;
     }
 

@@ -1,15 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
-import cz.inqool.dl4dh.krameriusplus.domain.service.FillerService;
+import cz.inqool.dl4dh.krameriusplus.service.filler.FillerServiceImpl;
 import cz.inqool.dl4dh.krameriusplus.service.filler.PublicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Norbert Bodnar
@@ -19,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FillerServiceTest {
 
     @Autowired
-    private FillerService fillerService;
+    private FillerServiceImpl fillerService;
 
     @Autowired
     private PublicationService publicationService;

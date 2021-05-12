@@ -5,9 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographDto;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
-import cz.inqool.dl4dh.krameriusplus.domain.service.DataProviderService;
-import cz.inqool.dl4dh.krameriusplus.domain.service.EnricherService;
-import cz.inqool.dl4dh.krameriusplus.domain.service.FillerService;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.EnricherServiceImpl;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +20,18 @@ import java.time.Instant;
 //TODO: rename class
 @Service
 @Slf4j
-public class FillerServiceImpl implements FillerService {
+public class FillerServiceImpl {
 
-    private final DataProviderService dataProviderService;
+    private final KrameriusDataProviderService dataProviderService;
 
-    private final EnricherService enricherService;
+    private final EnricherServiceImpl enricherService;
 
     private final PublicationService publicationService;
 
     private final EnrichmentTaskRepository enrichmentTaskRepository;
 
     @Autowired
-    public FillerServiceImpl(DataProviderService dataProviderService, EnricherService enricherService,
+    public FillerServiceImpl(KrameriusDataProviderService dataProviderService, EnricherServiceImpl enricherService,
                              PublicationService publicationService, EnrichmentTaskRepository enrichmentTaskRepository) {
         this.dataProviderService = dataProviderService;
         this.enricherService = enricherService;
@@ -41,7 +39,6 @@ public class FillerServiceImpl implements FillerService {
         this.enrichmentTaskRepository = enrichmentTaskRepository;
     }
 
-    @Override
     public void enrichPublication(String pid) {
         log.info("Downloading pages");
         KrameriusPublicationDto publicationDto = dataProviderService.getPublication(pid);
@@ -58,7 +55,6 @@ public class FillerServiceImpl implements FillerService {
     }
 
     @Async
-    @Override
     public void enrichPublicationAsync(String pid, EnrichmentTask task) {
         long start = System.currentTimeMillis();
 

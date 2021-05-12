@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.scheduler;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
-import cz.inqool.dl4dh.krameriusplus.domain.service.FillerService;
+import cz.inqool.dl4dh.krameriusplus.service.filler.FillerServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +18,14 @@ import java.util.Map;
 @Slf4j
 public class SchedulerService {
 
-    private final FillerService fillerService;
+    private final FillerServiceImpl fillerService;
 
     private final EnrichmentTaskRepository enrichmentTaskRepository;
 
     private static final Map<String, EnrichmentTask> tasks = new HashMap<>();
 
     @Autowired
-    public SchedulerService(FillerService fillerService, EnrichmentTaskRepository enrichmentTaskRepository) {
+    public SchedulerService(FillerServiceImpl fillerService, EnrichmentTaskRepository enrichmentTaskRepository) {
         this.fillerService = fillerService;
         this.enrichmentTaskRepository = enrichmentTaskRepository;
     }

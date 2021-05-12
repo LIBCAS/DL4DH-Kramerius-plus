@@ -5,7 +5,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPeriodicalDto;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
-import cz.inqool.dl4dh.krameriusplus.domain.service.DataProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.
  */
 @Service
 @Slf4j
-public class KrameriusDataProviderService implements DataProviderService {
+public class KrameriusDataProviderService {
 
     private final String KRAMERIUS_ITEM_API = "https://kramerius.mzk.cz/search/api/v5.0/item/";
 
@@ -32,7 +31,6 @@ public class KrameriusDataProviderService implements DataProviderService {
         this.restTemplate = restTemplate;
     }
 
-    @Override
     public KrameriusPublicationDto getPublication(String pid) {
         KrameriusPublicationDto krameriusPublicationDto = getRootPublication(pid);
 
