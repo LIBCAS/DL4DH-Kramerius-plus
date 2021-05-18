@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographUnitDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import lombok.extern.slf4j.Slf4j;

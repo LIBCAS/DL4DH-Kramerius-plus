@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;

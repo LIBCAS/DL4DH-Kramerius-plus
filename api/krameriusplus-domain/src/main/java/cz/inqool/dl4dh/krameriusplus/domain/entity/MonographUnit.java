@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographUnitDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;

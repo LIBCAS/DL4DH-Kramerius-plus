@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.EnrichmentTaskRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographDto;
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographUnitDto;
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPublicationDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.MonographUnit;

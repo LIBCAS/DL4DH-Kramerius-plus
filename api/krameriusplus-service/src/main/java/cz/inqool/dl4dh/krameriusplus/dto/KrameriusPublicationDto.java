@@ -1,7 +1,9 @@
-package cz.inqool.dl4dh.krameriusplus.domain.dto;
+package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,8 @@
-package cz.inqool.dl4dh.krameriusplus.domain.dto;
+package cz.inqool.dl4dh.krameriusplus.dto.periodical;
 
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusModelAware;
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
 
 /**
  * @author Norbert Bodnar

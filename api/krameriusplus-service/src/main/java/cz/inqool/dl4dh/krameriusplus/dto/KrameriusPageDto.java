@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.domain.dto;
+package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;

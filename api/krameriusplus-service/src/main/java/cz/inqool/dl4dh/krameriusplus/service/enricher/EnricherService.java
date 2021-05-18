@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
 import lombok.extern.slf4j.Slf4j;

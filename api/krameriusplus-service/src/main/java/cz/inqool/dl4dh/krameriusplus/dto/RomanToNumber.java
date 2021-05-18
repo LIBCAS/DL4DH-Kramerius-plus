@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.domain.dto;
+package cz.inqool.dl4dh.krameriusplus.dto;
 
 /**
  * @author Norbert Bodnar

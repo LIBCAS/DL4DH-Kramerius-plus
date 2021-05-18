@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +37,8 @@ public class KrameriusPageProvider {
     /**
      * Gets a list of all child pages for given pid, and then adds text_ocr fields for every page
      *
-     * @param parentId
-     * @return
+     * @param parentId id of the parent publication, must contain pages as children
+     * @return list of Page DTOs for given parent
      */
     public List<KrameriusPageDto> getPagesForParent(String parentId) {
         KrameriusPageDto[] pages;

@@ -1,12 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.NamedEntityType;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.LindatServiceResponse;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.NameTagService;
@@ -19,15 +17,11 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.enums.NamedEntityType.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -1,16 +1,13 @@
-package cz.inqool.dl4dh.krameriusplus.domain.dto;
+package cz.inqool.dl4dh.krameriusplus.dto.monograph;
 
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
-import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.ErrorCode.NO_CHILDREN;
 
 /**
  * @author Norbert Bodnar
