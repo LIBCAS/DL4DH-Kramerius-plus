@@ -19,8 +19,7 @@ import java.util.List;
 @Document(collection = "pages")
 public class Page extends DomainObject {
 
-    @Indexed
-    @Field("r_id")
+    @Indexed(name = "root_publication_index")
     private String rootId;
 
     private List<Token> tokens = new ArrayList<>();
@@ -42,5 +41,8 @@ public class Page extends DomainObject {
      */
     private String pageNumber;
 
+    @Indexed
     private int pageIndex;
+
+    private NameTagMetadata nameTagMetadata;
 }

@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.scheduler;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.service.filler.FillerService;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class SchedulerService {
 
     private final EnrichmentTaskRepository enrichmentTaskRepository;
 
+    @Getter
     private static final Map<String, EnrichmentTask> tasks = new HashMap<>();
 
     @Autowired
@@ -30,7 +32,7 @@ public class SchedulerService {
         this.enrichmentTaskRepository = enrichmentTaskRepository;
     }
 
-    public EnrichmentTask schedule(String rootPublicationId) {
+    public EnrichmentTask schedule(String rootPublicationId, boolean overrideExisting) {
         EnrichmentTask existingTask = tasks.get(rootPublicationId);
         if (existingTask != null && existingTask.getState() != EnrichmentTask.State.FAILED) {
             throw new IllegalArgumentException("Task with this PID is already running");
@@ -38,7 +40,13 @@ public class SchedulerService {
 
         List<EnrichmentTask> enrichmentTasks = enrichmentTaskRepository.findEnrichmentTaskByRootPublicationId(rootPublicationId);
         if (enrichmentTasks.stream().anyMatch(task -> task.getState() == EnrichmentTask.State.SUCCESSFUL)) {
-            log.warn("Publication with PID: " + rootPublicationId + " was already enriched");
+            if (!overrideExisting) {
+                log.error("Publication with PID: " + rootPublicationId + " was already enriched, to enrich again," +
+                        " run with param overrideExisting=true");
+                return null;
+            } else {
+                log.warn("Publication with PID: " + rootPublicationId + " was already enriched, overriding");
+            }
         }
 
         EnrichmentTask task = new EnrichmentTask(rootPublicationId);
@@ -55,7 +63,13 @@ public class SchedulerService {
         return enrichmentTaskRepository.findEnrichmentTaskByState(EnrichmentTask.State.SUCCESSFUL);
     }
 
-    public static Map<String, EnrichmentTask> getTasks() {
-        return tasks;
+    public static EnrichmentTask getTask(String pid) {
+        EnrichmentTask result = tasks.get(pid);
+
+        return result == null ? new EnrichmentTask("empty task") : result;
+    }
+
+    public static void removeTask(String pid) {
+        tasks.remove(pid);
     }
 }

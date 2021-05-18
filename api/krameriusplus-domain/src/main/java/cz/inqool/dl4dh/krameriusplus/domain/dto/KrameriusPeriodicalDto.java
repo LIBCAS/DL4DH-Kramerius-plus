@@ -1,14 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.domain.dto;
 
-import cz.inqool.dl4dh.krameriusplus.domain.enums.PublicationModel;
+import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 
 /**
  * @author Norbert Bodnar
  */
-public class KrameriusPeriodicalDto extends KrameriusPublicationDto {
+public class KrameriusPeriodicalDto extends KrameriusPublicationDto implements KrameriusModelAware {
 
     @Override
-    public PublicationModel getModel() {
-        return PublicationModel.PERIODICAL;
+    public KrameriusModel getModel() {
+        return KrameriusModel.PERIODICAL;
     }
 }

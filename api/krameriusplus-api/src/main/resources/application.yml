@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+    username:
+    password:
+  data:
+    mongodb:
+      auto-index-creation: true
+      database: KrameriusPlus
+      drop-on-start: false
+
+logging:
+  level:
+    cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService: OFF
+
+springdoc:
+  swagger-ui.path: /swagger
+
+kramerius:
+#  api: https://kramerius5.nkp.cz
+  api: https://kramerius.mzk.cz
+
+solr:
+  enabled: false

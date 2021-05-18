@@ -1,14 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusMonographDto;
 import cz.inqool.dl4dh.krameriusplus.domain.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
-import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Norbert Bodnar
@@ -27,31 +27,32 @@ public class EnricherService {
         this.nameTagService = nameTagService;
     }
 
-    public Monograph enrich(KrameriusMonographDto dto) {
-        EnrichmentTask task = SchedulerService.getTasks().get(dto.getPid());
-
-        log.info("Enriching monograph: PID=" + dto.getPid() + ", " + dto.getTitle());
-        Monograph monograph = Monograph.from(dto);
-
-        task.setState(EnrichmentTask.State.ENRICHING);
+    public List<Page> enrichPages(List<KrameriusPageDto> pageDtos, EnrichmentTask task) {
+        List<Page> result = new ArrayList<>();
 
         Page page;
         int done = 1;
-        int total = dto.getPages().size();
+        int total = pageDtos.size();
         task.setTotalPages(total);
 
-        for (KrameriusPageDto pageDto : dto.getPages()) {
+        for (KrameriusPageDto pageDto : pageDtos) {
             task.setProcessingPage(done);
 
-            page = tokenizerService.tokenizePage(pageDto);
-            nameTagService.processPage(page);
-            monograph.getPages().add(page);
+            page = pageDto.toEntity();
+
+            try {
+                page.setTokens(tokenizerService.tokenize(pageDto.getTextOcr()));
+                page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
+            } catch (Exception e) {
+                log.error("Error enriching data with external services", e);
+            }
+
+            result.add(page);
 
             task.setPercentDone(calculatePercentDone(total, done++));
         }
 
-        log.info("Enrichment of " + monograph.getTitle() + " finished");
-        return monograph;
+        return result;
     }
 
     private double calculatePercentDone(int total, int done) {

@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,33 +13,51 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class KrameriusPageDto {
+public class KrameriusPageDto implements KrameriusModelAware {
 
     private String pid;
 
+    @JsonProperty("root_pid")
     private String rootPid;
 
     //TODO: change to enum?
     private String pageType;
 
-    //TODO: cleanup data (trim extra spaces)
+    /**
+     * Usually page number
+     */
+    private String title;
+
+    private KrameriusModel model;
+
+    /**
+     * Page number with extracted from details field
+     */
     private String pageNumber;
 
-    private String title;
+    /**
+     * Integer representation of page number (removed every non-numeric character from pageNumber)
+     */
+    private int pageIndex;
 
     //TODO: change to enum?
     private String policy;
 
     private String textOcr;
 
-    public String getModel() {
-        return "page";
-    }
-
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
-        this.pageType = (String) details.get("type");
-        this.pageNumber = ((String) details.get("pagenumber")).trim();
+        pageType = (String) details.get("type");
+        pageNumber = ((String) details.get("pagenumber")).strip();
+        try {
+            pageIndex = RomanToNumber.romanToDecimal(pageNumber.replaceAll("[^IVXLCDM]", ""));
+        } catch (IllegalArgumentException e) {
+            try {
+                pageIndex = Integer.parseInt(pageNumber.replaceAll("[^0-9]", ""));
+            } catch (Exception ex) {
+                // do nothing
+            }
+        }
     }
 
     public Page toEntity() {
@@ -49,6 +68,7 @@ public class KrameriusPageDto {
         page.setPageNumber(pageNumber);
         page.setTitle(title);
         page.setPolicy(policy);
+        page.setPageIndex(pageIndex);
 
         return page;
     }
