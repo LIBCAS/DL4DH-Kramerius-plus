@@ -24,6 +24,8 @@ public class EnrichmentTask {
 
     private String rootPublicationId;
 
+    private String title;
+
     private Instant created;
 
     private Instant finished;

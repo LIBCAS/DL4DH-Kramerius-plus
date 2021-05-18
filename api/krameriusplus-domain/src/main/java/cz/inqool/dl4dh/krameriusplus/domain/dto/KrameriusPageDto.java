@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class KrameriusPageDto {
+public class KrameriusPageDto implements KrameriusModelAware {
 
     private String pid;
 
@@ -26,6 +27,8 @@ public class KrameriusPageDto {
      * Usually page number
      */
     private String title;
+
+    private KrameriusModel model;
 
     /**
      * Page number with extracted from details field
@@ -42,18 +45,18 @@ public class KrameriusPageDto {
 
     private String textOcr;
 
-    public String getModel() {
-        return "page";
-    }
-
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
         pageType = (String) details.get("type");
         pageNumber = ((String) details.get("pagenumber")).strip();
         try {
-            pageIndex = Integer.parseInt(pageNumber.replaceAll("[^0-9]", ""));
-        } catch (Exception e) {
-            // do nothing;
+            pageIndex = RomanToNumber.romanToDecimal(pageNumber.replaceAll("[^IVXLCDM]", ""));
+        } catch (IllegalArgumentException e) {
+            try {
+                pageIndex = Integer.parseInt(pageNumber.replaceAll("[^0-9]", ""));
+            } catch (Exception ex) {
+                // do nothing
+            }
         }
     }
 

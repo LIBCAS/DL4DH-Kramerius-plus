@@ -33,17 +33,19 @@ public class SchedulerApi {
                     "is already in the queue and the state is not FAILED, this API call fails with IllegalArgumentException." +
                     "The enriching process is asynchronous and this method returns a running task without waiting.")
     @PostMapping(value = "/schedule/{pid}")
-    public EnrichmentTask schedule(@PathVariable("pid") String pid) {
-        return schedulerService.schedule(pid);
+    public EnrichmentTask schedule(@PathVariable("pid") String pid,
+                                   @RequestParam(value = "overrideExisting", defaultValue = "false") boolean overrideExisting) {
+        return schedulerService.schedule(pid, overrideExisting);
     }
 
     @Operation(summary = "Schedule to enrich multiple publications asynchronously.",
             description =  "The configuration for asynchronous thread pool is currently hardcoded for max 3 asynchronous " +
                     "threads at time. If more publications are in queue, they will be processed after a thread is released. ")
     @PostMapping(value = "/schedule")
-    public void scheduleMultiple(@Valid @NotNull @RequestBody ScheduleMultipleDto dto) {
+    public void scheduleMultiple(@Valid @NotNull @RequestBody ScheduleMultipleDto dto,
+                                 @RequestParam(value = "overrideExisting", defaultValue = "false") boolean overrideExisting) {
         for (String pid : dto.getPublications()) {
-            schedulerService.schedule(pid);
+            schedulerService.schedule(pid, overrideExisting);
         }
     }
 

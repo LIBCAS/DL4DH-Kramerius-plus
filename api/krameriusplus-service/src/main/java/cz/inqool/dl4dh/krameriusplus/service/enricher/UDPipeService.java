@@ -35,8 +35,6 @@ public class UDPipeService {
 
     private final HttpHeaders headers;
 
-    private long UDPipeExecutionTime;
-
     @Autowired
     public UDPipeService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -49,36 +47,6 @@ public class UDPipeService {
                 .queryParam("tagger")
                 .queryParam("parser")
                 .toUriString();
-    }
-
-    /**
-     * Processes the input text content and returns a list of tokens.
-     * @param content String content to tokenize
-     * @return list of Tokens produced by the external service. Tokens might contain additional metadata
-     */
-    public List<Token> tokenize(String content) {
-        List<Token> result = new ArrayList<>();
-
-        if (content == null || content.isEmpty()) {
-            return result;
-        }
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("data", content);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        long start = System.currentTimeMillis();
-        LindatServiceResponse response = restTemplate
-                .postForEntity(URL, requestEntity, LindatServiceResponse.class)
-                .getBody();
-        UDPipeExecutionTime += System.currentTimeMillis() - start;
-
-        if (response == null) {
-            throw new UDPipeException(EXTERNAL_SERVICE_ERROR, "UDPipe did not return results");
-        }
-
-        return processPageResponse(response.getResult());
     }
 
     /**
@@ -103,6 +71,34 @@ public class UDPipeService {
         }
 
         return result;
+    }
+
+    /**
+     * Processes the input text content and returns a list of tokens.
+     * @param content String content to tokenize
+     * @return list of Tokens produced by the external service. Tokens might contain additional metadata
+     */
+    public List<Token> tokenize(String content) {
+        List<Token> result = new ArrayList<>();
+
+        if (content == null || content.isEmpty()) {
+            return result;
+        }
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("data", content);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        LindatServiceResponse response = restTemplate
+                .postForEntity(URL, requestEntity, LindatServiceResponse.class)
+                .getBody();
+
+        if (response == null) {
+            throw new UDPipeException(EXTERNAL_SERVICE_ERROR, "UDPipe did not return results");
+        }
+
+        return processPageResponse(response.getResult());
     }
 
     /**

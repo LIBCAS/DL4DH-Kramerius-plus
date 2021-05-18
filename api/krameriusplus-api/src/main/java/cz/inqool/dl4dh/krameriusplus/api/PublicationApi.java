@@ -26,6 +26,6 @@ public class PublicationApi {
     public Monograph getEnrichedMonograph(@RequestParam(value = "pid") String pid,
                                           @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                           @RequestParam(value = "pageSize", required = false, defaultValue = "1") int pageSize) {
-        return publicationService.findMonograph(pid, PageRequest.of(page, pageSize));
+        return publicationService.findMonographWithPages(pid, PageRequest.of(page, pageSize));
     }
 }

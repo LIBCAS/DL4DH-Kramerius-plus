@@ -32,7 +32,7 @@ public class SchedulerService {
         this.enrichmentTaskRepository = enrichmentTaskRepository;
     }
 
-    public EnrichmentTask schedule(String rootPublicationId) {
+    public EnrichmentTask schedule(String rootPublicationId, boolean overrideExisting) {
         EnrichmentTask existingTask = tasks.get(rootPublicationId);
         if (existingTask != null && existingTask.getState() != EnrichmentTask.State.FAILED) {
             throw new IllegalArgumentException("Task with this PID is already running");
@@ -40,7 +40,13 @@ public class SchedulerService {
 
         List<EnrichmentTask> enrichmentTasks = enrichmentTaskRepository.findEnrichmentTaskByRootPublicationId(rootPublicationId);
         if (enrichmentTasks.stream().anyMatch(task -> task.getState() == EnrichmentTask.State.SUCCESSFUL)) {
-            log.warn("Publication with PID: " + rootPublicationId + " was already enriched");
+            if (!overrideExisting) {
+                log.error("Publication with PID: " + rootPublicationId + " was already enriched, to enrich again," +
+                        " run with param overrideExisting=true");
+                return null;
+            } else {
+                log.warn("Publication with PID: " + rootPublicationId + " was already enriched, overriding");
+            }
         }
 
         EnrichmentTask task = new EnrichmentTask(rootPublicationId);
