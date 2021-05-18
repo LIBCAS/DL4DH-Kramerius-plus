@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -63,7 +63,7 @@ public class KrameriusPageDto implements KrameriusModelAware {
     public Page toEntity() {
         Page page = new Page();
         page.setPid(pid);
-        page.setRootId(rootPid);
+        page.setParentId(rootPid);
         page.setPageType(pageType);
         page.setPageNumber(pageNumber);
         page.setTitle(title);

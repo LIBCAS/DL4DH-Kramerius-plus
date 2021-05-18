@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.dto.KrameriusModelAware;
 import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.MonographUnit;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,7 +49,7 @@ public class KrameriusMonographUnitDto extends KrameriusPublicationDto implement
         monographUnit.setPartNumber(partNumber);
         monographUnit.setPartTitle(partTitle);
         monographUnit.setDonator(donator);
-        monographUnit.setRootPid(rootPid);
+        monographUnit.setParentId(rootPid);
 
         return monographUnit;
     }

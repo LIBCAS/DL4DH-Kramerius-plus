@@ -1,5 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.domain.entity;
+package cz.inqool.dl4dh.krameriusplus.domain.entity.monograph;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
@@ -9,11 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Object representing a MonographUnit. MonographUnits must contain pages directly as children
+ *
  * @author Norbert Bodnar
  */
 @Getter
 @Setter
-@Document(collection = "monograph_units")
+@Document(collection = "publications")
 public class MonographUnit extends Publication {
 
     private String partNumber;
@@ -22,7 +26,7 @@ public class MonographUnit extends Publication {
 
     private String donator;
 
-    private String rootPid;
+    private String parentId;
 
     @Transient
     private List<Page> pages = new ArrayList<>();

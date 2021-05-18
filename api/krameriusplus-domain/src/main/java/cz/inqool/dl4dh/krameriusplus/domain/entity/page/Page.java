@@ -1,10 +1,10 @@
-package cz.inqool.dl4dh.krameriusplus.domain.entity;
+package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,11 @@ import java.util.List;
 @Document(collection = "pages")
 public class Page extends DomainObject {
 
-    @Indexed(name = "root_publication_index")
-    private String rootId;
+    /**
+     * Id of parent object. Multiple object types can contain pages, for example monographs, monographUnits or
+     * periodicalItems
+     */
+    private String parentId;
 
     private List<Token> tokens = new ArrayList<>();
 

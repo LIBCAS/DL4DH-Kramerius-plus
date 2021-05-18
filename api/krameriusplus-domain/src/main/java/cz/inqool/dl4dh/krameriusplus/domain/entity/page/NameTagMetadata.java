@@ -1,5 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.domain.entity;
+package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.NamedEntityType;
 import lombok.Getter;
 import lombok.Setter;

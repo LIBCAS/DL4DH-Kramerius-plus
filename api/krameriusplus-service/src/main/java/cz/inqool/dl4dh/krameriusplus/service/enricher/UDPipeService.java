@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
 import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.LinguisticMetadata;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

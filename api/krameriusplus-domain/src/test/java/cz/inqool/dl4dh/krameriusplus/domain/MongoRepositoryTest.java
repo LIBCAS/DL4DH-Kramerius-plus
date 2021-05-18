@@ -1,28 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.domain;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.internal.MongoClientImpl;
 import cz.inqool.dl4dh.krameriusplus.DomainApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.PageRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Monograph;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Token;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.AfterEach;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +58,7 @@ public class MongoRepositoryTest {
         page.setPid("uuid:1_1");
         page.setTokens(tokens);
         page.setPageNumber("[1a]");
-        page.setRootId("uuid:1");
+        page.setParentId("uuid:1");
         page.setPageIndex(0);
         pages.add(page);
 
@@ -196,7 +183,7 @@ public class MongoRepositoryTest {
             page.setPid(rootId + "_" + i);
             page.setTokens(tokens);
             page.setPageNumber("[" + i + "]");
-            page.setRootId(rootId);
+            page.setParentId(rootId);
             page.setPageIndex(i);
             pages.add(page);
         }

@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
 import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

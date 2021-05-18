@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.NameTagMetadata;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.NamedEntity;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NameTagMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
