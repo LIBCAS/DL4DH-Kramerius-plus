@@ -12,6 +12,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAPH_UNIT;
 
@@ -51,6 +52,10 @@ public class MonographUnitDto extends PublicationDto<MonographUnit> implements K
         monographUnit.setPartTitle(partTitle);
         monographUnit.setDonator(donator);
         monographUnit.setParentId(rootPid);
+        monographUnit.setPages(pages
+                .stream()
+                .map(PageDto::toEntity)
+                .collect(Collectors.toList()));
 
         return monographUnit;
     }

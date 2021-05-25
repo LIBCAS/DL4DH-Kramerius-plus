@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODICAL_ITEM;
 
@@ -43,6 +44,16 @@ public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> {
 
     @Override
     public PeriodicalItem toEntity() {
-        return null;
+        PeriodicalItem entity = super.toEntity(new PeriodicalItem());
+        entity.setDate(date);
+        entity.setIssueNumber(issueNumber);
+        entity.setPartNumber(partNumber);
+        entity.setRootId(rootPid);
+        entity.setPages(pages
+                .stream()
+                .map(PageDto::toEntity)
+                .collect(Collectors.toList()));
+
+        return entity;
     }
 }

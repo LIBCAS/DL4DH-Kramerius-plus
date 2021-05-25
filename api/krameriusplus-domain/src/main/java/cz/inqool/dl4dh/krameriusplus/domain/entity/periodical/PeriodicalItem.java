@@ -24,6 +24,10 @@ public class PeriodicalItem extends Publication {
 
     private String partNumber;
 
+    private String parentId;
+
+    private String rootId;
+
     @Transient
     private List<Page> pages;
 

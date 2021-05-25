@@ -12,6 +12,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Norbert Bodnar
@@ -29,6 +30,12 @@ public class PeriodicalDto extends PublicationDto<Periodical> {
 
     @Override
     public Periodical toEntity() {
-        return null;
+        Periodical entity = super.toEntity(new Periodical());
+        entity.setPeriodicalVolumes(volumes
+                .stream()
+                .map(PeriodicalVolumeDto::toEntity)
+                .collect(Collectors.toList()));
+
+        return entity;
     }
 }

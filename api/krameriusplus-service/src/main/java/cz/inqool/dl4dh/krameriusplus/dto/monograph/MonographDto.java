@@ -14,12 +14,19 @@ import java.util.List;
  */
 @Getter
 @Setter
-public abstract class MonographDto extends PublicationDto<Monograph> {
+public abstract class MonographDto<T extends Monograph> extends PublicationDto<T> {
 
     private String donator;
 
     @Override
     public KrameriusModel getModel() {
         return KrameriusModel.MONOGRAPH;
+    }
+
+    protected T toEntity(T entity) {
+        entity = super.toEntity(entity);
+        entity.setDonator(donator);
+
+        return entity;
     }
 }

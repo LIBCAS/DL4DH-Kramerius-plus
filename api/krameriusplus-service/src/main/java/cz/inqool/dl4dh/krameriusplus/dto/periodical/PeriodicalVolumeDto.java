@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Norbert Bodnar
@@ -19,7 +20,7 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
 
     private String volumeNumber;
 
-    private String year;
+    private String volumeYear;
 
     private String rootTitle;
 
@@ -30,7 +31,7 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
         volumeNumber = (String) details.get("volumeNumber");
-        year = ((String) details.get("year"));
+        volumeYear = ((String) details.get("year"));
     }
 
     @Override
@@ -40,6 +41,15 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
 
     @Override
     public PeriodicalVolume toEntity() {
-        return null;
+        PeriodicalVolume entity = super.toEntity(new PeriodicalVolume());
+        entity.setVolumeNumber(volumeNumber);
+        entity.setVolumeYear(volumeYear);
+        entity.setParentId(rootPid);
+        entity.setPeriodicalItems(items
+                .stream()
+                .map(PeriodicalItemDto::toEntity)
+                .collect(Collectors.toList()));
+
+        return entity;
     }
 }

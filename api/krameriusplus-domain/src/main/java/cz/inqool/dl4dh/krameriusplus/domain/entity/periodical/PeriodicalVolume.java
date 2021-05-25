@@ -29,6 +29,8 @@ public class PeriodicalVolume extends Publication {
      */
     private String volumeYear;
 
+    private String parentId;
+
     @Transient
     private List<PeriodicalItem> periodicalItems;
 
