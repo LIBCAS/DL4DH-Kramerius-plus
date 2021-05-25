@@ -6,6 +6,8 @@ import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.dto.periodical.PeriodicalDto;
+import cz.inqool.dl4dh.krameriusplus.dto.periodical.PeriodicalItemDto;
+import cz.inqool.dl4dh.krameriusplus.dto.periodical.PeriodicalVolumeDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +22,9 @@ import java.util.List;
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = MonographDto.class, name = "monograph"),
         @JsonSubTypes.Type(value = MonographUnitDto.class, name = "monographunit"),
-        @JsonSubTypes.Type(value = PeriodicalDto.class, name = "periodical")
+        @JsonSubTypes.Type(value = PeriodicalDto.class, name = "periodical"),
+        @JsonSubTypes.Type(value = PeriodicalVolumeDto.class, name = "periodicalvolume"),
+        @JsonSubTypes.Type(value = PeriodicalItemDto.class, name = "periodicalitem")
 })
 public abstract class PublicationDto implements KrameriusModelAware {
 
