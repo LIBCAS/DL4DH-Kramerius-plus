@@ -20,7 +20,6 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
  */
 @Getter
 @Setter
-@Document(collection = "publications")
 public class MonographUnit extends Publication {
 
     private String partNumber;

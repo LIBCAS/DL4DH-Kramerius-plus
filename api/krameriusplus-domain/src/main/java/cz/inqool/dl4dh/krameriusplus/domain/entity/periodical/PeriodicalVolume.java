@@ -19,7 +19,6 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODIC
  */
 @Getter
 @Setter
-@Document(collection = "publications")
 public class PeriodicalVolume extends Publication {
 
     private String volumeNumber;

@@ -13,6 +13,5 @@ import java.util.List;
 @Setter
 public class MonographWithUnits extends Monograph {
 
-    @Transient
     private List<MonographUnit> monographUnits;
 }
