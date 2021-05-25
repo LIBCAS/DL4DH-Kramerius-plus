@@ -8,7 +8,7 @@ import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.EnricherService;
-import cz.inqool.dl4dh.krameriusplus.service.filler.kramerius.KrameriusDataProvider;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationProvider;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 @Slf4j
 public class FillerService {
 
-    private final KrameriusDataProvider dataProviderService;
+    private final PublicationProvider dataProviderService;
 
     private final EnricherService enricherService;
 
@@ -34,7 +34,7 @@ public class FillerService {
     private final EnrichmentTaskRepository enrichmentTaskRepository;
 
     @Autowired
-    public FillerService(KrameriusDataProvider dataProviderService, EnricherService enricherService,
+    public FillerService(PublicationProvider dataProviderService, EnricherService enricherService,
                          PublicationService publicationService, EnrichmentTaskRepository enrichmentTaskRepository) {
         this.dataProviderService = dataProviderService;
         this.enricherService = enricherService;

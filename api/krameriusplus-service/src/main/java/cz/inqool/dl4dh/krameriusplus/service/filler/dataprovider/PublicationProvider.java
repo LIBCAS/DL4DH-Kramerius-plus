@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
+package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
@@ -22,7 +22,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.
  */
 @Service
 @Slf4j
-public class KrameriusDataProvider {
+public class PublicationProvider {
 
     private final String KRAMERIUS_ITEM_API;
 
@@ -30,12 +30,12 @@ public class KrameriusDataProvider {
 
     private final KrameriusMonographProvider monographProvider;
 
-    private final KrameriusMonographUnitProvider monographUnitProvider;
+    private final MonographUnitProvider monographUnitProvider;
 
     @Autowired
-    public KrameriusDataProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi,
-                                 RestTemplate restTemplate, KrameriusMonographProvider monographProvider,
-                                 KrameriusMonographUnitProvider monographUnitProvider) {
+    public PublicationProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi,
+                               RestTemplate restTemplate, KrameriusMonographProvider monographProvider,
+                               MonographUnitProvider monographUnitProvider) {
         this.KRAMERIUS_ITEM_API = krameriusApi + "/search/api/v5.0/item/";
         this.restTemplate = restTemplate;
         this.monographProvider = monographProvider;

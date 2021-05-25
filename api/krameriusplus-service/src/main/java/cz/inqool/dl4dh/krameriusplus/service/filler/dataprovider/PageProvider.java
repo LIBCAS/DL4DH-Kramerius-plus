@@ -1,5 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
+package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
@@ -12,8 +13,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.notNull;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.ErrorCode.*;
 
 /**
@@ -21,18 +24,31 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.
  */
 @Slf4j
 @Service
-public class KrameriusPageProvider {
+public class PageProvider implements DataProvider<PageDto>{
 
     private final String KRAMERIUS_ITEM_API;
 
     private final RestTemplate restTemplate;
 
     @Autowired
-    public KrameriusPageProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi,
-                                 RestTemplate restTemplate) {
+    public PageProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi,
+                        RestTemplate restTemplate) {
         this.KRAMERIUS_ITEM_API = krameriusApi + "/search/api/v5.0/item/";
         this.restTemplate = restTemplate;
     }
+
+    @Override
+    public PageDto getDigitalObject(String objectId) {
+        PageDto page = restTemplate.getForEntity(KRAMERIUS_ITEM_API + objectId,
+                PageDto.class).getBody();
+
+        notNull(page, () -> new KrameriusException(MISSING_OBJECT, "No digital object of model Page for ID=" + objectId));
+
+        page.setTextOcr(getTextOcr(objectId));
+
+        return page;
+    }
+
 
     /**
      * Gets a list of all child pages for given pid, and then adds text_ocr fields for every page
@@ -40,7 +56,8 @@ public class KrameriusPageProvider {
      * @param parentId id of the parent publication, must contain pages as children
      * @return list of Page DTOs for given parent
      */
-    public List<PageDto> getPagesForParent(String parentId) {
+    @Override
+    public List<PageDto> getDigitalObjectsForParent(String parentId) {
         PageDto[] pages;
         try {
             pages = restTemplate.getForEntity(KRAMERIUS_ITEM_API + parentId + "/children",
@@ -54,7 +71,7 @@ public class KrameriusPageProvider {
         }
 
         if (pages == null) {
-            throw new KrameriusException(NO_CHILDREN, "Kramerius did not return any children for publication with PID=" + parentId);
+            throw new KrameriusException(MISSING_CHILDREN, "Kramerius did not return any children for publication with PID=" + parentId);
         }
 
         List<PageDto> result = new ArrayList<>();
@@ -93,4 +110,5 @@ public class KrameriusPageProvider {
             return "";
         }
     }
+
 }

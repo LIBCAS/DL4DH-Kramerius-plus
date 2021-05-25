@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
+package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
@@ -23,17 +23,17 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.
  */
 @Service
 @Slf4j
-public class KrameriusMonographUnitProvider {
+public class MonographUnitProvider {
 
     private final String KRAMERIUS_ITEM_API;
 
     private final RestTemplate restTemplate;
 
-    private final KrameriusPageProvider pageProvider;
+    private final PageProvider pageProvider;
 
     @Autowired
-    public KrameriusMonographUnitProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi,
-                                 RestTemplate restTemplate, KrameriusPageProvider pageProvider) {
+    public MonographUnitProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi,
+                                 RestTemplate restTemplate, PageProvider pageProvider) {
         this.KRAMERIUS_ITEM_API = krameriusApi + "/search/api/v5.0/item/";
         this.restTemplate = restTemplate;
         this.pageProvider = pageProvider;
@@ -43,7 +43,7 @@ public class KrameriusMonographUnitProvider {
         log.info("Downloading pages for PID=" + monographUnitDto.getPid() + ", " + monographUnitDto.getTitle());
         SchedulerService.getTask(monographUnitDto.getPid()).setState(EnrichmentTask.State.DOWNLOADING_PAGES);
 
-        monographUnitDto.setPages(pageProvider.getPagesForParent(monographUnitDto.getPid()));
+        monographUnitDto.setPages(pageProvider.getDigitalObjectsForParent(monographUnitDto.getPid()));
 
         return monographUnitDto;
     }
@@ -62,7 +62,7 @@ public class KrameriusMonographUnitProvider {
         }
 
         if (monographUnits == null || monographUnits.length == 0) {
-            throw new KrameriusException(NO_CHILDREN, "Kramerius did not return any children for publication with PID=" + pid);
+            throw new KrameriusException(MISSING_CHILDREN, "Kramerius did not return any children for publication with PID=" + pid);
         }
 
 
@@ -70,7 +70,7 @@ public class KrameriusMonographUnitProvider {
 
         for (MonographUnitDto monographUnit : monographUnits) {
             if (monographUnit.getModel() == KrameriusModel.MONOGRAPH_UNIT) {
-                monographUnit.setPages(pageProvider.getPagesForParent(monographUnit.getPid()));
+                monographUnit.setPages(pageProvider.getDigitalObjectsForParent(monographUnit.getPid()));
                 result.add(monographUnit);
             }
         }

@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class PageDto implements KrameriusModelAware {
+public class PageDto implements KrameriusModelAware, KrameriusDto<Page> {
 
     private String pid;
 
@@ -60,6 +60,7 @@ public class PageDto implements KrameriusModelAware {
         }
     }
 
+    @Override
     public Page toEntity() {
         Page page = new Page();
         page.setPid(pid);

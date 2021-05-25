@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
+package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class KrameriusMonographProvider {
 
-    private final KrameriusPageProvider pageProvider;
+    private final PageProvider pageProvider;
 
-    private final KrameriusMonographUnitProvider monographUnitProvider;
+    private final MonographUnitProvider monographUnitProvider;
 
     @Autowired
-    public KrameriusMonographProvider(KrameriusPageProvider pageProvider, KrameriusMonographUnitProvider monographUnitProvider) {
+    public KrameriusMonographProvider(PageProvider pageProvider, MonographUnitProvider monographUnitProvider) {
         this.pageProvider = pageProvider;
         this.monographUnitProvider = monographUnitProvider;
     }
@@ -30,7 +30,7 @@ public class KrameriusMonographProvider {
         SchedulerService.getTask(monographDto.getPid()).setState(EnrichmentTask.State.DOWNLOADING_PAGES);
 
         try {
-            monographDto.setPages(pageProvider.getPagesForParent(monographDto.getPid()));
+            monographDto.setPages(pageProvider.getDigitalObjectsForParent(monographDto.getPid()));
         } catch (KrameriusException krameriusException) {
             // if could not map children to KrameriusPageDto class because of wrong model, do:
             monographDto.setMonographUnits(monographUnitProvider.getMonographUnitsForParent(monographDto.getPid()));
