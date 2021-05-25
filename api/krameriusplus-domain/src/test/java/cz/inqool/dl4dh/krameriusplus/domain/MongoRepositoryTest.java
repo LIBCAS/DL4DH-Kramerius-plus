@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.DomainApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ import java.util.List;
 @SpringBootTest(classes = DomainApplicationContext.class)
 public class MongoRepositoryTest {
 
-    private Monograph monograph;
+    private MonographWithPages monograph;
 
     @Autowired
     private MonographRepository monographRepository;
@@ -62,7 +63,7 @@ public class MongoRepositoryTest {
         page.setPageIndex(0);
         pages.add(page);
 
-        monograph = new Monograph();
+        monograph = new MonographWithPages();
         monograph.setPid("uuid:1");
         monograph.setTitle("Test monograph");
         monograph.setPolicy("Public");

@@ -1,8 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithUnits;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographWithPagesDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographWithUnitsDto;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +16,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class KrameriusMonographProvider {
+public class MonographProvider {
 
     private final PageProvider pageProvider;
 
     private final MonographUnitProvider monographUnitProvider;
 
     @Autowired
-    public KrameriusMonographProvider(PageProvider pageProvider, MonographUnitProvider monographUnitProvider) {
+    public MonographProvider(PageProvider pageProvider, MonographUnitProvider monographUnitProvider) {
         this.pageProvider = pageProvider;
         this.monographUnitProvider = monographUnitProvider;
     }
@@ -29,11 +32,10 @@ public class KrameriusMonographProvider {
         log.info("Downloading pages for PID=" + monographDto.getPid() + ", " + monographDto.getTitle());
         SchedulerService.getTask(monographDto.getPid()).setState(EnrichmentTask.State.DOWNLOADING_PAGES);
 
-        try {
-            monographDto.setPages(pageProvider.getDigitalObjectsForParent(monographDto.getPid()));
-        } catch (KrameriusException krameriusException) {
-            // if could not map children to KrameriusPageDto class because of wrong model, do:
-            monographDto.setMonographUnits(monographUnitProvider.getMonographUnitsForParent(monographDto.getPid()));
+        if (monographDto instanceof MonographWithPagesDto) {
+            ((MonographWithPagesDto) monographDto).setPages(pageProvider.getDigitalObjectsForParent(monographDto.getPid()));
+        } else if (monographDto instanceof MonographWithUnitsDto) {
+            ((MonographWithUnitsDto) monographDto).setMonographUnits(monographUnitProvider.getMonographUnitsForParent(monographDto.getPid()));
         }
 
         return monographDto;

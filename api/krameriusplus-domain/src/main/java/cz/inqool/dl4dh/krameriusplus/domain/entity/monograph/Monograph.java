@@ -21,15 +21,9 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
 @Getter
 @Setter
 @Document(collection = "publications")
-public class Monograph extends Publication {
+public abstract class Monograph extends Publication {
 
     private String donator;
-
-    @Transient
-    private List<Page> pages;
-
-    @Transient
-    private List<MonographUnit> monographUnits;
 
     @Override
     public KrameriusModel getModel() {

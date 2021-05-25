@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographWithPagesDto;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
@@ -41,7 +42,7 @@ public class UDPipeServiceTest {
 
     @Test
     public void testBulk() {
-        MonographDto monographDto = prepareMonographDto();
+        MonographWithPagesDto monographDto = prepareMonographDto();
 
         List<Page> pages = tokenizer.tokenizePagesBulk(monographDto.getPages());
 
@@ -57,8 +58,8 @@ public class UDPipeServiceTest {
         assertEquals(345, pages.get(2).getTokens().get(345).getTokenIndex());
     }
 
-    private MonographDto prepareMonographDto() {
-        MonographDto monographDto = new MonographDto();
+    private MonographWithPagesDto prepareMonographDto() {
+        MonographWithPagesDto monographDto = new MonographWithPagesDto();
         monographDto.setPid("uuid:9a9690e0-69e8-11eb-9f97-005056827e51");
         monographDto.setTitle("Pan učitel");
         monographDto.setPages(new ArrayList<>());

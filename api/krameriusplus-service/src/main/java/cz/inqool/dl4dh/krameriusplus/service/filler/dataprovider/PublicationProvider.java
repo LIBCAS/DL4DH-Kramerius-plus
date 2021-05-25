@@ -28,13 +28,13 @@ public class PublicationProvider {
 
     private final RestTemplate restTemplate;
 
-    private final KrameriusMonographProvider monographProvider;
+    private final MonographProvider monographProvider;
 
     private final MonographUnitProvider monographUnitProvider;
 
     @Autowired
     public PublicationProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi,
-                               RestTemplate restTemplate, KrameriusMonographProvider monographProvider,
+                               RestTemplate restTemplate, MonographProvider monographProvider,
                                MonographUnitProvider monographUnitProvider) {
         this.KRAMERIUS_ITEM_API = krameriusApi + "/search/api/v5.0/item/";
         this.restTemplate = restTemplate;
