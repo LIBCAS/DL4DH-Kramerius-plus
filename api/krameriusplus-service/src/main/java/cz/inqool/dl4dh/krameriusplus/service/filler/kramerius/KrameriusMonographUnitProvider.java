@@ -1,8 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
@@ -40,7 +39,7 @@ public class KrameriusMonographUnitProvider {
         this.pageProvider = pageProvider;
     }
 
-    public KrameriusMonographUnitDto processMonographUnit(KrameriusMonographUnitDto monographUnitDto) {
+    public MonographUnitDto processMonographUnit(MonographUnitDto monographUnitDto) {
         log.info("Downloading pages for PID=" + monographUnitDto.getPid() + ", " + monographUnitDto.getTitle());
         SchedulerService.getTask(monographUnitDto.getPid()).setState(EnrichmentTask.State.DOWNLOADING_PAGES);
 
@@ -49,11 +48,11 @@ public class KrameriusMonographUnitProvider {
         return monographUnitDto;
     }
 
-    public List<KrameriusMonographUnitDto> getMonographUnitsForParent(String pid) {
-        KrameriusMonographUnitDto[] monographUnits;
+    public List<MonographUnitDto> getMonographUnitsForParent(String pid) {
+        MonographUnitDto[] monographUnits;
         try {
             monographUnits = restTemplate.getForEntity(KRAMERIUS_ITEM_API + pid + "/children",
-                    KrameriusMonographUnitDto[].class).getBody();
+                    MonographUnitDto[].class).getBody();
         } catch (RestClientException e) {
             if (e.getCause() instanceof HttpMessageNotReadableException) {
                 throw new KrameriusException(INVALID_MODEL, e);
@@ -67,9 +66,9 @@ public class KrameriusMonographUnitProvider {
         }
 
 
-        List<KrameriusMonographUnitDto> result = new ArrayList<>();
+        List<MonographUnitDto> result = new ArrayList<>();
 
-        for (KrameriusMonographUnitDto monographUnit : monographUnits) {
+        for (MonographUnitDto monographUnit : monographUnits) {
             if (monographUnit.getModel() == KrameriusModel.MONOGRAPH_UNIT) {
                 monographUnit.setPages(pageProvider.getPagesForParent(monographUnit.getPid()));
                 result.add(monographUnit);

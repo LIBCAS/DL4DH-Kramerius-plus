@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
@@ -25,7 +25,7 @@ public class KrameriusMonographProvider {
         this.monographUnitProvider = monographUnitProvider;
     }
 
-    public KrameriusMonographDto processMonograph(KrameriusMonographDto monographDto) {
+    public MonographDto processMonograph(MonographDto monographDto) {
         log.info("Downloading pages for PID=" + monographDto.getPid() + ", " + monographDto.getTitle());
         SchedulerService.getTask(monographDto.getPid()).setState(EnrichmentTask.State.DOWNLOADING_PAGES);
 

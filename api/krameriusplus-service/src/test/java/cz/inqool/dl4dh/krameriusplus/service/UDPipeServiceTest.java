@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
@@ -41,7 +41,7 @@ public class UDPipeServiceTest {
 
     @Test
     public void testBulk() {
-        KrameriusMonographDto monographDto = prepareMonographDto();
+        MonographDto monographDto = prepareMonographDto();
 
         List<Page> pages = tokenizer.tokenizePagesBulk(monographDto.getPages());
 
@@ -57,13 +57,13 @@ public class UDPipeServiceTest {
         assertEquals(345, pages.get(2).getTokens().get(345).getTokenIndex());
     }
 
-    private KrameriusMonographDto prepareMonographDto() {
-        KrameriusMonographDto monographDto = new KrameriusMonographDto();
+    private MonographDto prepareMonographDto() {
+        MonographDto monographDto = new MonographDto();
         monographDto.setPid("uuid:9a9690e0-69e8-11eb-9f97-005056827e51");
         monographDto.setTitle("Pan učitel");
         monographDto.setPages(new ArrayList<>());
 
-        KrameriusPageDto pageDto = new KrameriusPageDto();
+        PageDto pageDto = new PageDto();
         pageDto.setPid("uuid:2f28ca1f-e874-4cd0-83d4-3aae9a667449");
         pageDto.setPageNumber("4");
         pageDto.setTextOcr(("í ikat od rodičů i od žáků, a v té důminoe, že se\n" +
@@ -104,7 +104,7 @@ public class UDPipeServiceTest {
                 "4").replaceAll("-\n", "").replaceAll("\n", " "));
         monographDto.getPages().add(pageDto);
 
-        pageDto = new KrameriusPageDto();
+        pageDto = new PageDto();
         pageDto.setPid("uuid:e97daf16-c92f-4548-937a-47e3cdc3278d");
         pageDto.setPageNumber("9");
         pageDto.setTextOcr(("kleknul před křížem a předříkával nám krátké\n" +
@@ -145,7 +145,7 @@ public class UDPipeServiceTest {
                 "9").replaceAll("-\n", "").replaceAll("\n", " "));
         monographDto.getPages().add(pageDto);
 
-        pageDto = new KrameriusPageDto();
+        pageDto = new PageDto();
         pageDto.setPid("uuid:2765ffab-b9d3-4f8a-a795-b8a0d68b9558");
         pageDto.setPageNumber("12");
         pageDto.setTextOcr(("učil malé děti ve zvláštní světnici. Já seděla v tře-\n" +

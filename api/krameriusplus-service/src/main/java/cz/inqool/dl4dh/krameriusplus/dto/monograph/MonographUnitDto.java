@@ -2,8 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.dto.monograph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.dto.KrameriusModelAware;
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
@@ -20,7 +20,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
  */
 @Getter
 @Setter
-public class KrameriusMonographUnitDto extends KrameriusPublicationDto implements KrameriusModelAware {
+public class MonographUnitDto extends PublicationDto implements KrameriusModelAware {
 
     private String partNumber;
 
@@ -31,7 +31,7 @@ public class KrameriusMonographUnitDto extends KrameriusPublicationDto implement
     @JsonProperty("root_pid")
     private String rootPid;
 
-    private List<KrameriusPageDto> pages = new ArrayList<>();
+    private List<PageDto> pages = new ArrayList<>();
 
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {

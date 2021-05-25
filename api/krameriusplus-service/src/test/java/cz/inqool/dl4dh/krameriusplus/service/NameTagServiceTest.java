@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.NamedEntityType;
@@ -119,9 +119,9 @@ public class NameTagServiceTest {
     }
 
     private Page preparePage() {
-        KrameriusPageDto krameriusPageDto = new KrameriusPageDto();
-        krameriusPageDto.setTextOcr("Mezinárodní letiště Václava Havla Praha neboli Praha/Ruzyně je veřejné mezinárodní letiště umístěné na severozápadním okraji Prahy.");
+        PageDto pageDto = new PageDto();
+        pageDto.setTextOcr("Mezinárodní letiště Václava Havla Praha neboli Praha/Ruzyně je veřejné mezinárodní letiště umístěné na severozápadním okraji Prahy.");
 
-        return udPipeService.tokenizePage(krameriusPageDto);
+        return udPipeService.tokenizePage(pageDto);
     }
 }

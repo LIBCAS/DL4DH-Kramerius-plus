@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class KrameriusPageDto implements KrameriusModelAware {
+public class PageDto implements KrameriusModelAware {
 
     private String pid;
 

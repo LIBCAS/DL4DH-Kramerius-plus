@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
-import cz.inqool.dl4dh.krameriusplus.dto.periodical.KrameriusPeriodicalDto;
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
+import cz.inqool.dl4dh.krameriusplus.dto.periodical.PeriodicalDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,16 +42,16 @@ public class KrameriusDataProvider {
         this.monographUnitProvider = monographUnitProvider;
     }
 
-    public KrameriusPublicationDto getPublication(String pid) {
-        KrameriusPublicationDto krameriusPublicationDto = getRootDetails(pid);
+    public PublicationDto getPublication(String pid) {
+        PublicationDto publicationDto = getRootDetails(pid);
 
-        SchedulerService.getTask(pid).setTitle(krameriusPublicationDto.getTitle());
+        SchedulerService.getTask(pid).setTitle(publicationDto.getTitle());
 
-        if (krameriusPublicationDto instanceof KrameriusMonographDto) {
-            return monographProvider.processMonograph((KrameriusMonographDto) krameriusPublicationDto);
-        } else if (krameriusPublicationDto instanceof KrameriusMonographUnitDto) {
-            return monographUnitProvider.processMonographUnit((KrameriusMonographUnitDto) krameriusPublicationDto);
-        } else if (krameriusPublicationDto instanceof KrameriusPeriodicalDto) {
+        if (publicationDto instanceof MonographDto) {
+            return monographProvider.processMonograph((MonographDto) publicationDto);
+        } else if (publicationDto instanceof MonographUnitDto) {
+            return monographUnitProvider.processMonographUnit((MonographUnitDto) publicationDto);
+        } else if (publicationDto instanceof PeriodicalDto) {
             throw new UnsupportedOperationException("Periodicals not supported yet");
 //            return processPeriodical((KrameriusPeriodicalDto) krameriusPublicationDto);
         }
@@ -59,9 +59,9 @@ public class KrameriusDataProvider {
         throw new IllegalStateException("No processing method for this type of publication");
     }
 
-    private KrameriusPublicationDto getRootDetails(String pid) {
+    private PublicationDto getRootDetails(String pid) {
         try {
-            return restTemplate.getForObject(KRAMERIUS_ITEM_API + pid, KrameriusPublicationDto.class);
+            return restTemplate.getForObject(KRAMERIUS_ITEM_API + pid, PublicationDto.class);
         } catch (RestClientException e) {
             if (e.getCause() instanceof HttpMessageNotReadableException) {
                 throw new KrameriusException(INVALID_MODEL, e);

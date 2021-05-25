@@ -2,9 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.dto.periodical.PeriodicalDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,10 +18,11 @@ import java.util.List;
 @Setter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "model")
 @JsonSubTypes(value = {
-        @JsonSubTypes.Type(value = KrameriusMonographDto.class, name = "monograph"),
-        @JsonSubTypes.Type(value = KrameriusMonographUnitDto.class, name = "monographunit")
+        @JsonSubTypes.Type(value = MonographDto.class, name = "monograph"),
+        @JsonSubTypes.Type(value = MonographUnitDto.class, name = "monographunit"),
+        @JsonSubTypes.Type(value = PeriodicalDto.class, name = "periodical")
 })
-public abstract class KrameriusPublicationDto implements KrameriusModelAware {
+public abstract class PublicationDto implements KrameriusModelAware {
 
     protected String pid;
 

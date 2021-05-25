@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class EnricherService {
         this.nameTagService = nameTagService;
     }
 
-    public List<Page> enrichPages(List<KrameriusPageDto> pageDtos, EnrichmentTask task) {
+    public List<Page> enrichPages(List<PageDto> pageDtos, EnrichmentTask task) {
         List<Page> result = new ArrayList<>();
 
         Page page;
@@ -35,7 +35,7 @@ public class EnricherService {
         int total = pageDtos.size();
         task.setTotalPages(total);
 
-        for (KrameriusPageDto pageDto : pageDtos) {
+        for (PageDto pageDto : pageDtos) {
             task.setProcessingPage(done);
 
             page = pageDto.toEntity();

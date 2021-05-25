@@ -4,9 +4,9 @@ import cz.inqool.dl4dh.krameriusplus.domain.dao.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.EnricherService;
 import cz.inqool.dl4dh.krameriusplus.service.filler.kramerius.KrameriusDataProvider;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
@@ -44,11 +44,11 @@ public class FillerService {
 
     public void enrichPublication(String pid) {
         log.info("Downloading pages");
-        KrameriusPublicationDto publicationDto = dataProviderService.getPublication(pid);
+        PublicationDto publicationDto = dataProviderService.getPublication(pid);
 
         switch (publicationDto.getModel()) {
             case MONOGRAPH:
-                processMonograph((KrameriusMonographDto) publicationDto);
+                processMonograph((MonographDto) publicationDto);
                 break;
             case PERIODICAL:
                 throw new UnsupportedOperationException("Not implemented yet");
@@ -62,14 +62,14 @@ public class FillerService {
         long start = System.currentTimeMillis();
 
         try {
-            KrameriusPublicationDto publicationDto = dataProviderService.getPublication(pid);
+            PublicationDto publicationDto = dataProviderService.getPublication(pid);
 
             switch (publicationDto.getModel()) {
                 case MONOGRAPH:
-                    processMonograph((KrameriusMonographDto) publicationDto);
+                    processMonograph((MonographDto) publicationDto);
                     break;
                 case MONOGRAPH_UNIT:
-                    processMonographUnit((KrameriusMonographUnitDto) publicationDto);
+                    processMonographUnit((MonographUnitDto) publicationDto);
                     break;
                 case PERIODICAL:
                     throw new UnsupportedOperationException("Not implemented yet");
@@ -91,7 +91,7 @@ public class FillerService {
         SchedulerService.removeTask(pid);
     }
 
-    private void processMonograph(KrameriusMonographDto monographDto) {
+    private void processMonograph(MonographDto monographDto) {
         //todo: divide into enriching and storing list of pages separately(so in case of monographunits thousands of
         // pages are not stored in memory)
         Monograph monograph = monographDto.toEntity();
@@ -106,7 +106,7 @@ public class FillerService {
         } else {
             monograph.setMonographUnits(new ArrayList<>());
             MonographUnit monographUnit;
-            for (KrameriusMonographUnitDto monographUnitDto : monographDto.getMonographUnits()) {
+            for (MonographUnitDto monographUnitDto : monographDto.getMonographUnits()) {
                 monographUnit = monographUnitDto.toEntity();
                 publicationService.save(monographUnit);
 
@@ -118,7 +118,7 @@ public class FillerService {
         log.info("Enrichment of " + monograph.getTitle() + " finished");
     }
 
-    private void processMonographUnit(KrameriusMonographUnitDto monographUnitDto) {
+    private void processMonographUnit(MonographUnitDto monographUnitDto) {
         //todo: divide into enriching and storing list of pages separately(so in case of monographunits thousands of
         // pages are not stored in memory)
         MonographUnit monographUnit = monographUnitDto.toEntity();

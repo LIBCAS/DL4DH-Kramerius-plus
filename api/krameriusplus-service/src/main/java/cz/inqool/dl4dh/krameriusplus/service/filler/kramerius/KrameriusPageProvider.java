@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +40,11 @@ public class KrameriusPageProvider {
      * @param parentId id of the parent publication, must contain pages as children
      * @return list of Page DTOs for given parent
      */
-    public List<KrameriusPageDto> getPagesForParent(String parentId) {
-        KrameriusPageDto[] pages;
+    public List<PageDto> getPagesForParent(String parentId) {
+        PageDto[] pages;
         try {
             pages = restTemplate.getForEntity(KRAMERIUS_ITEM_API + parentId + "/children",
-                    KrameriusPageDto[].class).getBody();
+                    PageDto[].class).getBody();
         } catch (RestClientException e) {
             if (e.getCause() instanceof HttpMessageNotReadableException) {
                 throw new KrameriusException(INVALID_MODEL, e);
@@ -57,9 +57,9 @@ public class KrameriusPageProvider {
             throw new KrameriusException(NO_CHILDREN, "Kramerius did not return any children for publication with PID=" + parentId);
         }
 
-        List<KrameriusPageDto> result = new ArrayList<>();
+        List<PageDto> result = new ArrayList<>();
 
-        for (KrameriusPageDto page : pages) {
+        for (PageDto page : pages) {
             if (page.getModel() == KrameriusModel.PAGE) {
                 page.setParentId(parentId);
                 page.setTextOcr(getTextOcr(page.getPid()));

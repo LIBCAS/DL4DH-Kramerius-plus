@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPageDto;
+import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
@@ -51,23 +51,23 @@ public class UDPipeService {
 
     /**
      * Processes textContent of the page and sets its {@code List<Token> tokens} field
-     * @param krameriusPageDto dto from Kramerius with text content
+     * @param pageDto dto from Kramerius with text content
      */
-    public Page tokenizePage(KrameriusPageDto krameriusPageDto) {
-        Page page = krameriusPageDto.toEntity();
-        page.setTokens(tokenize(krameriusPageDto.getTextOcr()));
+    public Page tokenizePage(PageDto pageDto) {
+        Page page = pageDto.toEntity();
+        page.setTokens(tokenize(pageDto.getTextOcr()));
         return page;
     }
 
     /**
      * Processes textContent of multiple pages.
-     * @param krameriusPageDtos list of pages, every page's {@code List<Token> tokens} field will be overridden
+     * @param pageDtos list of pages, every page's {@code List<Token> tokens} field will be overridden
      */
-    public List<Page> tokenizePages(List<KrameriusPageDto> krameriusPageDtos) {
+    public List<Page> tokenizePages(List<PageDto> pageDtos) {
         List<Page> result = new ArrayList<>();
 
-        for (KrameriusPageDto krameriusPageDto : krameriusPageDtos) {
-            result.add(tokenizePage(krameriusPageDto));
+        for (PageDto pageDto : pageDtos) {
+            result.add(tokenizePage(pageDto));
         }
 
         return result;
@@ -103,15 +103,15 @@ public class UDPipeService {
 
     /**
      * Processes textContent of multiple pages in a bulk operation.
-     * @param krameriusPageDtos list of pages, every page's {@code List<Token> tokens} field will be overridden
+     * @param pageDtos list of pages, every page's {@code List<Token> tokens} field will be overridden
      */
-    public List<Page> tokenizePagesBulk(List<KrameriusPageDto> krameriusPageDtos) {
+    public List<Page> tokenizePagesBulk(List<PageDto> pageDtos) {
         log.info("Processing pages in UDPipe in bulk");
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
-        String bodyContent = krameriusPageDtos
+        String bodyContent = pageDtos
                 .stream()
-                .map(KrameriusPageDto::getTextOcr)
+                .map(PageDto::getTextOcr)
                 .collect(Collectors.joining(
                         System.lineSeparator() +
                                 System.lineSeparator() +
@@ -134,10 +134,10 @@ public class UDPipeService {
             throw new UDPipeException(EXTERNAL_SERVICE_ERROR, "UDPipe did not return results");
         }
 
-        return processBulkResponse(krameriusPageDtos, response.getResult());
+        return processBulkResponse(pageDtos, response.getResult());
     }
 
-    private List<Page> processBulkResponse(List<KrameriusPageDto> krameriusPageDtos, String responseBody) {
+    private List<Page> processBulkResponse(List<PageDto> pageDtos, String responseBody) {
         log.info("Processing response");
         String[] lines = responseBody.split("\n");
 
@@ -166,7 +166,7 @@ public class UDPipeService {
                     resultTokens = new ArrayList<>();
                 }
                 newPage = false;
-                page = krameriusPageDtos.get(pageIndex++).toEntity();
+                page = pageDtos.get(pageIndex++).toEntity();
                 tokenIndex = 0;
             }
 
