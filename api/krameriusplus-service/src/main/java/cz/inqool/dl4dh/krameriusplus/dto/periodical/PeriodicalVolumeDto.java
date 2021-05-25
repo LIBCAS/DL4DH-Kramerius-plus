@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +24,8 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
     private String rootTitle;
 
     private String rootPid;
+
+    private List<PeriodicalItemDto> items;
 
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
