@@ -1,8 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
+import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +38,15 @@ public class KrameriusMonographUnitProvider {
         this.KRAMERIUS_ITEM_API = krameriusApi + "/search/api/v5.0/item/";
         this.restTemplate = restTemplate;
         this.pageProvider = pageProvider;
+    }
+
+    public KrameriusMonographUnitDto processMonographUnit(KrameriusMonographUnitDto monographUnitDto) {
+        log.info("Downloading pages for PID=" + monographUnitDto.getPid() + ", " + monographUnitDto.getTitle());
+        SchedulerService.getTask(monographUnitDto.getPid()).setState(EnrichmentTask.State.DOWNLOADING_PAGES);
+
+        monographUnitDto.setPages(pageProvider.getPagesForParent(monographUnitDto.getPid()));
+
+        return monographUnitDto;
     }
 
     public List<KrameriusMonographUnitDto> getMonographUnitsForParent(String pid) {

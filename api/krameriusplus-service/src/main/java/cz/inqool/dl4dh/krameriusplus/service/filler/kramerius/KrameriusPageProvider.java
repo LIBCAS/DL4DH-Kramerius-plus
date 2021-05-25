@@ -61,6 +61,7 @@ public class KrameriusPageProvider {
 
         for (KrameriusPageDto page : pages) {
             if (page.getModel() == KrameriusModel.PAGE) {
+                page.setParentId(parentId);
                 page.setTextOcr(getTextOcr(page.getPid()));
                 result.add(page);
             }
@@ -80,6 +81,8 @@ public class KrameriusPageProvider {
             if (pageContent != null && !pageContent.isEmpty()) {
                 pageContent = pageContent
                         .replace("\uFEFF", "")
+                        .replaceAll("-\r\n", "")
+                        .replaceAll("\r\n", " ")
                         .replaceAll("-\n", "")
                         .replaceAll("\n", " ");
             }

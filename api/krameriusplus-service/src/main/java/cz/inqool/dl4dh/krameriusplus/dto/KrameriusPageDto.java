@@ -18,7 +18,7 @@ public class KrameriusPageDto implements KrameriusModelAware {
     private String pid;
 
     @JsonProperty("root_pid")
-    private String rootPid;
+    private String parentId;
 
     //TODO: change to enum?
     private String pageType;
@@ -63,7 +63,7 @@ public class KrameriusPageDto implements KrameriusModelAware {
     public Page toEntity() {
         Page page = new Page();
         page.setPid(pid);
-        page.setParentId(rootPid);
+        page.setParentId(parentId);
         page.setPageType(pageType);
         page.setPageNumber(pageNumber);
         page.setTitle(title);

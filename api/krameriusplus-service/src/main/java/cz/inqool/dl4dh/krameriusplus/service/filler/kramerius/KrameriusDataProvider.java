@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.kramerius;
 
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.dto.periodical.KrameriusPeriodicalDto;
 import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
@@ -29,12 +30,16 @@ public class KrameriusDataProvider {
 
     private final KrameriusMonographProvider monographProvider;
 
+    private final KrameriusMonographUnitProvider monographUnitProvider;
+
     @Autowired
     public KrameriusDataProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi,
-                                 RestTemplate restTemplate, KrameriusMonographProvider monographProvider) {
+                                 RestTemplate restTemplate, KrameriusMonographProvider monographProvider,
+                                 KrameriusMonographUnitProvider monographUnitProvider) {
         this.KRAMERIUS_ITEM_API = krameriusApi + "/search/api/v5.0/item/";
         this.restTemplate = restTemplate;
         this.monographProvider = monographProvider;
+        this.monographUnitProvider = monographUnitProvider;
     }
 
     public KrameriusPublicationDto getPublication(String pid) {
@@ -44,6 +49,8 @@ public class KrameriusDataProvider {
 
         if (krameriusPublicationDto instanceof KrameriusMonographDto) {
             return monographProvider.processMonograph((KrameriusMonographDto) krameriusPublicationDto);
+        } else if (krameriusPublicationDto instanceof KrameriusMonographUnitDto) {
+            return monographUnitProvider.processMonographUnit((KrameriusMonographUnitDto) krameriusPublicationDto);
         } else if (krameriusPublicationDto instanceof KrameriusPeriodicalDto) {
             throw new UnsupportedOperationException("Periodicals not supported yet");
 //            return processPeriodical((KrameriusPeriodicalDto) krameriusPublicationDto);

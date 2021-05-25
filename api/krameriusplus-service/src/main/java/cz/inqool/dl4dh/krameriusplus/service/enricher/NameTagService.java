@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Norbert Bodnar
@@ -45,13 +46,13 @@ public class NameTagService {
             return null;
         }
 
-        StringBuilder data = new StringBuilder();
-        for (Token token : tokens) {
-            data.append(token.getContent()).append(System.lineSeparator());
-        }
+//        StringBuilder data = new StringBuilder();
+//        for (Token token : tokens) {
+//            data.append(token.getContent()).append(System.lineSeparator());
+//        }
 
         //TODO: test this
-//        String content = tokens.stream().map(Token::getContent).collect(Collectors.joining(System.lineSeparator()));
+        String data = tokens.stream().map(Token::getContent).collect(Collectors.joining(System.lineSeparator()));
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("data", data);

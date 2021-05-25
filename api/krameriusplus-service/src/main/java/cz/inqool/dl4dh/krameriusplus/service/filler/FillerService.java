@@ -1,12 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.EnrichmentTaskRepository;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
+import cz.inqool.dl4dh.krameriusplus.dto.KrameriusPublicationDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographDto;
+import cz.inqool.dl4dh.krameriusplus.dto.monograph.KrameriusMonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.EnricherService;
 import cz.inqool.dl4dh.krameriusplus.service.filler.kramerius.KrameriusDataProvider;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
@@ -68,6 +68,9 @@ public class FillerService {
                 case MONOGRAPH:
                     processMonograph((KrameriusMonographDto) publicationDto);
                     break;
+                case MONOGRAPH_UNIT:
+                    processMonographUnit((KrameriusMonographUnitDto) publicationDto);
+                    break;
                 case PERIODICAL:
                     throw new UnsupportedOperationException("Not implemented yet");
                 default:
@@ -113,5 +116,21 @@ public class FillerService {
             }
         }
         log.info("Enrichment of " + monograph.getTitle() + " finished");
+    }
+
+    private void processMonographUnit(KrameriusMonographUnitDto monographUnitDto) {
+        //todo: divide into enriching and storing list of pages separately(so in case of monographunits thousands of
+        // pages are not stored in memory)
+        MonographUnit monographUnit = monographUnitDto.toEntity();
+        publicationService.save(monographUnit);
+
+        EnrichmentTask task = SchedulerService.getTask(monographUnitDto.getPid());
+
+        log.info("Enriching monographUnit: PID=" + monographUnit.getPid() + ", " + monographUnit.getTitle());
+
+        monographUnit.setPages(enricherService.enrichPages(monographUnitDto.getPages(), task));
+        publicationService.save(monographUnit.getPages());
+
+        log.info("Enrichment of " + monographUnit.getTitle() + " finished");
     }
 }
