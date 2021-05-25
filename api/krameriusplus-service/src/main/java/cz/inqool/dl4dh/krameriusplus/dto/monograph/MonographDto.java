@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class MonographDto extends PublicationDto {
+public class MonographDto extends PublicationDto<Monograph> {
 
     private List<PageDto> pages;
 

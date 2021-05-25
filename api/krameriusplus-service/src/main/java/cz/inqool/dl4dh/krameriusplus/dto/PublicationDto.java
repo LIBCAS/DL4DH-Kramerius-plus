@@ -26,7 +26,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = PeriodicalVolumeDto.class, name = "periodicalvolume"),
         @JsonSubTypes.Type(value = PeriodicalItemDto.class, name = "periodicalitem")
 })
-public abstract class PublicationDto implements KrameriusModelAware {
+public abstract class PublicationDto<T extends Publication> implements KrameriusModelAware, KrameriusDto<T> {
 
     protected String pid;
 
@@ -36,7 +36,7 @@ public abstract class PublicationDto implements KrameriusModelAware {
 
     protected String policy;
 
-    protected <T extends Publication> T toEntity(T entity) {
+    protected T toEntity(T entity) {
         entity.setPid(pid);
         entity.setTitle(title);
         entity.setCollections(collections);

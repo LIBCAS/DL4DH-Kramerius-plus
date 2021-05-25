@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.dto.periodical;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODIC
  */
 @Getter
 @Setter
-public class PeriodicalItemDto extends PublicationDto {
+public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> {
 
     private String date;
 
@@ -35,4 +36,9 @@ public class PeriodicalItemDto extends PublicationDto {
     }
 
     private final KrameriusModel model = PERIODICAL_ITEM;
+
+    @Override
+    public PeriodicalItem toEntity() {
+        return null;
+    }
 }

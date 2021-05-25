@@ -20,7 +20,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
  */
 @Getter
 @Setter
-public class MonographUnitDto extends PublicationDto implements KrameriusModelAware {
+public class MonographUnitDto extends PublicationDto<MonographUnit> implements KrameriusModelAware {
 
     private String partNumber;
 
@@ -44,6 +44,7 @@ public class MonographUnitDto extends PublicationDto implements KrameriusModelAw
         return MONOGRAPH_UNIT;
     }
 
+    @Override
     public MonographUnit toEntity() {
         MonographUnit monographUnit = super.toEntity(new MonographUnit());
         monographUnit.setPartNumber(partNumber);
