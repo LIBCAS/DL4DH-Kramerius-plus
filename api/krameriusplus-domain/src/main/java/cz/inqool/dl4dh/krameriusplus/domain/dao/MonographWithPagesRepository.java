@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.dao;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @author Norbert Bodnar
  */
 @Repository
-public interface MonographRepository extends MongoRepository<Monograph, String> {
+public interface MonographWithPagesRepository extends MongoRepository<MonographWithPages, String> {
 }

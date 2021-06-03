@@ -1,16 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographWithPagesRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographUnitRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.PageRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.PublicationRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.Periodical;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,26 +21,25 @@ import java.util.List;
 @Service
 public class PublicationService {
 
-    private final PublicationRepository publicationRepository;
-
-    private final MonographRepository monographRepository;
+    private final MonographWithPagesRepository monographWithPagesRepository;
 
     private final MonographUnitRepository monographUnitRepository;
 
     private final PageRepository pageRepository;
 
     @Autowired
-    public PublicationService(PublicationRepository publicationRepository, MonographRepository monographRepository, MonographUnitRepository monographUnitRepository,
+    public PublicationService(MonographWithPagesRepository monographWithPagesRepository, MonographUnitRepository monographUnitRepository,
                               PageRepository pageRepository) {
-        this.publicationRepository = publicationRepository;
-        this.monographRepository = monographRepository;
+        this.monographWithPagesRepository = monographWithPagesRepository;
         this.monographUnitRepository = monographUnitRepository;
         this.pageRepository = pageRepository;
     }
 
     public Publication find(String publicationId) {
-        return publicationRepository.findById(publicationId)
-                .orElseThrow(() -> new IllegalArgumentException("Publication with pid=" + publicationId + " not found."));
+        //todo: napisat medzivrstvu
+//        return publicationRepository.findById(publicationId)
+//                .orElseThrow(() -> new IllegalArgumentException("Publication with pid=" + publicationId + " not found."));
+        return null;
     }
 
     public Publication findWithChildren(String publicationId) {
@@ -59,7 +56,7 @@ public class PublicationService {
 
     @Transactional
     public void save(Monograph monograph) {
-        monographRepository.save(monograph);
+//        monographWithPagesRepository.save(monograph);
     }
 
     @Transactional
@@ -73,7 +70,7 @@ public class PublicationService {
     }
 
     public Monograph findMonograph(String pid) {
-        return monographRepository.findById(pid)
+        return monographWithPagesRepository.findById(pid)
                 .orElseThrow(() -> new IllegalArgumentException("Monograph with pid=" + pid + " not found."));
     }
 
