@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,13 +21,15 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PAGE;
 @Getter
 @Setter
 @Document(collection = "pages")
-public class Page extends DomainObject {
+public class Page extends DomainObject implements ParentAware {
 
     /**
      * Id of parent object. Multiple object types can contain pages, for example monographs, monographUnits or
      * periodicalItems
      */
     private String parentId;
+
+    private String rootId;
 
     private List<Token> tokens = new ArrayList<>();
 

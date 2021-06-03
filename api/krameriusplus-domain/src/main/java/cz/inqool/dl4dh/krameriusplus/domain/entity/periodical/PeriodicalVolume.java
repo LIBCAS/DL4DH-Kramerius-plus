@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.periodical;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
@@ -22,7 +23,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODIC
  */
 @Getter
 @Setter
-public class PeriodicalVolume extends Publication {
+public class PeriodicalVolume extends Publication implements ParentAware {
 
     private String volumeNumber;
 

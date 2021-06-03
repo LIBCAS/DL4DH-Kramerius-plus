@@ -5,20 +5,16 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
-import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
+import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.EnricherService;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusProvider;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -76,7 +72,7 @@ public class FillerService {
 
         enrichmentTaskRepository.save(task);
 
-        SchedulerService.removeTask(page.getPid());
+        SchedulerService.removeTask(page.getId());
     }
 
     private void enrichPublication(Publication publication, EnrichmentTask task) {
@@ -90,7 +86,7 @@ public class FillerService {
 
         enrichmentTaskRepository.save(task);
 
-        SchedulerService.removeTask(publication.getPid());
+        SchedulerService.removeTask(publication.getId());
     }
 
 //    @Async

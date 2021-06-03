@@ -40,7 +40,7 @@ public class EnricherService {
             task.setProcessingPage(done);
 
             try {
-                page.setTokens(tokenizerService.tokenize(streamProvider.getStreamAsString(page.getPid(), TEXT_OCR)));
+                page.setTokens(tokenizerService.tokenize(streamProvider.getStreamAsString(page.getId(), TEXT_OCR)));
                 page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
             } catch (Exception e) {
                 log.error("Error enriching data with external services", e);

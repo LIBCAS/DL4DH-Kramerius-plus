@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.dto.monograph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
@@ -25,6 +26,9 @@ public class MonographUnitDto extends PublicationDto<MonographUnit> {
 
     private String donator;
 
+    /**
+     * Is ignored
+     */
     @JsonProperty("root_pid")
     private String rootPid;
 
@@ -45,7 +49,6 @@ public class MonographUnitDto extends PublicationDto<MonographUnit> {
         monographUnit.setPartNumber(partNumber);
         monographUnit.setPartTitle(partTitle);
         monographUnit.setDonator(donator);
-        monographUnit.setParentId(rootPid);
 
         return monographUnit;
     }

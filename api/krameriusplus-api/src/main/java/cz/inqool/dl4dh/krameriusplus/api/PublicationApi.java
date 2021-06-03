@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
-import cz.inqool.dl4dh.krameriusplus.service.filler.PublicationService;
+import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
