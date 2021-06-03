@@ -42,7 +42,7 @@ public class SchedulerService {
         if (enrichmentTasks.stream().anyMatch(task -> task.getState() == EnrichmentTask.State.SUCCESSFUL)) {
             if (!overrideExisting) {
                 log.error("Publication with PID: " + rootPublicationId + " was already enriched, to enrich again," +
-                        " run with param overrideExisting=true");
+                        " run with param override=true");
                 return null;
             } else {
                 log.warn("Publication with PID: " + rootPublicationId + " was already enriched, overriding");
@@ -54,7 +54,7 @@ public class SchedulerService {
 
         tasks.put(rootPublicationId, task);
 
-        fillerService.enrichPublicationAsync(rootPublicationId, task);
+        fillerService.enrichPublication(rootPublicationId, task);
 
         return task;
     }
@@ -69,7 +69,7 @@ public class SchedulerService {
         return result == null ? new EnrichmentTask("empty task") : result;
     }
 
-    public static void removeTask(String pid) {
-        tasks.remove(pid);
+    public static void removeTask(String publicationId) {
+        tasks.remove(publicationId);
     }
 }

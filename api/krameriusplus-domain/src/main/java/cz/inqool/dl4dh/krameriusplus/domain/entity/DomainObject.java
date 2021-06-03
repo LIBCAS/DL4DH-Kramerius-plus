@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity;
 
+import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,4 +19,6 @@ public abstract class DomainObject {
 
     @Id
     private String pid;
+
+    abstract public KrameriusModel getModel();
 }

@@ -1,8 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.NameTagMetadata;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.NamedEntity;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NameTagMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,11 +15,13 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Norbert Bodnar
  */
 @Service
+@Slf4j
 public class NameTagService {
 
     private final RestTemplate restTemplate;
@@ -45,13 +48,13 @@ public class NameTagService {
             return null;
         }
 
-        StringBuilder data = new StringBuilder();
-        for (Token token : tokens) {
-            data.append(token.getContent()).append(System.lineSeparator());
-        }
+//        StringBuilder data = new StringBuilder();
+//        for (Token token : tokens) {
+//            data.append(token.getContent()).append(System.lineSeparator());
+//        }
 
         //TODO: test this
-//        String content = tokens.stream().map(Token::getContent).collect(Collectors.joining(System.lineSeparator()));
+        String data = tokens.stream().map(Token::getContent).collect(Collectors.joining(System.lineSeparator()));
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("data", data);
@@ -130,7 +133,11 @@ public class NameTagService {
             } else {
                 // clear out namedEntityMap
                 for (NamedEntity namedEntity : namedEntityMap.values()) {
-                    nameTagMetadata.add(namedEntity);
+                    try {
+                        nameTagMetadata.add(namedEntity);
+                    } catch (IllegalArgumentException e) {
+                        log.error("Cannot construct NamedEntityType enum from value: " + namedEntity.getEntityType());
+                    }
                 }
 
                 namedEntityMap = new HashMap<>();

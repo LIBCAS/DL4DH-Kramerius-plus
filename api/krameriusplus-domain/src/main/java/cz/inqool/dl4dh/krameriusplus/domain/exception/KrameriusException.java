@@ -21,7 +21,8 @@ public class KrameriusException extends GeneralException implements CodedExcepti
     }
 
     public enum ErrorCode implements ExceptionCodeEnum {
-        NO_CHILDREN,
+        MISSING_OBJECT,
+        MISSING_CHILDREN,
         INVALID_MODEL,
         EXTERNAL_API_ERROR
     }

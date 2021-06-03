@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.domain.entity;
+package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
 import lombok.Getter;
 import lombok.Setter;

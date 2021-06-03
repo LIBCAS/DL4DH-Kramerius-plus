@@ -12,6 +12,10 @@ public enum KrameriusModel {
     MONOGRAPH_UNIT,
     @JsonProperty("periodical")
     PERIODICAL,
+    @JsonProperty("periodicalvolume")
+    PERIODICAL_VOLUME,
+    @JsonProperty("periodicalitem")
+    PERIODICAL_ITEM,
     @JsonProperty("page")
     PAGE,
     @JsonProperty("internalpart")

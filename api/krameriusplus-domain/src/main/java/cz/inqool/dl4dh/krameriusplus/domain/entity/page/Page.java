@@ -1,13 +1,16 @@
-package cz.inqool.dl4dh.krameriusplus.domain.entity;
+package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PAGE;
 
 /**
  * Object representing a page.
@@ -19,8 +22,11 @@ import java.util.List;
 @Document(collection = "pages")
 public class Page extends DomainObject {
 
-    @Indexed(name = "root_publication_index")
-    private String rootId;
+    /**
+     * Id of parent object. Multiple object types can contain pages, for example monographs, monographUnits or
+     * periodicalItems
+     */
+    private String parentId;
 
     private List<Token> tokens = new ArrayList<>();
 
@@ -45,4 +51,9 @@ public class Page extends DomainObject {
     private int pageIndex;
 
     private NameTagMetadata nameTagMetadata;
+
+    @Override
+    public KrameriusModel getModel() {
+        return PAGE;
+    }
 }

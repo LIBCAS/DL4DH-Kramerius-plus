@@ -1,13 +1,13 @@
-package cz.inqool.dl4dh.krameriusplus.domain.dto;
+package cz.inqool.dl4dh.krameriusplus.dto.monograph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.MonographUnit;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
+import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAPH_UNIT;
@@ -17,7 +17,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
  */
 @Getter
 @Setter
-public class KrameriusMonographUnitDto extends KrameriusPublicationDto implements KrameriusModelAware {
+public class MonographUnitDto extends PublicationDto<MonographUnit> {
 
     private String partNumber;
 
@@ -27,8 +27,6 @@ public class KrameriusMonographUnitDto extends KrameriusPublicationDto implement
 
     @JsonProperty("root_pid")
     private String rootPid;
-
-    private List<KrameriusPageDto> pages = new ArrayList<>();
 
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
@@ -41,13 +39,19 @@ public class KrameriusMonographUnitDto extends KrameriusPublicationDto implement
         return MONOGRAPH_UNIT;
     }
 
+    @Override
     public MonographUnit toEntity() {
         MonographUnit monographUnit = super.toEntity(new MonographUnit());
         monographUnit.setPartNumber(partNumber);
         monographUnit.setPartTitle(partTitle);
         monographUnit.setDonator(donator);
-        monographUnit.setRootPid(rootPid);
+        monographUnit.setParentId(rootPid);
 
         return monographUnit;
+    }
+
+    @Override
+    public MonographUnit accept(PublicationAssemblerVisitor visitor) {
+        return visitor.assemble(this);
     }
 }

@@ -12,6 +12,7 @@ spring:
 logging:
   level:
     cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService: OFF
+    cz.inqool.dl4dh.krameriusplus.service.enricher.NameTagService: OFF
 
 springdoc:
   swagger-ui.path: /swagger
@@ -19,6 +20,3 @@ springdoc:
 kramerius:
 #  api: https://kramerius5.nkp.cz
   api: https://kramerius.mzk.cz
-
-solr:
-  enabled: false

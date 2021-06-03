@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.api;
 
 import cz.inqool.dl4dh.krameriusplus.service.filler.FillerService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ public class FillerApi {
     )
     @PostMapping(value = "/{pid}")
     public void enrichPublication(@PathVariable("pid") String pid) {
-        fillerService.enrichPublication(pid);
-//        throw new NotImplementedException("Logging to Tasks fails if called synchronously");
+//        fillerService.enrichPublication(pid);
+        throw new NotImplementedException("Logging to Tasks fails if called synchronously");
     }
 }

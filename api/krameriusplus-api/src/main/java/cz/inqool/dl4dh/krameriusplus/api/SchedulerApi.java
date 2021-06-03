@@ -34,7 +34,7 @@ public class SchedulerApi {
                     "The enriching process is asynchronous and this method returns a running task without waiting.")
     @PostMapping(value = "/schedule/{pid}")
     public EnrichmentTask schedule(@PathVariable("pid") String pid,
-                                   @RequestParam(value = "overrideExisting", defaultValue = "false") boolean overrideExisting) {
+                                   @RequestParam(value = "override", defaultValue = "false") boolean overrideExisting) {
         return schedulerService.schedule(pid, overrideExisting);
     }
 
@@ -43,7 +43,7 @@ public class SchedulerApi {
                     "threads at time. If more publications are in queue, they will be processed after a thread is released. ")
     @PostMapping(value = "/schedule")
     public void scheduleMultiple(@Valid @NotNull @RequestBody ScheduleMultipleDto dto,
-                                 @RequestParam(value = "overrideExisting", defaultValue = "false") boolean overrideExisting) {
+                                 @RequestParam(value = "override", defaultValue = "false") boolean overrideExisting) {
         for (String pid : dto.getPublications()) {
             schedulerService.schedule(pid, overrideExisting);
         }
