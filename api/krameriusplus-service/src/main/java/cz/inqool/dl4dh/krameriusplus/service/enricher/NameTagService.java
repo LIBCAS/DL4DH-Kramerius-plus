@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * @author Norbert Bodnar
  */
 @Service
+@Slf4j
 public class NameTagService {
 
     private final RestTemplate restTemplate;
@@ -131,7 +133,11 @@ public class NameTagService {
             } else {
                 // clear out namedEntityMap
                 for (NamedEntity namedEntity : namedEntityMap.values()) {
-                    nameTagMetadata.add(namedEntity);
+                    try {
+                        nameTagMetadata.add(namedEntity);
+                    } catch (IllegalArgumentException e) {
+                        log.error("Cannot construct NamedEntityType enum from value: " + namedEntity.getEntityType());
+                    }
                 }
 
                 namedEntityMap = new HashMap<>();
