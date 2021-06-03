@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalVolume;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Norbert Bodnar
@@ -25,8 +24,6 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
     private String rootTitle;
 
     private String rootPid;
-
-    private List<PeriodicalItemDto> items;
 
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
@@ -45,11 +42,12 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
         entity.setVolumeNumber(volumeNumber);
         entity.setVolumeYear(volumeYear);
         entity.setParentId(rootPid);
-        entity.setPeriodicalItems(items
-                .stream()
-                .map(PeriodicalItemDto::toEntity)
-                .collect(Collectors.toList()));
 
         return entity;
+    }
+
+    @Override
+    public PeriodicalVolume accept(PublicationAssemblerVisitor visitor) {
+        return visitor.assemble(this);
     }
 }

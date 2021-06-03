@@ -3,14 +3,12 @@ package cz.inqool.dl4dh.krameriusplus.dto.periodical;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
-import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODICAL_ITEM;
 
@@ -31,8 +29,6 @@ public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> {
 
     private String rootTitle;
 
-    private List<PageDto> pages;
-
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
         date = (String) details.get("date");
@@ -49,11 +45,12 @@ public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> {
         entity.setIssueNumber(issueNumber);
         entity.setPartNumber(partNumber);
         entity.setRootId(rootPid);
-        entity.setPages(pages
-                .stream()
-                .map(PageDto::toEntity)
-                .collect(Collectors.toList()));
 
         return entity;
+    }
+
+    @Override
+    public PeriodicalItem accept(PublicationAssemblerVisitor visitor) {
+        return visitor.assemble(this);
     }
 }

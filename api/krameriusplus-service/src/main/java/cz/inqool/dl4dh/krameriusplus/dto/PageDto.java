@@ -1,14 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
-import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,9 +13,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class PageDto implements KrameriusModelAware, KrameriusDto<Page> {
-
-    private String pid;
+public class PageDto extends DigitalObjectDto<Page> {
 
     @JsonProperty("root_pid")
     private String parentId;
@@ -31,7 +26,7 @@ public class PageDto implements KrameriusModelAware, KrameriusDto<Page> {
      */
     private String title;
 
-    private KrameriusModel model;
+    private cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel model;
 
     /**
      * Page number with extracted from details field
@@ -65,8 +60,7 @@ public class PageDto implements KrameriusModelAware, KrameriusDto<Page> {
 
     @Override
     public Page toEntity() {
-        Page page = new Page();
-        page.setPid(pid);
+        Page page = super.toEntity(new Page());
         page.setParentId(parentId);
         page.setPageType(pageType);
         page.setPageNumber(pageNumber);
@@ -75,5 +69,10 @@ public class PageDto implements KrameriusModelAware, KrameriusDto<Page> {
         page.setPageIndex(pageIndex);
 
         return page;
+    }
+
+    @Override
+    public Page accept(PublicationAssemblerVisitor visitor) {
+        return visitor.assemble(this);
     }
 }

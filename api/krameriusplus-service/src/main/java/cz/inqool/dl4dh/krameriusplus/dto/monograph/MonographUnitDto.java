@@ -1,18 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.dto.monograph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusModelAware;
-import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
-import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
+import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAPH_UNIT;
 
@@ -21,7 +17,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
  */
 @Getter
 @Setter
-public class MonographUnitDto extends PublicationDto<MonographUnit> implements KrameriusModelAware {
+public class MonographUnitDto extends PublicationDto<MonographUnit> {
 
     private String partNumber;
 
@@ -31,8 +27,6 @@ public class MonographUnitDto extends PublicationDto<MonographUnit> implements K
 
     @JsonProperty("root_pid")
     private String rootPid;
-
-    private List<PageDto> pages = new ArrayList<>();
 
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
@@ -52,11 +46,12 @@ public class MonographUnitDto extends PublicationDto<MonographUnit> implements K
         monographUnit.setPartTitle(partTitle);
         monographUnit.setDonator(donator);
         monographUnit.setParentId(rootPid);
-        monographUnit.setPages(pages
-                .stream()
-                .map(PageDto::toEntity)
-                .collect(Collectors.toList()));
 
         return monographUnit;
+    }
+
+    @Override
+    public MonographUnit accept(PublicationAssemblerVisitor visitor) {
+        return visitor.assemble(this);
     }
 }
