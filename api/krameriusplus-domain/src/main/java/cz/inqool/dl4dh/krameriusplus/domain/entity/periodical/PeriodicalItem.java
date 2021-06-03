@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODICAL_ITEM;
@@ -29,7 +30,7 @@ public class PeriodicalItem extends Publication {
     private String rootId;
 
     @Transient
-    private List<Page> pages;
+    private List<Page> pages = new ArrayList<>();
 
     @Override
     public KrameriusModel getModel() {

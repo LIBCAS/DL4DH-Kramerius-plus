@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +16,5 @@ import java.util.List;
 public class MonographWithPages extends Monograph {
 
     @Transient
-    private List<Page> pages;
-
+    private List<Page> pages = new ArrayList<>();
 }
