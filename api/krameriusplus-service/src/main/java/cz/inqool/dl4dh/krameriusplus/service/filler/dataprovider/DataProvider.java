@@ -1,15 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
-import cz.inqool.dl4dh.krameriusplus.dto.KrameriusDto;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.dto.DigitalObjectDto;
 
 import java.util.List;
 
 /**
  * @author Norbert Bodnar
  */
-public interface DataProvider<T extends KrameriusDto<?>> {
+public interface DataProvider {
 
-    T getDigitalObject(String objectId);
+    <T extends DigitalObjectDto<?>> T getDigitalObject(String objectId);
 
-    List<T> getDigitalObjectsForParent(String parentId);
+    <T extends DomainObject> List<DigitalObjectDto<T>> getDigitalObjectsForParent(String parentId);
 }

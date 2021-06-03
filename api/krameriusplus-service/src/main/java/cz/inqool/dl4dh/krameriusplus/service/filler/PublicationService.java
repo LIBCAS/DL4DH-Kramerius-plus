@@ -83,21 +83,21 @@ public class PublicationService {
 
     public Monograph findMonographWithPages(String pid, Pageable pageable) {
         Monograph monograph = findMonograph(pid);
-
-        if (pageable != null) {
-            monograph.setPages(pageRepository.findByParentIdOrderByPageIndexAsc(pid, pageable));
-        } else {
-            monograph.setPages(pageRepository.findAllByParentIdOrderByPageIndexAsc(pid));
-        }
-
-        monograph.setMonographUnits(monographUnitRepository.findAllByParentIdOrderByPartNumberAsc(pid));
-        for (MonographUnit monographUnit : monograph.getMonographUnits()) {
-            if (pageable != null) {
-                monographUnit.setPages(pageRepository.findByParentIdOrderByPageIndexAsc(pid, pageable));
-            } else {
-                monographUnit.setPages(pageRepository.findAllByParentIdOrderByPageIndexAsc(pid));
-            }
-        }
+//
+//        if (pageable != null) {
+//            monograph.setPages(pageRepository.findByParentIdOrderByPageIndexAsc(pid, pageable));
+//        } else {
+//            monograph.setPages(pageRepository.findAllByParentIdOrderByPageIndexAsc(pid));
+//        }
+//
+//        monograph.setMonographUnits(monographUnitRepository.findAllByParentIdOrderByPartNumberAsc(pid));
+//        for (MonographUnit monographUnit : monograph.getMonographUnits()) {
+//            if (pageable != null) {
+//                monographUnit.setPages(pageRepository.findByParentIdOrderByPageIndexAsc(pid, pageable));
+//            } else {
+//                monographUnit.setPages(pageRepository.findAllByParentIdOrderByPageIndexAsc(pid));
+//            }
+//        }
 
         return monograph;
     }

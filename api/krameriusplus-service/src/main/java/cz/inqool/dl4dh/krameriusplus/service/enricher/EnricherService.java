@@ -1,14 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.streams.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.streams.StreamProvider.StreamType.TEXT_OCR;
 
 /**
  * @author Norbert Bodnar
@@ -21,38 +22,32 @@ public class EnricherService {
 
     private final NameTagService nameTagService;
 
+    private final StreamProvider streamProvider;
+
     @Autowired
-    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService) {
+    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService, StreamProvider streamProvider) {
         this.tokenizerService = tokenizerService;
         this.nameTagService = nameTagService;
+        this.streamProvider = streamProvider;
     }
 
-    public List<Page> enrichPages(List<PageDto> pageDtos, EnrichmentTask task) {
-        List<Page> result = new ArrayList<>();
-
-        Page page;
+    public void enrichPages(List<Page> pages, EnrichmentTask task) {
         int done = 1;
-        int total = pageDtos.size();
+        int total = pages.size();
         task.setTotalPages(total);
 
-        for (PageDto pageDto : pageDtos) {
+        for (Page page : pages) {
             task.setProcessingPage(done);
 
-            page = pageDto.toEntity();
-
             try {
-                page.setTokens(tokenizerService.tokenize(pageDto.getTextOcr()));
+                page.setTokens(tokenizerService.tokenize(streamProvider.getStreamAsString(page.getPid(), TEXT_OCR)));
                 page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
             } catch (Exception e) {
                 log.error("Error enriching data with external services", e);
             }
 
-            result.add(page);
-
             task.setPercentDone(calculatePercentDone(total, done++));
         }
-
-        return result;
     }
 
     private double calculatePercentDone(int total, int done) {
