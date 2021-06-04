@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.domain;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.MonographWithUnitsRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
@@ -21,9 +20,6 @@ public class PublicationRepositoryTest {
 
     @Autowired
     private PublicationRepository publicationRepository;
-
-    @Autowired
-    private MonographWithUnitsRepository monographWithUnitsRepository;
 
     @Test
     public void testCreate() {

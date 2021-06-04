@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Norbert Bodnar
@@ -43,10 +44,10 @@ public class FillerService {
 
     @Async
     public void enrichPublication(String pid, EnrichmentTask task) {
-        log.info("Downloading publication");
-        DomainObject digitalObject = krameriusProvider.getDigitalObject(pid);
-
         try {
+            log.info("Downloading publication");
+            DomainObject digitalObject = krameriusProvider.getDigitalObject(pid);
+
             if (digitalObject instanceof Publication) {
                 enrichPublication((Publication) digitalObject, task);
             } else if (digitalObject instanceof Page) {
@@ -62,66 +63,37 @@ public class FillerService {
     }
 
     private void enrichSinglePage(Page page, EnrichmentTask task) {
+        log.info("Enriching page with ID: " + page.getId());
         long start = System.currentTimeMillis();
 
         enricherService.enrichPages(Collections.singletonList(page), task);
+        publicationService.save(List.of(page));
 
+        log.info("Saving page: " + page.getId());
         task.setTook(System.currentTimeMillis() - start);
-        task.setFinished(Instant.now());
-        task.setState(EnrichmentTask.State.SUCCESSFUL);
-
-        enrichmentTaskRepository.save(task);
-
-        SchedulerService.removeTask(page.getId());
+        finishTask(task);
     }
 
     private void enrichPublication(Publication publication, EnrichmentTask task) {
+        log.info("Enriching publication: " + publication.getTitle());
         long start = System.currentTimeMillis();
 
         enricherService.enrichPages(publication.getPages(), task);
+        publicationService.save(publication);
 
+        log.info("Saving publication: " + publication.getTitle());
         task.setTook(System.currentTimeMillis() - start);
+        finishTask(task);
+    }
+
+    private void finishTask(EnrichmentTask task) {
+        log.info("Enrichment finished in " + task.getTook());
+
         task.setFinished(Instant.now());
         task.setState(EnrichmentTask.State.SUCCESSFUL);
 
         enrichmentTaskRepository.save(task);
 
-        SchedulerService.removeTask(publication.getId());
+        SchedulerService.removeTask(task.getRootPublicationId());
     }
-
-//    @Async
-//    public void enrichPublicationAsync(String pid, EnrichmentTask task) {
-//        long start = System.currentTimeMillis();
-//
-//        try {
-//            PublicationDto publicationDto = krameriusProvider.getPublication(pid);
-//
-//            switch (publicationDto.getModel()) {
-//                case MONOGRAPH:
-//                    processMonograph((MonographDto) publicationDto);
-//                    break;
-//                case MONOGRAPH_UNIT:
-//                    processMonographUnit((MonographUnitDto) publicationDto);
-//                    break;
-//                case PERIODICAL:
-//                    throw new UnsupportedOperationException("Not implemented yet");
-//                default:
-//                    throw new IllegalStateException("No such model");
-//            }
-//        } catch (Exception e) {
-//            log.error("Task wid PID=" + pid + " failed with error", e);
-//            SchedulerService.getTask(pid).setErrorMessage(e.getMessage());
-//            SchedulerService.getTask(pid).setState(EnrichmentTask.State.FAILED);
-//            return;
-//        }
-//
-//        task.setTook(System.currentTimeMillis() - start);
-//        task.setFinished(Instant.now());
-//        task.setState(EnrichmentTask.State.SUCCESSFUL);
-//        enrichmentTaskRepository.save(task);
-//
-//        SchedulerService.removeTask(pid);
-//    }
-
-
 }

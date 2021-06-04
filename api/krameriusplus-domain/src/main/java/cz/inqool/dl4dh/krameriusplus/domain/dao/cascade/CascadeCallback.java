@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.dao.cascade;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,11 +19,11 @@ import java.util.Collection;
 public class CascadeCallback implements ReflectionUtils.FieldCallback {
 
     private Object source;
-    private MongoOperations mongoOperations;
+    private PublicationRepository publicationRepository;
 
-    public CascadeCallback(final Object source, final MongoOperations mongoOperations) {
+    public CascadeCallback(final Object source, final PublicationRepository publicationRepository) {
         this.source = source;
-        this.setMongoOperations(mongoOperations);
+        this.publicationRepository = publicationRepository;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class CascadeCallback implements ReflectionUtils.FieldCallback {
 
             if (fieldValue != null && isValidCollection(fieldValue)) {
                 Collection<Publication> publications = (Collection<Publication>) fieldValue;
-                getMongoOperations().insertAll(publications);
+                publicationRepository.saveAll(publications);
             }
         }
     }
