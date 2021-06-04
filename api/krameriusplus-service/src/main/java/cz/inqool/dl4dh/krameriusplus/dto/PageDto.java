@@ -1,9 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusPublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -73,7 +72,7 @@ public class PageDto extends DigitalObjectDto<Page> {
     }
 
     @Override
-    public Page accept(PublicationAssemblerVisitor visitor) {
+    public Page accept(KrameriusPublicationAssemblerVisitor visitor) {
         return visitor.assemble(this);
     }
 }

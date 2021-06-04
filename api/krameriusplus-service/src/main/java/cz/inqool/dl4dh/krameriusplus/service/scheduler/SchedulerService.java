@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.scheduler;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.EnrichmentTaskRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.service.filler.FillerService;
 import lombok.Getter;

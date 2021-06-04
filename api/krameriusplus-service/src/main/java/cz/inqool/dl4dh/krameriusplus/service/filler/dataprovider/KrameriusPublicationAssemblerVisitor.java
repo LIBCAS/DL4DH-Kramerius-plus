@@ -16,7 +16,7 @@ import cz.inqool.dl4dh.krameriusplus.dto.periodical.PeriodicalVolumeDto;
 /**
  * @author Norbert Bodnar
  */
-public interface PublicationAssemblerVisitor {
+public interface KrameriusPublicationAssemblerVisitor {
 
     Monograph assemble(MonographDto monograph);
 

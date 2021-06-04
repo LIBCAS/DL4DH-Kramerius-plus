@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * Takes care of providing digital objects from Kramerius based on ID. It downloads the object with given ID with
+ * its full hierarchy of children objects.
+ *
  * @author Norbert Bodnar
  */
 @Service
@@ -13,10 +16,10 @@ public class KrameriusProvider {
 
     private final DataProvider dataProvider;
 
-    private final PublicationAssemblerVisitor assembler;
+    private final KrameriusPublicationAssemblerVisitor assembler;
 
     @Autowired
-    public KrameriusProvider(DataProvider dataProvider, PublicationAssemblerVisitor assembler) {
+    public KrameriusProvider(DataProvider dataProvider, KrameriusPublicationAssemblerVisitor assembler) {
         this.dataProvider = dataProvider;
         this.assembler = assembler;
     }

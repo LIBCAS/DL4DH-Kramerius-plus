@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.dataaccess;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographWithPagesRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographUnitRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.PageRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.MonographWithPagesRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.MonographUnitRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;

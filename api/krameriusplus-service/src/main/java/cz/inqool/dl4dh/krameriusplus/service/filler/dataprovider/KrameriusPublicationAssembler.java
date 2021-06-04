@@ -22,15 +22,17 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
+ * Assembles digital objects with its full hierarchy based on given DTO.
+ *
  * @author Norbert Bodnar
  */
 @Service
-public class PublicationAssembler implements PublicationAssemblerVisitor {
+public class KrameriusPublicationAssembler implements KrameriusPublicationAssemblerVisitor {
 
     private final DataProvider dataProvider;
 
     @Autowired
-    public PublicationAssembler(DataProvider dataProvider) {
+    public KrameriusPublicationAssembler(DataProvider dataProvider) {
         this.dataProvider = dataProvider;
     }
 

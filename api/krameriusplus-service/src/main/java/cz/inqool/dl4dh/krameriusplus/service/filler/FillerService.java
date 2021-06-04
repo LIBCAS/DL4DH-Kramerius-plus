@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.EnrichmentTaskRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
