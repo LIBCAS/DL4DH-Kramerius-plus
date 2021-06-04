@@ -33,7 +33,7 @@ public abstract class DigitalObjectDto<T extends DomainObject> implements Visita
     private String pid;
 
     protected T toEntity(T entity) {
-        entity.setPid(pid);
+        entity.setId(pid);
 
         return entity;
     }

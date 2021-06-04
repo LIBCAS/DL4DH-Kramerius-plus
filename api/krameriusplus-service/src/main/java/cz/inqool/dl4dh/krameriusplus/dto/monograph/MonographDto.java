@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithUnits;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
-import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusPublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,7 +38,7 @@ public class MonographDto extends PublicationDto<Monograph> {
     }
 
     @Override
-    public Monograph accept(PublicationAssemblerVisitor visitor) {
+    public Monograph accept(KrameriusPublicationAssemblerVisitor visitor) {
         return visitor.assemble(this);
     }
 }

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
-import cz.inqool.dl4dh.krameriusplus.service.filler.PublicationService;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,9 +26,9 @@ public class PublicationApi {
 
     @Operation(summary = "Get an enriched publication by PID")
     @GetMapping
-    public Monograph getEnrichedMonograph(@RequestParam(value = "pid") String pid,
-                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                          @RequestParam(value = "pageSize", required = false, defaultValue = "1") int pageSize) {
-        return publicationService.findMonographWithPages(pid, PageRequest.of(page, pageSize));
+    public Publication getEnrichedPublication(@RequestParam(value = "pid") String pid,
+                                            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                            @RequestParam(value = "pageSize", required = false, defaultValue = "1") int pageSize) {
+        return publicationService.findWithPages(pid, PageRequest.of(page, pageSize));
     }
 }

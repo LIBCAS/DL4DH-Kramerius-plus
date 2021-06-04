@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
-import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusPublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,7 +50,7 @@ public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> {
     }
 
     @Override
-    public PeriodicalItem accept(PublicationAssemblerVisitor visitor) {
+    public PeriodicalItem accept(KrameriusPublicationAssemblerVisitor visitor) {
         return visitor.assemble(this);
     }
 }

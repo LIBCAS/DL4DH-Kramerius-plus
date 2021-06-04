@@ -1,11 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.periodical;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.cascade.CascadeSave;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -23,7 +27,8 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODIC
 @Document(collection = "publications")
 public class Periodical extends Publication {
 
-    @Transient
+    @DBRef
+    @CascadeSave
     private List<PeriodicalVolume> periodicalVolumes = new ArrayList<>();
 
     @Override
@@ -42,5 +47,12 @@ public class Periodical extends Publication {
                 .map(PeriodicalVolume::getPages)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addPages(PageRepository pageRepository, Pageable pageable) {
+        for (PeriodicalVolume volume : periodicalVolumes) {
+            volume.addPages(pageRepository, pageable);
+        }
     }
 }

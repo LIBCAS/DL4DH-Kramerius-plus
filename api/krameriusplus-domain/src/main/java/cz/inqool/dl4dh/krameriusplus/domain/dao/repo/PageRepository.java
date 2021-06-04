@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.domain.dao;
+package cz.inqool.dl4dh.krameriusplus.domain.dao.repo;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,5 +15,5 @@ public interface PageRepository extends MongoRepository<Page, String> {
 
     List<Page> findAllByParentIdOrderByPageIndexAsc(String parentId);
 
-    List<Page> findByParentIdOrderByPageIndexAsc(String rootId, Pageable pageable);
+    List<Page> findByParentIdOrderByPageIndexAsc(String parentId, Pageable pageable);
 }

@@ -1,9 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.domain;
 
 import cz.inqool.dl4dh.krameriusplus.DomainApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.MonographRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.PageRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
@@ -24,7 +23,7 @@ public class MongoRepositoryTest {
     private MonographWithPages monograph;
 
     @Autowired
-    private MonographRepository monographRepository;
+    private PublicationRepository publicationRepository;
 
     @Autowired
     private PageRepository pageRepository;
@@ -56,7 +55,7 @@ public class MongoRepositoryTest {
 
         List<Page> pages = new ArrayList<>();
         Page page = new Page();
-        page.setPid("uuid:1_1");
+        page.setId("uuid:1_1");
         page.setTokens(tokens);
         page.setPageNumber("[1a]");
         page.setParentId("uuid:1");
@@ -64,7 +63,7 @@ public class MongoRepositoryTest {
         pages.add(page);
 
         monograph = new MonographWithPages();
-        monograph.setPid("uuid:1");
+        monograph.setId("uuid:1");
         monograph.setTitle("Test monograph");
         monograph.setPolicy("Public");
         monograph.setPages(pages);
@@ -181,7 +180,7 @@ public class MongoRepositoryTest {
             tokens.add(token);
 
             page = new Page();
-            page.setPid(rootId + "_" + i);
+            page.setId(rootId + "_" + i);
             page.setTokens(tokens);
             page.setPageNumber("[" + i + "]");
             page.setParentId(rootId);

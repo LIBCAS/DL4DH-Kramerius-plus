@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.PublicationAssemblerVisitor;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusPublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +16,7 @@ import java.util.Map;
 public class PageDto extends DigitalObjectDto<Page> {
 
     @JsonProperty("root_pid")
-    private String parentId;
+    private String rootId;
 
     //TODO: change to enum?
     private String pageType;
@@ -61,7 +61,7 @@ public class PageDto extends DigitalObjectDto<Page> {
     @Override
     public Page toEntity() {
         Page page = super.toEntity(new Page());
-        page.setParentId(parentId);
+        page.setRootId(rootId);
         page.setPageType(pageType);
         page.setPageNumber(pageNumber);
         page.setTitle(title);
@@ -72,7 +72,7 @@ public class PageDto extends DigitalObjectDto<Page> {
     }
 
     @Override
-    public Page accept(PublicationAssemblerVisitor visitor) {
+    public Page accept(KrameriusPublicationAssemblerVisitor visitor) {
         return visitor.assemble(this);
     }
 }

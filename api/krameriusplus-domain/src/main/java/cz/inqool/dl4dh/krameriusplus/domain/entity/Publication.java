@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Document(collection = "publications")
-public abstract class Publication extends DomainObject {
+public abstract class Publication extends DomainObject implements PageVisitable {
 
     private String title;
 
