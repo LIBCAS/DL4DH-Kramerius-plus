@@ -18,7 +18,7 @@ import org.springframework.data.annotation.Id;
 public abstract class DomainObject {
 
     @Id
-    private String id;
+    protected String id;
 
     abstract public KrameriusModel getModel();
 }
