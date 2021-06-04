@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,21 +40,25 @@ public class LinguisticMetadata {
     @Field("m")
     private String misc;
 
+    @JsonIgnore
     // if UPosTag == (NOUN or ADJ), it returns the CASE extracted from feats field, otherwise returns null
     public String getCase() {
         return extractAttribute("Case", "NOUN", "ADJ");
     }
 
+    @JsonIgnore
     // if UPosTag == (NOUN or ADJ), it returns the GENDER extracted from feats field, otherwise returns null
     public String getGender() {
         return extractAttribute("Gender", "NOUN", "ADJ");
     }
 
+    @JsonIgnore
     // if UPosTag == (NOUN or ADJ or VERB), it returns the NUMBER extracted from feats field, otherwise returns null
     public String getNumber() {
         return extractAttribute("Number", "NOUN", "ADJ", "VERB");
     }
 
+    @JsonIgnore
     // if UPosTag == VERB, it returns the PERSON extracted from feats field, otherwise returns null
     public String getPerson() {
         return extractAttribute("Person", "VERB");
