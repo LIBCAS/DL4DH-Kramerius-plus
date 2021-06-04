@@ -1,7 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.domain.entity;
+package cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -15,7 +14,7 @@ import java.time.Instant;
  */
 @Getter
 @Setter
-@Document("enrichment_task")
+@Document("tasks")
 public class EnrichmentTask {
 
     @Id

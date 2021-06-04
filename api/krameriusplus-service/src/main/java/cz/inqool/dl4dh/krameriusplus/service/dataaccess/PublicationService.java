@@ -23,6 +23,8 @@ public class PublicationService {
 
     private final PageRepository pageRepository;
 
+    public static final PageRequest ALL_PAGES = PageRequest.of(Integer.MAX_VALUE, Integer.MAX_VALUE);
+
     private final int DEFAULT_PAGE_SIZE = 10;
 
     private final int DEFAULT_PAGE_NUMBER = 1;
