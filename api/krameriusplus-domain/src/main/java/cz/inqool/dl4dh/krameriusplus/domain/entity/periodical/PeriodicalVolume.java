@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.periodical;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.cascade.CascadeSave;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
@@ -37,6 +38,7 @@ public class PeriodicalVolume extends Publication implements ParentAware {
     private String parentId;
 
     @DBRef
+    @CascadeSave
     private List<PeriodicalItem> periodicalItems = new ArrayList<>();
 
     @Override

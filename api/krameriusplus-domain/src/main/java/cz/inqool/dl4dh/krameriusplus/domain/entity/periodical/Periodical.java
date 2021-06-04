@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.periodical;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.cascade.CascadeSave;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
@@ -25,6 +26,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODIC
 public class Periodical extends Publication {
 
     @DBRef
+    @CascadeSave
     private List<PeriodicalVolume> periodicalVolumes = new ArrayList<>();
 
     @Override
