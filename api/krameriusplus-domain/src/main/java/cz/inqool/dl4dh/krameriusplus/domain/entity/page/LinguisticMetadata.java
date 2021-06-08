@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,9 +24,11 @@ public class LinguisticMetadata {
     private String lemma;
 
     @Field("u")
+    @JsonProperty("uPosTag")
     private String uPosTag;
 
     @Field("x")
+    @JsonProperty("xPosTag")
     private String xPosTag;
 
     @Field("f")
