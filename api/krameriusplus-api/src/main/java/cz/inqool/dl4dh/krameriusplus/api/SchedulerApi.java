@@ -1,11 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.dto.ScheduleMultipleDto;
 import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
