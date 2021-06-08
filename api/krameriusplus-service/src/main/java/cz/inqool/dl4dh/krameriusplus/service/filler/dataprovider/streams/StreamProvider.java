@@ -21,9 +21,19 @@ public class StreamProvider {
         this.webClient = WebClient.create(krameriusApi + "/search/api/v5.0/item");
     }
 
-    public String getStreamAsString(String pageId, StreamType streamType) {
+    public String getTextOcr(String pageId) {
+        String textOcr = getStreamAsString(pageId, StreamType.TEXT_OCR);
+
+        if (textOcr != null) {
+            textOcr = textOcr.replaceAll("-\n", "").replaceAll("\n", " ");
+        }
+
+        return textOcr;
+    }
+
+    public String getStreamAsString(String digitalObjectId, StreamType streamType) {
         return webClient.get()
-                .uri("/{pageId}/streams/{streamId}", pageId, streamType.getStreamId())
+                .uri("/{digitalObjectId}/streams/{streamId}", digitalObjectId, streamType.getStreamId())
                 .acceptCharset(StandardCharsets.UTF_8)
                 .retrieve()
                 .bodyToMono(String.class)
