@@ -8,4 +8,8 @@ package cz.inqool.dl4dh.krameriusplus.domain.entity;
 public interface ParentAware {
 
     void setParentId(String id);
+
+    int getIndex();
+
+    void setIndex(int index);
 }

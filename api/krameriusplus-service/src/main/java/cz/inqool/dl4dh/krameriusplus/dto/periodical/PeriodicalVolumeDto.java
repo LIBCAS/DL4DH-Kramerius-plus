@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.dto.periodical;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalVolume;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
+public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> implements ParentAware {
 
     private String volumeNumber;
 
@@ -24,6 +25,10 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
     private String rootTitle;
 
     private String rootPid;
+
+    private String parentId;
+
+    private int index;
 
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
@@ -41,7 +46,8 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> {
         PeriodicalVolume entity = super.toEntity(new PeriodicalVolume());
         entity.setVolumeNumber(volumeNumber);
         entity.setVolumeYear(volumeYear);
-        entity.setParentId(rootPid);
+        entity.setParentId(parentId);
+        entity.setIndex(index);
 
         return entity;
     }

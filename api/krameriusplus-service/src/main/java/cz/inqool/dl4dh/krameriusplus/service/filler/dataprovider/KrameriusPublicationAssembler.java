@@ -38,7 +38,7 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
 
     @Override
     public Monograph assemble(MonographDto monographDto) {
-        List<DigitalObjectDto<DomainObject>> children = dataProvider.getDigitalObjectsForParent(monographDto.getPid());
+        List<DigitalObjectDto<DomainObject>> children = getChildren(monographDto.getPid());
 
         // children should never be empty or null;
         DigitalObjectDto<? extends DomainObject> firstChild = children.get(0);
@@ -60,7 +60,6 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         MonographUnit monographUnit;
         for (DigitalObjectDto<DomainObject> unitDto : children) {
             monographUnit = (MonographUnit) unitDto.accept(this);
-            monographUnit.setParentId(monographWithUnits.getId());
             monographWithUnits.getMonographUnits().add(monographUnit);
         }
 
@@ -73,7 +72,6 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         Page page;
         for (DigitalObjectDto<DomainObject> pageDto : children) {
             page = (Page) pageDto.accept(this);
-            page.setParentId(monographWithPages.getId());
             monographWithPages.getPages().add(page);
         }
 
@@ -89,7 +87,6 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         Page page;
         for (DigitalObjectDto<Page> pageDto : children) {
             page = pageDto.accept(this);
-            page.setParentId(monographUnit.getId());
             monographUnit.getPages().add(page);
         }
 
@@ -105,7 +102,6 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         PeriodicalVolume periodicalVolume;
         for (DigitalObjectDto<PeriodicalVolume> periodicalVolumeDto : children) {
             periodicalVolume = periodicalVolumeDto.accept(this);
-            periodicalVolume.setParentId(periodical.getId());
             periodical.getPeriodicalVolumes().add(periodicalVolume);
         }
 
@@ -121,7 +117,6 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         PeriodicalItem periodicalItem;
         for (DigitalObjectDto<PeriodicalItem> periodicalItemDto : children) {
             periodicalItem = periodicalItemDto.accept(this);
-            periodicalItem.setParentId(periodicalVolume.getId());
             periodicalVolume.getPeriodicalItems().add(periodicalItem);
         }
 
@@ -137,7 +132,6 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         Page page;
         for (DigitalObjectDto<Page> pageDto : children) {
             page = pageDto.accept(this);
-            page.setParentId(periodicalItem.getId());
             periodicalItem.getPages().add(page);
         }
 

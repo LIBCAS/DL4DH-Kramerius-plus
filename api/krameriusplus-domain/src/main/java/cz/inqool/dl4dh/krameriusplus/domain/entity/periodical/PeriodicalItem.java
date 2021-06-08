@@ -32,6 +32,8 @@ public class PeriodicalItem extends Publication implements ParentAware {
 
     private String rootId;
 
+    private int index;
+
     @Transient
     private List<Page> pages = new ArrayList<>();
 
@@ -42,6 +44,6 @@ public class PeriodicalItem extends Publication implements ParentAware {
 
     @Override
     public void addPages(PageRepository pageRepository, Pageable pageable) {
-        pages = pageRepository.findByParentIdOrderByPageIndexAsc(id, pageable);
+        pages = pageRepository.findByParentIdOrderByIndexAsc(id, pageable);
     }
 }

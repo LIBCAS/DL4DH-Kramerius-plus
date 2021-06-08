@@ -22,6 +22,6 @@ public class MonographWithPages extends Monograph {
 
     @Override
     public void addPages(PageRepository pageRepository, Pageable pageable) {
-        pages = pageRepository.findByParentIdOrderByPageIndexAsc(id, pageable);
+        pages = pageRepository.findByParentIdOrderByIndexAsc(id, pageable);
     }
 }

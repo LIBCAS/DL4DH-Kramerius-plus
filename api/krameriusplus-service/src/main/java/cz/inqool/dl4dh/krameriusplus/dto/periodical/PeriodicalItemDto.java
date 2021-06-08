@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.dto.periodical;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
@@ -17,13 +18,17 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODIC
  */
 @Getter
 @Setter
-public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> {
+public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> implements ParentAware {
 
     private String date;
 
     private String issueNumber;
 
     private String partNumber;
+
+    private String parentId;
+
+    private int index;
 
     private String rootPid;
 
@@ -45,6 +50,8 @@ public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> {
         entity.setIssueNumber(issueNumber);
         entity.setPartNumber(partNumber);
         entity.setRootId(rootPid);
+        entity.setParentId(parentId);
+        entity.setIndex(index);
 
         return entity;
     }

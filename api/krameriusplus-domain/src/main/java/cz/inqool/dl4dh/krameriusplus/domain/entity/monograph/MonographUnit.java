@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +32,8 @@ public class MonographUnit extends Publication implements ParentAware {
 
     private String parentId;
 
+    private int index;
+
     @Transient
     private List<Page> pages = new ArrayList<>();
 
@@ -43,6 +44,6 @@ public class MonographUnit extends Publication implements ParentAware {
 
     @Override
     public void addPages(PageRepository pageRepository, Pageable pageable) {
-        pages = pageRepository.findByParentIdOrderByPageIndexAsc(id, pageable);
+        pages = pageRepository.findByParentIdOrderByIndexAsc(id, pageable);
     }
 }

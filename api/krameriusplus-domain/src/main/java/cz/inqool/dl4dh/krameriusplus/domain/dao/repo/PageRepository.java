@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface PageRepository extends MongoRepository<Page, String> {
 
-    List<Page> findAllByParentIdOrderByPageIndexAsc(String parentId);
+    List<Page> findAllByParentIdOrderByIndexAsc(String parentId);
 
-    List<Page> findByParentIdOrderByPageIndexAsc(String parentId, Pageable pageable);
+    List<Page> findByParentIdOrderByIndexAsc(String parentId, Pageable pageable);
 }

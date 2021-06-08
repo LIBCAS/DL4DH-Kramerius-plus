@@ -1,7 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusPublicationAssemblerVisitor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +15,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class PageDto extends DigitalObjectDto<Page> {
+public class PageDto extends DigitalObjectDto<Page> implements ParentAware {
 
     @JsonProperty("root_pid")
     private String rootId;
@@ -21,12 +23,14 @@ public class PageDto extends DigitalObjectDto<Page> {
     //TODO: change to enum?
     private String pageType;
 
+    private String parentId;
+
     /**
      * Usually page number
      */
     private String title;
 
-    private cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel model;
+    private KrameriusModel model;
 
     /**
      * Page number with extracted from details field
@@ -36,7 +40,7 @@ public class PageDto extends DigitalObjectDto<Page> {
     /**
      * Integer representation of page number (removed every non-numeric character from pageNumber)
      */
-    private int pageIndex;
+    private int index;
 
     //TODO: change to enum?
     private String policy;
@@ -47,15 +51,6 @@ public class PageDto extends DigitalObjectDto<Page> {
     public void unpackDetails(Map<String, Object> details) {
         pageType = (String) details.get("type");
         pageNumber = ((String) details.get("pagenumber")).strip();
-        try {
-            pageIndex = RomanToNumber.romanToDecimal(pageNumber.replaceAll("[^IVXLCDM]", ""));
-        } catch (IllegalArgumentException e) {
-            try {
-                pageIndex = Integer.parseInt(pageNumber.replaceAll("[^0-9]", ""));
-            } catch (Exception ex) {
-                // do nothing
-            }
-        }
     }
 
     @Override
@@ -66,7 +61,8 @@ public class PageDto extends DigitalObjectDto<Page> {
         page.setPageNumber(pageNumber);
         page.setTitle(title);
         page.setPolicy(policy);
-        page.setPageIndex(pageIndex);
+        page.setIndex(index);
+        page.setParentId(parentId);
 
         return page;
     }

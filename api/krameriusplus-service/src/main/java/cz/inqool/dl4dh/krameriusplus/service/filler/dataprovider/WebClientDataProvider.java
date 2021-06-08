@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.dto.DigitalObjectDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,11 +40,25 @@ public class WebClientDataProvider implements DataProvider {
 
     @Override
     public <T extends DomainObject> List<DigitalObjectDto<T>> getDigitalObjectsForParent(String parentId) {
-        return webClient.get()
+        var result = webClient.get()
                 .uri("/{parentId}/children", parentId)
                 .acceptCharset(StandardCharsets.UTF_8)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<DigitalObjectDto<T>>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<DigitalObjectDto<T>>>() {
+                })
                 .block();
+
+        int index = 0;
+        if (result != null) {
+            for (DigitalObjectDto<T> child : result) {
+                if (child instanceof ParentAware) {
+                    ParentAware parentAwareChild = (ParentAware) child;
+                    parentAwareChild.setParentId(parentId);
+                    parentAwareChild.setIndex(index++);
+                }
+            }
+        }
+
+        return result;
     }
 }
