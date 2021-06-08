@@ -14,12 +14,16 @@ public enum NamedEntityType {
     NUMBER_EXPRESSIONS('n'),
     ARTIFACT_NAMES('o'),
     PERSONAL_NAMES('p'),
-    TIME_EXPRESSIONS('t');
+    TIME_EXPRESSIONS('t'),
+    COMPLEX_PERSON_NAMES('P'),
+    COMPLEX_TIME_EXPRESSION('T'),
+    COMPLEX_ADDRESS_EXPRESSION('A'),
+    COMPLEX_BIBLIO_EXPRESSION('C');
 
     private final char typeSymbol;
 
-    NamedEntityType(char c) {
-        this.typeSymbol = c;
+    NamedEntityType(char ch) {
+        this.typeSymbol = ch;
     }
 
     public static NamedEntityType fromString(String stringValue) {
@@ -27,9 +31,7 @@ public enum NamedEntityType {
             throw new IllegalArgumentException("Missing argument value");
         }
 
-        String entityType = stringValue.toLowerCase();
-
-        char firstChar = entityType.charAt(0);
+        char firstChar = stringValue.charAt(0);
 
         for (NamedEntityType namedEntityType : NamedEntityType.values()) {
             if (namedEntityType.getTypeSymbol() == firstChar) {

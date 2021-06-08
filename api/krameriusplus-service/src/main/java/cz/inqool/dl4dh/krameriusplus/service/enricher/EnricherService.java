@@ -40,7 +40,7 @@ public class EnricherService {
             task.setProcessingPage(done);
 
             try {
-                String pageContent = streamProvider.getStreamAsString(page.getId(), TEXT_OCR);
+                String pageContent = streamProvider.getTextOcr(page.getId());
                 page.setTokens(tokenizerService.tokenize(pageContent));
                 page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
             } catch (Exception e) {
