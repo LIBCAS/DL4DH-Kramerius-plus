@@ -40,7 +40,8 @@ public class EnricherService {
             task.setProcessingPage(done);
 
             try {
-                page.setTokens(tokenizerService.tokenize(streamProvider.getStreamAsString(page.getId(), TEXT_OCR)));
+                String pageContent = streamProvider.getStreamAsString(page.getId(), TEXT_OCR);
+                page.setTokens(tokenizerService.tokenize(pageContent));
                 page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
             } catch (Exception e) {
                 log.error("Error enriching data with external services", e);
@@ -50,6 +51,8 @@ public class EnricherService {
         }
     }
 
+    //todo: this has nothing to do here, but the whole enrichmentTask progress setting kinda sucks. We need a better
+    //      system to keep track of the progress (maybe JMS ?)
     private double calculatePercentDone(int total, int done) {
         return Math.round((done / (double) total) * 10000) / (double) 100;
     }

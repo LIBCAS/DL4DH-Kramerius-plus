@@ -40,7 +40,7 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
     public Monograph assemble(MonographDto monographDto) {
         List<DigitalObjectDto<DomainObject>> children = dataProvider.getDigitalObjectsForParent(monographDto.getPid());
 
-        // children should never be emtpy or null;
+        // children should never be empty or null;
         DigitalObjectDto<? extends DomainObject> firstChild = children.get(0);
 
         if (firstChild instanceof MonographUnitDto) {
