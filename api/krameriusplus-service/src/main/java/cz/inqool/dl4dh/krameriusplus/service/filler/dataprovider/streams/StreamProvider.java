@@ -25,10 +25,19 @@ public class StreamProvider {
         String textOcr = getStreamAsString(pageId, StreamType.TEXT_OCR);
 
         if (textOcr != null) {
-            textOcr = textOcr.replaceAll("-\n", "").replaceAll("\n", " ");
+            textOcr = normalizeText(textOcr);
         }
 
         return textOcr;
+    }
+
+    private String normalizeText(String textOcr) {
+        return textOcr.replace("\uFEFF", "")
+                .replaceAll("-\r\n", "")
+                .replaceAll("-\n", "")
+                .replaceAll("\r\n", " ")
+                .replaceAll("\n", " ");
+
     }
 
     public String getStreamAsString(String digitalObjectId, StreamType streamType) {
