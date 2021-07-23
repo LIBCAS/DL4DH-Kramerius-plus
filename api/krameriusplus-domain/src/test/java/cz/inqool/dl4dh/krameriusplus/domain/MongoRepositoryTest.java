@@ -59,7 +59,7 @@ public class MongoRepositoryTest {
         page.setTokens(tokens);
         page.setPageNumber("[1a]");
         page.setParentId("uuid:1");
-        page.setPageIndex(0);
+        page.setIndex(0);
         pages.add(page);
 
         monograph = new MonographWithPages();
@@ -184,7 +184,7 @@ public class MongoRepositoryTest {
             page.setTokens(tokens);
             page.setPageNumber("[" + i + "]");
             page.setParentId(rootId);
-            page.setPageIndex(i);
+            page.setIndex(i);
             pages.add(page);
         }
 

@@ -39,6 +39,8 @@ public class PeriodicalVolume extends Publication implements ParentAware {
 
     private String parentId;
 
+    private int index;
+
     @DBRef
     @CascadeSave
     private List<PeriodicalItem> periodicalItems = new ArrayList<>();

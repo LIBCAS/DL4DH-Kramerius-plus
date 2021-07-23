@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.dto.monograph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
@@ -17,13 +18,17 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
  */
 @Getter
 @Setter
-public class MonographUnitDto extends PublicationDto<MonographUnit> {
+public class MonographUnitDto extends PublicationDto<MonographUnit> implements ParentAware {
 
     private String partNumber;
 
     private String partTitle;
 
     private String donator;
+
+    private String parentId;
+
+    private int index;
 
     /**
      * Is ignored
@@ -48,6 +53,8 @@ public class MonographUnitDto extends PublicationDto<MonographUnit> {
         monographUnit.setPartNumber(partNumber);
         monographUnit.setPartTitle(partTitle);
         monographUnit.setDonator(donator);
+        monographUnit.setParentId(parentId);
+        monographUnit.setIndex(index);
 
         return monographUnit;
     }

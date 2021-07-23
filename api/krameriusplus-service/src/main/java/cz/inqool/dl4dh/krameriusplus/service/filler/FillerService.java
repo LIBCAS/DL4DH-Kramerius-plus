@@ -18,6 +18,8 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.ENRICHING;
+
 /**
  * @author Norbert Bodnar
  */
@@ -64,6 +66,7 @@ public class FillerService {
 
     private void enrichSinglePage(Page page, EnrichmentTask task) {
         log.info("Enriching page with ID: " + page.getId());
+        task.setState(ENRICHING);
         long start = System.currentTimeMillis();
 
         enricherService.enrichPages(Collections.singletonList(page), task);
@@ -76,6 +79,7 @@ public class FillerService {
 
     private void enrichPublication(Publication publication, EnrichmentTask task) {
         log.info("Enriching publication: " + publication.getTitle());
+        task.setState(ENRICHING);
         long start = System.currentTimeMillis();
 
         enricherService.enrichPages(publication.getPages(), task);

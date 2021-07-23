@@ -51,7 +51,7 @@ public class Page extends DomainObject implements ParentAware {
     private String pageNumber;
 
     @Indexed
-    private int pageIndex;
+    private int index;
 
     private NameTagMetadata nameTagMetadata;
 
