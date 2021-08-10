@@ -1,0 +1,62 @@
+<jxb:bindings version="2.1"
+              xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+              xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!--    <jxb:bindings schemaLocation="xsd/alto.xsd">-->
+<!--        <jxb:schemaBindings>-->
+<!--            <jxb:package name="cz.inqool.dl4dh.alto"/>-->
+<!--        </jxb:schemaBindings>-->
+<!--    </jxb:bindings>-->
+    <jxb:bindings schemaLocation="xsd/mods.xsd">
+        <jxb:schemaBindings>
+            <jxb:package name="cz.inqool.dl4dh.mods"/>
+        </jxb:schemaBindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='abstractDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='accessConditionDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:attributeGroup[@name='languageAttributeGroup']//xs:attribute[@name='lang']">
+            <jxb:property name="langAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='copyInformationDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='subjectNameDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='subjectTitleInfoDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='physicalDescriptionNote']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='physicalLocationDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='titleInfoDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='tableOfContentsDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='relatedItemDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:element[@name='text']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='noteDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+        <jxb:bindings node="//xs:schema//xs:complexType[@name='nameDefinition']//xs:attribute[@name='type']">
+            <jxb:property name="typeAtt"/>
+        </jxb:bindings>
+    </jxb:bindings>
+    <jxb:bindings schemaLocation="xsd/alto.xsd">
+        <jxb:schemaBindings>
+            <jxb:package name="cz.inqool.dl4dh.alto"/>
+        </jxb:schemaBindings>
+    </jxb:bindings>
+</jxb:bindings>
