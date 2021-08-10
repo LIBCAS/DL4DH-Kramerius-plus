@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.streams.StreamProvider;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.utils.AltoUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.streams;
+package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
 import cz.inqool.dl4dh.alto.Alto;
 import lombok.Getter;
@@ -49,15 +49,6 @@ public class StreamProvider {
         return JAXB.unmarshal(new StringReader(altoAsString), Alto.class);
     }
 
-    private String normalizeText(String textOcr) {
-        return textOcr.replace("\uFEFF", "")
-                .replaceAll("-\r\n", "")
-                .replaceAll("-\n", "")
-                .replaceAll("\r\n", " ")
-                .replaceAll("\n", " ");
-
-    }
-
     public String getStreamAsString(String digitalObjectId, StreamType streamType) {
         return webClient.get()
                 .uri("/{digitalObjectId}/streams/{streamId}", digitalObjectId, streamType.getStreamId())
@@ -65,6 +56,16 @@ public class StreamProvider {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+    }
+
+    private String normalizeText(String textOcr) {
+        return textOcr.replace("\uFEFF", "")
+                .replaceAll("-\r\n", "")
+                .replaceAll("-\n", "")
+                .replaceAll("–\r\n", "")
+                .replaceAll("–\n", "")
+                .replaceAll("\r\n", " ")
+                .replaceAll("\n", " ");
     }
 
     @Getter

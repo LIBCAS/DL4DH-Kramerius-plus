@@ -36,7 +36,6 @@ public class WebClientDataProvider implements DataProvider {
                 .block();
     }
 
-
     @Override
     public <T extends DomainObject> List<DigitalObjectDto<T>> getDigitalObjectsForParent(String parentId) {
         var result = webClient.get()
