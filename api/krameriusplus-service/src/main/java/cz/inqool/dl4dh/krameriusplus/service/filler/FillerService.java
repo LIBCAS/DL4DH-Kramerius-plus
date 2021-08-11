@@ -82,7 +82,7 @@ public class FillerService {
         task.setState(ENRICHING);
         long start = System.currentTimeMillis();
 
-        enricherService.enrichPublication(publication, task);
+        enricherService.enrichPublication(publication);
         enricherService.enrichPages(publication.getPages(), task);
         publicationService.save(publication);
 

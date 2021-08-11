@@ -146,7 +146,10 @@ public enum ModsGroupType {
 
                     for (PlaceTermDefinition placeTerm : place.getPlaceTerm()) {
                         String authority = placeTerm.getAuthority();
-                        String type = placeTerm.getType().value();
+                        String type = null;
+                        if (placeTerm.getType() != null) {
+                            type = placeTerm.getType().value();
+                        }
                         String value = placeTerm.getValue();
                         result.add(new Place(authority, type, value));
                     }

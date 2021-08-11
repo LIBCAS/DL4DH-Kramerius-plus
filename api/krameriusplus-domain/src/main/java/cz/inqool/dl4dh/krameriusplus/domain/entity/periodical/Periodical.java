@@ -50,6 +50,11 @@ public class Periodical extends Publication {
     }
 
     @Override
+    public List<? extends Publication> getChildren() {
+        return periodicalVolumes;
+    }
+
+    @Override
     public void addPages(PageRepository pageRepository, Pageable pageable) {
         for (PeriodicalVolume volume : periodicalVolumes) {
             volume.addPages(pageRepository, pageable);

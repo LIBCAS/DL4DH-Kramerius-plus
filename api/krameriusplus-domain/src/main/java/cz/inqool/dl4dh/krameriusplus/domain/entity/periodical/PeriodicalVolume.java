@@ -64,6 +64,11 @@ public class PeriodicalVolume extends Publication implements ParentAware {
     }
 
     @Override
+    public List<? extends Publication> getChildren() {
+        return periodicalItems;
+    }
+
+    @Override
     public void addPages(PageRepository pageRepository, Pageable pageable) {
         for (PeriodicalItem item : periodicalItems) {
             item.addPages(pageRepository, pageable);

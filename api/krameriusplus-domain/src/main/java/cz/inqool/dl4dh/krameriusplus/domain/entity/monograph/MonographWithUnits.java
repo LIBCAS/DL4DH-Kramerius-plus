@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.domain.entity.monograph;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.cascade.CascadeSave;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,11 @@ public class MonographWithUnits extends Monograph {
                 .map(MonographUnit::getPages)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<? extends Publication> getChildren() {
+        return monographUnits;
     }
 
     @Override

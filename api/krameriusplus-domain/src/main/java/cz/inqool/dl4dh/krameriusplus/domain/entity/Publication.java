@@ -21,5 +21,13 @@ public abstract class Publication extends DomainObject implements PageVisitable 
 
     private String policy;
 
+    private ModsMetadata modsMetadata;
+
     public abstract List<Page> getPages();
+
+    /**
+     * Returns a list of children publications. If a publication has no children, it returns an empty list.
+     * @return
+     */
+    public abstract List<? extends Publication> getChildren();
 }
