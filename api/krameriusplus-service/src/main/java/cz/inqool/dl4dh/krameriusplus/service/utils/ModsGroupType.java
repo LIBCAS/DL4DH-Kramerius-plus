@@ -166,8 +166,6 @@ public enum ModsGroupType {
         public void addAttribute(Object modsGroup, ModsMetadata modsMetadata) {
             IdentifierDefinition identifierDefinition = (IdentifierDefinition) modsGroup;
 
-//            String type = extractType(identifierDefinition.getType());
-
             modsMetadata.getIdentifiers().add(new Identifier(
                     identifierDefinition.getType(),
                     extractInvalidAsBoolean(identifierDefinition),
@@ -193,7 +191,6 @@ public enum ModsGroupType {
             }
         }
 
-        //todo: throw exception
         return null;
     }
 
