@@ -72,12 +72,12 @@ public class ModsUtilsTest {
 
             // assert Identifiers
             List<ModsMetadata.Identifier> expectedIdentifiers = new ArrayList<>();
-            expectedIdentifiers.add(new ModsMetadata.Identifier("barCode", Boolean.TRUE, "1004407716"));
-            expectedIdentifiers.add(new ModsMetadata.Identifier("uuid", Boolean.TRUE, "319546a0-5a42-11eb-b4d1-005056827e51"));
+            expectedIdentifiers.add(new ModsMetadata.Identifier("barCode", Boolean.FALSE, "1004407716"));
+            expectedIdentifiers.add(new ModsMetadata.Identifier("uuid", Boolean.FALSE, "319546a0-5a42-11eb-b4d1-005056827e51"));
             expectedIdentifiers.add(new ModsMetadata.Identifier("ccnb", Boolean.TRUE, "cnb000964752"));
             expectedIdentifiers.add(new ModsMetadata.Identifier("ccnb", Boolean.TRUE, "cnb001503907"));
-            expectedIdentifiers.add(new ModsMetadata.Identifier("oclc", Boolean.TRUE, "85591009"));
-            expectedIdentifiers.add(new ModsMetadata.Identifier("oclc", Boolean.TRUE, "85001648"));
+            expectedIdentifiers.add(new ModsMetadata.Identifier("oclc", Boolean.FALSE, "85591009"));
+            expectedIdentifiers.add(new ModsMetadata.Identifier("oclc", Boolean.FALSE, "85001648"));
 
             softAssertions.assertThat(modsMetadata.getIdentifiers()).isEqualTo(expectedIdentifiers);
         });
