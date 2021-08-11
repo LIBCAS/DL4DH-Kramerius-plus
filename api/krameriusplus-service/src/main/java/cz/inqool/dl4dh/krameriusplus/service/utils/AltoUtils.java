@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Static Utils class for working with Alto object
+ */
 public class AltoUtils {
 
     public static void addAltoMetadataToTokens(Page page, Alto alto) {

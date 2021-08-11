@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
@@ -22,11 +23,21 @@ public class EnricherService {
 
     private final StreamProvider streamProvider;
 
+
+
     @Autowired
     public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService, StreamProvider streamProvider) {
         this.tokenizerService = tokenizerService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;
+    }
+
+    public void enrichPublication(Publication publication, EnrichmentTask task) {
+        try {
+
+        } catch (Exception e) {
+            log.error("Error enriching publication root", e);
+        }
     }
 
     public void enrichPages(List<Page> pages, EnrichmentTask task) {

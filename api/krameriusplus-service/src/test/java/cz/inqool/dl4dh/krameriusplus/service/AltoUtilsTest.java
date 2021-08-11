@@ -13,8 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = EnricherApplicationContext.class)
 public class AltoUtilsTest {
 
-    private AltoUtils altoUtils;
-
     @Autowired
     private StreamProvider streamProvider;
 

@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
 import cz.inqool.dl4dh.alto.Alto;
+import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,21 @@ public class StreamProvider {
         }
 
         return JAXB.unmarshal(new StringReader(altoAsString), Alto.class);
+    }
+
+    public ModsCollectionDefinition getMods(String publicationId) {
+        String modsAsString = webClient.get()
+                .uri("/{publicationId}/streams/BIBLIO_MODS", publicationId)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        if (modsAsString == null) {
+            throw new IllegalArgumentException("Publication with ID=" + publicationId + " does not contain BIBLIO_MODS stream");
+        }
+
+        return JAXB.unmarshal(new StringReader(modsAsString), ModsCollectionDefinition.class);
     }
 
     public String getStreamAsString(String digitalObjectId, StreamType streamType) {
