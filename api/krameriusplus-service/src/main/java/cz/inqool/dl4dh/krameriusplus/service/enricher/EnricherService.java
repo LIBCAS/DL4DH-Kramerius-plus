@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
-import cz.inqool.dl4dh.krameriusplus.metadata.ModsAdapter;
+import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ public class EnricherService {
     }
 
     private void enrichPublicationWithMods(Publication publication) {
-        ModsAdapter modsMetadataAdapter = new ModsAdapter(streamProvider.getMods(publication.getId()));
+        ModsWrapper modsMetadataAdapter = new ModsWrapper(streamProvider.getMods(publication.getId()));
         publication.setModsMetadata(modsMetadataAdapter.getTransformedMods());
     }
 

@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
-import cz.inqool.dl4dh.krameriusplus.metadata.ModsAdapter;
+import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import org.assertj.core.api.SoftAssertions;
@@ -29,9 +29,9 @@ public class ModsUtilsTest {
 
         assertNotNull(mods);
 
-        ModsAdapter modsAdapter = new ModsAdapter(mods);
+        ModsWrapper modsWrapper = new ModsWrapper(mods);
 
-        ModsMetadata modsMetadata = modsAdapter.getTransformedMods();
+        ModsMetadata modsMetadata = modsWrapper.getTransformedMods();
 
         SoftAssertions.assertSoftly(softAssertions -> {
             // assert TitleInfos

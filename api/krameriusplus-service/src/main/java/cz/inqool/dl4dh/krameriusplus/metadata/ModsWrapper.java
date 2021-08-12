@@ -8,13 +8,13 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class ModsAdapter {
+public class ModsWrapper {
 
     private final ModsCollectionDefinition modsCollection;
 
     private ModsMetadata transformedMods;
 
-    public ModsAdapter(ModsCollectionDefinition modsCollection) {
+    public ModsWrapper(ModsCollectionDefinition modsCollection) {
         this.modsCollection = modsCollection;
     }
 
