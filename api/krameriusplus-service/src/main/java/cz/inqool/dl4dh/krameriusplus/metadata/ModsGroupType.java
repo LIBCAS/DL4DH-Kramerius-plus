@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.utils;
+package cz.inqool.dl4dh.krameriusplus.metadata;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata.*;

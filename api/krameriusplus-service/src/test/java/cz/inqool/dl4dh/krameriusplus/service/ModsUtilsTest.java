@@ -2,11 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.metadata.ModsAdapter;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
-import cz.inqool.dl4dh.krameriusplus.service.utils.ModsUtils;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
-import cz.inqool.dl4dh.mods.ModsDefinition;
-import cz.inqool.dl4dh.mods.NameDefinition;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +29,9 @@ public class ModsUtilsTest {
 
         assertNotNull(mods);
 
-        ModsMetadata modsMetadata = ModsUtils.getModsMetadata(mods);
+        ModsAdapter modsAdapter = new ModsAdapter(mods);
+
+        ModsMetadata modsMetadata = modsAdapter.getTransformedMods();
 
         SoftAssertions.assertSoftly(softAssertions -> {
             // assert TitleInfos
