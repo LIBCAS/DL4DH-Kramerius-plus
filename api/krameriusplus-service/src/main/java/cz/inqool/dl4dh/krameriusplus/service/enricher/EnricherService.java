@@ -3,10 +3,12 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,11 +26,15 @@ public class EnricherService {
 
     private final StreamProvider streamProvider;
 
+    private final String PLAIN_TEXT_SOURCE;
+
     @Autowired
-    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService, StreamProvider streamProvider) {
+    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService, StreamProvider streamProvider,
+                           @Value("${enrichment.source:OCR}") String plainTextSource) {
         this.tokenizerService = tokenizerService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;
+        this.PLAIN_TEXT_SOURCE = plainTextSource;
     }
 
     public void enrichPublication(Publication publication) {
@@ -60,9 +66,16 @@ public class EnricherService {
         task.setProcessingPage(done);
 
         try {
-            String pageContent = streamProvider.getTextOcr(page.getId());
-            page.setTokens(tokenizerService.tokenize(pageContent));
+            AltoWrapper altoWrapper = new AltoWrapper(streamProvider.getAlto(page.getId()));
+            String content;
+            if (PLAIN_TEXT_SOURCE.equals("ALTO")) {
+                content = altoWrapper.extractPageContent();
+            } else {
+                content = streamProvider.getTextOcr(page.getId());
+            }
+            page.setTokens(tokenizerService.tokenize(content));
             page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
+            altoWrapper.enrichWithAlto(page);
         } catch (Exception e) {
             log.error("Error enriching page with external services", e);
         }

@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,4 +50,9 @@ public class Token {
      */
     @Field("ntm")
     private String nameTagMetadata;
+
+    /**
+     * Metadata about word position on the physical page obtained from ALTO format.
+     */
+    private AltoTokenMetadata altoMetadata;
 }

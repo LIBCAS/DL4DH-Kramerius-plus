@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.monograph;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.cascade.CascadeSave;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
@@ -26,6 +27,7 @@ public class MonographWithUnits extends Monograph {
     private List<MonographUnit> monographUnits = new ArrayList<>();
 
     @Override
+    @JsonIgnore
     public List<Page> getPages() {
         if (monographUnits == null || monographUnits.isEmpty()) {
             throw new IllegalStateException("PeriodicalVolume contains no items");

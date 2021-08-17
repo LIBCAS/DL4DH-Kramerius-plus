@@ -76,10 +76,10 @@ public class StreamProvider {
 
     private String normalizeText(String textOcr) {
         return textOcr.replace("\uFEFF", "")
-                .replaceAll("-\r\n", "")
-                .replaceAll("-\n", "")
-                .replaceAll("–\r\n", "")
-                .replaceAll("–\n", "")
+                .replaceAll("\\S-\r\n", "")
+                .replaceAll("\\S-\n", "")
+                .replaceAll("\\S–\r\n", "")
+                .replaceAll("\\S–\n", "")
                 .replaceAll("\r\n", " ")
                 .replaceAll("\n", " ");
     }
