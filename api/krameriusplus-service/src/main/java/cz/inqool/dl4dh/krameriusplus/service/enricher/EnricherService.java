@@ -68,20 +68,24 @@ public class EnricherService {
         try {
             AltoWrapper altoWrapper = new AltoWrapper(streamProvider.getAlto(page.getId()));
             String content;
-            if (PLAIN_TEXT_SOURCE.equals("ALTO")) {
-                content = altoWrapper.extractPageContent();
-            } else {
-                content = streamProvider.getTextOcr(page.getId());
-            }
+            content = getPageContent(page, altoWrapper);
             page.setTokens(tokenizerService.tokenize(content));
             page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
-            altoWrapper.enrichWithAlto(page);
+            altoWrapper.enrichPage(page);
         } catch (Exception e) {
             log.error("Error enriching page with external services", e);
         }
 
         task.setPercentDone(calculatePercentDone(total, done++));
         return done;
+    }
+
+    private String getPageContent(Page page, AltoWrapper altoWrapper) {
+        if (PLAIN_TEXT_SOURCE.equals("ALTO")) {
+            return altoWrapper.extractPageContent();
+        } else {
+            return streamProvider.getTextOcr(page.getId());
+        }
     }
 
     private void enrichPublicationWithMods(Publication publication) {
