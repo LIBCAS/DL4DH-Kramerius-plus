@@ -4,7 +4,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.dto.DigitalObjectDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,8 +20,8 @@ public class WebClientDataProvider implements DataProvider {
     private final WebClient webClient;
 
     @Autowired
-    public WebClientDataProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi) {
-        this.webClient = WebClient.create(krameriusApi + "/search/api/v5.0/item");
+    public WebClientDataProvider(WebClient webClient) {
+        this.webClient = webClient;
     }
 
     @Override
@@ -36,7 +35,6 @@ public class WebClientDataProvider implements DataProvider {
                 .bodyToMono(type)
                 .block();
     }
-
 
     @Override
     public <T extends DomainObject> List<DigitalObjectDto<T>> getDigitalObjectsForParent(String parentId) {

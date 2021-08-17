@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +18,7 @@ public class Token {
      * UDPipe numbers the tokens starting from 1 and can occasionally insert a nonexistent token into
      * the response
      */
-    @Field("t_i")
+    @Field("ti")
     private int tokenIndex;
 
     /**
@@ -51,4 +50,10 @@ public class Token {
      */
     @Field("ntm")
     private String nameTagMetadata;
+
+    /**
+     * Metadata about word position on the physical page obtained from ALTO format.
+     */
+    @Field("am")
+    private AltoTokenMetadata altoMetadata;
 }

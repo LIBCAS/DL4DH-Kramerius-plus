@@ -46,4 +46,9 @@ public class PeriodicalItem extends Publication implements ParentAware {
     public void addPages(PageRepository pageRepository, Pageable pageable) {
         pages = pageRepository.findByParentIdOrderByIndexAsc(id, pageable);
     }
+
+    @Override
+    public List<? extends Publication> getChildren() {
+        return new ArrayList<>();
+    }
 }

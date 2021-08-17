@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.monograph;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
@@ -35,6 +36,7 @@ public class MonographUnit extends Publication implements ParentAware {
     private int index;
 
     @Transient
+    @JsonIgnore
     private List<Page> pages = new ArrayList<>();
 
     @Override
@@ -45,5 +47,10 @@ public class MonographUnit extends Publication implements ParentAware {
     @Override
     public void addPages(PageRepository pageRepository, Pageable pageable) {
         pages = pageRepository.findByParentIdOrderByIndexAsc(id, pageable);
+    }
+
+    @Override
+    public List<? extends Publication> getChildren() {
+        return new ArrayList<>();
     }
 }

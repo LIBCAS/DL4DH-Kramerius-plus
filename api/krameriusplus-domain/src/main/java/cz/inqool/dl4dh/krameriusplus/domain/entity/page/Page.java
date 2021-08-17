@@ -50,6 +50,12 @@ public class Page extends DomainObject implements ParentAware {
      */
     private String pageNumber;
 
+    /**
+     * Number of elements of type IllustrationType on page. Should represent the number of illustration on the page
+     * recognized by the OCR. Information is obtained from ALTO format.
+     */
+    private int numberOfIllustrations = 0;
+
     @Indexed
     private int index;
 

@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.periodical;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.cascade.CascadeSave;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
@@ -51,6 +52,7 @@ public class PeriodicalVolume extends Publication implements ParentAware {
     }
 
     @Override
+    @JsonIgnore
     public List<Page> getPages() {
         if (periodicalItems == null || periodicalItems.isEmpty()) {
             throw new IllegalStateException("PeriodicalVolume contains no items");
@@ -61,6 +63,11 @@ public class PeriodicalVolume extends Publication implements ParentAware {
                 .map(PeriodicalItem::getPages)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<? extends Publication> getChildren() {
+        return periodicalItems;
     }
 
     @Override

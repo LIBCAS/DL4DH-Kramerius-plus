@@ -1,15 +1,17 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.streams.StreamProvider;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
+import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.streams.StreamProvider.StreamType.TEXT_OCR;
 
 /**
  * @author Norbert Bodnar
@@ -24,11 +26,24 @@ public class EnricherService {
 
     private final StreamProvider streamProvider;
 
+    private final String PLAIN_TEXT_SOURCE;
+
     @Autowired
-    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService, StreamProvider streamProvider) {
+    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService, StreamProvider streamProvider,
+                           @Value("${enrichment.source:OCR}") String plainTextSource) {
         this.tokenizerService = tokenizerService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;
+        this.PLAIN_TEXT_SOURCE = plainTextSource;
+    }
+
+    public void enrichPublication(Publication publication) {
+        try {
+            enrichPublicationChildren(publication);
+            enrichPublicationWithMods(publication);
+        } catch (Exception e) {
+            log.error("Error enriching publication", e);
+        }
     }
 
     public void enrichPages(List<Page> pages, EnrichmentTask task) {
@@ -37,18 +52,45 @@ public class EnricherService {
         task.setTotalPages(total);
 
         for (Page page : pages) {
-            task.setProcessingPage(done);
-
-            try {
-                String pageContent = streamProvider.getTextOcr(page.getId());
-                page.setTokens(tokenizerService.tokenize(pageContent));
-                page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
-            } catch (Exception e) {
-                log.error("Error enriching data with external services", e);
-            }
-
-            task.setPercentDone(calculatePercentDone(total, done++));
+            done = enrichPage(task, done, total, page);
         }
+    }
+
+    private void enrichPublicationChildren(Publication publication) {
+        for (Publication child : publication.getChildren()) {
+            enrichPublication(child);
+        }
+    }
+
+    private int enrichPage(EnrichmentTask task, int done, int total, Page page) {
+        task.setProcessingPage(done);
+
+        try {
+            AltoWrapper altoWrapper = new AltoWrapper(streamProvider.getAlto(page.getId()));
+            String content;
+            content = getPageContent(page, altoWrapper);
+            page.setTokens(tokenizerService.tokenize(content));
+            page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
+            altoWrapper.enrichPage(page);
+        } catch (Exception e) {
+            log.error("Error enriching page with external services", e);
+        }
+
+        task.setPercentDone(calculatePercentDone(total, done++));
+        return done;
+    }
+
+    private String getPageContent(Page page, AltoWrapper altoWrapper) {
+        if (PLAIN_TEXT_SOURCE.equals("ALTO")) {
+            return altoWrapper.extractPageContent();
+        } else {
+            return streamProvider.getTextOcr(page.getId());
+        }
+    }
+
+    private void enrichPublicationWithMods(Publication publication) {
+        ModsWrapper modsMetadataAdapter = new ModsWrapper(streamProvider.getMods(publication.getId()));
+        publication.setModsMetadata(modsMetadataAdapter.getTransformedMods());
     }
 
     //todo: this has nothing to do here, but the whole enrichmentTask progress setting kinda sucks. We need a better
@@ -56,4 +98,5 @@ public class EnricherService {
     private double calculatePercentDone(int total, int done) {
         return Math.round((done / (double) total) * 10000) / (double) 100;
     }
+
 }
