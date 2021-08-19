@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -23,9 +24,11 @@ public class NameTagService {
 
     private WebClient webClient;
 
-    public NameTagMetadata processTokens(List<Token> tokens) {
+    public void processTokens(Page page) {
+        List<Token> tokens = page.getTokens();
+
         if (tokens.isEmpty()) {
-            return null;
+            return;
         }
 
         String pageContent = tokens
@@ -39,7 +42,7 @@ public class NameTagService {
             throw new IllegalStateException("NameTag did not return results");
         }
 
-        return processResponse(response, tokens);
+        page.setNameTagMetadata(processResponse(response, tokens));
     }
 
     private LindatServiceResponse makeApiCall(String body) {

@@ -3,6 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
@@ -13,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * @author Norbert Bodnar
  */
@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 public class EnricherService {
 
-    private final UDPipeService tokenizerService;
+    private final UDPipeService udPipeService;
 
     private final NameTagService nameTagService;
 
@@ -31,9 +31,9 @@ public class EnricherService {
     private final String PLAIN_TEXT_SOURCE;
 
     @Autowired
-    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService, StreamProvider streamProvider,
+    public EnricherService(UDPipeService udPipeService, NameTagService nameTagService, StreamProvider streamProvider,
                            @Value("${enrichment.source:OCR}") String plainTextSource) {
-        this.tokenizerService = tokenizerService;
+        this.udPipeService = udPipeService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;
         this.PLAIN_TEXT_SOURCE = plainTextSource;
@@ -58,12 +58,17 @@ public class EnricherService {
         task.setTotalPages(total);
 
         OCRParadata ocrParadata = null;
+        UDPipeParadata udPipeParadata = null;
+        NameTagParadata nameTagParadata = null;
+
         for (Page page : publication.getPages()) {
             task.setProcessingPage(done);
             enrichPage(page);
 
-            if (!isOCRSame(ocrParadata, page.getOcrParadata())) {
-                throw new IllegalStateException("All pages under one publication must have the same OCR paradata");
+            if (ocrParadata == null) {
+                ocrParadata = page.getOcrParadata();
+            } else {
+
             }
 
             ocrParadata = page.getOcrParadata();
@@ -88,10 +93,10 @@ public class EnricherService {
             AltoWrapper altoWrapper = new AltoWrapper(streamProvider.getAlto(page.getId()));
             String content = getPageContent(page, altoWrapper);
 
-            page.setTokens(tokenizerService.tokenize(content));
-            page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
+            udPipeService.createTokens(page, content);
+            nameTagService.processTokens(page);
+
             altoWrapper.enrichPage(page);
-            page.setOcrParadata(altoWrapper.extractOCRParadata());
         } catch (Exception e) {
             log.error("Error enriching page with external services", e);
         }

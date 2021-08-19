@@ -28,5 +28,6 @@ public class AltoWrapper {
 
     public void enrichPage(Page page) {
         pageEnricher.enrichWithAlto(page);
+        page.setOcrParadata(contentExtractor.extractOcrParadata());
     }
 }

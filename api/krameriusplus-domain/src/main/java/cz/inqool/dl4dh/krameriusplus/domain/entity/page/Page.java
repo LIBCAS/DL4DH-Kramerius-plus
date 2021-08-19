@@ -2,7 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -65,6 +67,12 @@ public class Page extends DomainObject implements ParentAware {
 
     @Transient
     private OCRParadata ocrParadata;
+
+    @Transient
+    private UDPipeParadata udPipeParadata;
+
+    @Transient
+    private NameTagParadata nameTagParadata;
 
     @Override
     public KrameriusModel getModel() {

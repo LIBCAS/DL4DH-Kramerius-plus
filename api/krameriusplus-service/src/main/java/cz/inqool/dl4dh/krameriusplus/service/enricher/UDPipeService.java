@@ -1,7 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -11,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,25 +29,20 @@ public class UDPipeService {
     private WebClient webClient;
 
     /**
-     * Processes the input text content and returns a list of tokens.
+     * Processes the input text content and sets tokens attribute on page.
      *
-     * @param content String content to tokenize
-     * @return list of Tokens produced by the external service. Tokens might contain additional metadata
+     * @param pageContent String content to tokenize
      */
-    public List<Token> tokenize(String content) {
-        List<Token> result = new ArrayList<>();
-
-        if (content == null || content.isEmpty()) {
-            return result;
+    public void createTokens(Page page, String pageContent) {
+        if (pageContent == null || pageContent.isEmpty()) {
+            return;
         }
 
-        LindatServiceResponse response = makeApiCall(content);
+        LindatServiceResponse response = makeApiCall(pageContent);
 
-        if (response == null) {
-            throw new UDPipeException(EXTERNAL_SERVICE_ERROR, "UDPipe did not return results");
-        }
+        page.setUdPipeParadata(getUDPipeParadata(response.getModel()));
 
-        return parseResponseToTokens(response.getResult());
+        page.setTokens(parseResponseToTokens(response.getResult()));
     }
 
     private LindatServiceResponse makeApiCall(String body) {
@@ -60,6 +58,14 @@ public class UDPipeService {
                 .retrieve()
                 .bodyToMono(LindatServiceResponse.class)
                 .block();
+    }
+
+    private UDPipeParadata getUDPipeParadata(String model) {
+        UDPipeParadata udPipeParadata = new UDPipeParadata();
+        udPipeParadata.setCreated(Instant.now());
+        udPipeParadata.setModel(model);
+
+        return udPipeParadata;
     }
 
     private List<Token> parseResponseToTokens(String responseBody) {
