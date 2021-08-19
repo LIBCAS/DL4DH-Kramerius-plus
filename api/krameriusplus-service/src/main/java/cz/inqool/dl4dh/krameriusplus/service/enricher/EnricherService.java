@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,23 +45,36 @@ public class EnricherService {
             enrichPublicationWithMods(publication);
 
             if (publication instanceof PagesAware) {
-                enrichPages(((PagesAware) publication).getPages(), task);
+                enrichPages(((PagesAware) publication), task);
             }
         } catch (Exception e) {
             log.error("Error enriching publication", e);
         }
     }
 
-    public void enrichPages(List<Page> pages, EnrichmentTask task) {
+    public void enrichPages(PagesAware publication, EnrichmentTask task) {
         int done = 1;
-        int total = pages.size();
+        int total = publication.getPages().size();
         task.setTotalPages(total);
 
-        for (Page page : pages) {
+        OCRParadata ocrParadata = null;
+        for (Page page : publication.getPages()) {
             task.setProcessingPage(done);
             enrichPage(page);
+
+            if (!isOCRSame(ocrParadata, page.getOcrParadata())) {
+                throw new IllegalStateException("All pages under one publication must have the same OCR paradata");
+            }
+
+            ocrParadata = page.getOcrParadata();
             task.setPercentDone(calculatePercentDone(total, done++));
         }
+
+        publication.setOcrParadata(ocrParadata);
+    }
+
+    private boolean isOCRSame(OCRParadata previous, OCRParadata current) {
+        return previous == null || previous.equals(current);
     }
 
     private void enrichPublicationChildren(Publication publication, EnrichmentTask task) {
@@ -77,6 +91,7 @@ public class EnricherService {
             page.setTokens(tokenizerService.tokenize(content));
             page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
             altoWrapper.enrichPage(page);
+            page.setOcrParadata(altoWrapper.extractOCRParadata());
         } catch (Exception e) {
             log.error("Error enriching page with external services", e);
         }

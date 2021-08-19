@@ -1,11 +1,11 @@
-package cz.inqool.dl4dh.krameriusplus.paradata;
+package cz.inqool.dl4dh.krameriusplus.domain.entity.paradata;
 
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-import static cz.inqool.dl4dh.krameriusplus.paradata.ExternalService.OCR;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.ExternalServiceType.OCR;
 
 @Getter
 public class OCRParadata extends Paradata {

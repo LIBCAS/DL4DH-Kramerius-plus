@@ -1,7 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.metadata;
 
 import cz.inqool.dl4dh.alto.*;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -12,6 +15,7 @@ class AltoContentExtractor {
 
     private final Alto alto;
     private StringBuilder pageContent;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public AltoContentExtractor(Alto alto) {
         this.alto = alto;
@@ -32,6 +36,23 @@ class AltoContentExtractor {
         }
 
         return pageContent.toString();
+    }
+
+    protected OCRParadata extractOcrParadata() {
+        try {
+            String ocrPerformedDateString = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingDateTime();
+
+            LocalDate ocrPerformedDate = LocalDate.parse(ocrPerformedDateString, formatter);
+            ProcessingSoftwareType processingSoftware = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingSoftware();
+
+            String creator = processingSoftware.getSoftwareCreator();
+            String softwareName = processingSoftware.getSoftwareName();
+            String version = processingSoftware.getSoftwareVersion();
+
+            return new OCRParadata(ocrPerformedDate, creator, softwareName, version);
+        } catch (Exception exception) {
+            throw new IllegalStateException("Error extracting paradata from OCR", exception);
+        }
     }
 
     private void removeLastSpace() {

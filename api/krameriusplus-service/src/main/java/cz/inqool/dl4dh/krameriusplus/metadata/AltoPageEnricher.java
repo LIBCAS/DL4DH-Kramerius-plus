@@ -4,11 +4,8 @@ import cz.inqool.dl4dh.alto.*;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.AltoTokenMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
-import cz.inqool.dl4dh.krameriusplus.paradata.OCRParadata;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,28 +20,11 @@ public class AltoPageEnricher {
     private final Alto alto;
     private int currentTokenIndex;
     private Page page;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 
     public AltoPageEnricher(Alto alto) {
         this.alto = alto;
     }
 
-    public OCRParadata extractOcrParadata() {
-        try {
-            String ocrPerformedDateString = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingDateTime();
-
-            LocalDate ocrPerformedDate = LocalDate.parse(ocrPerformedDateString, formatter);
-            ProcessingSoftwareType processingSoftware = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingSoftware();
-
-            String creator = processingSoftware.getSoftwareCreator();
-            String softwareName = processingSoftware.getSoftwareName();
-            String version = processingSoftware.getSoftwareVersion();
-
-            return new OCRParadata(ocrPerformedDate, creator, softwareName, version);
-        } catch (Exception exception) {
-            throw new IllegalStateException("Error extracting paradata from OCR", exception);
-        }
-    }
 
     /**
      * Works only if the content of the page was extracted from Alto and word concatenation at the end of lines

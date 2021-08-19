@@ -2,9 +2,11 @@ package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -60,6 +62,9 @@ public class Page extends DomainObject implements ParentAware {
     private int index;
 
     private NameTagMetadata nameTagMetadata;
+
+    @Transient
+    private OCRParadata ocrParadata;
 
     @Override
     public KrameriusModel getModel() {

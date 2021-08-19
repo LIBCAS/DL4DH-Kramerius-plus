@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,8 @@ public class MonographUnit extends Publication implements ParentAware, PagesAwar
     private String parentId;
 
     private int index;
+
+    private OCRParadata ocrParadata;
 
     @DBRef
     private List<Page> pages = new ArrayList<>();
