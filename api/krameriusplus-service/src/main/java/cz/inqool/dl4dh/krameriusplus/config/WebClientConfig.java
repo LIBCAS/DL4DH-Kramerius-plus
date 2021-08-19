@@ -34,4 +34,15 @@ public class WebClientConfig {
                         .maxInMemorySize(16 * 1024 * 1024))
                 .build();
     }
+
+    @Bean(name = "nameTagWebClient")
+    public WebClient webClientNameTag() {
+        return WebClient
+                .builder()
+                .baseUrl("http://lindat.mff.cuni.cz/services/nametag/api/recognize")
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(16 * 1024 * 1024))
+                .build();
+    }
 }

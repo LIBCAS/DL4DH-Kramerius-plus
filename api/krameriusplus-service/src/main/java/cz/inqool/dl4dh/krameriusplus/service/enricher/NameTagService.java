@@ -4,16 +4,13 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,70 +21,54 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NameTagService {
 
-    private final RestTemplate restTemplate;
-
-    private final String URL;
-
-    private final HttpHeaders headers;
-
-    @Autowired
-    public NameTagService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        URL = UriComponentsBuilder.fromHttpUrl("http://lindat.mff.cuni.cz/services/nametag/api/recognize")
-                .queryParam("output", "conll")
-                .queryParam("input", "vertical")
-                .toUriString();
-    }
+    private WebClient webClient;
 
     public NameTagMetadata processTokens(List<Token> tokens) {
-        if (tokens.size() == 0) {
+        if (tokens.isEmpty()) {
             return null;
         }
 
-//        StringBuilder data = new StringBuilder();
-//        for (Token token : tokens) {
-//            data.append(token.getContent()).append(System.lineSeparator());
-//        }
+        String pageContent = tokens
+                .stream()
+                .map(Token::getContent)
+                .collect(Collectors.joining(System.lineSeparator()));
 
-        //TODO: test this
-        String data = tokens.stream().map(Token::getContent).collect(Collectors.joining(System.lineSeparator()));
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("data", data);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        LindatServiceResponse response = restTemplate
-                .postForEntity(URL, requestEntity, LindatServiceResponse.class)
-                .getBody();
-
+        LindatServiceResponse response = makeApiCall(pageContent);
 
         if (response == null) {
             throw new IllegalStateException("NameTag did not return results");
         }
 
-        String[] lines = response.getResult().split("\n");
-
-        return processLines(lines, tokens);
+        return processResponse(response, tokens);
     }
 
-    private NameTagMetadata processLines(String[] lines, List<Token> tokens) {
-        String word;
-        String metadata;
-        String[] line;
-        Token token;
-        NameTagMetadata nameTagMetadata = new NameTagMetadata();
-        Map<String, NamedEntity> namedEntityMap = new HashMap<>();
+    private LindatServiceResponse makeApiCall(String body) {
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("data", body);
 
-        for (int i = 0; i < lines.length; i++) {
-            line = lines[i].split("\t");
-            word = line[0];
-            metadata = line[1];
-            token = tokens.get(i);
+        return webClient.post().uri(uriBuilder -> uriBuilder
+                .queryParam("output", "conll")
+                .queryParam("input", "vertical")
+                .build())
+                .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
+                .acceptCharset(StandardCharsets.UTF_8)
+                .retrieve()
+                .bodyToMono(LindatServiceResponse.class)
+                .block();
+    }
+
+    private NameTagMetadata processResponse(LindatServiceResponse response, List<Token> tokens) {
+        List<String[]> linesOfColumns = Arrays.stream(response.getResult().split("\n")).map(line -> line.split("\t")).collect(Collectors.toList());
+        int tokenCounter = 0;
+
+        NameTagMetadata nameTagMetadata = new NameTagMetadata();
+        Map<String, NamedEntity> tempNamedEntityMap = new HashMap<>();
+
+        for (String[] line1 : linesOfColumns) {
+            String word = line1[0];
+            String metadata = line1[1];
+            Token token = tokens.get(tokenCounter++);
+
             if (!token.getContent().equals(word)) {
                 throw new IllegalStateException("Response word not equal to input word");
             }
@@ -95,44 +76,27 @@ public class NameTagService {
             if (!metadata.equals("O")) {
                 token.setNameTagMetadata(metadata);
 
-                String[] nameTagTypes = metadata.split("\\|");
+                String[] recognizedNamedEntityTypes = metadata.split("\\|");
 
-                for (String nameTagType : nameTagTypes) {
-                    boolean isFirst = nameTagType.startsWith("B");
-                    String type = nameTagType.split("-")[1];
-
-                    if (isFirst) {
-                        NamedEntity namedEntity = new NamedEntity();
-                        namedEntity.getTokens().add(token);
-                        namedEntity.setEntityType(type);
-
-                        namedEntityMap.put(type, namedEntity);
-                    } else {
-                        if (!namedEntityMap.containsKey(type)) {
-                            throw new IllegalStateException("Named entity missing \"B\" label representing the start of a named entity tyoe");
-                        }
-
-                        NamedEntity namedEntity = namedEntityMap.get(type);
-                        namedEntity.getTokens().add(token);
-                    }
+                for (String entityType : recognizedNamedEntityTypes) {
+                    processNameTagType(tempNamedEntityMap, entityType, token);
                 }
 
                 List<String> removeTypes = new ArrayList<>();
-                for (Map.Entry<String, NamedEntity> entry : namedEntityMap.entrySet()) {
+                for (Map.Entry<String, NamedEntity> entry : tempNamedEntityMap.entrySet()) {
                     String type = entry.getValue().getEntityType();
-                    if (Arrays.stream(nameTagTypes).noneMatch(nameTagType -> type.equals(entry.getKey()))) {
-                        nameTagMetadata.add(namedEntityMap.get(entry.getKey()));
+                    if (Arrays.stream(recognizedNamedEntityTypes).noneMatch(nameTagType -> type.equals(entry.getKey()))) {
+                        nameTagMetadata.add(tempNamedEntityMap.get(entry.getKey()));
                         removeTypes.add(entry.getKey());
                     }
                 }
 
                 for (String removeType : removeTypes) {
-                    namedEntityMap.remove(removeType);
+                    tempNamedEntityMap.remove(removeType);
                 }
-
             } else {
-                // clear out namedEntityMap
-                for (NamedEntity namedEntity : namedEntityMap.values()) {
+                // clear out tempNamedEntityMap
+                for (NamedEntity namedEntity : tempNamedEntityMap.values()) {
                     try {
                         nameTagMetadata.add(namedEntity);
                     } catch (IllegalArgumentException e) {
@@ -140,10 +104,35 @@ public class NameTagService {
                     }
                 }
 
-                namedEntityMap = new HashMap<>();
+                tempNamedEntityMap = new HashMap<>();
             }
         }
 
         return nameTagMetadata;
+    }
+
+    private void processNameTagType(Map<String, NamedEntity> namedEntityMap, String entityType, Token token) {
+        boolean isFirst = entityType.startsWith("B");
+        String type = entityType.split("-")[1];
+
+        if (isFirst) {
+            NamedEntity namedEntity = new NamedEntity();
+            namedEntity.getTokens().add(token);
+            namedEntity.setEntityType(type);
+
+            namedEntityMap.put(type, namedEntity);
+        } else {
+            if (!namedEntityMap.containsKey(type)) {
+                throw new IllegalStateException("Named entity missing \"B\" label representing the start of a named entity tyoe");
+            }
+
+            NamedEntity namedEntity = namedEntityMap.get(type);
+            namedEntity.getTokens().add(token);
+        }
+    }
+
+    @Resource(name = "nameTagWebClient")
+    public void setWebClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 }

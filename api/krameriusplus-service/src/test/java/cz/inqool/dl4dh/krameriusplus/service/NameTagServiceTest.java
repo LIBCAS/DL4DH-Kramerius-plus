@@ -36,13 +36,10 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = EnricherApplicationContext.class)
 public class NameTagServiceTest {
 
-    @Mock
-    private RestTemplate mockRestTemplate;
-
     @Autowired
     private UDPipeService udPipeService;
 
-    @InjectMocks
+    @Autowired
     private NameTagService nameTagService;
 
     @Autowired
@@ -51,8 +48,6 @@ public class NameTagServiceTest {
     @SneakyThrows
     @Test
     public void testNamedEntityExtraction() {
-        when(mockRestTemplate.postForEntity(anyString(), any(), any())).thenReturn(getMockedResponse());
-
         Page page = preparePage();
 
         page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
