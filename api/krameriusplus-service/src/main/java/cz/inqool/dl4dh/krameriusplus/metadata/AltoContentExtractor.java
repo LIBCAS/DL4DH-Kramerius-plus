@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.metadata;
 import cz.inqool.dl4dh.alto.*;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -49,7 +50,14 @@ class AltoContentExtractor {
             String softwareName = processingSoftware.getSoftwareName();
             String version = processingSoftware.getSoftwareVersion();
 
-            return new OCRParadata(ocrPerformedDate, creator, softwareName, version);
+            OCRParadata ocrParadata = new OCRParadata();
+            ocrParadata.setCreated(Instant.now());
+            ocrParadata.setOcrPerformedDate(ocrPerformedDate);
+            ocrParadata.setCreator(creator);
+            ocrParadata.setSoftwareName(softwareName);
+            ocrParadata.setVersion(version);
+
+            return ocrParadata;
         } catch (Exception exception) {
             throw new IllegalStateException("Error extracting paradata from OCR", exception);
         }

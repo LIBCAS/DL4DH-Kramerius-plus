@@ -1,27 +1,19 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.paradata;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.ExternalServiceType.OCR;
-
 @Getter
+@Setter
 public class OCRParadata extends Paradata {
 
-    private final LocalDate ocrPerformedDate;
-    private final String creator;
-    private final String softwareName;
-    private final String version;
-
-    public OCRParadata(LocalDate ocrPerformedDate, String creator, String softwareName, String version) {
-        super(OCR);
-        this.ocrPerformedDate = ocrPerformedDate;
-        this.creator = creator;
-        this.softwareName = softwareName;
-        this.version = version;
-    }
+    private LocalDate ocrPerformedDate;
+    private String creator;
+    private String softwareName;
+    private String version;
 
     @Override
     public boolean equals(Object o) {
@@ -35,16 +27,16 @@ public class OCRParadata extends Paradata {
         if (!(other.canEqual(this))) {
             return false;
         }
-
         if (!Objects.equals(ocrPerformedDate, other.ocrPerformedDate)) {
             return false;
         }
-
         if (!Objects.equals(creator, other.creator)) {
             return false;
         }
-
         if (!Objects.equals(softwareName, other.softwareName)) {
+            return false;
+        }
+        if (!Objects.equals(serviceName, other.serviceName)) {
             return false;
         }
 
