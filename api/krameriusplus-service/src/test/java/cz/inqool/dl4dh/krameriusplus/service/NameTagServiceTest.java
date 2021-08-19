@@ -9,6 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.enums.NamedEntityType;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.LindatServiceResponse;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.NameTagService;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService;
+import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusProvider;
 import lombok.SneakyThrows;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -61,13 +62,13 @@ public class NameTagServiceTest {
         Map<NamedEntityType, List<NamedEntity>> namedEntities = page.getNameTagMetadata().getNamedEntities();
 
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(namedEntities.size()).isEqualTo(3);
+            softAssertions.assertThat(namedEntities.size()).isEqualTo(4);
 
             softAssertions.assertThat(namedEntities.get(INSTITUTIONS).size()).isEqualTo(1);
             softAssertions.assertThat(namedEntities.get(INSTITUTIONS).get(0).getTokens().size()).isEqualTo(5);
 
-            softAssertions.assertThat(namedEntities.get(PERSONAL_NAMES).size()).isEqualTo(3);
-            softAssertions.assertThat(namedEntities.get(PERSONAL_NAMES).get(0).getTokens().size()).isEqualTo(2);
+            softAssertions.assertThat(namedEntities.get(PERSONAL_NAMES).size()).isEqualTo(2);
+            softAssertions.assertThat(namedEntities.get(PERSONAL_NAMES).get(0).getTokens().size()).isEqualTo(1);
 
             Optional<NamedEntity> pfNamedEntityOptional = namedEntities.get(PERSONAL_NAMES).stream().filter(ne -> ne.getEntityType().equals("pf")).findFirst();
 
@@ -122,6 +123,9 @@ public class NameTagServiceTest {
         PageDto pageDto = new PageDto();
         pageDto.setTextOcr("Mezinárodní letiště Václava Havla Praha neboli Praha/Ruzyně je veřejné mezinárodní letiště umístěné na severozápadním okraji Prahy.");
 
-        return udPipeService.tokenizePage(pageDto);
+        Page page = pageDto.toEntity();
+        page.setTokens(udPipeService.tokenize(pageDto.getTextOcr()));
+
+        return page;
     }
 }

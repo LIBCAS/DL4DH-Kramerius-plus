@@ -8,6 +8,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -17,12 +18,7 @@ import java.util.List;
 @Service
 public class WebClientDataProvider implements DataProvider {
 
-    private final WebClient webClient;
-
-    @Autowired
-    public WebClientDataProvider(WebClient webClient) {
-        this.webClient = webClient;
-    }
+    private WebClient webClient;
 
     @Override
     public <T extends DigitalObjectDto<?>> T getDigitalObject(String objectId) {
@@ -58,5 +54,10 @@ public class WebClientDataProvider implements DataProvider {
         }
 
         return result;
+    }
+
+    @Resource(name = "krameriusWebClient")
+    public void setWebClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 }

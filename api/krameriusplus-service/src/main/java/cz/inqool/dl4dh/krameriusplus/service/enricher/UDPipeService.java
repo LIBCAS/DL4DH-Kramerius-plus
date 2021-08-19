@@ -1,24 +1,18 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException.ErrorCode.EXTERNAL_SERVICE_ERROR;
 
@@ -29,52 +23,11 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException.Err
 @Slf4j
 public class UDPipeService {
 
-    private final RestTemplate restTemplate;
-
-    private final String URL;
-
-    private final HttpHeaders headers;
-
-    @Autowired
-    public UDPipeService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        URL = UriComponentsBuilder.fromHttpUrl("http://lindat.mff.cuni.cz/services/udpipe/api/process")
-                .queryParam("tokenizer", "ranges")
-                .queryParam("tagger")
-                .queryParam("parser")
-                .toUriString();
-    }
-
-    /**
-     * Processes textContent of the page and sets its {@code List<Token> tokens} field
-     * @param pageDto dto from Kramerius with text content
-     */
-    public Page tokenizePage(PageDto pageDto) {
-        Page page = pageDto.toEntity();
-        page.setTokens(tokenize(pageDto.getTextOcr()));
-        return page;
-    }
-
-    /**
-     * Processes textContent of multiple pages.
-     * @param pageDtos list of pages, every page's {@code List<Token> tokens} field will be overridden
-     */
-    public List<Page> tokenizePages(List<PageDto> pageDtos) {
-        List<Page> result = new ArrayList<>();
-
-        for (PageDto pageDto : pageDtos) {
-            result.add(tokenizePage(pageDto));
-        }
-
-        return result;
-    }
+    private WebClient webClient;
 
     /**
      * Processes the input text content and returns a list of tokens.
+     *
      * @param content String content to tokenize
      * @return list of Tokens produced by the external service. Tokens might contain additional metadata
      */
@@ -85,152 +38,32 @@ public class UDPipeService {
             return result;
         }
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("data", content);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        LindatServiceResponse response = restTemplate
-                .postForEntity(URL, requestEntity, LindatServiceResponse.class)
-                .getBody();
+        LindatServiceResponse response = makeApiCall(content);
 
         if (response == null) {
             throw new UDPipeException(EXTERNAL_SERVICE_ERROR, "UDPipe did not return results");
         }
 
-        return processPageResponse(response.getResult());
+        return parseResponseToTokens(response.getResult());
     }
 
-    /**
-     * Processes textContent of multiple pages in a bulk operation.
-     * @param pageDtos list of pages, every page's {@code List<Token> tokens} field will be overridden
-     */
-    public List<Page> tokenizePagesBulk(List<PageDto> pageDtos) {
-        log.info("Processing pages in UDPipe in bulk");
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    private LindatServiceResponse makeApiCall(String body) {
 
-        String bodyContent = pageDtos
-                .stream()
-                .map(PageDto::getTextOcr)
-                .collect(Collectors.joining(
-                        System.lineSeparator() +
-                                System.lineSeparator() +
-                                "\\newline" +
-                                System.lineSeparator() +
-                                System.lineSeparator()));
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        multipartBodyBuilder.part("data", body);
 
-        body.set("data", bodyContent);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        log.info("Sending request to UDPipe");
-        long start = System.currentTimeMillis();
-        LindatServiceResponse response = restTemplate
-                .postForEntity(URL, requestEntity, LindatServiceResponse.class).getBody();
-        long executionTime = System.currentTimeMillis() - start;
-        log.info("UDPipe execution time in bulk: " + executionTime/(double) 1000 + "s");
-
-        if (response == null) {
-            throw new UDPipeException(EXTERNAL_SERVICE_ERROR, "UDPipe did not return results");
-        }
-
-        return processBulkResponse(pageDtos, response.getResult());
+        return webClient.post().uri(uriBuilder -> uriBuilder
+                .queryParam("tokenizer", "ranges")
+                .queryParam("tagger")
+                .queryParam("parser")
+                .build()).body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
+                .acceptCharset(StandardCharsets.UTF_8)
+                .retrieve()
+                .bodyToMono(LindatServiceResponse.class)
+                .block();
     }
 
-    private List<Page> processBulkResponse(List<PageDto> pageDtos, String responseBody) {
-        log.info("Processing response");
-        String[] lines = responseBody.split("\n");
-
-        int tokenIndex = 0;
-        int skipNext = 0;
-        String previousMiscColumn = "";
-        String previousContent = "";
-
-        boolean newPage = true;
-        Page page = null;
-        int pageIndex = 0;
-
-        List<Token> resultTokens = new ArrayList<>();
-        List<Page> resultPages = new ArrayList<>();
-
-        for (String line : lines) {
-            if (skipNext > 0) {
-                skipNext--;
-                continue;
-            }
-
-            if (newPage) {
-                if (page != null) {
-                    page.setTokens(resultTokens);
-                    resultPages.add(page);
-                    resultTokens = new ArrayList<>();
-                }
-                newPage = false;
-                page = pageDtos.get(pageIndex++).toEntity();
-                tokenIndex = 0;
-            }
-
-            if (line.equals("# text = \\newline")) {
-                newPage = true;
-                skipNext = 2;
-            }
-
-            if (line.isEmpty() || line.startsWith("#")) {
-                continue;
-            }
-
-            String[] columns = line.split("\t");
-
-            Token token = new Token();
-            token.setContent(columns[1]);
-
-            LinguisticMetadata metadata = new LinguisticMetadata();
-
-            try {
-                metadata.setPosition(Integer.parseInt(columns[0]));
-            } catch (NumberFormatException e) {
-                // metadata for this word are split into two lines
-                log.warn("Error parsing output line number on: " + line);
-                previousMiscColumn = columns[9];
-                previousContent = columns[1];
-                continue;
-            }
-
-            metadata.setLemma(parseColumn(columns[2]));
-            metadata.setUPosTag(parseColumn(columns[3]));
-            metadata.setXPosTag(parseColumn(columns[4]));
-            metadata.setFeats(parseColumn(columns[5]));
-            metadata.setHead(parseColumn(columns[6]));
-            metadata.setDepRel(parseColumn(columns[7]));
-
-            if (!previousMiscColumn.isEmpty()) {
-                token.setContent(previousContent);
-                previousContent = "";
-                metadata.setMisc(previousMiscColumn);
-                parseMisc(token, previousMiscColumn);
-                previousMiscColumn = "";
-                skipNext = 1;
-            } else {
-                metadata.setMisc(parseColumn(columns[9]));
-                parseMisc(token, columns[9]);
-            }
-
-            token.setLinguisticMetadata(metadata);
-
-            token.setTokenIndex(tokenIndex++);
-            resultTokens.add(token);
-        }
-
-        if (page != null) {
-            page.setTokens(resultTokens);
-            resultPages.add(page);
-        }
-
-        return resultPages;
-    }
-
-
-    private List<Token> processPageResponse(String responseBody) {
+    private List<Token> parseResponseToTokens(String responseBody) {
         String[] lines = responseBody.split("\n");
 
         int tokenIndex = 0;
@@ -319,5 +152,10 @@ public class UDPipeService {
         }
 
         return columnValue;
+    }
+
+    @Resource(name = "udPipeWebClient")
+    public void setWebClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 }

@@ -12,8 +12,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-    @Bean
-    public WebClient webClient(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi) {
+    @Bean(name = "krameriusWebClient")
+    public WebClient webClientKramerius(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi) {
         return WebClient
                 .builder()
                 .baseUrl(krameriusApi + "/search/api/v5.0/item")
@@ -21,6 +21,17 @@ public class WebClientConfig {
                     configurer.defaultCodecs().jaxb2Encoder(new Jaxb2XmlEncoder());
                     configurer.defaultCodecs().jaxb2Decoder(new Jaxb2XmlDecoder(MimeTypeUtils.TEXT_XML, MimeTypeUtils.TEXT_PLAIN));
                 }).build())
+                .build();
+    }
+
+    @Bean(name = "udPipeWebClient")
+    public WebClient webClientUDPipe() {
+        return WebClient
+                .builder()
+                .baseUrl("http://lindat.mff.cuni.cz/services/udpipe/api/process")
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(16 * 1024 * 1024))
                 .build();
     }
 }
