@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Document(collection = "publications")
-public abstract class Publication extends DomainObject implements PageVisitable {
+public abstract class Publication extends DomainObject {
 
     private String title;
 
@@ -23,8 +22,6 @@ public abstract class Publication extends DomainObject implements PageVisitable 
     private String policy;
 
     private ModsMetadata modsMetadata;
-
-    public abstract List<Page> getPages();
 
     /**
      * Returns a list of children publications. If a publication has no children, it returns an empty list.

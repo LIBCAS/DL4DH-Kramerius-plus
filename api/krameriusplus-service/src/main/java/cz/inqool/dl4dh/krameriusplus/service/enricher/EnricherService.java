@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
@@ -37,10 +38,14 @@ public class EnricherService {
         this.PLAIN_TEXT_SOURCE = plainTextSource;
     }
 
-    public void enrichPublication(Publication publication) {
+    public void enrichPublication(Publication publication, EnrichmentTask task) {
         try {
-            enrichPublicationChildren(publication);
+            enrichPublicationChildren(publication, task);
             enrichPublicationWithMods(publication);
+
+            if (publication instanceof PagesAware) {
+                enrichPages(((PagesAware) publication).getPages(), task);
+            }
         } catch (Exception e) {
             log.error("Error enriching publication", e);
         }
@@ -52,32 +57,29 @@ public class EnricherService {
         task.setTotalPages(total);
 
         for (Page page : pages) {
-            done = enrichPage(task, done, total, page);
+            task.setProcessingPage(done);
+            enrichPage(page);
+            task.setPercentDone(calculatePercentDone(total, done++));
         }
     }
 
-    private void enrichPublicationChildren(Publication publication) {
+    private void enrichPublicationChildren(Publication publication, EnrichmentTask task) {
         for (Publication child : publication.getChildren()) {
-            enrichPublication(child);
+            enrichPublication(child, task);
         }
     }
 
-    private int enrichPage(EnrichmentTask task, int done, int total, Page page) {
-        task.setProcessingPage(done);
-
+    private void enrichPage(Page page) {
         try {
             AltoWrapper altoWrapper = new AltoWrapper(streamProvider.getAlto(page.getId()));
-            String content;
-            content = getPageContent(page, altoWrapper);
+            String content = getPageContent(page, altoWrapper);
+
             page.setTokens(tokenizerService.tokenize(content));
             page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
             altoWrapper.enrichPage(page);
         } catch (Exception e) {
             log.error("Error enriching page with external services", e);
         }
-
-        task.setPercentDone(calculatePercentDone(total, done++));
-        return done;
     }
 
     private String getPageContent(Page page, AltoWrapper altoWrapper) {
