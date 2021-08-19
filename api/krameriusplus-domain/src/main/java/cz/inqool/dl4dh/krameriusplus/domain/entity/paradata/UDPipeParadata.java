@@ -12,4 +12,9 @@ import java.time.Instant;
 public class UDPipeParadata extends Paradata {
 
     private String model;
+
+    @Override
+    public ExternalServiceType getExternalServiceType() {
+        return ExternalServiceType.UD_PIPE;
+    }
 }

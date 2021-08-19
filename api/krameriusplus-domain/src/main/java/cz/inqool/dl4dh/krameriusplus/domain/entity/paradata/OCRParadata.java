@@ -36,9 +36,6 @@ public class OCRParadata extends Paradata {
         if (!Objects.equals(softwareName, other.softwareName)) {
             return false;
         }
-        if (!Objects.equals(serviceName, other.serviceName)) {
-            return false;
-        }
 
         return Objects.equals(version, other.version);
     }
@@ -57,5 +54,10 @@ public class OCRParadata extends Paradata {
 
     protected boolean canEqual(Object other) {
         return other instanceof OCRParadata;
+    }
+
+    @Override
+    public ExternalServiceType getExternalServiceType() {
+        return ExternalServiceType.OCR;
     }
 }

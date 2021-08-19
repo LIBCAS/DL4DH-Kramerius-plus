@@ -14,5 +14,5 @@ public abstract class Paradata {
 
     protected Instant created;
 
-    protected ExternalServiceType serviceName;
+    public abstract ExternalServiceType getExternalServiceType();
 }

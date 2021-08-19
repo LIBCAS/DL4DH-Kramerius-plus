@@ -10,4 +10,9 @@ import lombok.Setter;
 public class NameTagParadata extends Paradata {
 
     private String model;
+
+    @Override
+    public ExternalServiceType getExternalServiceType() {
+        return ExternalServiceType.NAME_TAG;
+    }
 }
