@@ -65,21 +65,25 @@ public class EnricherService {
             task.setProcessingPage(done);
             enrichPage(page);
 
-            if (ocrParadata == null) {
+            if (ocrParadata == null || (page.getOcrParadata() != null && !ocrParadata.equals(page.getOcrParadata()))) {
                 ocrParadata = page.getOcrParadata();
-            } else {
-
+                publication.setOcrParadata(ocrParadata);
             }
 
-            ocrParadata = page.getOcrParadata();
+            if (udPipeParadata == null || (page.getUdPipeParadata() != null && !udPipeParadata.equals(page.getUdPipeParadata()))) {
+                udPipeParadata = page.getUdPipeParadata();
+                publication.setUdPipeParadata(udPipeParadata);
+            }
+
+            if (nameTagParadata == null || (page.getNameTagParadata() != null && !nameTagParadata.equals(page.getNameTagParadata()))) {
+                nameTagParadata = page.getNameTagParadata();
+                publication.setNameTagParadata(nameTagParadata);
+            }
+
             task.setPercentDone(calculatePercentDone(total, done++));
         }
 
         publication.setOcrParadata(ocrParadata);
-    }
-
-    private boolean isOCRSame(OCRParadata previous, OCRParadata current) {
-        return previous == null || previous.equals(current);
     }
 
     private void enrichPublicationChildren(Publication publication, EnrichmentTask task) {

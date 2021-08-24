@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,16 @@ public class NameTagService {
             throw new IllegalStateException("NameTag did not return results");
         }
 
+        page.setNameTagParadata(getNameTagParadata(response.getModel()));
         page.setNameTagMetadata(processResponse(response, tokens));
+    }
+
+    private NameTagParadata getNameTagParadata(String model) {
+        NameTagParadata nameTagParadata = new NameTagParadata();
+        nameTagParadata.setCreated(Instant.now());
+        nameTagParadata.setModel(model);
+
+        return nameTagParadata;
     }
 
     private LindatServiceResponse makeApiCall(String body) {
