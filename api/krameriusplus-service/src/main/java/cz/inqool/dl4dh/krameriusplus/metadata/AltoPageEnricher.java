@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.alto.*;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.AltoTokenMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Enriches page with positional metadata obtained from Alto format.
  */
+@Slf4j
 public class AltoPageEnricher {
 
     private final Alto alto;
@@ -22,6 +24,7 @@ public class AltoPageEnricher {
     public AltoPageEnricher(Alto alto) {
         this.alto = alto;
     }
+
 
     /**
      * Works only if the content of the page was extracted from Alto and word concatenation at the end of lines

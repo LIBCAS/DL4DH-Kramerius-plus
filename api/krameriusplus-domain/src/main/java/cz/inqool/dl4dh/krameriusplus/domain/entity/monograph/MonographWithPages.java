@@ -1,12 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.monograph;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +18,16 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class MonographWithPages extends Monograph {
+public class MonographWithPages extends Monograph implements PagesAware {
 
     @Transient
     private List<Page> pages = new ArrayList<>();
 
-    @Override
-    public void addPages(PageRepository pageRepository, Pageable pageable) {
-        pages = pageRepository.findByParentIdOrderByIndexAsc(id, pageable);
-    }
+    private OCRParadata ocrParadata;
+
+    private NameTagParadata nameTagParadata;
+
+    private UDPipeParadata udPipeParadata;
 
     @Override
     public List<? extends Publication> getChildren() {

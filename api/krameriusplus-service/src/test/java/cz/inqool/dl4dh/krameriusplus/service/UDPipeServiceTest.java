@@ -29,7 +29,10 @@ public class UDPipeServiceTest {
     public void testTokenize() {
         String content = "Pojedeme k babičce, abychom se najedli.";
 
-        List<Token> actual = tokenizer.tokenize(content);
+        Page page = new Page();
+
+        tokenizer.createTokens(page, content);
+        List<Token> actual = page.getTokens();
         List<Token> expected = getExpectedResult();
 
         SoftAssertions.assertSoftly(softAssertions -> {
@@ -65,7 +68,7 @@ public class UDPipeServiceTest {
         Page page = new Page();
         page.setId("uuid:2f28ca1f-e874-4cd0-83d4-3aae9a667449");
         page.setPageNumber("4");
-        page.setTokens(tokenizer.tokenize(("í ikat od rodičů i od žáků, a v té důminoe, že se\n" +
+        tokenizer.createTokens(page, ("í ikat od rodičů i od žáků, a v té důminoe, že se\n" +
                 "nesníží, jak toho třeba, k žákům svým ani v mlu-\n" +
                 "vení, ani v obcování; pracujeť obyčejně napřed\n" +
                 "se zámožnějšími, a poněvadž jak desátá a čtvrtá\n" +
@@ -100,13 +103,13 @@ public class UDPipeServiceTest {
                 "mučírny.\n" +
                 "Když jsem první ráno v Chvalíně se probudila,\n" +
                 "zdálo se mi, že nikomu není tak zle na světě,\n" +
-                "4").replaceAll("-\n", "").replaceAll("\n", " ")));
+                "4").replaceAll("-\n", "").replaceAll("\n", " "));
         monograph.getPages().add(page);
 
         page = new Page();
         page.setId("uuid:e97daf16-c92f-4548-937a-47e3cdc3278d");
         page.setPageNumber("9");
-        page.setTokens(tokenizer.tokenize(("kleknul před křížem a předříkával nám krátké\n" +
+        tokenizer.createTokens(page, ("kleknul před křížem a předříkával nám krátké\n" +
                 "sice, ale dojemné modlitby. Po modlitbě násle-\n" +
                 "dovala píseň obsahu nábožného, aneb podněcu-\n" +
                 "jící k učení, к mravnosti, к pilnosti, načež jsme\n" +
@@ -141,13 +144,13 @@ public class UDPipeServiceTest {
                 "la se čest, že dál pan učitel písmo jeho za sklo,\n" +
                 "kde zůstalo až zase do druhého pondělí.\n" +
                 "Nedaleko dveří v koutě byla zelená kachlová,\n" +
-                "9").replaceAll("-\n", "").replaceAll("\n", " ")));
+                "9").replaceAll("-\n", "").replaceAll("\n", " "));
         monograph.getPages().add(page);
 
         page = new Page();
         page.setId("uuid:2765ffab-b9d3-4f8a-a795-b8a0d68b9558");
         page.setPageNumber("12");
-        page.setTokens(tokenizer.tokenize(("učil malé děti ve zvláštní světnici. Já seděla v tře-\n" +
+        tokenizer.createTokens(page, ("učil malé děti ve zvláštní světnici. Já seděla v tře-\n" +
                 "tí lavici, neboť jsem již uměla dosti obstojně číst,\n" +
                 "začínala jsem psát, a počítat jsem znala do dva-\n" +
                 "cíti, když jsem do školy přišla. Ačkoli jsem hned\n" +
@@ -182,7 +185,7 @@ public class UDPipeServiceTest {
                 "druhý den šla tabulkou se pochlubit, a on sám\n" +
                 "se nabídnul, že mne naučí literky znát. I naučil\n" +
                 "mne je znát, potom dohromady skládat v sla-\n" +
-                "12").replaceAll("-\n", "").replaceAll("\n", " ")));
+                "12").replaceAll("-\n", "").replaceAll("\n", " "));
         monograph.getPages().add(page);
 
         return monograph;

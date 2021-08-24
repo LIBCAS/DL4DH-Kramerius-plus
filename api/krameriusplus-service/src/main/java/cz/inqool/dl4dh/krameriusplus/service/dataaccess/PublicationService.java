@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.dataaccess;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,9 @@ public class PublicationService {
         }
         Publication publication = find(publicationId);
 
-        publication.addPages(pageRepository, pageable);
+        if (publication instanceof PagesAware) {
+            ((PagesAware) publication).setPages(pageRepository.findByParentIdOrderByIndexAsc(publicationId, pageable));
+        }
 
         return publication;
     }
@@ -55,7 +58,13 @@ public class PublicationService {
     public void save(Publication publication) {
         publicationRepository.save(publication);
 
-        pageRepository.saveAll(publication.getPages());
+        for (Publication child : publication.getChildren()) {
+            save(child);
+        }
+
+        if (publication instanceof PagesAware) {
+            pageRepository.saveAll(((PagesAware) publication).getPages());
+        }
     }
 
     @Transactional

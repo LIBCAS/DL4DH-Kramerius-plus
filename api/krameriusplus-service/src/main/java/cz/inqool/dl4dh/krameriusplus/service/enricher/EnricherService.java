@@ -1,17 +1,19 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author Norbert Bodnar
@@ -20,7 +22,7 @@ import java.util.List;
 @Slf4j
 public class EnricherService {
 
-    private final UDPipeService tokenizerService;
+    private final UDPipeService udPipeService;
 
     private final NameTagService nameTagService;
 
@@ -29,55 +31,79 @@ public class EnricherService {
     private final String PLAIN_TEXT_SOURCE;
 
     @Autowired
-    public EnricherService(UDPipeService tokenizerService, NameTagService nameTagService, StreamProvider streamProvider,
+    public EnricherService(UDPipeService udPipeService, NameTagService nameTagService, StreamProvider streamProvider,
                            @Value("${enrichment.source:OCR}") String plainTextSource) {
-        this.tokenizerService = tokenizerService;
+        this.udPipeService = udPipeService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;
         this.PLAIN_TEXT_SOURCE = plainTextSource;
     }
 
-    public void enrichPublication(Publication publication) {
+    public void enrichPublication(Publication publication, EnrichmentTask task) {
         try {
-            enrichPublicationChildren(publication);
+            enrichPublicationChildren(publication, task);
             enrichPublicationWithMods(publication);
+
+            if (publication instanceof PagesAware) {
+                enrichPages(((PagesAware) publication), task);
+            }
         } catch (Exception e) {
             log.error("Error enriching publication", e);
         }
     }
 
-    public void enrichPages(List<Page> pages, EnrichmentTask task) {
+    public void enrichPages(PagesAware publication, EnrichmentTask task) {
         int done = 1;
-        int total = pages.size();
+        int total = publication.getPages().size();
         task.setTotalPages(total);
 
-        for (Page page : pages) {
-            done = enrichPage(task, done, total, page);
+        OCRParadata ocrParadata = null;
+        UDPipeParadata udPipeParadata = null;
+        NameTagParadata nameTagParadata = null;
+
+        for (Page page : publication.getPages()) {
+            task.setProcessingPage(done);
+            enrichPage(page);
+
+            if (ocrParadata == null || (page.getOcrParadata() != null && !ocrParadata.equals(page.getOcrParadata()))) {
+                ocrParadata = page.getOcrParadata();
+                publication.setOcrParadata(ocrParadata);
+            }
+
+            if (udPipeParadata == null || (page.getUdPipeParadata() != null && !udPipeParadata.equals(page.getUdPipeParadata()))) {
+                udPipeParadata = page.getUdPipeParadata();
+                publication.setUdPipeParadata(udPipeParadata);
+            }
+
+            if (nameTagParadata == null || (page.getNameTagParadata() != null && !nameTagParadata.equals(page.getNameTagParadata()))) {
+                nameTagParadata = page.getNameTagParadata();
+                publication.setNameTagParadata(nameTagParadata);
+            }
+
+            task.setPercentDone(calculatePercentDone(total, done++));
         }
+
+        publication.setOcrParadata(ocrParadata);
     }
 
-    private void enrichPublicationChildren(Publication publication) {
+    private void enrichPublicationChildren(Publication publication, EnrichmentTask task) {
         for (Publication child : publication.getChildren()) {
-            enrichPublication(child);
+            enrichPublication(child, task);
         }
     }
 
-    private int enrichPage(EnrichmentTask task, int done, int total, Page page) {
-        task.setProcessingPage(done);
-
+    private void enrichPage(Page page) {
         try {
             AltoWrapper altoWrapper = new AltoWrapper(streamProvider.getAlto(page.getId()));
-            String content;
-            content = getPageContent(page, altoWrapper);
-            page.setTokens(tokenizerService.tokenize(content));
-            page.setNameTagMetadata(nameTagService.processTokens(page.getTokens()));
+            String content = getPageContent(page, altoWrapper);
+
+            udPipeService.createTokens(page, content);
+            nameTagService.processTokens(page);
+
             altoWrapper.enrichPage(page);
         } catch (Exception e) {
             log.error("Error enriching page with external services", e);
         }
-
-        task.setPercentDone(calculatePercentDone(total, done++));
-        return done;
     }
 
     private String getPageContent(Page page, AltoWrapper altoWrapper) {

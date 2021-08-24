@@ -53,7 +53,7 @@ public class FillerService {
             if (digitalObject instanceof Publication) {
                 enrichPublication((Publication) digitalObject, task);
             } else if (digitalObject instanceof Page) {
-                enrichSinglePage((Page) digitalObject, task);
+                throw new IllegalArgumentException("Cannot enrich single page");
             } else {
                 log.error("DigitalObject of class " + digitalObject.getClass().getSimpleName() + " not enrichable");
             }
@@ -64,26 +64,12 @@ public class FillerService {
         }
     }
 
-    private void enrichSinglePage(Page page, EnrichmentTask task) {
-        log.info("Enriching page with ID: " + page.getId());
-        task.setState(ENRICHING);
-        long start = System.currentTimeMillis();
-
-        enricherService.enrichPages(Collections.singletonList(page), task);
-        publicationService.save(List.of(page));
-
-        log.info("Saving page: " + page.getId());
-        task.setTook(System.currentTimeMillis() - start);
-        finishTask(task);
-    }
-
     private void enrichPublication(Publication publication, EnrichmentTask task) {
         log.info("Enriching publication: " + publication.getTitle());
         task.setState(ENRICHING);
         long start = System.currentTimeMillis();
 
-        enricherService.enrichPublication(publication);
-        enricherService.enrichPages(publication.getPages(), task);
+        enricherService.enrichPublication(publication, task);
         publicationService.save(publication);
 
         log.info("Saving publication: " + publication.getTitle());

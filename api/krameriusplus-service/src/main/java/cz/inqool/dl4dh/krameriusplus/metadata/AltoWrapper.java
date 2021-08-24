@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.metadata;
 
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 
 /**
  * Wrapper class for {@code Alto} (generated source) to perform tasks on this format, such
@@ -21,7 +22,12 @@ public class AltoWrapper {
         return contentExtractor.extractPageContent();
     }
 
+    public OCRParadata extractOCRParadata() {
+        return contentExtractor.extractOcrParadata();
+    }
+
     public void enrichPage(Page page) {
         pageEnricher.enrichWithAlto(page);
+        page.setOcrParadata(contentExtractor.extractOcrParadata());
     }
 }

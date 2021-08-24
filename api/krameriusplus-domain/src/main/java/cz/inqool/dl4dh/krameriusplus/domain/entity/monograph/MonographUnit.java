@@ -1,15 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.monograph;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
  */
 @Getter
 @Setter
-public class MonographUnit extends Publication implements ParentAware {
+public class MonographUnit extends Publication implements ParentAware, PagesAware {
 
     private String partNumber;
 
@@ -35,18 +36,18 @@ public class MonographUnit extends Publication implements ParentAware {
 
     private int index;
 
-    @Transient
-    @JsonIgnore
+    private OCRParadata ocrParadata;
+
+    private UDPipeParadata udPipeParadata;
+
+    private NameTagParadata nameTagParadata;
+
+    @DBRef
     private List<Page> pages = new ArrayList<>();
 
     @Override
     public KrameriusModel getModel() {
         return MONOGRAPH_UNIT;
-    }
-
-    @Override
-    public void addPages(PageRepository pageRepository, Pageable pageable) {
-        pages = pageRepository.findByParentIdOrderByIndexAsc(id, pageable);
     }
 
     @Override
