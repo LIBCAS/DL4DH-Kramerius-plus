@@ -48,6 +48,4 @@ public class EnricherService {
         ParadataFiller paradataFiller = new ParadataFiller(publicationWithPages);
         paradataFiller.fill();
     }
-
-
 }
