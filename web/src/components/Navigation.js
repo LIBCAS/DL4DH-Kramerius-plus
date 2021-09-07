@@ -1,7 +1,8 @@
 import { AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
+import { withStyles } from "@material-ui/styles";
 import { Button } from "bootstrap";
 
-export default function Navigation() {
+function Navigation(styles) {
     return (
         <AppBar position='static'>
             <Toolbar>
@@ -21,3 +22,5 @@ export default function Navigation() {
         </AppBar>
     );
 }
+
+export default withStyles(styles)(Navigation);
