@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.enricher;
+package cz.inqool.dl4dh.krameriusplus.dto;
 
 import lombok.Getter;
 import lombok.Setter;

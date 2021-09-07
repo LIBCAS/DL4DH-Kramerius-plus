@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
+import cz.inqool.dl4dh.krameriusplus.dto.LindatServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
