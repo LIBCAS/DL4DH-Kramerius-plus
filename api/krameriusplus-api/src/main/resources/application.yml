@@ -25,3 +25,9 @@ enrichment:
 #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
 #  and ALTO processing does not make manual corrections (while OCR processing does)
   source: ALTO
+  udpipe:
+    api: http://lindat.mff.cuni.cz/services/udpipe/api/process
+  nametag:
+    api: http://lindat.mff.cuni.cz/services/nametag/api/recognize
+  tei:
+    api: http://localhost:5000
