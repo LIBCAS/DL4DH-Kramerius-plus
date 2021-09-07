@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class PageEnricher {
 
     @Autowired
     public PageEnricher(UDPipeService udPipeService, NameTagService nameTagService, StreamProvider streamProvider,
-                           @Value("${enrichment.source:OCR}") String plainTextSource, TeiConnector teiConnector) {
+                           @Value("${enrichment.source:OCR}") String plainTextSource, @Qualifier("dummy") TeiConnector teiConnector) {
         this.udPipeService = udPipeService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;
@@ -57,7 +58,7 @@ public class PageEnricher {
             nameTagService.processTokens(page);
 
             altoWrapper.enrichPage(page);
-//            page.setTeiBody(teiConnector.convertToTeiPage(page));
+            page.setTeiBody(teiConnector.convertToTeiPage(page));
         } catch (Exception e) {
             log.error("Error enriching page with external services", e);
         }

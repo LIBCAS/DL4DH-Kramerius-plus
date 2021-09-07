@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +16,7 @@ public class PublicationEnricher {
     private final StreamProvider streamProvider;
 
     @Autowired
-    public PublicationEnricher(TeiConnector teiConnector, StreamProvider streamProvider) {
+    public PublicationEnricher(@Qualifier("dummy") TeiConnector teiConnector, StreamProvider streamProvider) {
         this.teiConnector = teiConnector;
         this.streamProvider = streamProvider;
     }
@@ -23,7 +24,7 @@ public class PublicationEnricher {
     public void enrich(Publication publication, EnrichmentTask task) {
         enrichPublicationChildren(publication, task);
         enrichPublicationWithMods(publication);
-//        enrichPublicationWithTeiHeader(publication);
+        enrichPublicationWithTeiHeader(publication);
     }
 
     private void enrichPublicationWithTeiHeader(Publication publication) {

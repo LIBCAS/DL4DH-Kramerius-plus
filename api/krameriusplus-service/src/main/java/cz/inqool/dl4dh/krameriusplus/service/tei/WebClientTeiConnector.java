@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.dto.tei.TeiHeaderFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
 
 @Service
 @Slf4j
+@Qualifier("default")
 public class WebClientTeiConnector implements TeiConnector {
 
     private WebClient webClient;
