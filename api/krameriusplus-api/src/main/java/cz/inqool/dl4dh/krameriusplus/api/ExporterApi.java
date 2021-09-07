@@ -2,10 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.api;
 
 import cz.inqool.dl4dh.krameriusplus.service.export.ExporterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Norbert Bodnar
@@ -25,4 +24,9 @@ public class ExporterApi {
     public void export(@PathVariable("id") String publicationId) {
         exporterService.export(publicationId, ExporterService.ExportFormat.JSON);
     }
+//
+//    @GetMapping("/download/{id}")
+//    public ResponseEntity<InputStreamResource> download() {
+//
+//    }
 }
