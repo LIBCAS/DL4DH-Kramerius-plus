@@ -9,7 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.tei.TeiConnector;
+import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

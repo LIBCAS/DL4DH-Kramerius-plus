@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.enricher.tei;
+package cz.inqool.dl4dh.krameriusplus.service.tei;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

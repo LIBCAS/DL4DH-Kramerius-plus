@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.enricher.tei;
+package cz.inqool.dl4dh.krameriusplus.service.tei;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
