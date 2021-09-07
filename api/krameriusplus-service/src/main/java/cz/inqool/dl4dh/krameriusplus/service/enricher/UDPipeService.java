@@ -53,7 +53,7 @@ public class UDPipeService {
                 .queryParam("tokenizer", "ranges")
                 .queryParam("tagger")
                 .queryParam("parser")
-                .build()).body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
+                .build()).body(BodyInserters.fromMultipartData("data", body))
                 .acceptCharset(StandardCharsets.UTF_8)
                 .retrieve()
                 .bodyToMono(LindatServiceResponse.class)

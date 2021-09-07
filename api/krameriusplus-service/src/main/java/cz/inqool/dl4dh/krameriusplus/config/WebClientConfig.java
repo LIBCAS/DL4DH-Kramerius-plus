@@ -39,7 +39,7 @@ public class WebClientConfig {
     }
 
     @Bean(name = "nameTagWebClient")
-    public WebClient webClientNameTag(@Value("${enrichment.nametag.api:http://lindat.mff.cuni.cz/services/nametag/api/recognize")
+    public WebClient webClientNameTag(@Value("${enrichment.nametag.api:http://lindat.mff.cuni.cz/services/nametag/api/recognize}")
                                                   String nameTagApi) {
         return WebClient
                 .builder()
