@@ -23,6 +23,8 @@ public abstract class Publication extends DomainObject {
 
     private ModsMetadata modsMetadata;
 
+    private String teiHeader;
+
     /**
      * Returns a list of children publications. If a publication has no children, it returns an empty list.
      * @return

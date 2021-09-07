@@ -74,6 +74,8 @@ public class Page extends DomainObject implements ParentAware {
     @Transient
     private NameTagParadata nameTagParadata;
 
+    private String teiBody;
+
     @Override
     public KrameriusModel getModel() {
         return PAGE;

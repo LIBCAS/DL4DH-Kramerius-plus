@@ -9,6 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.tei.TeiConnector;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,27 +23,31 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EnricherService {
 
+    private final String PLAIN_TEXT_SOURCE;
+
     private final UDPipeService udPipeService;
 
     private final NameTagService nameTagService;
 
     private final StreamProvider streamProvider;
 
-    private final String PLAIN_TEXT_SOURCE;
+    private final TeiConnector teiConnector;
 
     @Autowired
     public EnricherService(UDPipeService udPipeService, NameTagService nameTagService, StreamProvider streamProvider,
-                           @Value("${enrichment.source:OCR}") String plainTextSource) {
+                           @Value("${enrichment.source:OCR}") String plainTextSource, TeiConnector teiConnector) {
         this.udPipeService = udPipeService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;
         this.PLAIN_TEXT_SOURCE = plainTextSource;
+        this.teiConnector = teiConnector;
     }
 
     public void enrichPublication(Publication publication, EnrichmentTask task) {
         try {
             enrichPublicationChildren(publication, task);
             enrichPublicationWithMods(publication);
+            enrichPublicationWithTeiHeader(publication);
 
             if (publication instanceof PagesAware) {
                 enrichPages(((PagesAware) publication), task);
@@ -50,6 +55,10 @@ public class EnricherService {
         } catch (Exception e) {
             log.error("Error enriching publication", e);
         }
+    }
+
+    private void enrichPublicationWithTeiHeader(Publication publication) {
+        publication.setTeiHeader(teiConnector.convertToTeiHeader(publication));
     }
 
     public void enrichPages(PagesAware publication, EnrichmentTask task) {
@@ -101,6 +110,7 @@ public class EnricherService {
             nameTagService.processTokens(page);
 
             altoWrapper.enrichPage(page);
+            page.setTeiBody(teiConnector.convertToTeiPage(page));
         } catch (Exception e) {
             log.error("Error enriching page with external services", e);
         }
