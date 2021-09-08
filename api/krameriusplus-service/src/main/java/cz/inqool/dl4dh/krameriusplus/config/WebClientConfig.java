@@ -12,6 +12,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
+    private static final int MAX_MEMORY_SIZE = 16777216;
+
     @Bean(name = "krameriusWebClient")
     public WebClient webClientKramerius(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi) {
         return WebClient
@@ -25,24 +27,37 @@ public class WebClientConfig {
     }
 
     @Bean(name = "udPipeWebClient")
-    public WebClient webClientUDPipe() {
+    public WebClient webClientUDPipe(@Value("${enrichment.udpipe.api:http://lindat.mff.cuni.cz/services/udpipe/api/process}")
+                                                 String udPipeApi) {
         return WebClient
                 .builder()
-                .baseUrl("http://lindat.mff.cuni.cz/services/udpipe/api/process")
+                .baseUrl(udPipeApi)
                 .codecs(configurer -> configurer
                         .defaultCodecs()
-                        .maxInMemorySize(16 * 1024 * 1024))
+                        .maxInMemorySize(MAX_MEMORY_SIZE))
                 .build();
     }
 
     @Bean(name = "nameTagWebClient")
-    public WebClient webClientNameTag() {
+    public WebClient webClientNameTag(@Value("${enrichment.nametag.api:http://lindat.mff.cuni.cz/services/nametag/api/recognize}")
+                                                  String nameTagApi) {
         return WebClient
                 .builder()
-                .baseUrl("http://lindat.mff.cuni.cz/services/nametag/api/recognize")
+                .baseUrl(nameTagApi)
                 .codecs(configurer -> configurer
                         .defaultCodecs()
-                        .maxInMemorySize(16 * 1024 * 1024))
+                        .maxInMemorySize(MAX_MEMORY_SIZE))
+                .build();
+    }
+
+    @Bean(name = "teiWebClient")
+    public WebClient webClientTei(@Value("${enrichment.tei.api:http://localhost:5000}") String teiApi) {
+        return WebClient
+                .builder()
+                .baseUrl(teiApi)
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(MAX_MEMORY_SIZE))
                 .build();
     }
 }

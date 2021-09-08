@@ -4,7 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
-import cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException;
+import cz.inqool.dl4dh.krameriusplus.dto.LindatServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
@@ -16,8 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-
-import static cz.inqool.dl4dh.krameriusplus.domain.exception.UDPipeException.ErrorCode.EXTERNAL_SERVICE_ERROR;
 
 /**
  * @author Norbert Bodnar
@@ -53,7 +51,7 @@ public class UDPipeService {
                 .queryParam("tokenizer", "ranges")
                 .queryParam("tagger")
                 .queryParam("parser")
-                .build()).body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
+                .build()).body(BodyInserters.fromMultipartData("data", body))
                 .acceptCharset(StandardCharsets.UTF_8)
                 .retrieve()
                 .bodyToMono(LindatServiceResponse.class)

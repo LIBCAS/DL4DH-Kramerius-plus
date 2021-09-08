@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.NamedEntityType;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.LindatServiceResponse;
+import cz.inqool.dl4dh.krameriusplus.dto.LindatServiceResponse;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.NameTagService;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService;
 import lombok.SneakyThrows;

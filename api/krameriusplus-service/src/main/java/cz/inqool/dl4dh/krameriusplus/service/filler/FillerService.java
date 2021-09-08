@@ -15,8 +15,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.ENRICHING;
 
@@ -69,7 +67,7 @@ public class FillerService {
         task.setState(ENRICHING);
         long start = System.currentTimeMillis();
 
-        enricherService.enrichPublication(publication, task);
+        enricherService.enrich(publication, task);
         publicationService.save(publication);
 
         log.info("Saving publication: " + publication.getTitle());
