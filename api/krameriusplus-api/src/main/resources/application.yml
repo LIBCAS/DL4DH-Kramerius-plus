@@ -7,7 +7,7 @@ spring:
     mongodb:
       auto-index-creation: true
       database: KrameriusPlus
-      drop-on-start: true
+      drop-on-start: false
 
 logging:
   level:

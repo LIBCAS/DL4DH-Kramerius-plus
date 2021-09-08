@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.Resource;
@@ -34,7 +33,7 @@ public class WebClientTeiConnector implements TeiConnector {
         try {
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/convert/page").build())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromMultipartData("data", objectMapper.writeValueAsString(page)))
+                    .bodyValue(objectMapper.writeValueAsString(page))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -50,13 +49,12 @@ public class WebClientTeiConnector implements TeiConnector {
         try {
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/convert/header").build())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromMultipartData("data",
-                            objectMapper.writeValueAsString(TeiHeaderFactory.createHeaderInput(publication))))
+                    .bodyValue(objectMapper.writeValueAsString(TeiHeaderFactory.createHeaderInput(publication)))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
         } catch (JsonProcessingException e) {
-            log.error("Error serializing page " + publication.getId());
+            log.error("Error serializing publication " + publication.getId());
         }
 
         return "";

@@ -16,7 +16,7 @@ public class PublicationEnricher {
     private final StreamProvider streamProvider;
 
     @Autowired
-    public PublicationEnricher(@Qualifier("dummy") TeiConnector teiConnector, StreamProvider streamProvider) {
+    public PublicationEnricher(@Qualifier("default") TeiConnector teiConnector, StreamProvider streamProvider) {
         this.teiConnector = teiConnector;
         this.streamProvider = streamProvider;
     }
