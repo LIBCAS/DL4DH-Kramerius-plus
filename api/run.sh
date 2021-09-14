@@ -1,7 +1,7 @@
 #!/bin/sh
 
 cd /usr/src
-java -jar -Xmx256m kramerius.jar > kramerius.stdout 2> kramerius.stderr
+java -jar -Xmx256m api.jar > api.stdout 2> api.stderr
 
 # Keep docker running, when java was failed.
 tail -f /etc/issue

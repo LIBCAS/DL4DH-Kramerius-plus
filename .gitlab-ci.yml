@@ -1,39 +1,25 @@
 stages:
-  - api-build
-  - web-build
-  - docker
+  - build
   - deploy
 
 api-build:
-  stage: api-build
+  stage: build
   only:
     - master
   tags:
     - maven
-  before_script:
-    - export JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/
-  script:
-    - "cd api"
-    - "mvn clean package -B -Dmaven.test.skip=true"
-  artifacts:
-    paths:
-      - api/target/*.jar
-
-api-docker:
-  stage: docker
-  tags:
-    - docker
-  only:
-    - master
-  needs:
-    - api-build
-  dependencies:
-    - api-build
+    - java11
+    - lessmemory
   variables:
     IMAGE_NAME: kramerius/api
   script:
     - "cd api"
+    - "mvn clean package -B -Dmaven.test.skip=true"
     - "createDocker"
+  artifacts:
+    paths:
+      - api/krameriusplus-api/target/krameriusplus-api-*.jar
+
 
 api-deploy:
   stage: deploy
@@ -42,7 +28,7 @@ api-deploy:
   tags:
     - deploy
   needs:
-    - api-docker
+    - api-build
   variables:
     APP: $CI_COMMIT_REF_NAME
     CI_ENVIRONMENT_URL: http://$CLUSTER_IP_API/
