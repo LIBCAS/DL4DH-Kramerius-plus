@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kramerius-api
+  labels:
+    name: kramerius-api
+    app: kramerius-api
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: kramerius-api
+  template:
+    metadata:
+      labels:
+        name: kramerius-api
+        app: kramerius-api
+    spec:
+      containers:
+        - name: kramerius-api
+          image: eu.gcr.io/inqool-1301/cz.inqool.kramerius/api:latest
+          env:
+            - name: SPRING_DATA_MONGODB_USERNAME
+              value: root
+            - name: SPRING_DATA_MONGODB_PASSWORD
+              value: password
+            - name: SPRING_DATASOURCE_URL
+              value: "mongodb://kramerius-db:27017/?compressors=disabled&gssapiServiceName=mongodb"
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "32Mi"
+            limits:
+              cpu: "40m"
+              memory: "256Mi"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+        - name: kramerius-db
+          image: mongo:5.0.2
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: password
+            - name: MONGO_INITDB_DATABASE
+              value: KrameriusPlus
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "32Mi"
+            limits:
+              cpu: "40m"
+              memory: "128Mi"
+          ports:
+            - name: http
+              containerPort: 27017
+              protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kramerius-api
+  labels:
+    name: kramerius-api
+    app: kramerius-api
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    name: kramerius-api
+  clusterIP:

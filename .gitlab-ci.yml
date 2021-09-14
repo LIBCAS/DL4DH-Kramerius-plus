@@ -1,0 +1,67 @@
+stages:
+  - api-build
+  - web-build
+  - docker
+  - deploy
+
+api-build:
+  stage: api-build
+  only:
+    - master
+  tags:
+    - maven
+  before_script:
+    - export JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/
+  script:
+    - "cd api"
+    - "mvn clean package -B -Dmaven.test.skip=true"
+  artifacts:
+    paths:
+      - api/target/*.jar
+
+api-docker:
+  stage: docker
+  tags:
+    - docker
+  only:
+    - master
+  needs:
+    - api-build
+  dependencies:
+    - api-build
+  variables:
+    IMAGE_NAME: kramerius/api
+  script:
+    - "cd api"
+    - "createDocker"
+
+api-deploy:
+  stage: deploy
+  only:
+    - master
+  tags:
+    - deploy
+  needs:
+    - api-docker
+  variables:
+    APP: $CI_COMMIT_REF_NAME
+    CI_ENVIRONMENT_URL: http://$CLUSTER_IP_API/
+    IMAGE_NAME: kramerius/api
+  script:
+    - "cd api"
+    - "sed -i \"s/clusterIP:$/clusterIP: $CLUSTER_IP_API/g\" .deployment.yml"
+    - "deploy -m delete -f .deployment.yml -n production"
+
+api-stop:
+  stage: deploy
+  only:
+    - master
+  when: manual
+  tags:
+    - deploy
+  script:
+    - "cd api"
+    - "kubectl delete -f .deployment.yml -n production"
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
