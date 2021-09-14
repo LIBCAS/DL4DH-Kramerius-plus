@@ -27,6 +27,8 @@ spec:
               value: password
             - name: SPRING_DATASOURCE_URL
               value: "mongodb://kramerius-db:27017/?compressors=disabled&gssapiServiceName=mongodb"
+            - name: ENRICHMENT_TEI_API
+              value: "http://10.3.240.31:5000"
           resources:
             requests:
               cpu: "20m"
