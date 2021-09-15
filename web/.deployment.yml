@@ -21,7 +21,7 @@ spec:
         - name: kramerius-web
           image: eu.gcr.io/inqool-1301/cz.inqool.kramerius/web:latest
           env:
-            - name: API
+            - name: API_HOST
               value: ClusterAPIIP
           resources:
             requests:
