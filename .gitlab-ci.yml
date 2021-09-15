@@ -59,16 +59,17 @@ web-build:
   script:
     - "cd web"
     - "yarn"
-    - "yarn build"
+    - "CI=false yarn build"
     - "createDocker"
 
 web-deploy:
   stage: deploy
   only:
     - master
-  when: manual
   tags:
     - deploy
+  needs:
+    - web-build
   script:
     - "cd web"
     - "sed -i \"s/clusterIP:$/clusterIP: $CLUSTER_IP_WEB/g\" .deployment.yml"
