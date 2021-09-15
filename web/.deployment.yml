@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kramerius-web
+  labels:
+    name: kramerius-web
+    app: kramerius-web
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: kramerius-web
+  template:
+    metadata:
+      labels:
+        name: kramerius-web
+        app: kramerius-web
+    spec:
+      containers:
+        - name: kramerius-web
+          image: eu.gcr.io/inqool-1301/cz.inqool.kramerius/web:latest
+          env:
+            - name: API
+              value: ClusterAPIIP
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "32Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kramerius-web
+  labels:
+    name: kramerius-web
+    app: kramerius-web
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    name: kramerius-web
+  clusterIP:

@@ -20,7 +20,6 @@ api-build:
     paths:
       - api/krameriusplus-api/target/krameriusplus-api-*.jar
 
-
 api-deploy:
   stage: deploy
   only:
@@ -48,6 +47,41 @@ api-stop:
   script:
     - "cd api"
     - "kubectl delete -f .deployment.yml -n production"
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    action: stop
+
+web-build:
+  stage: build
+  only:
+    - master
+  tags:
+    - yarn
+  variables:
+    IMAGE_NAME: kramerius/web
+  script:
+    - "cd web"
+    - "yarn"
+    - "yarn build"
+    - "createDocker"
+
+web-deploy:
+  stage: deploy
+  only:
+    - master
+  when: manual
+  tags:
+    - deploy
+  script:
+    - "cd web"
+    - "sed -i \"s/clusterIP:$/clusterIP: $CLUSTER_IP_WEB/g\" .deployment.yml"
+    - "sed -i \"s/ClusterAPIIP$/$CLUSTER_IP_API/g\" .deployment.yml"
+    - "deploy -m delete -n production -f .deployment.yml"
+
+web-stop:
+  stage: deploy
+  only:
+    - master
+  when: manual
+  tags:
+    - deploy
+  script:
+    - "cd web"
+    - "kubectl delete -f .deployment.yml -n production"
