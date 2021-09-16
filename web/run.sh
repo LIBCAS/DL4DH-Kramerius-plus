@@ -9,8 +9,8 @@ fi
 cat <<EOT >> /etc/apache2/conf.d/proxy-api.conf
 ProxyPass "/api" "http://$API_HOST:8080/api"
 ProxyPassReverse "/api" "http://$API_HOST:8080/api"
-ProxyPass "/tei" "http://$TEI_HOST:5000"
-ProxyPassReverse "/tei" "http://$TEI_HOST:5000"
+ProxyPass "/tei" "http://$TEI_HOST:5000/tei"
+ProxyPassReverse "/tei" "http://$TEI_HOST:5000/tei"
 EOT
 
 cat <<EOT > /etc/apache2/conf.d/rewrite.conf
