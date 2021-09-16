@@ -2,10 +2,15 @@
 if [ -z $API_HOST ]; then 
     API_HOST=127.0.0.1
 fi
+if [ -z $TEI_HOST ]; then 
+    TEI_HOST=127.0.0.1
+fi
 
 cat <<EOT >> /etc/apache2/conf.d/proxy-api.conf
 ProxyPass "/api" "http://$API_HOST:8080/api"
 ProxyPassReverse "/api" "http://$API_HOST:8080/api"
+ProxyPass "/tei" "http://$TEI_HOST:5000"
+ProxyPassReverse "/tei" "http://$TEI_HOST:5000"
 EOT
 
 cat <<EOT > /etc/apache2/conf.d/rewrite.conf

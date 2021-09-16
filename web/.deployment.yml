@@ -23,6 +23,8 @@ spec:
           env:
             - name: API_HOST
               value: ClusterAPIIP
+            - name: TEI_HOST
+              value: ClusterTEIIP
           resources:
             requests:
               cpu: "20m"

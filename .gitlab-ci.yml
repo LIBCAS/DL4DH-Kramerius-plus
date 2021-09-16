@@ -74,6 +74,7 @@ web-deploy:
     - "cd web"
     - "sed -i \"s/clusterIP:$/clusterIP: $CLUSTER_IP_WEB/g\" .deployment.yml"
     - "sed -i \"s/ClusterAPIIP$/$CLUSTER_IP_API/g\" .deployment.yml"
+    - "sed -i \"s/ClusterTEIIP$/$CLUSTER_IP_TEI/g\" .deployment.yml"
     - "deploy -m delete -n production -f .deployment.yml"
 
 web-stop:
