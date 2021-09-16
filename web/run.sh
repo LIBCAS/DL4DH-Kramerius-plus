@@ -7,6 +7,8 @@ if [ -z $TEI_HOST ]; then
 fi
 
 cat <<EOT >> /etc/apache2/conf.d/proxy-api.conf
+ProxyPreserveHost On
+
 # API
 ProxyPass "/api" "http://$API_HOST:8080/api"
 ProxyPassReverse "/api" "http://$API_HOST:8080/api"
