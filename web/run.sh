@@ -7,10 +7,17 @@ if [ -z $TEI_HOST ]; then
 fi
 
 cat <<EOT >> /etc/apache2/conf.d/proxy-api.conf
+# API
 ProxyPass "/api" "http://$API_HOST:8080/api"
 ProxyPassReverse "/api" "http://$API_HOST:8080/api"
+
+# Swagger
 ProxyPass "/swagger" "http://$API_HOST:8080/swagger"
 ProxyPassReverse "/swagger" "http://$API_HOST:8080/swagger"
+ProxyPass "/swagger-ui" "http://$API_HOST:8080/swagger-ui"
+ProxyPassReverse "/swagger-ui" "http://$API_HOST:8080/swagger-ui"
+
+# TEI Converter
 ProxyPass "/tei" "http://$TEI_HOST:5000/tei"
 ProxyPassReverse "/tei" "http://$TEI_HOST:5000/tei"
 EOT
