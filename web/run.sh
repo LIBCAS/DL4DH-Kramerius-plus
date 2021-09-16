@@ -16,6 +16,8 @@ ProxyPass "/swagger" "http://$API_HOST:8080/swagger"
 ProxyPassReverse "/swagger" "http://$API_HOST:8080/swagger"
 ProxyPass "/swagger-ui" "http://$API_HOST:8080/swagger-ui"
 ProxyPassReverse "/swagger-ui" "http://$API_HOST:8080/swagger-ui"
+ProxyPass "/v3" "http://$API_HOST:8080/v3"
+ProxyPassReverse "/v3" "http://$API_HOST:8080/v3"
 
 # TEI Converter
 ProxyPass "/tei" "http://$TEI_HOST:5000/tei"
