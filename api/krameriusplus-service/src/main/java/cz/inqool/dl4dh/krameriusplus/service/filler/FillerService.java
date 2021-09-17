@@ -56,7 +56,7 @@ public class FillerService {
                 log.error("DigitalObject of class " + digitalObject.getClass().getSimpleName() + " not enrichable");
             }
         } catch (Exception e) {
-            log.error("Task wid PID=" + pid + " failed with error ", e);
+            log.error("Task wid PID=" + pid + " failed with error: " +  e.getMessage());
             SchedulerService.getTask(pid).setErrorMessage(e.getMessage());
             SchedulerService.getTask(pid).setState(EnrichmentTask.State.FAILED);
         }
