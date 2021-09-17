@@ -1,25 +1,25 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
 
 import Navbar from "./components/NavBar";
-import { Enrichment } from "./modules/enrichment";
+import { Enrichment } from "./modules/enrichment/enrichment";
 
 function App() {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Router>
+      <BrowserRouter>
         <Navbar />
 
         <Switch>
-          <Route exact path="/enrichment">
-            <Enrichment />
-          </Route>
           <Route exact path="/export">
             Export
           </Route>
+          <Route path="/">
+            <Enrichment />
+          </Route>
         </Switch>
-      </Router>
+      </BrowserRouter>
     </MuiPickersUtilsProvider>
   );
 }
