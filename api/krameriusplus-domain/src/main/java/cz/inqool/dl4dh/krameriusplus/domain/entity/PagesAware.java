@@ -18,4 +18,8 @@ public interface PagesAware {
     void setUdPipeParadata(UDPipeParadata udPipeParadata);
 
     void setNameTagParadata(NameTagParadata nameTagParadata);
+
+    String getTeiHeader();
+
+    String getId();
 }

@@ -13,6 +13,7 @@ logging:
   level:
     cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService: OFF
     cz.inqool.dl4dh.krameriusplus.service.enricher.NameTagService: OFF
+#    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
 
 springdoc:
   swagger-ui.path: /swagger
@@ -30,4 +31,4 @@ enrichment:
   nametag:
     api: http://lindat.mff.cuni.cz/services/nametag/api/recognize
   tei:
-    api: http://localhost:5000
+    api: http://localhost:5000/tei
