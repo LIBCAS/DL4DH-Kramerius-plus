@@ -65,6 +65,7 @@ public class FillerService {
     private void enrichPublication(Publication publication, EnrichmentTask task) {
         log.info("Enriching publication: " + publication.getTitle());
         task.setState(ENRICHING);
+        task.setPublication(publication.getTitle());
         long start = System.currentTimeMillis();
 
         enricherService.enrich(publication, task);

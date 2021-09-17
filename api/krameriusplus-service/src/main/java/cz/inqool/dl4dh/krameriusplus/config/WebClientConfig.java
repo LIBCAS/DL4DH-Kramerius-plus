@@ -19,6 +19,9 @@ public class WebClientConfig {
         return WebClient
                 .builder()
                 .baseUrl(krameriusApi + "/search/api/v5.0/item")
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(MAX_MEMORY_SIZE))
                 .exchangeStrategies(ExchangeStrategies.builder().codecs((configurer) -> {
                     configurer.defaultCodecs().jaxb2Encoder(new Jaxb2XmlEncoder());
                     configurer.defaultCodecs().jaxb2Decoder(new Jaxb2XmlDecoder(MimeTypeUtils.TEXT_XML, MimeTypeUtils.TEXT_PLAIN));
