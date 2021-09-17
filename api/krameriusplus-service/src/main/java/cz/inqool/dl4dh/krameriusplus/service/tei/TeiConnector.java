@@ -2,8 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.tei;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.export.Params;
-import org.springframework.web.servlet.tags.Param;
+import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
 
 import java.util.List;
 

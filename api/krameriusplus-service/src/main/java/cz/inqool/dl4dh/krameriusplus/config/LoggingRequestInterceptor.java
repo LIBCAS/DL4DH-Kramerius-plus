@@ -23,12 +23,12 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
     }
 
     private void traceRequest(HttpRequest request, byte[] body) {
-        log.info("===========================request begin================================================");
+        log.debug("===========================request begin================================================");
         log.debug("URI         : {}", request.getURI());
         log.debug("Method      : {}", request.getMethod());
         log.debug("Headers     : {}", request.getHeaders() );
         log.debug("Request body: {}", new String(body, StandardCharsets.UTF_8));
-        log.info("==========================request end================================================");
+        log.debug("==========================request end================================================");
     }
 
     private void traceResponse(ClientHttpResponse response) throws IOException {
