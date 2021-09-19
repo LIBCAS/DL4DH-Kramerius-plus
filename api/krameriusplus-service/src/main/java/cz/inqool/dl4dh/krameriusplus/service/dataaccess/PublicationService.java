@@ -71,4 +71,8 @@ public class PublicationService {
     public void save(List<Page> pages) {
         pageRepository.saveAll(pages);
     }
+
+    public List<Publication> list() {
+        return publicationRepository.listLight();
+    }
 }

@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
@@ -74,6 +75,7 @@ public class Page extends DomainObject implements ParentAware {
     @Transient
     private NameTagParadata nameTagParadata;
 
+    @JsonIgnore
     private String teiBody;
 
     @Override

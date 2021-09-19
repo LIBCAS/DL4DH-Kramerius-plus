@@ -16,7 +16,6 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.MONOGRAP
  */
 @Getter
 @Setter
-@Document(collection = "publications")
 public abstract class Monograph extends Publication {
 
     private String donator;

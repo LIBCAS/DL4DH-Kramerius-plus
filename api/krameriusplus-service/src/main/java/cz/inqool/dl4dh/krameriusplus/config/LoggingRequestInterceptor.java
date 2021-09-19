@@ -40,11 +40,11 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
             inputStringBuilder.append('\n');
             line = bufferedReader.readLine();
         }
-        log.info("============================response begin==========================================");
+        log.debug("============================response begin==========================================");
         log.debug("Status code  : {}", response.getStatusCode());
         log.debug("Status text  : {}", response.getStatusText());
         log.debug("Headers      : {}", response.getHeaders());
-        log.debug("Response body: {}", inputStringBuilder.toString());
-        log.info("=======================response end=================================================");
+        log.debug("Response body: {}", inputStringBuilder);
+        log.debug("=======================response end=================================================");
     }
 }

@@ -1,16 +1,25 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
 import lombok.Getter;
+import org.apache.http.entity.ContentType;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public enum ExportFormat {
-    JSON("json"),
-    TEI("xml");
+    JSON("json", ContentType.APPLICATION_JSON),
+    TEI("xml", ContentType.TEXT_XML);
 
-    @Getter
     private final String suffix;
 
-    ExportFormat(String fileSuffix) {
+    @Getter
+    private final ContentType mimeType;
+
+    private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
+
+    ExportFormat(String fileSuffix, ContentType mimeType) {
         this.suffix = fileSuffix;
+        this.mimeType = mimeType;
     }
 
     public static ExportFormat fromString(String value) {
@@ -21,5 +30,11 @@ public enum ExportFormat {
         }
 
         throw new IllegalArgumentException("Enum value from value:" + value + " wasn't found");
+    }
+
+    public String getFileName(String publicationId) {
+        String idWithoutPrefix = publicationId.substring(publicationId.indexOf(':') + 1);
+
+        return String.format("uuid_%s_%s.%s", idWithoutPrefix, dateTimeFormatter.format(LocalDate.now()), suffix);
     }
 }

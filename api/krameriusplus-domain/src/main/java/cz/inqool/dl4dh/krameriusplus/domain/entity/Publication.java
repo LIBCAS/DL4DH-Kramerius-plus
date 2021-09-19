@@ -23,6 +23,7 @@ public abstract class Publication extends DomainObject {
 
     private ModsMetadata modsMetadata;
 
+    @JsonIgnore
     private String teiHeader;
 
     /**
