@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { DefaultDialog } from "../dialog/knav-dialog/knav-default-dialog";
 import { DialogContentProps } from "../dialog/types";
 
-type ExportFormat = "json" | "tie";
+type ExportFormat = "json" | "tei";
 
 const exportPublication = async (id: string, format: ExportFormat) => {
   await fetch(`/api/export/${id}/${format}`, {
@@ -61,9 +61,9 @@ export const PublicationExportDialog = ({
           label="JSON"
         />
         <FormControlLabel
-          value="tie"
+          value="tei"
           control={<Radio color="primary" />}
-          label="TIE"
+          label="TEI"
         />
       </RadioGroup>
       {error && (
