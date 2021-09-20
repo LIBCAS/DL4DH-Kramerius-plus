@@ -10,7 +10,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;

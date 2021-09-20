@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.metadata;
 
 import cz.inqool.dl4dh.alto.*;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Optional;
 /**
  * Class for extracting plain text content of the page from ALTO format.
  */
+@Slf4j
 class AltoContentExtractor {
 
     private final Alto alto;
@@ -58,8 +60,12 @@ class AltoContentExtractor {
             ocrParadata.setVersion(version);
 
             return ocrParadata;
+        } catch (IndexOutOfBoundsException exception) {
+            log.error("No OCR metadata for publication");
+            return null;
         } catch (Exception exception) {
-            throw new IllegalStateException("Error extracting paradata from OCR", exception);
+            log.error("Error extracting paradata from OCR", exception);
+            return null;
         }
     }
 

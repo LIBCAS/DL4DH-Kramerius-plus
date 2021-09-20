@@ -41,9 +41,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>cz.inqool.dl4dh.krameriusplus.KrameriusPlusApplication</mainClass>
-                </configuration>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <mainClass>cz.inqool.dl4dh.krameriusplus.KrameriusPlusApplication</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -35,6 +35,7 @@ public class EnricherService {
             }
         } catch (Exception e) {
             log.error("Error enriching publication", e);
+            throw e;
         }
     }
 

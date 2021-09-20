@@ -23,7 +23,7 @@ public class EnrichmentTask {
 
     private String rootPublicationId;
 
-    private String title;
+    private String publication;
 
     private Instant created;
 

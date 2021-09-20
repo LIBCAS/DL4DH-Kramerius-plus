@@ -18,7 +18,6 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PERIODIC
  */
 @Getter
 @Setter
-@Document(collection = "publications")
 public class Periodical extends Publication {
 
     @DBRef

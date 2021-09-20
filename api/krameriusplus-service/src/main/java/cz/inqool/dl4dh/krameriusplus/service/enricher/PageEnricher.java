@@ -29,7 +29,7 @@ public class PageEnricher {
 
     @Autowired
     public PageEnricher(UDPipeService udPipeService, NameTagService nameTagService, StreamProvider streamProvider,
-                           @Value("${enrichment.source:OCR}") String plainTextSource, @Qualifier("default") TeiConnector teiConnector) {
+                           @Value("${enrichment.source:OCR}") String plainTextSource, TeiConnector teiConnector) {
         this.udPipeService = udPipeService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;
