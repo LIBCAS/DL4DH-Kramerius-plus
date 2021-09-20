@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { EventProps, EventDetail } from "../../components/event/event-detail";
-import { useInterval } from "../../components/useInterval/use-interval";
+import { useInterval } from "../../hooks/use-interval";
 import { getRunningTasks, getFinishedTasks } from "./enrichment-api";
 
 interface TabPanelProps {
