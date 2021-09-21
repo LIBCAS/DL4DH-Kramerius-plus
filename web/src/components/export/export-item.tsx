@@ -3,11 +3,11 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { FileRef } from "../../models";
+import { Export } from "../../models";
 import { ReadOnlyField } from "../read-only-field/read-only-field";
 
 type Props = {
-  file: FileRef;
+  exportedPublication: Export;
 };
 
 const useStyles = makeStyles(() => ({
@@ -21,20 +21,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const ExportItem = ({ file }: Props) => {
+export const ExportItem = ({ exportedPublication }: Props) => {
   const classes = useStyles();
 
-  const {
-    id,
-    publicationId,
-    publicationTitle,
-    created,
-    name,
-    contentType,
-    size,
-  } = file;
+  const { id, publicationId, publicationTitle, created, fileRef } =
+    exportedPublication;
 
-  const sizeMB = `${((size ?? 0) / 1048576).toFixed(2)} MB`;
+  const sizeMB = `${((fileRef?.size ?? 0) / 1048576).toFixed(2)} MB`;
 
   const localizedCreation = created
     ? new Date(created).toLocaleString("cs")
@@ -42,7 +35,7 @@ export const ExportItem = ({ file }: Props) => {
 
   const handleDownloadExport = () => {
     window.open(
-      process.env.PUBLIC_URL + `/api/export/download/${id}`,
+      process.env.PUBLIC_URL + `/api/export/download/${fileRef?.id}`,
       "_blank"
     );
   };
@@ -55,8 +48,8 @@ export const ExportItem = ({ file }: Props) => {
           <ReadOnlyField label="publicationId:" value={publicationId} />
           <ReadOnlyField label="publicationTitle:" value={publicationTitle} />
           <ReadOnlyField label="created:" value={localizedCreation} />
-          <ReadOnlyField label="name:" value={name} />
-          <ReadOnlyField label="contentType" value={contentType} />
+          <ReadOnlyField label="name:" value={fileRef?.name} />
+          <ReadOnlyField label="contentType" value={fileRef?.contentType} />
           <ReadOnlyField label="size:" value={sizeMB} />
         </Grid>
         <Grid item xs={2}>

@@ -8,3 +8,4 @@ export type { PhysicalDescription } from './physicalDescription';
 export type { Place } from './place';
 export type { TitleInfo } from './titleInfo';
 export type { FileRef } from './fileRef'
+export type { Export } from './export'

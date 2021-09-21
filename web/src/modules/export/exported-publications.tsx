@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+
 import { FileRef } from "../../models";
 import { ExportItem } from "../../components/export/export-item";
 import { useInterval } from "../../hooks/use-interval";
@@ -46,8 +47,8 @@ export const ExportedPublications = () => {
         </Typography>
       </div>
       <div>
-        {exportedPublications.map((f) => (
-          <ExportItem key={v4()} file={f} />
+        {exportedPublications.map((ep) => (
+          <ExportItem key={v4()} exportedPublication={ep} />
         ))}
       </div>
     </Paper>
