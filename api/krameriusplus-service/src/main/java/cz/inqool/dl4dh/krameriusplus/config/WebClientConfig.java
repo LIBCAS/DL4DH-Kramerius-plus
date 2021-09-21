@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.*;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
 import org.springframework.http.codec.xml.Jaxb2XmlEncoder;
 import org.springframework.util.MimeTypeUtils;
@@ -89,13 +91,14 @@ public class WebClientConfig {
     }
 
     @Bean
-    public RestTemplate getRestTemplate(@Value("${enrichment.tei.api:http://localhost:5000/tei}") String teiApi) {
+    public RestTemplate getRestTemplate(@Value("${enrichment.tei.api:http://localhost:5000/tei}") String teiApi,
+                                        LoggingRequestInterceptor loggingRequestInterceptor) {
         RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
 
         restTemplate.setErrorHandler(new BodyLoggingResponseErrorHandler());
 
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
-        interceptors.add(new LoggingRequestInterceptor());
+        interceptors.add(loggingRequestInterceptor);
         restTemplate.setInterceptors(interceptors);
         restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(teiApi));
 
