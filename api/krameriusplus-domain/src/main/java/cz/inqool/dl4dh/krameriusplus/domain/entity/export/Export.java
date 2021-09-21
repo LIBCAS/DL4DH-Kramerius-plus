@@ -35,4 +35,8 @@ public class Export extends DomainObject {
     public String getPublicationId() {
         return publication.getId();
     }
+
+    public String getPublicationTitle() {
+        return publication.getTitle();
+    }
 }
