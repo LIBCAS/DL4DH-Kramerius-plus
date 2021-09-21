@@ -31,10 +31,6 @@ public class FileRef implements Closeable {
 
     private String id = java.util.UUID.randomUUID().toString();
 
-    private String publicationId;
-
-    private String publicationTitle;
-
     private Instant created = Instant.now();
 
     private static final int DIR_NAME_LENGTH = 2;
