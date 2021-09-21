@@ -15,14 +15,13 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.Resource;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class WebClientTeiConnector implements TeiConnector {
     }
 
     @Override
-    public String merge(String teiHeader, List<String> teiPages, Params params) {
+    public File merge(String teiHeader, List<String> teiPages, Params params) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setAccept(List.of(MediaType.APPLICATION_XML));
@@ -94,19 +93,24 @@ public class WebClientTeiConnector implements TeiConnector {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        InputStream response = restTemplate
-                .execute("/merge",
-                        HttpMethod.POST,
-                        restTemplate.httpEntityCallback(requestEntity),
-                        HttpInputMessage::getBody);
+        File file = restTemplate.execute("/merge", HttpMethod.POST,
+                restTemplate.httpEntityCallback(requestEntity),
+                clientHttpResponse -> {
+            File ret = File.createTempFile("download", "tmp");
+            StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
+            return ret;
+        });
 
-        notNull(response, () -> new ExportException(TEI_MERGE_ERROR, "Response from /merge is null"));
+//        InputStream response = restTemplate
+//                .execute("/merge",
+//                        HttpMethod.POST,
+//                        restTemplate.httpEntityCallback(requestEntity),
+//                        HttpInputMessage::getBody);
+//
+//        notNull(response, () -> new ExportException(TEI_MERGE_ERROR, "Response from /merge is null"));
 
-        try {
-            return new String(response.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new ExportException(TEI_MERGE_ERROR, e);
-        }
+
+        return file;
     }
 
     @Resource(name = "teiWebClient")

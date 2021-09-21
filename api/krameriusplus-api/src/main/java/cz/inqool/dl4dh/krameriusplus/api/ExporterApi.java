@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
 import cz.inqool.dl4dh.krameriusplus.service.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.service.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.service.export.FileService;
@@ -30,7 +31,7 @@ public class ExporterApi {
     }
 
     @PostMapping("/{id}/{format}")
-    public FileRef export(@PathVariable("id") String publicationId, @PathVariable("format") String format) {
+    public Export export(@PathVariable("id") String publicationId, @PathVariable("format") String format) {
         Params params = new Params();
         params.setFormat(ExportFormat.fromString(format));
 
@@ -38,8 +39,8 @@ public class ExporterApi {
     }
 
     @GetMapping("/list")
-    public List<FileRef> listExports() {
-        return fileService.list();
+    public List<Export> listExports() {
+        return exporterService.list();
     }
 
     @GetMapping(value = "/download/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

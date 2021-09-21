@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
 
+import java.io.File;
 import java.util.List;
 
 public interface TeiConnector {
@@ -12,5 +13,5 @@ public interface TeiConnector {
 
     String convertToTeiHeader(Publication publication);
 
-    String merge(String teiHeader, List<String> teiPages, Params params);
+    File merge(String teiHeader, List<String> teiPages, Params params);
 }

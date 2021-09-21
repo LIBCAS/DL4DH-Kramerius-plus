@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.exception.FileException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,6 +30,7 @@ import static java.nio.file.Files.newInputStream;
 @Document(collection = "files")
 public class FileRef implements Closeable {
 
+    @Id
     private String id = java.util.UUID.randomUUID().toString();
 
     private Instant created = Instant.now();
