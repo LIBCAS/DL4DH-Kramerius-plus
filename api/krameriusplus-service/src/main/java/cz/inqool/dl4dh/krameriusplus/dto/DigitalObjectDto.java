@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;
@@ -28,7 +28,7 @@ import lombok.Setter;
         @JsonSubTypes.Type(value = PeriodicalItemDto.class, name = "periodicalitem"),
         @JsonSubTypes.Type(value = PageDto.class, name = "page")
 })
-public abstract class DigitalObjectDto<T extends DomainObject> implements Visitable<T> {
+public abstract class DigitalObjectDto<T extends KrameriusObject> implements Visitable<T> {
 
     private String pid;
 
