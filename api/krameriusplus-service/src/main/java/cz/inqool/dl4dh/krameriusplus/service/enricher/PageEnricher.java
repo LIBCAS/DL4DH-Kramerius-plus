@@ -9,9 +9,9 @@ import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Collection;
 
@@ -64,7 +64,8 @@ public class PageEnricher {
             altoWrapper.enrichPage(page);
             page.setTeiBody(teiConnector.convertToTeiPage(page));
         } catch (KrameriusException e) {
-            throw new EnrichingException(KRAMERIUS_ERROR, e);
+            // for example, some pages do not have ALTO and that's OK
+            log.warn("Error enriching page with ID={}, cause: {}", page.getId(), e.getMessage());
         }
     }
 
@@ -72,7 +73,7 @@ public class PageEnricher {
         if (PLAIN_TEXT_SOURCE.equals("ALTO")) {
             return altoWrapper.extractPageContent();
         } else {
-            return streamProvider.getTextOcr(page.getId());
+            return streamProvider.getNormalizedTextOcr(page.getId());
         }
     }
 

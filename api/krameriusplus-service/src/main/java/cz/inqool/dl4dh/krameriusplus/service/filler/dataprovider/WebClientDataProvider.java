@@ -2,15 +2,19 @@ package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.dto.DigitalObjectDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.MissingObjectException.ErrorCode.DIGITAL_OBJECT_NOT_FOUND;
 
 /**
  * @author Norbert Bodnar
@@ -24,12 +28,16 @@ public class WebClientDataProvider implements DataProvider {
     public <T extends DigitalObjectDto<?>> T getDigitalObject(String objectId) {
         ParameterizedTypeReference<T> type = new ParameterizedTypeReference<>() {};
 
-        return webClient.get()
-                .uri("/{objectId}", objectId)
-                .acceptCharset(StandardCharsets.UTF_8)
-                .retrieve()
-                .bodyToMono(type)
-                .block();
+        try {
+            return webClient.get()
+                    .uri("/{objectId}", objectId)
+                    .acceptCharset(StandardCharsets.UTF_8)
+                    .retrieve()
+                    .bodyToMono(type)
+                    .block();
+        } catch (WebClientResponseException e) {
+            throw new MissingObjectException(DIGITAL_OBJECT_NOT_FOUND, e);
+        }
     }
 
     @Override
@@ -42,6 +50,12 @@ public class WebClientDataProvider implements DataProvider {
                 })
                 .block();
 
+        setChildrenIndicesAndParentId(parentId, result);
+
+        return result;
+    }
+
+    private <T extends DomainObject> void setChildrenIndicesAndParentId(String parentId, List<DigitalObjectDto<T>> result) {
         int index = 0;
         if (result != null) {
             for (DigitalObjectDto<T> child : result) {
@@ -52,8 +66,6 @@ public class WebClientDataProvider implements DataProvider {
                 }
             }
         }
-
-        return result;
     }
 
     @Resource(name = "krameriusWebClient")

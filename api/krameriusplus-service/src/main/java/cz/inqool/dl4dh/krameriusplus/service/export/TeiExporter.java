@@ -11,6 +11,7 @@ import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.service.export.ExportFormat.TEI;
@@ -47,7 +48,12 @@ public class TeiExporter extends AbstractExporter {
 
     private String getTei(PagesAware publication, Params params) {
         return teiConnector.merge(publication.getTeiHeader(),
-                publication.getPages().stream().map(Page::getTeiBody).collect(Collectors.toList()),
+                publication
+                        .getPages()
+                        .stream()
+                        .map(Page::getTeiBody)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList()),
                 params);
     }
 }
