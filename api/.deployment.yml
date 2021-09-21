@@ -42,8 +42,8 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: shared-storage
-              mountPath: /usr/src/export
-              subPath: kramerius-api/export
+              mountPath: /usr/src/data
+              subPath: kramerius-api/data
         - name: kramerius-db
           image: mongo:5.0.2
           env:
