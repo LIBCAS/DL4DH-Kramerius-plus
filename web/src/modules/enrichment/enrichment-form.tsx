@@ -8,9 +8,9 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import Paper from "@material-ui/core/Paper";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
-
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
+
 import { enrich } from "./enrichment-api";
 
 const useStyles = makeStyles(() => ({

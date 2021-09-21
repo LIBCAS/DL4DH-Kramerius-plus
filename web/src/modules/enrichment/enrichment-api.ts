@@ -30,7 +30,7 @@ export async function getRunningTasks():Promise<EventProps[]> {
 
     return json;
   } catch (e) {
-    return []
+    return [];
   }
 }
 
@@ -45,6 +45,6 @@ export async function getFinishedTasks():Promise<EventProps[]> {
     return json;
   } catch (e) {
 
-    return []
+    return [];
   }
 }
