@@ -3,15 +3,23 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
 export type EventProps = {
-  publication?: string;
+  publicationTitle?: string;
   created?: string;
+  started?: string;
   processing?: string;
+  state?: string;
+  took?: string;
+  done?: string;
 };
 
 export const EventDetail = ({
-  publication,
+  publicationTitle,
   processing,
   created,
+  started,
+  state,
+  took,
+  done,
 }: EventProps) => {
   return (
     <Paper
@@ -26,7 +34,13 @@ export const EventDetail = ({
           <Typography>Publikace:</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography color="primary">{publication}</Typography>
+          <Typography color="primary">{publicationTitle}</Typography>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography>Status:</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Typography color="primary">{state}</Typography>
         </Grid>
         <Grid item xs={4}>
           <Typography>Vytvoření:</Typography>
@@ -35,10 +49,28 @@ export const EventDetail = ({
           <Typography color="primary">{created}</Typography>
         </Grid>
         <Grid item xs={4}>
+          <Typography>Spuštění:</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Typography color="primary">{started}</Typography>
+        </Grid>
+        <Grid item xs={4}>
           <Typography>Zpracovávání:</Typography>
         </Grid>
         <Grid item xs={8}>
           <Typography color="primary">{processing}</Typography>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography>Stav:</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Typography color="primary">{done}</Typography>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography>Trvanie:</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Typography color="primary">{took}</Typography>
         </Grid>
       </Grid>
     </Paper>

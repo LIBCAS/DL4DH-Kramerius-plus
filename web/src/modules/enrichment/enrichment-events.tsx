@@ -105,7 +105,7 @@ const RunningEvents = () => {
   return (
     <Grid container>
       {runningEvents.map((re, i) => (
-        <EventDetail key={`${re.publication}-${i}`} {...re} />
+        <EventDetail key={`${re.publicationTitle}-${i}`} {...re} />
       ))}
     </Grid>
   );
@@ -127,7 +127,7 @@ const FinishedEvents = () => {
   return (
     <Grid container>
       {finishedEvents.map((re, i) => (
-        <EventDetail key={`${re.publication}-${i}`} {...re} />
+        <EventDetail key={`${re.publicationTitle}-${i}`} {...re} />
       ))}
     </Grid>
   );
