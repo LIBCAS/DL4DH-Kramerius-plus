@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.FileRefRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;

@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,10 @@ public class PublicationApi {
     @GetMapping("/list")
     public List<Publication> list() {
         return publicationService.list();
+    }
+
+    @GetMapping("/test")
+    public List<Page> test() {
+        return publicationService.testListFilter();
     }
 }

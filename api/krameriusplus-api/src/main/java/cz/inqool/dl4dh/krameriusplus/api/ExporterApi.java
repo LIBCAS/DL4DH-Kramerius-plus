@@ -2,10 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.api;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
-import cz.inqool.dl4dh.krameriusplus.service.export.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.service.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.service.export.FileService;
-import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;

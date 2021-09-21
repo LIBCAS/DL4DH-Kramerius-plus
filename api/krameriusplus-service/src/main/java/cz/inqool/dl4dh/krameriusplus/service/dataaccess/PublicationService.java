@@ -1,7 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.service.dataaccess;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.DynamicQuery;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.FilterParam;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
@@ -74,5 +77,16 @@ public class PublicationService {
 
     public List<Publication> list() {
         return publicationRepository.listLight();
+    }
+
+    public List<Page> testListFilter() {
+        Params params = new Params();
+        params.getUdPipeParams().add(FilterParam.UDPipeParam.LEMMA);
+        params.getUdPipeParams().add(FilterParam.UDPipeParam.FEATS);
+
+        DynamicQuery dynamicQuery = new DynamicQuery();
+        dynamicQuery.setProjectionParams(params);
+
+        return pageRepository.listWithProjection(dynamicQuery);
     }
 }

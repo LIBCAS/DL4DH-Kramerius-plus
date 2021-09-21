@@ -7,7 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.ExportException;
 import cz.inqool.dl4dh.krameriusplus.dto.tei.TeiHeaderFactory;
-import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;

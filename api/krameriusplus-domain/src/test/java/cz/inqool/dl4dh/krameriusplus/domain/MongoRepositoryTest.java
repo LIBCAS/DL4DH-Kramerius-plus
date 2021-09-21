@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.domain;
 
 import cz.inqool.dl4dh.krameriusplus.DomainApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
@@ -23,7 +22,7 @@ public class MongoRepositoryTest {
     private MonographWithPages monograph;
 
     @Autowired
-    private PublicationRepository publicationRepository;
+    private PageRepository publicationRepository;
 
     @Autowired
     private PageRepository pageRepository;

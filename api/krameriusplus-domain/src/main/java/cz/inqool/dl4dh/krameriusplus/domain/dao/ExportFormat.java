@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.export;
+package cz.inqool.dl4dh.krameriusplus.domain.dao;
 
 import lombok.Getter;
 import org.apache.http.entity.ContentType;

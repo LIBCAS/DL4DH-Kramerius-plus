@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
@@ -8,7 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.ExportException;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
-import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
@@ -23,7 +24,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExportException.ErrorCode.TEI_MERGE_ERROR;
-import static cz.inqool.dl4dh.krameriusplus.service.export.ExportFormat.TEI;
+import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.TEI;
 
 @Component
 @Slf4j
