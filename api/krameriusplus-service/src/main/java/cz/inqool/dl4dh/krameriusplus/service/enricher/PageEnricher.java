@@ -2,6 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException.ErrorCode.KRAMERIUS_ERROR;
 
 @Service
 @Slf4j
@@ -59,8 +63,8 @@ public class PageEnricher {
 
             altoWrapper.enrichPage(page);
             page.setTeiBody(teiConnector.convertToTeiPage(page));
-        } catch (Exception e) {
-            log.error("Error enriching page with external services", e);
+        } catch (KrameriusException e) {
+            throw new EnrichingException(KRAMERIUS_ERROR, e);
         }
     }
 

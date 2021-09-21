@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.EnricherService;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusProvider;
@@ -18,6 +19,7 @@ import java.time.Instant;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.ENRICHING;
 import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.FAILED;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException.ErrorCode.TYPE_ERROR;
 
 /**
  * @author Norbert Bodnar
@@ -52,9 +54,10 @@ public class FillerService {
             if (digitalObject instanceof Publication) {
                 enrichPublication((Publication) digitalObject, task);
             } else if (digitalObject instanceof Page) {
-                throw new IllegalArgumentException("Cannot enrich single page");
+                throw new EnrichingException(TYPE_ERROR, "Cannot enrich a single page");
             } else {
-                log.error("DigitalObject of class " + digitalObject.getClass().getSimpleName() + " not enrichable");
+                throw new EnrichingException(TYPE_ERROR, "DigitalObject of class "
+                        + digitalObject.getClass().getSimpleName() + " not enrichable");
             }
         } catch (Exception e) {
             log.error("Task wid PID=" + pid + " failed with error: " +  e.getMessage());
@@ -62,6 +65,7 @@ public class FillerService {
             task.setState(FAILED);
             enrichmentTaskRepository.save(task);
             SchedulerService.removeTask(pid);
+            throw e;
         }
     }
 

@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
 import cz.inqool.dl4dh.alto.Alto;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import javax.xml.bind.JAXB;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.notNull;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.ErrorCode.MISSING_STREAM;
 
 /**
  * @author Norbert Bodnar
@@ -43,9 +47,8 @@ public class StreamProvider {
                 .bodyToMono(String.class)
                 .block();
 
-        if (altoAsString == null) {
-            throw new IllegalArgumentException("Page with ID=" + pageId + " does not contain ALTO stream.");
-        }
+        notNull(altoAsString, () -> new KrameriusException(MISSING_STREAM,
+                "Page with ID=" + pageId + " does not contain ALTO stream."));
 
         return JAXB.unmarshal(new StringReader(altoAsString), Alto.class);
     }
@@ -58,9 +61,8 @@ public class StreamProvider {
                 .bodyToMono(String.class)
                 .block();
 
-        if (modsAsString == null) {
-            throw new IllegalArgumentException("Publication with ID=" + publicationId + " does not contain BIBLIO_MODS stream");
-        }
+        notNull(modsAsString, () -> new KrameriusException(MISSING_STREAM,
+                    "Publication with ID=" + publicationId + " does not contain BIBLIO_MODS stream"));
 
         return JAXB.unmarshal(new StringReader(modsAsString), ModsCollectionDefinition.class);
     }
