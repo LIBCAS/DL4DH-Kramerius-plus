@@ -3,9 +3,14 @@ package cz.inqool.dl4dh.krameriusplus.service.tei;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -22,8 +27,12 @@ public class DummyTeiConnector implements TeiConnector {
         return "<xml>dummy tei header</xml>";
     }
 
+    @SneakyThrows
     @Override
-    public String merge(String teiHeader, List<String> teiPages, Params params) {
-        return "full TEI";
+    public File merge(String teiHeader, List<String> teiPages, Params params) {
+        File file = File.createTempFile("download", "tmp");
+        StreamUtils.copy("Test TEI full".getBytes(StandardCharsets.UTF_8), new FileOutputStream(file));
+
+        return file;
     }
 }

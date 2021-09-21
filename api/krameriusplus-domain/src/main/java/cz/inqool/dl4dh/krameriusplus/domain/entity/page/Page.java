@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
@@ -26,7 +26,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PAGE;
 @Getter
 @Setter
 @Document(collection = "pages")
-public class Page extends DomainObject implements ParentAware {
+public class Page extends KrameriusObject implements ParentAware {
 
     /**
      * Id of parent object. Multiple object types can contain pages, for example monographs, monographUnits or

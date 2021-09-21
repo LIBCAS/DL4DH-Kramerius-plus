@@ -13,7 +13,7 @@ logging:
   level:
     cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService: OFF
     cz.inqool.dl4dh.krameriusplus.service.enricher.NameTagService: OFF
-    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
+#    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
   interceptor:
     body: SHORT
 

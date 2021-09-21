@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.EnrichmentTaskRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
@@ -49,7 +49,7 @@ public class FillerService {
     public void enrichPublication(String pid, EnrichmentTask task) {
         try {
             log.info("Downloading publication");
-            DomainObject digitalObject = krameriusProvider.getDigitalObject(pid);
+            KrameriusObject digitalObject = krameriusProvider.getDigitalObject(pid);
 
             if (digitalObject instanceof Publication) {
                 enrichPublication((Publication) digitalObject, task);

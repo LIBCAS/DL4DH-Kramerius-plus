@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.notNull;
 import static java.nio.file.Files.*;
 
 /**
@@ -153,30 +154,23 @@ public class FileService {
      * @return newly created {@link FileRef}
      */
     @Transactional
-    public FileRef create(Publication publication, String content, ExportFormat format) {
-        if (content == null) {
-            throw new IllegalArgumentException("File content can't be null");
-        }
+    public FileRef create(InputStream stream, long size, String name, String contentType) {
+        notNull(stream, () -> new IllegalArgumentException("Stream cannot be null"));
+        notNull(contentType, () -> new IllegalArgumentException("ContentType cannot be null"));
+        notNull(name, () -> new IllegalArgumentException("Name cannot be null"));
 
-        if (format == null) {
-            throw new IllegalArgumentException("Format can't be null or empty");
-        }
 
         FileRef fileRef = new FileRef();
-        fileRef.setPublicationId(publication.getId());
-        fileRef.setPublicationTitle(publication.getTitle());
-        fileRef.setName(format.getFileName(publication.getId()));
-        fileRef.setContentType(format.getMimeType().toString());
+        fileRef.setName(name);
+        fileRef.setContentType(contentType);
         fileRef.setBasePath(getBasePath());
         fileRef.setHierarchicalLevel(getHierarchicalLevel());
-        fileRef.setSize((long) content.length());
-
-        InputStream inputStream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+        fileRef.setSize(size);
 
         try {
             Path path = fileRef.getPath();
             createDirectories(path.getParent());
-            copy(inputStream, path);
+            copy(stream, path);
         } catch (IOException exception) {
             throw new IllegalStateException("Could not create file", exception);
         }
