@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.FileException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.FileException.ErrorCode.*;
 import static java.nio.file.Files.newInputStream;
 
 /**
@@ -81,7 +83,7 @@ public class FileRef implements Closeable {
     @Transient
     public Path getPath() {
         if (basePath == null) {
-            throw new IllegalStateException("FileRef not initialized");
+            throw new FileException(FILE_NOT_INITIALIZED, "FileRef must be obtained via FileService to initialize it.");
         }
 
         return computeFilePath(basePath, id, hierarchicalLevel);
@@ -107,13 +109,13 @@ public class FileRef implements Closeable {
     @JsonIgnore
     public InputStream open() {
         if (stream != null) {
-            throw new IllegalStateException("File is already opened.");
+            throw new FileException(FILE_ALREADY_OPENED, "File is already opened and therefore the stream cannot be read");
         }
 
         try {
             stream = newInputStream(getPath(), StandardOpenOption.READ);
         } catch (IOException exception) {
-            throw new IllegalStateException("Failed to open file");
+            throw new FileException(FAILED_TO_OPEN_FILE, exception.getMessage());
         }
 
         return stream;
@@ -127,7 +129,7 @@ public class FileRef implements Closeable {
             try {
                 stream.close();
             } catch (IOException exception) {
-                throw new IllegalStateException("Failed to close file");
+                throw new FileException(FAILED_TO_CLOSE_FILE, exception.getMessage());
             }
             stream = null;
         }

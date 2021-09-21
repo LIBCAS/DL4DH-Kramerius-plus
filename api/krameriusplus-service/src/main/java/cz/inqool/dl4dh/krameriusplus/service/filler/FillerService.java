@@ -2,9 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.service.filler;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.EnricherService;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusProvider;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.ENRICHING;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.FAILED;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException.ErrorCode.TYPE_ERROR;
 
 /**
  * @author Norbert Bodnar
@@ -51,39 +54,42 @@ public class FillerService {
             if (digitalObject instanceof Publication) {
                 enrichPublication((Publication) digitalObject, task);
             } else if (digitalObject instanceof Page) {
-                throw new IllegalArgumentException("Cannot enrich single page");
+                throw new EnrichingException(TYPE_ERROR, "Cannot enrich a single page");
             } else {
-                log.error("DigitalObject of class " + digitalObject.getClass().getSimpleName() + " not enrichable");
+                throw new EnrichingException(TYPE_ERROR, "DigitalObject of class "
+                        + digitalObject.getClass().getSimpleName() + " not enrichable");
             }
         } catch (Exception e) {
             log.error("Task wid PID=" + pid + " failed with error: " +  e.getMessage());
-            SchedulerService.getTask(pid).setErrorMessage(e.getMessage());
-            SchedulerService.getTask(pid).setState(EnrichmentTask.State.FAILED);
+            task.setErrorMessage(e.getMessage());
+            task.setState(FAILED);
+            enrichmentTaskRepository.save(task);
+            SchedulerService.removeTask(pid);
+            throw e;
         }
     }
 
     private void enrichPublication(Publication publication, EnrichmentTask task) {
         log.info("Enriching publication: " + publication.getTitle());
         task.setState(ENRICHING);
-        task.setPublication(publication.getTitle());
-        long start = System.currentTimeMillis();
+        task.setPublicationTitle(publication.getTitle());
+        task.setStarted(Instant.now());
 
         enricherService.enrich(publication, task);
         publicationService.save(publication);
 
         log.info("Saving publication: " + publication.getTitle());
-        task.setTook(System.currentTimeMillis() - start);
         finishTask(task);
     }
 
     private void finishTask(EnrichmentTask task) {
-        log.info("Enrichment finished in " + task.getTook());
 
         task.setFinished(Instant.now());
         task.setState(EnrichmentTask.State.SUCCESSFUL);
 
         enrichmentTaskRepository.save(task);
 
-        SchedulerService.removeTask(task.getRootPublicationId());
+        log.info("Enrichment finished in " + task.getTook());
+        SchedulerService.removeTask(task.getPublicationId());
     }
 }

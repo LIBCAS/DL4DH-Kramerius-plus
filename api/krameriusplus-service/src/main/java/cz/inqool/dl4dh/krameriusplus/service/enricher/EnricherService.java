@@ -24,18 +24,13 @@ public class EnricherService {
     }
 
     public void enrich(Publication publication, EnrichmentTask task) {
-        try {
-            enrichPublicationChildren(publication, task);
-            publicationEnricher.enrich(publication, task);
+        enrichPublicationChildren(publication, task);
+        publicationEnricher.enrich(publication, task);
 
-            if (publication instanceof PagesAware) {
-                PagesAware publicationWithPages = (PagesAware) publication;
-                pageEnricher.enrich(publicationWithPages.getPages(), task);
-                fillParadata(publicationWithPages);
-            }
-        } catch (Exception e) {
-            log.error("Error enriching publication", e);
-            throw e;
+        if (publication instanceof PagesAware) {
+            PagesAware publicationWithPages = (PagesAware) publication;
+            pageEnricher.enrich(publicationWithPages.getPages(), task);
+            fillParadata(publicationWithPages);
         }
     }
 
@@ -46,7 +41,6 @@ public class EnricherService {
     }
 
     private void fillParadata(PagesAware publicationWithPages) {
-        ParadataFiller paradataFiller = new ParadataFiller(publicationWithPages);
-        paradataFiller.fill();
+        new ParadataFiller(publicationWithPages).fill();
     }
 }

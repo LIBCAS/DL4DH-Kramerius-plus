@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.ExternalServiceException;
 import cz.inqool.dl4dh.krameriusplus.dto.LindatServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -17,6 +18,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.isTrue;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.notNull;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExternalServiceException.ErrorCode.NAME_TAG_ERROR;
 
 /**
  * @author Norbert Bodnar
@@ -41,9 +46,7 @@ public class NameTagService {
 
         LindatServiceResponse response = makeApiCall(pageContent);
 
-        if (response == null) {
-            throw new IllegalStateException("NameTag did not return results");
-        }
+        notNull(response, () -> new ExternalServiceException(NAME_TAG_ERROR, "NameTag did not return results"));
 
         page.setNameTagParadata(getNameTagParadata(response.getModel()));
         page.setNameTagMetadata(processResponse(response, tokens));
@@ -84,9 +87,8 @@ public class NameTagService {
             String metadata = line1[1];
             Token token = tokens.get(tokenCounter++);
 
-            if (!token.getContent().equals(word)) {
-                throw new IllegalStateException("Response word not equal to input word");
-            }
+            isTrue(token.getContent().equals(word),
+                    () -> new ExternalServiceException(NAME_TAG_ERROR, "Response word not equal to input word"));
 
             if (!metadata.equals("O")) {
                 token.setNameTagMetadata(metadata);
@@ -137,9 +139,8 @@ public class NameTagService {
 
             namedEntityMap.put(type, namedEntity);
         } else {
-            if (!namedEntityMap.containsKey(type)) {
-                throw new IllegalStateException("Named entity missing \"B\" label representing the start of a named entity tyoe");
-            }
+            isTrue(namedEntityMap.containsKey(type), () -> new ExternalServiceException(NAME_TAG_ERROR,
+                    "Named entity missing \"B\" label representing the start of a named entity type"));
 
             NamedEntity namedEntity = namedEntityMap.get(type);
             namedEntity.getTokens().add(token);
