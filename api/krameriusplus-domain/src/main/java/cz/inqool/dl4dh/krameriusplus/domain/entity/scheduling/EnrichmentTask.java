@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Duration;
 import java.time.Instant;
 
 /**
@@ -21,15 +22,11 @@ public class EnrichmentTask {
     @JsonIgnore
     private String id = java.util.UUID.randomUUID().toString();
 
-    private String rootPublicationId;
-
-    private String publication;
-
+    private String publicationId;
+    private String publicationTitle;
     private Instant created;
-
+    private Instant started;
     private Instant finished;
-
-    private long took;
 
     @JsonIgnore
     private int processingPage;
@@ -45,8 +42,8 @@ public class EnrichmentTask {
     @JsonIgnore
     public double percentDone;
 
-    public EnrichmentTask(String rootPublicationId) {
-        this.rootPublicationId = rootPublicationId;
+    public EnrichmentTask(String publicationId) {
+        this.publicationId = publicationId;
         created = Instant.now();
         state = State.CREATED;
     }
@@ -60,10 +57,20 @@ public class EnrichmentTask {
     }
 
     public String getTook() {
-        return took == 0 ? null : (took / (double) 1000) + "s" ;
+        if (started == null || finished == null) {
+            return null;
+        }
+
+        Duration duration = Duration.between(started, finished);
+
+        return duration.toMillis() / (double) 1000 + "s";
     }
 
     public String getProcessing() {
+        if (finished != null) {
+            return null;
+        }
+
         return processingPage + "/" + totalPages;
     }
 

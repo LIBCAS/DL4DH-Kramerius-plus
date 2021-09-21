@@ -14,5 +14,5 @@ public interface EnrichmentTaskRepository extends MongoRepository<EnrichmentTask
 
     List<EnrichmentTask> findEnrichmentTaskByState(EnrichmentTask.State state);
 
-    List<EnrichmentTask> findEnrichmentTaskByRootPublicationId(String rootPublicationId);
+    List<EnrichmentTask> findEnrichmentTaskByPublicationId(String publicationId);
 }
