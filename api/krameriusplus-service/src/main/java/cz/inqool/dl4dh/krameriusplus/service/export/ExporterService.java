@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,7 @@ public class ExporterService {
     }
 
     @Transactional
-    @Async
-    public void export(String publicationId, Params params) {
-        exporters.get(params.getFormat()).export(publicationId, params);
+    public FileRef export(String publicationId, Params params) {
+        return exporters.get(params.getFormat()).export(publicationId, params);
     }
 }

@@ -30,11 +30,11 @@ public class ExporterApi {
     }
 
     @PostMapping("/{id}/{format}")
-    public void export(@PathVariable("id") String publicationId, @PathVariable("format") String format) {
+    public FileRef export(@PathVariable("id") String publicationId, @PathVariable("format") String format) {
         Params params = new Params();
         params.setFormat(ExportFormat.fromString(format));
 
-        exporterService.export(publicationId, params);
+        return exporterService.export(publicationId, params);
     }
 
     @GetMapping("/list")
