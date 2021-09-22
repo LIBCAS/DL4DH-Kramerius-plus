@@ -18,17 +18,18 @@ import java.util.Collection;
 @RequestMapping("api/scheduler")
 public class SchedulerApi {
 
-    private SchedulerService schedulerService;
+    private final SchedulerService schedulerService;
 
     @Autowired
     public SchedulerApi(SchedulerService schedulerService) {
         this.schedulerService = schedulerService;
     }
 
-    @Operation(summary = "Schedule to enrich a publication with PID from path asynchronously.",
-            description = "Add a publication with PID to a queue for enriching. In case of error, the task to enrich " +
-                    "this publication stays in queue and the state is set to FAILED. If the publication with this PID " +
-                    "is already in the queue and the state is not FAILED, this API call fails with IllegalArgumentException." +
+    @Operation(summary = "Schedule to enrich a publication with ID from path asynchronously.",
+            description = "Add a publication with ID to a queue for enriching. In case of error, the state of the task" +
+                    "is set to FAILED. If the publication with this ID is already in the queue or it has been enriched, " +
+                    "this API call fails with EnrichingException. If you wish to override an already enriched publication," +
+                    "you can do so by calling this endpoint with request parameter 'override=true'. " +
                     "The enriching process is asynchronous and this method returns a running task without waiting.")
     @PostMapping(value = "/schedule/{pid}")
     public EnrichmentTask schedule(@PathVariable("pid") String pid,

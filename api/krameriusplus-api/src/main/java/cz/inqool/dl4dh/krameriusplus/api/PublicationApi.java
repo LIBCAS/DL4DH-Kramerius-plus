@@ -23,7 +23,7 @@ public class PublicationApi {
         this.publicationService = publicationService;
     }
 
-    @Operation(summary = "Get an enriched publication by PID")
+    @Operation(summary = "Get an enriched publication by ID")
     @GetMapping("/{id}")
     public Publication getEnrichedPublication(@PathVariable("id") String id,
                                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -31,6 +31,7 @@ public class PublicationApi {
         return publicationService.findWithPages(id, PageRequest.of(page, pageSize));
     }
 
+    @Operation(summary = "Get a list of all enriched publications")
     @GetMapping("/list")
     public List<Publication> list() {
         return publicationService.list();

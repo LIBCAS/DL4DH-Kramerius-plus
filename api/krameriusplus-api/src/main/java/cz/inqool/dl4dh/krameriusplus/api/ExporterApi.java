@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.service.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.service.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.service.export.FileService;
 import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -30,19 +31,22 @@ public class ExporterApi {
         this.fileService = fileService;
     }
 
+    @Operation(summary = "Generate an export from an enriched publication")
     @PostMapping("/{id}/{format}")
-    public Export export(@PathVariable("id") String publicationId, @PathVariable("format") String format) {
+    public Export export(@PathVariable("id") String publicationId, @PathVariable("format") ExportFormat format) {
         Params params = new Params();
-        params.setFormat(ExportFormat.fromString(format));
+        params.setFormat(format);
 
         return exporterService.export(publicationId, params);
     }
 
+    @Operation(summary = "Get a list of all generated exports")
     @GetMapping("/list")
     public List<Export> listExports() {
         return exporterService.list();
     }
 
+    @Operation(summary = "Download a selected generated export")
     @GetMapping(value = "/download/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> download(@PathVariable("id") String fileRefId) {
         FileRef file = fileService.find(fileRefId);
