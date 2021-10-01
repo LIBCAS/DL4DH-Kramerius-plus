@@ -28,7 +28,7 @@ public class PeriodicalItemDto extends PublicationDto<PeriodicalItem> implements
 
     private String parentId;
 
-    private int index;
+    private Integer index;
 
     private String rootPid;
 

@@ -33,7 +33,7 @@ public class PeriodicalVolume extends Publication implements ParentAware {
 
     private String parentId;
 
-    private int index;
+    private Integer index;
 
     @DBRef
     @CascadeSave

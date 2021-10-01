@@ -1,19 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.service.dataaccess;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.DynamicQuery;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.filter.EqFilter;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.FilterParam;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.List;
 
@@ -27,34 +24,10 @@ public class PublicationService {
 
     private final PageRepository pageRepository;
 
-    public static final PageRequest ALL_PAGES = PageRequest.of(Integer.MAX_VALUE, Integer.MAX_VALUE);
-
-    private final int DEFAULT_PAGE_SIZE = 10;
-
-    private final int DEFAULT_PAGE_NUMBER = 1;
-
     @Autowired
     public PublicationService(PublicationRepository publicationRepository, PageRepository pageRepository) {
         this.publicationRepository = publicationRepository;
         this.pageRepository = pageRepository;
-    }
-
-    public Publication find(String publicationId) {
-        return publicationRepository.findById(publicationId)
-                .orElseThrow(() -> new IllegalArgumentException("Publication with ID=" + publicationId + " not found"));
-    }
-
-    public Publication findWithPages(String publicationId, Pageable pageable) {
-        if (pageable == null) {
-            pageable = PageRequest.of(DEFAULT_PAGE_SIZE, DEFAULT_PAGE_NUMBER);
-        }
-        Publication publication = find(publicationId);
-
-        if (publication instanceof PagesAware) {
-            ((PagesAware) publication).setPages(pageRepository.findByParentIdOrderByIndexAsc(publicationId, pageable));
-        }
-
-        return publication;
     }
 
     @Transactional
@@ -70,23 +43,30 @@ public class PublicationService {
         }
     }
 
-    @Transactional
-    public void save(List<Page> pages) {
-        pageRepository.saveAll(pages);
+    /**
+     * Returns the publication with given ID (without also getting its pages)
+     */
+    public Publication find(String publicationId) {
+        return publicationRepository.findById(publicationId)
+                .orElseThrow(() -> new IllegalArgumentException("Publication with ID=" + publicationId + " not found"));
     }
 
-    public List<Publication> list() {
-        return publicationRepository.listLight();
+    /**
+     * Returns a publication with given ID, including its pages depending on the given {@param param}
+     */
+    public Publication findWithPages(String publicationId, Params params) {
+        Publication publication = find(publicationId);
+
+        if (publication instanceof PagesAware) {
+            params.addFilters(new EqFilter("parentId", publicationId));
+            params.getSort().add(new Sorting("index", Sort.Direction.ASC));
+            ((PagesAware) publication).setPages(pageRepository.list(params));
+        }
+
+        return publication;
     }
 
-    public List<Page> testListFilter() {
-        Params params = new Params();
-        params.getUdPipeParams().add(FilterParam.UDPipeParam.LEMMA);
-        params.getUdPipeParams().add(FilterParam.UDPipeParam.FEATS);
-
-        DynamicQuery dynamicQuery = new DynamicQuery();
-        dynamicQuery.setProjectionParams(params);
-
-        return pageRepository.listWithProjection(dynamicQuery);
+    public List<Publication> list(Params params) {
+        return publicationRepository.list(params);
     }
 }

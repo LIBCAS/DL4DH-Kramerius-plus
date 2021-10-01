@@ -28,7 +28,7 @@ public class PeriodicalVolumeDto extends PublicationDto<PeriodicalVolume> implem
 
     private String parentId;
 
-    private int index;
+    private Integer index;
 
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {

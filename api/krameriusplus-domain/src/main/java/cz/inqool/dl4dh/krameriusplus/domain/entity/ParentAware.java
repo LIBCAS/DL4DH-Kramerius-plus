@@ -9,7 +9,7 @@ public interface ParentAware {
 
     void setParentId(String id);
 
-    int getIndex();
+    Integer getIndex();
 
-    void setIndex(int index);
+    void setIndex(Integer index);
 }

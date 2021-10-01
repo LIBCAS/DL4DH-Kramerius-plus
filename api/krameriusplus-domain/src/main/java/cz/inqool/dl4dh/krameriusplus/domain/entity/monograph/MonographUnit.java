@@ -10,7 +10,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class MonographUnit extends Publication implements ParentAware, PagesAwar
 
     private String parentId;
 
-    private int index;
+    private Integer index;
 
     private OCRParadata ocrParadata;
 
@@ -42,7 +41,6 @@ public class MonographUnit extends Publication implements ParentAware, PagesAwar
 
     private NameTagParadata nameTagParadata;
 
-    @DBRef
     private List<Page> pages = new ArrayList<>();
 
     @Override

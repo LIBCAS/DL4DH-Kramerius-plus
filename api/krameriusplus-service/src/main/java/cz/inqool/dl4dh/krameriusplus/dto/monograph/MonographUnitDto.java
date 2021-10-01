@@ -28,7 +28,7 @@ public class MonographUnitDto extends PublicationDto<MonographUnit> implements P
 
     private String parentId;
 
-    private int index;
+    private Integer index;
 
     /**
      * Is ignored

@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter;
+package cz.inqool.dl4dh.krameriusplus.domain.dao.params;
 
 import lombok.Getter;
 

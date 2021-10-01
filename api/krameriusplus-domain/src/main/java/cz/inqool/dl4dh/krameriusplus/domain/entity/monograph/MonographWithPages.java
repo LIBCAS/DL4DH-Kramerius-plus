@@ -8,7 +8,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.List;
 @Setter
 public class MonographWithPages extends Monograph implements PagesAware {
 
-    @DBRef
     private List<Page> pages = new ArrayList<>();
 
     private OCRParadata ocrParadata;

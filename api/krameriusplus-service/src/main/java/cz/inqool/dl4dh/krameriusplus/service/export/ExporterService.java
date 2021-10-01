@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.ExportRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +32,8 @@ public class ExporterService {
     }
 
     @Transactional
-    public Export export(String publicationId, Params params) {
-        Export export = exporters.get(params.getFormat()).export(publicationId, params);
+    public Export export(String publicationId, Params params, ExportFormat format) {
+        Export export = exporters.get(format).export(publicationId, params);
         exportRepository.save(export);
 
         return export;

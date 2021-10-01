@@ -3,9 +3,9 @@ package cz.inqool.dl4dh.krameriusplus.api;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
 import cz.inqool.dl4dh.krameriusplus.service.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.service.export.FileService;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -31,11 +31,14 @@ public class ExporterApi {
     }
 
     @PostMapping("/{id}/{format}")
-    public Export export(@PathVariable("id") String publicationId, @PathVariable("format") String format) {
-        Params params = new Params();
-        params.setFormat(ExportFormat.fromString(format));
+    public Export export(@PathVariable("id") String publicationId,
+                          @PathVariable("format") String format,
+                          @RequestBody(required = false) Params params) {
+        if (params == null) {
+            params = new Params();
+        }
 
-        return exporterService.export(publicationId, params);
+        return exporterService.export(publicationId, params, ExportFormat.fromString(format));
     }
 
     @GetMapping("/list")

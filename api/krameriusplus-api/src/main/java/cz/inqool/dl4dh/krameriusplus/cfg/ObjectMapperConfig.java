@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -36,6 +35,7 @@ public class ObjectMapperConfig {
     @Bean
     public ObjectMapper objectMapper(@Value("${system.json.prettyPrint:true}") Boolean prettyPrint,
                                      @Value("${system.json.serializeNulls:false}") Boolean serializeNulls,
+                                     @Value("${system.json.serializeEmptyArrays:false}") Boolean serializeEmptyArrays,
                                      @Value("${system.timezone:Europe/Prague}") TimeZone timeZone) {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -51,6 +51,10 @@ public class ObjectMapperConfig {
 
         if (serializeNulls != null && !serializeNulls) {
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        }
+
+        if (serializeEmptyArrays != null && !serializeEmptyArrays) {
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         }
 
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);

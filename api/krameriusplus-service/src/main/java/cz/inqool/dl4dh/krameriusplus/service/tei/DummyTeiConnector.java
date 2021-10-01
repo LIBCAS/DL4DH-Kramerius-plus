@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.tei;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import lombok.SneakyThrows;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;

@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.export;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.filter.Params;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.JSON;
 
@@ -26,7 +26,7 @@ public class JsonExporter extends AbstractExporter {
 
     @Override
     public Export export(String publicationId, Params params) {
-        Publication publication = publicationService.findWithPages(publicationId, PublicationService.ALL_PAGES);
+        Publication publication = publicationService.findWithPages(publicationId, params);
 
         try {
             byte[] content = objectMapper.writeValueAsBytes(publication);
