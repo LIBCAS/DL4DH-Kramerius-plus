@@ -13,7 +13,7 @@ import java.util.List;
  * @author Norbert Bodnar
  */
 @RestController
-@RequestMapping("api/publication")
+@RequestMapping("/api/publication")
 public class PublicationApi {
 
     private final PublicationService publicationService;
