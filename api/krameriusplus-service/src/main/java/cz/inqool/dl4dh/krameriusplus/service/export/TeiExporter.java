@@ -39,7 +39,9 @@ public class TeiExporter extends AbstractExporter {
 
     @Override
     public Export export(String publicationId, Params params) {
-        Publication publication = publicationService.findWithPages(publicationId, params);
+        TeiParams teiParams = convert(params);
+
+        Publication publication = publicationService.findWithPages(publicationId, teiParams.cleanForTei());
 
         if (!(publication instanceof PagesAware)) {
             throw new IllegalArgumentException("Tei cannot be generated from a publication which does not have pages");
@@ -47,7 +49,7 @@ public class TeiExporter extends AbstractExporter {
 
         PagesAware publicationWithPages = (PagesAware) publication;
 
-        File tmpFile = getTei(publicationWithPages, params);
+        File tmpFile = getTei(publicationWithPages, teiParams);
 
         try {
             FileRef file = fileService.create(new FileInputStream(tmpFile), tmpFile.length(),
@@ -59,12 +61,20 @@ public class TeiExporter extends AbstractExporter {
         }
     }
 
+    private TeiParams convert(Params params) {
+        if (params instanceof TeiParams) {
+            return (TeiParams) params;
+        } else {
+            return new TeiParams(params);
+        }
+    }
+
     @Override
     public ExportFormat getFormat() {
         return TEI;
     }
 
-    private File getTei(PagesAware publication, Params params) {
+    private File getTei(PagesAware publication, TeiParams params) {
         return teiConnector.merge(publication.getTeiHeader(),
                 publication
                         .getPages()

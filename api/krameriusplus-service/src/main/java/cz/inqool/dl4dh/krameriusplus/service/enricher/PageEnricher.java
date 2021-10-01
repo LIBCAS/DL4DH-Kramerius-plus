@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
-import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.metadata.AltoWrapper;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
@@ -11,11 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Collection;
-
-import static cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException.ErrorCode.KRAMERIUS_ERROR;
 
 @Service
 @Slf4j
@@ -33,7 +29,7 @@ public class PageEnricher {
 
     @Autowired
     public PageEnricher(UDPipeService udPipeService, NameTagService nameTagService, StreamProvider streamProvider,
-                           @Value("${enrichment.source:OCR}") String plainTextSource, TeiConnector teiConnector) {
+                           @Value("${system.enrichment.source:OCR}") String plainTextSource, TeiConnector teiConnector) {
         this.udPipeService = udPipeService;
         this.nameTagService = nameTagService;
         this.streamProvider = streamProvider;

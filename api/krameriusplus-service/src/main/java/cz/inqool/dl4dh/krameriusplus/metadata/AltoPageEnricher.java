@@ -63,7 +63,8 @@ public class AltoPageEnricher {
     }
 
     private void processIllustrationElement(IllustrationType block) {
-        page.setNumberOfIllustrations(page.getNumberOfIllustrations() + 1);
+        Integer numberOfIllustrations = page.getNumberOfIllustrations();
+        page.setNumberOfIllustrations(numberOfIllustrations == null ? 1 : ++numberOfIllustrations);
     }
 
     private void processTextBlockElement(TextBlockType block) {
