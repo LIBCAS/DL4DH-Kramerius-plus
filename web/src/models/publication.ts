@@ -1,5 +1,4 @@
-import { ModsMetadata } from "./modsMetadata";
-
+import { ModsMetadata } from ".";
 import { PublicationModel } from "../enums/publicationModel";
 
 
