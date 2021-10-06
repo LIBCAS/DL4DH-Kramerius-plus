@@ -34,6 +34,11 @@ public class PublicationApi {
         return publicationService.findWithPages(id, params);
     }
 
+    @GetMapping("/list")
+    public List<Publication> listGet() {
+        return publicationService.list(new Params());
+    }
+
     @PostMapping("/list")
     public List<Publication> list(@RequestBody(required = false) Params params) {
         if (params == null) {

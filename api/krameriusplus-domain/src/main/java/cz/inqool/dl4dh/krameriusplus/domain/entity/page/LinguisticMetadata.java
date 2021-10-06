@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class LinguisticMetadata {
 
     @Field("p")
-    private int position;
+    private Integer position;
 
     @Field("l")
     private String lemma;

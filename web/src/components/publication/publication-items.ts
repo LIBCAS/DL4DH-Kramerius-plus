@@ -1,69 +1,72 @@
-import { Sort } from "../../models";
-import { AltoParam, PipeParam, TagParam } from "../../models/tei-params";
+import { Sort } from '../../models';
+import { AltoParam, PipeParam, TagParam } from '../../models/tei-params';
 
 export const fieldOptions = [
   {
-    id: "title",
-    label: "Nadpis",
+    id: 'title',
+    label: 'Nadpis',
   },
   {
-    id: "index",
-    label: "Číslo strany",
+    id: 'index',
+    label: 'Číslo strany',
   },
   {
-    id: "nameTagMetadata",
-    label: "NameTag - úroveň stránky",
+    id: 'nameTagMetadata',
+    label: 'NameTag - úroveň stránky',
   },
   {
-    id: "token.tokenIndex",
-    label: "Obsah tokenu",
+    id: 'tokens.ti',
+    label: 'Číslo tokenu na stránce',
   },
   {
-    id: "token.linguisticMetadata.position",
-    label: "Číslo tokenu vo vete",
+    id: 'tokens.c',
+    label: 'Obsah tokenu',
   },
   {
-    id: "token.linguisticMetadata.lemma",
-    label: "Lemma",
+    id: 'tokens.lm.p',
+    label: 'Číslo tokenu vo vete',
   },
   {
-    id: "token.linguisticMetadata.uPosTag",
-    label: "UPosTag",
+    id: 'tokens.lm.l',
+    label: 'Lemma',
   },
   {
-    id: "token.linguisticMetadata.xPosTag",
-    label: "XPosTag",
+    id: 'tokens.lm.u',
+    label: 'UPosTag',
   },
   {
-    id: "token.linguisticMetadata.feats",
-    label: "Feats",
+    id: 'tokens.lm.x',
+    label: 'XPosTag',
   },
   {
-    id: "token.nameTagMetadata",
-    label: "NameTag - úroveň tokenu",
+    id: 'tokens.lm.f',
+    label: 'Feats',
+  },
+  {
+    id: 'tokens.ntm',
+    label: 'NameTag - úroveň tokenu',
   },
 ];
 
-
-export const sortOptions:Sort[]= [
+export const sortOptions: Sort[] = [
   {
     field: 'index',
-    direction: 'ASC'
+    direction: 'ASC',
   },
   {
     field: 'index',
-    direction: 'DESC'
-  }
-]
+    direction: 'DESC',
+  },
+];
 
-export const udPipeParamsOptions:PipeParam[] = [
+export const udPipeParamsOptions: PipeParam[] = [
   'n',
   'lemma',
   'pos',
   'msd',
   'join',
-  '?'
-]
+  '?',
+];
 
 export const nameTagParamsOptions: TagParam[] = [
   'a',
@@ -73,13 +76,13 @@ export const nameTagParamsOptions: TagParam[] = [
   'n',
   'o',
   'p',
-  't'
-]
+  't',
+];
 
 export const altoParamsOptions: AltoParam[] = [
   'height',
   'width',
   'vpos',
   'hpos',
-  '?'
-]
+  '?',
+];
