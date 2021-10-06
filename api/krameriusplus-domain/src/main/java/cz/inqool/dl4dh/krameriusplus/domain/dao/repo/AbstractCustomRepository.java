@@ -36,7 +36,6 @@ public class AbstractCustomRepository<T extends DomainObject> implements CustomR
             query.fields().exclude(field);
         }
 
-        query.fields().include("_class"); // always include _class so the DB object can be deserialized
         query.with(params.toPageRequest());
 
         return mongoTemplate.find(query, clazz);

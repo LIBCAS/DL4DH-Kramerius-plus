@@ -10,6 +10,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Transient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class MonographUnit extends Publication implements ParentAware, PagesAwar
 
     private NameTagParadata nameTagParadata;
 
+    @Transient
     private List<Page> pages = new ArrayList<>();
 
     @Override

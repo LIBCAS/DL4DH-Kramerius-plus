@@ -8,6 +8,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Transient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @Setter
 public class MonographWithPages extends Monograph implements PagesAware {
 
+    @Transient
     private List<Page> pages = new ArrayList<>();
 
     private OCRParadata ocrParadata;
