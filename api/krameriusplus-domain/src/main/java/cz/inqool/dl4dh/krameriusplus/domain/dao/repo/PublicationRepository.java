@@ -11,7 +11,7 @@ import java.util.List;
  * @author Norbert Bodnar
  */
 @Repository
-public interface PublicationRepository extends MongoRepository<Publication, String> {
+public interface PublicationRepository extends MongoRepository<Publication, String>, PublicationRepositoryCustom {
 
     @Query(value = "{}", fields = "{title: 1, date: 1, issueNumber: 1, index: 1, partNumber: 1, _class: 1, volumeYear: 1}")
     List<Publication> listLight();

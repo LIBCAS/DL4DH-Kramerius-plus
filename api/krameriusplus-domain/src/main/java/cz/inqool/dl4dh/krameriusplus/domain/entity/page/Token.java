@@ -19,7 +19,7 @@ public class Token {
      * the response
      */
     @Field("ti")
-    private int tokenIndex;
+    private Integer tokenIndex;
 
     /**
      * Original content of the token
@@ -31,13 +31,13 @@ public class Token {
      * Start offset of the token on the page, information extracted from udPipeMetadata.misc field
      */
     @Field("so")
-    private int startOffset;
+    private Integer startOffset;
 
     /**
      * End offset of the token on the page, information extracted from udPipeMetadata.misc field
      */
     @Field("eo")
-    private int endOffset;
+    private Integer endOffset;
 
     /**
      * Object containing metadata from UDPipe response

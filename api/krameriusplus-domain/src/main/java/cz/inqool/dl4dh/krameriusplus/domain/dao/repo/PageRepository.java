@@ -11,7 +11,7 @@ import java.util.List;
  * @author Norbert Bodnar
  */
 @Repository
-public interface PageRepository extends MongoRepository<Page, String> {
+public interface PageRepository extends MongoRepository<Page, String>, PageRepositoryCustom {
 
     List<Page> findAllByParentIdOrderByIndexAsc(String parentId);
 

@@ -27,7 +27,7 @@ public class WebClientConfig {
     private static final int MAX_MEMORY_SIZE = 16777216;
 
     @Bean(name = "krameriusWebClient")
-    public WebClient webClientKramerius(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi) {
+    public WebClient webClientKramerius(@Value("${system.kramerius.api:https://kramerius.mzk.cz}") String krameriusApi) {
         return WebClient
                 .builder()
                 .baseUrl(krameriusApi + "/search/api/v5.0/item")
@@ -51,7 +51,7 @@ public class WebClientConfig {
     }
 
     @Bean(name = "udPipeWebClient")
-    public WebClient webClientUDPipe(@Value("${enrichment.udpipe.api:http://lindat.mff.cuni.cz/services/udpipe/api/process}")
+    public WebClient webClientUDPipe(@Value("${system.enrichment.udpipe.api:http://lindat.mff.cuni.cz/services/udpipe/api/process}")
                                                  String udPipeApi) {
         return WebClient
                 .builder()
@@ -63,7 +63,7 @@ public class WebClientConfig {
     }
 
     @Bean(name = "nameTagWebClient")
-    public WebClient webClientNameTag(@Value("${enrichment.nametag.api:http://lindat.mff.cuni.cz/services/nametag/api/recognize}")
+    public WebClient webClientNameTag(@Value("${system.enrichment.nametag.api:http://lindat.mff.cuni.cz/services/nametag/api/recognize}")
                                                   String nameTagApi) {
         return WebClient
                 .builder()
@@ -75,7 +75,7 @@ public class WebClientConfig {
     }
 
     @Bean(name = "teiWebClient")
-    public WebClient webClientTei(@Value("${enrichment.tei.api:http://localhost:5000/tei}") String teiApi) {
+    public WebClient webClientTei(@Value("${system.enrichment.tei.api:http://localhost:5000/tei}") String teiApi) {
         return WebClient
                 .builder()
                 .baseUrl(teiApi)
@@ -91,7 +91,7 @@ public class WebClientConfig {
     }
 
     @Bean
-    public RestTemplate getRestTemplate(@Value("${enrichment.tei.api:http://localhost:5000/tei}") String teiApi,
+    public RestTemplate getRestTemplate(@Value("${system.enrichment.tei.api:http://localhost:5000/tei}") String teiApi,
                                         LoggingRequestInterceptor loggingRequestInterceptor) {
         RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
 

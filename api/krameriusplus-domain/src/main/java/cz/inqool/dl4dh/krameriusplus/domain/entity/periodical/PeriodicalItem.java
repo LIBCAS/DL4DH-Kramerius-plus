@@ -10,7 +10,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Transient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class PeriodicalItem extends Publication implements ParentAware, PagesAwa
 
     private String rootId;
 
-    private int index;
+    private Integer index;
 
     private OCRParadata ocrParadata;
 
@@ -42,7 +42,7 @@ public class PeriodicalItem extends Publication implements ParentAware, PagesAwa
 
     private NameTagParadata nameTagParadata;
 
-    @DBRef
+    @Transient
     private List<Page> pages = new ArrayList<>();
 
     @Override

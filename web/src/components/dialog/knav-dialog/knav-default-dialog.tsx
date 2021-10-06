@@ -12,11 +12,15 @@ interface Props {
   actions: ReactNode;
   children: ReactNode;
   closeBtnLabel?: string;
+  minWidth?: number;
+  contentHeight?: number;
 }
+
+type StyleProps = Pick<Props, "minWidth" | "contentHeight">;
 
 const useStyles = makeStyles(() => ({
   root: {
-    minWidth: 300,
+    minWidth: (p: StyleProps) => p.minWidth,
   },
   title: {
     display: "flex",
@@ -28,6 +32,7 @@ const useStyles = makeStyles(() => ({
     },
   },
   content: {
+    height: (p) => p.contentHeight,
     "& *": {
       fontSize: 16,
     },
@@ -40,9 +45,11 @@ export function DefaultDialog({
   actions,
   children,
   closeBtnLabel = "Zavřít",
+  minWidth = 300,
+  contentHeight = 200,
 }: Props) {
   const { close } = useContext(DialogContext);
-  const classes = useStyles();
+  const classes = useStyles({ minWidth, contentHeight });
 
   return (
     <div className={classes.root}>

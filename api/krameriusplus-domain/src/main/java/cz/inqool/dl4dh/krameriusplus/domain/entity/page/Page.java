@@ -32,6 +32,7 @@ public class Page extends KrameriusObject implements ParentAware {
      * Id of parent object. Multiple object types can contain pages, for example monographs, monographUnits or
      * periodicalItems
      */
+    @Indexed
     private String parentId;
 
     private String rootId;
@@ -59,10 +60,10 @@ public class Page extends KrameriusObject implements ParentAware {
      * Number of elements of type IllustrationType on page. Should represent the number of illustration on the page
      * recognized by the OCR. Information is obtained from ALTO format.
      */
-    private int numberOfIllustrations = 0;
+    private Integer numberOfIllustrations;
 
     @Indexed
-    private int index;
+    private Integer index;
 
     private NameTagMetadata nameTagMetadata;
 

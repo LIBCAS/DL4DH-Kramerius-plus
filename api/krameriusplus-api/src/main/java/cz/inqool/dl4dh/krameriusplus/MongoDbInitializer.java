@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus;
 
+import cz.inqool.dl4dh.krameriusplus.service.export.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationListener;
@@ -16,13 +17,17 @@ public class MongoDbInitializer implements ApplicationListener<ContextRefreshedE
 
     private final MongoDatabaseFactory mongoDatabaseFactory;
 
+    private final FileService fileService;
+
     @Autowired
-    public MongoDbInitializer(MongoDatabaseFactory mongoDatabaseFactory) {
+    public MongoDbInitializer(MongoDatabaseFactory mongoDatabaseFactory, FileService fileService) {
         this.mongoDatabaseFactory = mongoDatabaseFactory;
+        this.fileService = fileService;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         mongoDatabaseFactory.getMongoDatabase().drop();
+        fileService.cleanUp();
     }
 }

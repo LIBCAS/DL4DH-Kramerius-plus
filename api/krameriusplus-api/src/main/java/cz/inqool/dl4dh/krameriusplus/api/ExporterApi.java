@@ -1,11 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
-import cz.inqool.dl4dh.krameriusplus.service.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.service.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.service.export.FileService;
-import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
+import cz.inqool.dl4dh.krameriusplus.service.export.TeiParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.JSON;
+import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.TEI;
 
 /**
  * @author Norbert Bodnar
@@ -30,12 +33,24 @@ public class ExporterApi {
         this.fileService = fileService;
     }
 
-    @PostMapping("/{id}/{format}")
-    public Export export(@PathVariable("id") String publicationId, @PathVariable("format") String format) {
-        Params params = new Params();
-        params.setFormat(ExportFormat.fromString(format));
+    @PostMapping("/{id}/json")
+    public Export exportJson(@PathVariable("id") String publicationId,
+                          @RequestBody(required = false) Params params) {
+        if (params == null) {
+            params = new Params();
+        }
 
-        return exporterService.export(publicationId, params);
+        return exporterService.export(publicationId, params, JSON);
+    }
+
+    @PostMapping("/{id}/tei")
+    public Export exportTei(@PathVariable("id") String publicationId,
+                            @RequestBody(required = false) TeiParams params) {
+        if (params == null) {
+            params = new TeiParams();
+        }
+
+        return exporterService.export(publicationId, params, TEI);
     }
 
     @GetMapping("/list")

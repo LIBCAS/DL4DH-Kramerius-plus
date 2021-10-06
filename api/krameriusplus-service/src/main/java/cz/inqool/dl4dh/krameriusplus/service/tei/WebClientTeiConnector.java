@@ -5,13 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
-import cz.inqool.dl4dh.krameriusplus.domain.exception.ExportException;
 import cz.inqool.dl4dh.krameriusplus.dto.tei.TeiHeaderFactory;
-import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
+import cz.inqool.dl4dh.krameriusplus.service.export.TeiParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -21,14 +23,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.Resource;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException.ErrorCode.SERIALIZING_ERROR;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException.ErrorCode.TEI_ERROR;
-import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.notNull;
-import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExportException.ErrorCode.TEI_MERGE_ERROR;
 
 @Service
 @Slf4j
@@ -79,7 +81,7 @@ public class WebClientTeiConnector implements TeiConnector {
     }
 
     @Override
-    public File merge(String teiHeader, List<String> teiPages, Params params) {
+    public File merge(String teiHeader, List<String> teiPages, TeiParams params) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setAccept(List.of(MediaType.APPLICATION_XML));
@@ -91,26 +93,19 @@ public class WebClientTeiConnector implements TeiConnector {
             body.add("page[]", new MultipartInputStreamFileResource(new ByteArrayInputStream(teiPage.getBytes(StandardCharsets.UTF_8)), "page.xml"));
         }
 
+        params.getUdPipeParams().forEach(param -> body.add("UDPipe", param));
+        params.getNameTagParams().forEach(param -> body.add("NameTag", param));
+        params.getAltoParams().forEach(param -> body.add("ALTO", param));
+
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        File file = restTemplate.execute("/merge", HttpMethod.POST,
+        return restTemplate.execute("/merge", HttpMethod.POST,
                 restTemplate.httpEntityCallback(requestEntity),
                 clientHttpResponse -> {
             File ret = File.createTempFile("download", "tmp");
             StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
             return ret;
         });
-
-//        InputStream response = restTemplate
-//                .execute("/merge",
-//                        HttpMethod.POST,
-//                        restTemplate.httpEntityCallback(requestEntity),
-//                        HttpInputMessage::getBody);
-//
-//        notNull(response, () -> new ExportException(TEI_MERGE_ERROR, "Response from /merge is null"));
-
-
-        return file;
     }
 
     @Resource(name = "teiWebClient")

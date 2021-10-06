@@ -40,7 +40,7 @@ public class PageDto extends DigitalObjectDto<Page> implements ParentAware {
     /**
      * Integer representation of page number (removed every non-numeric character from pageNumber)
      */
-    private int index;
+    private Integer index;
 
     //TODO: change to enum?
     private String policy;

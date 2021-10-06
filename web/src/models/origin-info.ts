@@ -1,4 +1,4 @@
-import { DateIssued } from "./dateIssued";
+import { DateIssued } from ".";
 import { Place } from "./place";
 
 export interface OriginInfo { 

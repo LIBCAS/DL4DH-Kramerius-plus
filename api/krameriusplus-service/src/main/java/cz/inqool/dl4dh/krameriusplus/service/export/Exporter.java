@@ -1,7 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
-import cz.inqool.dl4dh.krameriusplus.service.export.filter.Params;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
 
 public interface Exporter {
 
