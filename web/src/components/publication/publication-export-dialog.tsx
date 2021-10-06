@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
+import { toast } from "react-toastify";
 
 import { DefaultDialog } from "../dialog/knav-dialog/knav-default-dialog";
 import { DialogContentProps } from "../dialog/types";
@@ -18,22 +18,38 @@ const exportPublication = async (
   format: ExportFormat,
   params: Params | TeiParams
 ) => {
+  const filters = (params.filters ?? []).map((f) => ({
+    field: f.field,
+    value: f.value,
+    operation: f.operation,
+  }));
+
+  const processedParams = {
+    ...params,
+    filters,
+    sort: [{ field: "index", direction: params.sort }],
+  };
+
   await fetch(`/api/export/${id}/${format}`, {
     method: "POST",
     headers: new Headers({ "Content-Type": "application/json" }),
-    body: JSON.stringify(params),
+    body: JSON.stringify(processedParams),
   });
 };
 
-const defaultJSONParams = {
+const defaultJSONParams: Params = {
   disablePagination: false,
   pageOffset: 0,
   pageSize: 20,
   filters: [],
   includeFields: [],
+  sort: {
+    field: "index",
+    direction: "ASC",
+  },
 };
 
-const defaultTeiParams = {
+const defaultTeiParams: TeiParams = {
   disablePagination: false,
   pageOffset: 0,
   pageSize: 20,
@@ -42,6 +58,10 @@ const defaultTeiParams = {
   udPipeParams: [],
   nameTagParams: [],
   altoParams: [],
+  sort: {
+    field: "index",
+    direction: "ASC",
+  },
 };
 
 export const PublicationExportDialog = ({
@@ -53,8 +73,6 @@ export const PublicationExportDialog = ({
   const [format, setFormat] = useState<ExportFormat>("json");
   const [jsonParams, setJsonParams] = useState<Params>(defaultJSONParams);
   const [teiParams, setTeiParams] = useState<TeiParams>(defaultTeiParams);
-
-  const [error, setError] = useState<string | undefined>();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormat((event.target as HTMLInputElement).value as ExportFormat);
@@ -68,10 +86,15 @@ export const PublicationExportDialog = ({
   const handleSubmitExport = async () => {
     try {
       await exportPublication(initialValues!.id, format, requestParams);
+      toast("Operace proběhla úspěšně", {
+        type: "success",
+      });
 
       onClose();
     } catch (e) {
-      setError("Při pokusu o export publikace došlo k chybě");
+      toast("Při pokusu o export publikace došlo k chybě", {
+        type: "error",
+      });
     }
   };
 
@@ -84,6 +107,7 @@ export const PublicationExportDialog = ({
         </Button>
       }
       minWidth={400}
+      contentHeight={470}
     >
       <RadioGroup
         aria-label="export-format"
@@ -107,12 +131,6 @@ export const PublicationExportDialog = ({
         <JSONParams params={jsonParams} setParams={setJsonParams} />
       ) : (
         <TEIParams params={teiParams} setParams={setTeiParams} />
-      )}
-
-      {error && (
-        <Typography color="error" style={{ fontSize: 14, marginTop: 10 }}>
-          {error}
-        </Typography>
       )}
     </DefaultDialog>
   );

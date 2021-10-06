@@ -7,8 +7,14 @@ import { Sort, TeiParams } from "../../models";
 import { CheckboxField } from "../checkbox-field/checkbox-field";
 import { TextField } from "../text-field/text-field";
 import { SelectField } from "../select-field/select-field";
-import { Filter } from "../../models/filter";
 import { AltoParam, PipeParam, TagParam } from "../../models/tei-params";
+import {
+  altoParamsOptions,
+  nameTagParamsOptions,
+  sortOptions,
+  udPipeParamsOptions,
+} from "./publication-items";
+import { ExportFilters } from "./publication-export-filters";
 
 type Props = {
   params: TeiParams;
@@ -31,7 +37,6 @@ export const TEIParams = ({ setParams, params }: Props) => {
     pageSize = 20,
     filters = [],
     sort = [],
-    includeFields = [],
     udPipeParams = [],
     altoParams = [],
     nameTagParams = [],
@@ -78,97 +83,26 @@ export const TEIParams = ({ setParams, params }: Props) => {
 
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <SelectField<Filter>
-            label="Filtre"
-            name="filters"
-            items={[]}
-            value={filters}
-            multiple
-            onChange={(v) =>
-              setParams((p) => ({
-                ...p,
-                filters: v as Filter[],
-              }))
-            }
-            optionMapper={(o) => `${o.field} - ${o.value}`}
-          />
-        </Grid>
-        <Grid item xs={6}>
           <SelectField<Sort>
             label="Sort"
             name="sort"
-            items={[]}
+            items={sortOptions}
             value={sort}
-            multiple
             onChange={(v) =>
               setParams((p) => ({
                 ...p,
-                sort: v as Sort[],
+                sort: v as Sort,
               }))
             }
-            optionMapper={(o) => `${o.field} - ${o.direction}`}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <SelectField<string>
-            label="Zahrnout pole"
-            name="includeFields"
-            items={[]}
-            value={includeFields}
-            multiple
-            onChange={(v) =>
-              setParams((p) => ({
-                ...p,
-                includeFields: v as string[],
-              }))
-            }
-            optionMapper={(o) => o}
-          />
-        </Grid>
-
-        <Grid item xs={6}>
-          <SelectField<PipeParam>
-            label="udPipeParams"
-            name="udPipeParams"
-            items={[]}
-            value={udPipeParams}
-            multiple
-            onChange={(v) =>
-              setParams((p) => ({
-                ...p,
-                udPipeParams: v as PipeParam[],
-              }))
-            }
-            optionMapper={(o) => o}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <SelectField<TagParam>
-            label="nameTagParams"
-            name="nameTagParams"
-            items={[]}
-            value={nameTagParams}
-            multiple
-            onChange={(v) =>
-              setParams((p) => ({
-                ...p,
-                nameTagParams: v as TagParam[],
-              }))
-            }
-            optionMapper={(o) => o}
+            optionMapper={(o) => o.direction}
+            labelMapper={(o) => o.direction}
           />
         </Grid>
         <Grid item xs={6}>
           <SelectField<AltoParam>
             label="altoParams"
             name="altoParams"
-            items={[]}
+            items={altoParamsOptions}
             value={altoParams}
             multiple
             onChange={(v) =>
@@ -177,10 +111,51 @@ export const TEIParams = ({ setParams, params }: Props) => {
                 altoParams: v as AltoParam[],
               }))
             }
-            optionMapper={(o) => o}
+            optionMapper={(o) => (o === "?" ? "jiný znak" : o)}
+            labelMapper={(o) => (o === "?" ? "jiný znak" : o)}
           />
         </Grid>
       </Grid>
+
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <SelectField<PipeParam>
+            label="udPipeParams"
+            name="udPipeParams"
+            items={udPipeParamsOptions}
+            value={udPipeParams}
+            multiple
+            onChange={(v) =>
+              setParams((p) => ({
+                ...p,
+                udPipeParams: v as PipeParam[],
+              }))
+            }
+            optionMapper={(o) => (o === "?" ? "jiný znak" : o)}
+            labelMapper={(o) => (o === "?" ? "jiný znak" : o)}
+          />
+        </Grid>
+
+        <Grid item xs={6}>
+          <SelectField<TagParam>
+            label="nameTagParams"
+            name="nameTagParams"
+            items={nameTagParamsOptions}
+            value={nameTagParams}
+            multiple
+            onChange={(v) =>
+              setParams((p) => ({
+                ...p,
+                nameTagParams: v as TagParam[],
+              }))
+            }
+            optionMapper={(o) => (o === "?" ? "jiný znak" : o)}
+            labelMapper={(o) => (o === "?" ? "jiný znak" : o)}
+          />
+        </Grid>
+      </Grid>
+
+      <ExportFilters filters={filters} setParams={setParams} />
     </div>
   );
 };

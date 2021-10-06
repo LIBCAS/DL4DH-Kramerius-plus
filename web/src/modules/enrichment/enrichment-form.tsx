@@ -7,9 +7,10 @@ import IconButton from "@material-ui/core/IconButton";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import Paper from "@material-ui/core/Paper";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Typography from "@material-ui/core/Typography";
 import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
+import { toast } from "react-toastify";
 
 import { enrich } from "./enrichment-api";
 
@@ -39,12 +40,6 @@ const useStyles = makeStyles(() => ({
     justifyContent: "flex-end",
     alignItems: "flex-start",
   },
-  errors: {
-    marginTop: 5,
-    "& p": {
-      fontSize: 12,
-    },
-  },
 }));
 
 type Fields = {
@@ -54,12 +49,9 @@ type Fields = {
 
 const initialValue = { id: v4(), value: "" };
 
-const SUBMIT_ERROR_MESSAGE = "Při pokusu o obohacení nastala chyba.";
-
 export const EnrichmentForm = () => {
   const classes = useStyles();
   const [idFields, setIdFields] = useState<Fields[]>([initialValue]);
-  const [errors, setErrors] = useState<string[]>([]);
 
   const disabledSubmitButton = useMemo(() => {
     const foundEmptyValueIndex = idFields.findIndex((f) => !f.value);
@@ -85,11 +77,15 @@ export const EnrichmentForm = () => {
     const response = await enrich(publications);
 
     if (response.ok) {
+      toast("Operace proběhla úspěšně", {
+        type: "success",
+      });
+
       setIdFields([initialValue]);
-      setErrors([]);
     } else {
-      if (!errors.includes(SUBMIT_ERROR_MESSAGE))
-        setErrors([...errors, SUBMIT_ERROR_MESSAGE]);
+      toast("Při pokusu o obohacení nastala chyba.", {
+        type: "error",
+      });
     }
   };
 
@@ -97,7 +93,7 @@ export const EnrichmentForm = () => {
     const newFields = idFields.map((f) => {
       if (f.id === e.target.name) {
         return {
-          id: f.id,
+          ...f,
           value: e.target.value,
         };
       }
@@ -167,13 +163,6 @@ export const EnrichmentForm = () => {
           </Grid>
         </Grid>
       </form>
-      <div className={classes.errors}>
-        {errors.map((e) => (
-          <Typography key={e} color="error">
-            {e}
-          </Typography>
-        ))}
-      </div>
     </Paper>
   );
 };
