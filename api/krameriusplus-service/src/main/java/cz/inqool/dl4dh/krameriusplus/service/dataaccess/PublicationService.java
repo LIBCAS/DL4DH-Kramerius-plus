@@ -59,7 +59,10 @@ public class PublicationService {
 
         if (publication instanceof PagesAware) {
             params.addFilters(new EqFilter("parentId", publicationId));
-            params.getSort().add(new Sorting("index", Sort.Direction.ASC));
+
+            if (params.getSort().isEmpty()) {
+                params.getSort().add(new Sorting("index", Sort.Direction.ASC));
+            }
             ((PagesAware) publication).setPages(pageRepository.list(params));
         }
 
