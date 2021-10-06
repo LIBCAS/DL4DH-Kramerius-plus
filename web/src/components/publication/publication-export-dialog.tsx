@@ -30,11 +30,21 @@ const exportPublication = async (
     sort: [{ field: "index", direction: params.sort }],
   };
 
-  await fetch(`/api/export/${id}/${format}`, {
-    method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" }),
-    body: JSON.stringify(processedParams),
-  });
+  try {
+    const response = await fetch(`/api/export/${id}/${format}`, {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify(processedParams),
+    });
+
+    return {
+      ok: response.ok,
+    };
+  } catch (e) {
+    return {
+      ok: false,
+    };
+  }
 };
 
 const defaultJSONParams: Params = {
@@ -43,10 +53,6 @@ const defaultJSONParams: Params = {
   pageSize: 20,
   filters: [],
   includeFields: [],
-  sort: {
-    field: "index",
-    direction: "ASC",
-  },
 };
 
 const defaultTeiParams: TeiParams = {
@@ -58,10 +64,6 @@ const defaultTeiParams: TeiParams = {
   udPipeParams: [],
   nameTagParams: [],
   altoParams: [],
-  sort: {
-    field: "index",
-    direction: "ASC",
-  },
 };
 
 export const PublicationExportDialog = ({
@@ -84,18 +86,23 @@ export const PublicationExportDialog = ({
   );
 
   const handleSubmitExport = async () => {
-    try {
-      await exportPublication(initialValues!.id, format, requestParams);
+    const response = await exportPublication(
+      initialValues!.id,
+      format,
+      requestParams
+    );
+
+    if (response.ok) {
       toast("Operace proběhla úspěšně", {
         type: "success",
       });
-
-      onClose();
-    } catch (e) {
+    } else {
       toast("Při pokusu o export publikace došlo k chybě", {
         type: "error",
       });
     }
+
+    onClose();
   };
 
   return (
