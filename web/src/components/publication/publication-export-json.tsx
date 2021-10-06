@@ -7,7 +7,8 @@ import { Params, Sort } from "../../models";
 import { CheckboxField } from "../checkbox-field/checkbox-field";
 import { TextField } from "../text-field/text-field";
 import { SelectField } from "../select-field/select-field";
-import { Filter } from "../../models/filter";
+import { fieldOptions, sortOptions } from "./publication-items";
+import { ExportFilters } from "./publication-export-filters";
 
 type Props = {
   params: Params;
@@ -74,45 +75,10 @@ export const JSONParams = ({ setParams, params }: Props) => {
 
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <SelectField<Filter>
-            label="Filtre"
-            name="filters"
-            items={[]}
-            value={filters}
-            multiple
-            onChange={(v) =>
-              setParams((p) => ({
-                ...p,
-                filters: v as Filter[],
-              }))
-            }
-            optionMapper={(o) => `${o.field} - ${o.value}`}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <SelectField<Sort>
-            label="Sort"
-            name="sort"
-            items={[]}
-            value={sort}
-            multiple
-            onChange={(v) =>
-              setParams((p) => ({
-                ...p,
-                sort: v as Sort[],
-              }))
-            }
-            optionMapper={(o) => `${o.field} - ${o.direction}`}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <SelectField<string>
+          <SelectField<{ id: string; label: string }>
             label="Zahrnout pole"
             name="includeFields"
-            items={[]}
+            items={fieldOptions}
             value={includeFields}
             multiple
             onChange={(v) =>
@@ -121,10 +87,27 @@ export const JSONParams = ({ setParams, params }: Props) => {
                 includeFields: v as string[],
               }))
             }
-            optionMapper={(o) => o}
+            optionMapper={(o) => o.id}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <SelectField<Sort>
+            label="Sort"
+            name="sort"
+            items={sortOptions}
+            value={sort}
+            onChange={(v) =>
+              setParams((p) => ({
+                ...p,
+                sort: v as Sort,
+              }))
+            }
+            optionMapper={(o) => o.direction}
+            labelMapper={(o) => o.direction}
           />
         </Grid>
       </Grid>
+      <ExportFilters filters={filters} setParams={setParams} />
     </div>
   );
 };

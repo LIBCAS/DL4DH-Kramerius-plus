@@ -5,7 +5,7 @@ export interface Params {
   disablePagination?: boolean;
   pageOffset?: number;
   pageSize?: number;
-  sort?: Sort[]
+  sort?: Sort
   filters?: Filter[]
   includeFields?: string[]
 }
