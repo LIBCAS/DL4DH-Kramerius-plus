@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.CompletePageEnricher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,12 @@ import org.springframework.stereotype.Service;
 public class EnricherService {
 
     private final PublicationEnricher publicationEnricher;
-    private final PageEnricher pageEnricher;
+    private final CompletePageEnricher completePageEnricher;
 
     @Autowired
-    public EnricherService(PublicationEnricher publicationEnricher, PageEnricher pageEnricher) {
+    public EnricherService(PublicationEnricher publicationEnricher, CompletePageEnricher completePageEnricher) {
         this.publicationEnricher = publicationEnricher;
-        this.pageEnricher = pageEnricher;
+        this.completePageEnricher = completePageEnricher;
     }
 
     public void enrich(Publication publication, EnrichmentTask task) {
@@ -29,7 +30,7 @@ public class EnricherService {
 
         if (publication instanceof PagesAware) {
             PagesAware publicationWithPages = (PagesAware) publication;
-            pageEnricher.enrich(publicationWithPages.getPages(), task);
+            completePageEnricher.enrich(publicationWithPages.getPages(), task);
             fillParadata(publicationWithPages);
         }
     }

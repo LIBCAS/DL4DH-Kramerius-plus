@@ -28,10 +28,10 @@ public class UDPipeService {
 
     /**
      * Processes the input text content and sets tokens attribute on page.
-     *
-     * @param pageContent String content to tokenize
      */
-    public void createTokens(Page page, String pageContent) {
+    public void tokenize(Page page) {
+        String pageContent = page.getContent();
+
         if (pageContent == null || pageContent.isEmpty()) {
             return;
         }

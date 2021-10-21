@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.page;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
@@ -50,6 +51,12 @@ public class Page extends KrameriusObject implements ParentAware {
      * TODO: cleanup incoming data, turn into enum
      */
     private String pageType;
+
+    @Transient
+    private String content;
+
+    @Transient
+    private Alto alto;
 
     /**
      * Storing it as a string for page numbers like "[1a]"

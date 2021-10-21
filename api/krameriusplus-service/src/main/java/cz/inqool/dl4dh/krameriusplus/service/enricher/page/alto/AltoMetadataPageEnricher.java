@@ -1,43 +1,32 @@
-package cz.inqool.dl4dh.krameriusplus.metadata;
+package cz.inqool.dl4dh.krameriusplus.service.enricher.page.alto;
 
 import cz.inqool.dl4dh.alto.*;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.AltoTokenMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
-import lombok.extern.slf4j.Slf4j;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.PageEnricher;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Enriches page with positional metadata obtained from Alto format.
- */
-@Slf4j
-public class AltoPageEnricher {
+@Service
+@Order(3)
+public class AltoMetadataPageEnricher implements PageEnricher {
 
-    private final Alto alto;
     private int currentTokenIndex;
+
     private Page page;
 
-    public AltoPageEnricher(Alto alto) {
-        this.alto = alto;
-    }
-
-
-    /**
-     * Works only if the content of the page was extracted from Alto and word concatenation at the end of lines
-     * was performed only if the information about word division is stored in Alto. If pageContent was obtained from
-     * OCR, or it was somehow altered, this will not work, because token.getContent may return a longer word, than
-     * the word obtained from ALTO and therefore it will never match (contents from Tokens are concatenated until it
-     * is matched against the content in ALTO element.
-     */
-    public void enrichWithAlto(Page page) {
+    @Override
+    public void enrichPage(Page page) {
         currentTokenIndex = 0;
         this.page = page;
 
-        var pageElements = Optional.ofNullable(alto.getLayout())
+        var pageElements = Optional.ofNullable(page.getAlto().getLayout())
                 .map(Alto.Layout::getPage)
                 .orElse(new ArrayList<>());
 
