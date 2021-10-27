@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.JSON;
-import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.TEI;
+import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.*;
 
 /**
  * @author Norbert Bodnar
@@ -51,6 +50,24 @@ public class ExporterApi {
         }
 
         return exporterService.export(publicationId, params, TEI);
+    }
+
+    @PostMapping("/{id}/csv")
+    public Export exportCsv(@PathVariable("id") String publicationId,
+                            @RequestBody(required = false) Params params) {
+        if (params == null) {
+            params = new Params();
+        }
+        return exporterService.export(publicationId, params, CSV);
+    }
+
+    @PostMapping("/{id}/tsv")
+    public Export exportTsv(@PathVariable("id") String publicationId,
+                            @RequestBody(required = false) Params params) {
+        if (params == null) {
+            params = new Params();
+        }
+        return exporterService.export(publicationId, params, TSV);
     }
 
     @GetMapping("/list")

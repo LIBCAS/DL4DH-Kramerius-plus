@@ -40,7 +40,7 @@
       "react-app/jest"
     ]
   },
-  "proxy": "https://dl4dh.inqool.cz",
+  "proxy": "http://127.0.0.1:8080",
   "browserslist": {
     "production": [
       ">0.2%",

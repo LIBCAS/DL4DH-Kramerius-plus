@@ -11,7 +11,7 @@ import { Params, TeiParams } from "../../models";
 import { JSONParams } from "./publication-export-json";
 import { TEIParams } from "./publication-export-tei";
 
-type ExportFormat = "json" | "tei";
+type ExportFormat = "json" | "tei" | "csv" | "tsv";
 
 const exportPublication = async (
   id: string,
@@ -81,7 +81,7 @@ export const PublicationExportDialog = ({
   };
 
   const requestParams = useMemo(
-    () => (format === "json" ? jsonParams : teiParams),
+    () => (format === "tei" ? teiParams : jsonParams),
     [format, jsonParams, teiParams]
   );
 
@@ -128,16 +128,26 @@ export const PublicationExportDialog = ({
           label="JSON"
         />
         <FormControlLabel
+          value="csv"
+          control={<Radio color="primary" />}
+          label="CSV"
+        />
+        <FormControlLabel
+          value="tsv"
+          control={<Radio color="primary" />}
+          label="TSV"
+        />
+        <FormControlLabel
           value="tei"
           control={<Radio color="primary" />}
           label="TEI"
         />
       </RadioGroup>
 
-      {format === "json" ? (
-        <JSONParams params={jsonParams} setParams={setJsonParams} />
-      ) : (
+      {format === "tei" ? (
         <TEIParams params={teiParams} setParams={setTeiParams} />
+      ) : (
+        <JSONParams params={jsonParams} setParams={setJsonParams} />
       )}
     </DefaultDialog>
   );
