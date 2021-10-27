@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter;
 public enum ExportFormat {
     JSON("json", ContentType.APPLICATION_JSON),
     TEI("xml", ContentType.TEXT_XML),
-    CSV("csv", ContentType.create("application/zip")),
-    TSV("tsv", ContentType.create("application/zip"));
+    CSV("zip", ContentType.create("application/zip")),
+    TSV("zip", ContentType.create("application/zip"));
 
     private final String suffix;
 
