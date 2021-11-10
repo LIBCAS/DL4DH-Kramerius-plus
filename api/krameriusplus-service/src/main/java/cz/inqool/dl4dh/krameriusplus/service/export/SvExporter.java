@@ -14,13 +14,12 @@ import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.http.entity.ContentType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -53,13 +52,14 @@ public abstract class SvExporter extends AbstractExporter {
 
             // Create pages
             StringBuilder pagesBuffer = new StringBuilder();
-            CSVFormat pagesCsvFormat = CSVFormat.Builder.create(baseCsvFormat).setHeader("File", "ID", "Title", "PageNumber").build();
+            CSVFormat pagesCsvFormat = CSVFormat.Builder.create(baseCsvFormat).setHeader("file", "publication_id", "id", "order", "title").build();
             CSVPrinter pagesPrinter = new CSVPrinter(pagesBuffer, pagesCsvFormat);
 
             if (publication instanceof PagesAware) {
+                int pageIndex = 1;
                 for (Page page : ((PagesAware) publication).getPages()) {
-                    String pageFileName = page.getId().replace("uuid:", "")+filesExtension;
-                    pagesPrinter.printRecord(pageFileName, page.getId(), page.getTitle(), page.getPageNumber());
+                    String pageFileName = "page_"+publicationId.replace("uuid:", "")+"_"+pageIndex+"_"+page.getId().replace("uuid:", "")+filesExtension;
+                    pagesPrinter.printRecord(pageFileName, publicationId, page.getId(), pageIndex++, page.getTitle());
 
                     // Add page content
                     zip.putNextEntry(new ZipEntry(pageFileName));
@@ -90,77 +90,136 @@ public abstract class SvExporter extends AbstractExporter {
     }
 
     private String generateCSVMetadata(Publication publication, CSVFormat baseCsvFormat) throws IOException {
-        StringBuilder buffer = new StringBuilder();
-        CSVFormat csvFormat = CSVFormat.Builder.create(baseCsvFormat).setHeader("Metadata", "Value").build();
-        CSVPrinter printer = new CSVPrinter(buffer, csvFormat);
+        List<String> columns = new ArrayList<>();
+        Map<String, Object> row = new HashMap<>();
+        List<Map<String, Object>> rows = List.of(row);
 
-        printer.printRecord("id", publication.getId());
-        printer.printRecord("title", publication.getTitle());
+        columns.add("id");
+        row.put("id", publication.getId());
+
+        columns.add("title");
+        row.put("title", publication.getTitle());
         // Mods metadata
         if (publication.getModsMetadata() != null) {
             // Mods name
             if (publication.getModsMetadata().getName() != null) {
-                printer.printRecord("mods.name.type", publication.getModsMetadata().getName().getType());
-                printer.printRecord("mods.name.identifier", publication.getModsMetadata().getName().getNameIdentifier());
-                printer.printRecord("mods.name.part", publication.getModsMetadata().getName().getNamePart());
+                columns.add("mods.name.type");
+                row.put("mods.name.type", publication.getModsMetadata().getName().getType());
+                columns.add("mods.name.identifier");
+                row.put("mods.name.identifier", publication.getModsMetadata().getName().getNameIdentifier());
+                columns.add("mods.name.part");
+                row.put("mods.name.part", publication.getModsMetadata().getName().getNamePart());
             }
-            printer.printRecord("mods.genre", publication.getModsMetadata().getGenre());
+            columns.add("mods.genre");
+            row.put("mods.genre", publication.getModsMetadata().getGenre());
 
             // Mods identifiers
             int identifierIndex = 0;
             for (ModsMetadata.Identifier identifier : publication.getModsMetadata().getIdentifiers()) {
                 String key = "mods.identifier["+identifierIndex+"]";
-                printer.printRecord(key+".type", identifier.getType());
-                printer.printRecord(key+".invalid", identifier.getInvalid());
-                printer.printRecord(key+".value", identifier.getValue());
+
+                columns.add(key+".type");
+                row.put(key+".type", identifier.getType());
+                columns.add(key+".invalid");
+                row.put(key+".invalid", identifier.getInvalid());
+                columns.add(key+".value");
+                row.put(key+".value", identifier.getValue());
                 identifierIndex += 1;
             }
 
             // Mods origin info
             if (publication.getModsMetadata().getOriginInfo() != null) {
-                printer.printRecord("mods.originInfo.publisher", publication.getModsMetadata().getOriginInfo().getPublisher());
+                columns.add("mods.originInfo.publisher");
+                row.put("mods.originInfo.publisher", publication.getModsMetadata().getOriginInfo().getPublisher());
 
                 int placeIndex = 0;
                 for (ModsMetadata.OriginInfo.Place place : publication.getModsMetadata().getOriginInfo().getPlaces()) {
                     String key = "mods.originInfo.place["+placeIndex+"]";
-                    printer.printRecord(key+".type", place.getType());
-                    printer.printRecord(key+".authority", place.getAuthority());
-                    printer.printRecord(key+".value", place.getValue());
+
+                    columns.add(key+".type");
+                    row.put(key+".type", place.getType());
+                    columns.add(key+".authority");
+                    row.put(key+".authority", place.getAuthority());
+                    columns.add(key+".type");
+                    row.put(key+".type", place.getType());
                     placeIndex += 1;
                 }
 
                 int dateIssuedIndex = 0;
                 for (ModsMetadata.OriginInfo.DateIssued dateIssued : publication.getModsMetadata().getOriginInfo().getDateIssued()) {
                     String key = "mods.originInfo.dateIssued["+dateIssuedIndex+"]";
-                    printer.printRecord(key+".encoding", dateIssued.getEncoding());
-                    printer.printRecord(key+".point", dateIssued.getPoint());
-                    printer.printRecord(key+".value", dateIssued.getValue());
+
+                    columns.add(key+".encoding");
+                    row.put(key+".encoding", dateIssued.getEncoding());
+                    columns.add(key+".point");
+                    row.put(key+".point", dateIssued.getPoint());
+                    columns.add(key+".value");
+                    row.put(key+".value", dateIssued.getValue());
                     dateIssuedIndex += 1;
                 }
             }
 
             // Mods extent
             if (publication.getModsMetadata().getPhysicalDescription() != null) {
-                printer.printRecord("mods.physicalDescription.extent", publication.getModsMetadata().getPhysicalDescription().getExtent());
+                columns.add("mods.physicalDescription.extent");
+                row.put("mods.physicalDescription.extent", publication.getModsMetadata().getPhysicalDescription().getExtent());
             }
         }
 
+        StringBuilder buffer = new StringBuilder();
+        CSVPrinter printer = new CSVPrinter(buffer, baseCsvFormat);
+        printer.printRecord(columns);
+        for (Map<String, Object> r : rows) {
+            printer.printRecord(
+                    columns.stream().map(c -> r.getOrDefault(c, "")
+            ).collect(Collectors.toList()));
+        }
         return buffer.toString();
     }
 
     private String generateCSVPage(Page page, CSVFormat baseCsvFormat) throws IOException {
+        List<String> header = new ArrayList<>(List.of("page_id", "token", "lemma", "position", "nameTag"));
+        Set<String> featsColumns = new TreeSet<>();
+        Set<String> miscColumns = new TreeSet<>();
+        page.getTokens().forEach(token -> {
+            if (token.getLinguisticMetadata().getFeats() != null) {
+                for (String fv : token.getLinguisticMetadata().getFeats().split("\\|")) {
+                    featsColumns.add(fv.split("=", 2)[0]);
+                }
+            }
+            if (token.getLinguisticMetadata().getMisc() != null) {
+                for (String mv : token.getLinguisticMetadata().getMisc().split("\\|")) {
+                    miscColumns.add(mv.split("=", 2)[0]);
+                }
+            }
+        });
+        featsColumns.forEach(f -> header.add("udpipe.feats."+f));
+        miscColumns.forEach(m -> header.add("udpipe.misc."+m));
+
         StringBuilder buffer = new StringBuilder();
-        String[] header = {"Token", "Lemma", "Position", "Feats", "Misc", "NameTag"};
-        CSVFormat csvFormat = CSVFormat.Builder.create(baseCsvFormat).setHeader(header).build();
-        CSVPrinter printer = new CSVPrinter(buffer, csvFormat);
+        CSVPrinter printer = new CSVPrinter(buffer, baseCsvFormat);
+        printer.printRecord(header);
 
         for (Token token : page.getTokens()) {
-            printer.printRecord(token.getContent(),
-                    token.getLinguisticMetadata().getLemma(),
-                    token.getLinguisticMetadata().getPosition(),
-                    token.getLinguisticMetadata().getFeats(),
-                    token.getLinguisticMetadata().getMisc(),
-                    token.getNameTagMetadata());
+            List<Object> line = new ArrayList<>();
+            line.add(page.getId());
+            line.add(token.getContent());
+            line.add(token.getLinguisticMetadata().getLemma() != null ? token.getLinguisticMetadata().getLemma() : "");
+            line.add(token.getLinguisticMetadata().getPosition() != null ? token.getLinguisticMetadata().getPosition() : "");
+            line.add(token.getNameTagMetadata());
+            if (token.getLinguisticMetadata().getFeats() != null) {
+                Map<String, String> featsValues = Arrays.stream(token.getLinguisticMetadata().getFeats().split("\\|"))
+                        .map(i -> i.split("=", 2))
+                        .collect(Collectors.toMap(a -> a[0], a -> a[1]));
+                featsColumns.forEach(f -> line.add(featsValues.getOrDefault(f, "")));
+            }
+            if (token.getLinguisticMetadata().getMisc() != null) {
+                Map<String, String> miscValues = Arrays.stream(token.getLinguisticMetadata().getMisc().split("\\|"))
+                        .map(i -> i.split("=", 2))
+                        .collect(Collectors.toMap(a -> a[0], a -> a[1]));
+                miscColumns.forEach(m -> line.add(miscValues.getOrDefault(m, "")));
+            }
+            printer.printRecord(line);
         }
         return buffer.toString();
     }
