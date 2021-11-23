@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
@@ -24,20 +23,13 @@ public class PublicationEnricher {
         this.streamProvider = streamProvider;
     }
 
-    public void enrich(Publication publication, EnrichmentTask task) {
-        enrichPublicationChildren(publication, task);
+    public void enrich(Publication publication) {
         enrichPublicationWithMods(publication);
         enrichPublicationWithTeiHeader(publication);
     }
 
     private void enrichPublicationWithTeiHeader(Publication publication) {
         publication.setTeiHeader(teiConnector.convertToTeiHeader(publication));
-    }
-
-    private void enrichPublicationChildren(Publication publication, EnrichmentTask task) {
-        for (Publication child : publication.getChildren()) {
-            enrich(child, task);
-        }
     }
 
     private void enrichPublicationWithMods(Publication publication) {

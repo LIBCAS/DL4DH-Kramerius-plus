@@ -109,7 +109,8 @@ public class NameTagServiceTest {
 
     private Page preparePage() {
         Page page = new Page();
-        udPipeService.createTokens(page, "Mezinárodní letiště Václava Havla Praha neboli Praha/Ruzyně je veřejné mezinárodní letiště umístěné na severozápadním okraji Prahy.");
+        page.setContent("Mezinárodní letiště Václava Havla Praha neboli Praha/Ruzyně je veřejné mezinárodní letiště umístěné na severozápadním okraji Prahy.");
+        udPipeService.tokenize(page);
 
         return page;
     }

@@ -1,12 +1,8 @@
 <jxb:bindings version="2.1"
               xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-              xmlns:xs="http://www.w3.org/2001/XMLSchema">
+              xmlns:xs="http://www.w3.org/2001/XMLSchema"
+              xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-<!--    <jxb:bindings schemaLocation="xsd/alto.xsd">-->
-<!--        <jxb:schemaBindings>-->
-<!--            <jxb:package name="cz.inqool.dl4dh.alto"/>-->
-<!--        </jxb:schemaBindings>-->
-<!--    </jxb:bindings>-->
     <jxb:bindings schemaLocation="xsd/mods.xsd">
         <jxb:schemaBindings>
             <jxb:package name="cz.inqool.dl4dh.mods"/>
@@ -58,5 +54,13 @@
         <jxb:schemaBindings>
             <jxb:package name="cz.inqool.dl4dh.alto"/>
         </jxb:schemaBindings>
+    </jxb:bindings>
+    <jxb:bindings schemaLocation="xsd/mets.xsd">
+        <jxb:schemaBindings>
+            <jxb:package name="cz.inqool.dl4dh.mets"/>
+        </jxb:schemaBindings>
+        <jxb:bindings node="//xsd:schema//xsd:attributeGroup[@name='ORDERLABELS']//xsd:attribute[@name='LABEL']">
+            <jxb:property name="labelStr"/>
+        </jxb:bindings>
     </jxb:bindings>
 </jxb:bindings>
