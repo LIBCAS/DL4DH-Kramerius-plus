@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.lindat.UDPipeService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

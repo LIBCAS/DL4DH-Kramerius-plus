@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.enricher;
+package cz.inqool.dl4dh.krameriusplus.service.enricher.page.lindat;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;

@@ -4,8 +4,9 @@ import cz.inqool.dl4dh.alto.*;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.AltoTokenMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.page.PageEnricher;
-import org.springframework.core.annotation.Order;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.PageDecorator;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.lindat.NameTagPageDecorator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,15 +15,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Order(3)
-public class AltoMetadataPageEnricher implements PageEnricher {
+public class AltoMetadataPageDecorator implements PageDecorator {
 
     private int currentTokenIndex;
 
     private Page page;
 
+    private final NameTagPageDecorator nameTagPageEnricher;
+
+    @Autowired
+    public AltoMetadataPageDecorator(NameTagPageDecorator nameTagPageEnricher) {
+        this.nameTagPageEnricher = nameTagPageEnricher;
+    }
+
     @Override
     public void enrichPage(Page page) {
+        nameTagPageEnricher.enrichPage(page);
+
         currentTokenIndex = 0;
         this.page = page;
 

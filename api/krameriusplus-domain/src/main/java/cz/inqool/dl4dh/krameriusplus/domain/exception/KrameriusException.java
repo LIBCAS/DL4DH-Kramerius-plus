@@ -25,6 +25,7 @@ public class KrameriusException extends GeneralException implements CodedExcepti
         MISSING_CHILDREN,
         INVALID_MODEL,
         EXTERNAL_API_ERROR,
-        MISSING_STREAM
+        MISSING_STREAM,
+        NO_PAGE_HAD_ALTO
     }
 }
