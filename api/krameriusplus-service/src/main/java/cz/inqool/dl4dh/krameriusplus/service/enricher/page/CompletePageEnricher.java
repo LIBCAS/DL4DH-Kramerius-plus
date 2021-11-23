@@ -12,7 +12,8 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CompletePageEnricher implements PageEnricher {
+// todo use decorator pattern
+public class CompletePageEnricher {
 
     private final List<PageEnricher> pageEnrichers;
 
@@ -33,7 +34,6 @@ public class CompletePageEnricher implements PageEnricher {
         }
     }
 
-    @Override
     public void enrichPage(Page page) {
         try {
             pageEnrichers.forEach(pageEnricher -> pageEnricher.enrichPage(page));

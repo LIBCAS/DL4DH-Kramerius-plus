@@ -26,7 +26,7 @@ public class EnricherService {
 
     public void enrich(Publication publication, EnrichmentTask task) {
         enrichPublicationChildren(publication, task);
-        publicationEnricher.enrich(publication, task);
+        publicationEnricher.enrich(publication);
 
         if (publication instanceof PagesAware) {
             PagesAware publicationWithPages = (PagesAware) publication;
