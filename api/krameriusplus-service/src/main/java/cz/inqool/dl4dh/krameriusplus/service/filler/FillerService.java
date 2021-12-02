@@ -46,10 +46,10 @@ public class FillerService {
     }
 
     @Async
-    public void enrichPublication(String pid, EnrichmentTask task) {
+    public void enrichPublication(String id, EnrichmentTask task) {
         try {
-            log.info("Downloading publication");
-            KrameriusObject digitalObject = krameriusProvider.getDigitalObject(pid);
+            log.info("Downloading publication {}", id);
+            KrameriusObject digitalObject = krameriusProvider.getDigitalObject(id);
 
             if (digitalObject instanceof Publication) {
                 enrichPublication((Publication) digitalObject, task);
@@ -60,11 +60,11 @@ public class FillerService {
                         + digitalObject.getClass().getSimpleName() + " not enrichable");
             }
         } catch (Exception e) {
-            log.error("Task wid PID=" + pid + " failed with error: " +  e.getMessage());
+            log.error("Task wid PID=" + id + " failed with error: " +  e.getMessage());
             task.setErrorMessage(e.getMessage());
             task.setState(FAILED);
             enrichmentTaskRepository.save(task);
-            SchedulerService.removeTask(pid);
+            SchedulerService.removeTask(id);
             throw e;
         }
     }

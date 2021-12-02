@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher.page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.page.tei.TeiPageDecorator;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.MetsPageDecorator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,11 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.
 @Slf4j
 public class CompletePageEnricher {
 
-    private final TeiPageDecorator pageEnricher;
+    private final MetsPageDecorator pageEnricher;
 
     @Autowired
-    public CompletePageEnricher(TeiPageDecorator teiPageEnricher) {
-        this.pageEnricher = teiPageEnricher;
+    public CompletePageEnricher(MetsPageDecorator metsPageDecorator) {
+        this.pageEnricher = metsPageDecorator;
     }
 
     public void enrich(Collection<Page> pages, EnrichmentTask task) {

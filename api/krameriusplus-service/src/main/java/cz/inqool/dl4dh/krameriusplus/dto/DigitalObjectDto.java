@@ -26,7 +26,8 @@ import lombok.Setter;
         @JsonSubTypes.Type(value = PeriodicalDto.class, name = "periodical"),
         @JsonSubTypes.Type(value = PeriodicalVolumeDto.class, name = "periodicalvolume"),
         @JsonSubTypes.Type(value = PeriodicalItemDto.class, name = "periodicalitem"),
-        @JsonSubTypes.Type(value = PageDto.class, name = "page")
+        @JsonSubTypes.Type(value = PageDto.class, name = "page"),
+        @JsonSubTypes.Type(value = InternalPartDto.class, name = "internalpart")
 })
 public abstract class DigitalObjectDto<T extends KrameriusObject> implements Visitable<T> {
 

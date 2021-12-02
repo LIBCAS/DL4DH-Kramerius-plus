@@ -72,9 +72,16 @@ public class AltoContentExtractor implements PageDecorator {
 
     private OCRParadata extractOcrParadata() {
         try {
-            String ocrPerformedDateString = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingDateTime();
+            LocalDate ocrPerformedDate = null;
+            try {
+                String ocrPerformedDateString = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingDateTime();
 
-            LocalDate ocrPerformedDate = LocalDate.parse(ocrPerformedDateString, formatter);
+                ocrPerformedDate = LocalDate.parse(ocrPerformedDateString, formatter);
+            } catch (Exception e) {
+                // ignore
+                // todo: handle better, we dont want to fail evert time that there is no date
+            }
+
             ProcessingSoftwareType processingSoftware = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingSoftware();
 
             String creator = processingSoftware.getSoftwareCreator();

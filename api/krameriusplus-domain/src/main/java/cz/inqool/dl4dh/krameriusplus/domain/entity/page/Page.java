@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.MetsMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
@@ -36,6 +38,10 @@ public class Page extends KrameriusObject implements ParentAware {
     @Indexed
     private String parentId;
 
+    @Transient
+    @JsonIgnore
+    private Publication parent;
+
     private String rootId;
 
     private List<Token> tokens = new ArrayList<>();
@@ -56,6 +62,7 @@ public class Page extends KrameriusObject implements ParentAware {
     private String content;
 
     @Transient
+    @JsonIgnore
     private Alto alto;
 
     /**
@@ -73,6 +80,8 @@ public class Page extends KrameriusObject implements ParentAware {
     private Integer index;
 
     private NameTagMetadata nameTagMetadata;
+
+    private MetsMetadata metsMetadata;
 
     @Transient
     private OCRParadata ocrParadata;

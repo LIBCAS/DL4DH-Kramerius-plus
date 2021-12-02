@@ -73,6 +73,8 @@
                                             <include>mods.xsd</include>
                                             <include>alto.xsd</include>
                                             <include>mets.xsd</include>
+                                            <include>premis-v2-0.xsd</include>
+                                            <include>mix.xsd</include>
                                         </includes>
                                     </fileset>
                                 </schema>

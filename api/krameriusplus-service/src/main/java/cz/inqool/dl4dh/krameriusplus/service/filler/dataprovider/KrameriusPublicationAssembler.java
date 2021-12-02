@@ -72,6 +72,7 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         Page page;
         for (DigitalObjectDto<KrameriusObject> pageDto : children) {
             page = (Page) pageDto.accept(this);
+            page.setParent(monographWithPages);
             monographWithPages.getPages().add(page);
         }
 
@@ -87,6 +88,7 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         Page page;
         for (DigitalObjectDto<Page> pageDto : children) {
             page = pageDto.accept(this);
+            page.setParent(monographUnit);
             monographUnit.getPages().add(page);
         }
 
@@ -132,6 +134,7 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         Page page;
         for (DigitalObjectDto<Page> pageDto : children) {
             page = pageDto.accept(this);
+            page.setParent(periodicalItem);
             periodicalItem.getPages().add(page);
         }
 
