@@ -12,7 +12,7 @@ import java.time.Instant;
 @Setter
 public abstract class Paradata {
 
-    protected Instant created;
+    protected Instant requestSent;
 
     public abstract ExternalServiceType getExternalServiceType();
 }

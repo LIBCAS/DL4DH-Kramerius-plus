@@ -39,6 +39,9 @@ public class NameTagService {
             return;
         }
 
+        NameTagParadata nameTagParadata = new NameTagParadata();
+        nameTagParadata.setRequestSent(Instant.now());
+
         String pageContent = tokens
                 .stream()
                 .map(Token::getContent)
@@ -46,25 +49,25 @@ public class NameTagService {
 
         LindatServiceResponse response = makeApiCall(pageContent);
 
-        notNull(response, () -> new ExternalServiceException(NAME_TAG_ERROR, "NameTag did not return results"));
+        fillParadataFromResponse(nameTagParadata, response);
 
-        page.setNameTagParadata(getNameTagParadata(response.getModel()));
         page.setNameTagMetadata(processResponse(response, tokens));
+        nameTagParadata.setFinishedProcessing(Instant.now());
+
+        page.setNameTagParadata(nameTagParadata);
     }
 
-    private NameTagParadata getNameTagParadata(String model) {
-        NameTagParadata nameTagParadata = new NameTagParadata();
-        nameTagParadata.setCreated(Instant.now());
-        nameTagParadata.setModel(model);
-
-        return nameTagParadata;
+    private void fillParadataFromResponse(NameTagParadata nameTagParadata, LindatServiceResponse response) {
+        nameTagParadata.setResponseReceived(Instant.now());
+        nameTagParadata.setModel(response.getModel());
+        nameTagParadata.setAcknowledgements(response.getAcknowledgements());
     }
 
     private LindatServiceResponse makeApiCall(String body) {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("data", body);
 
-        return webClient.post().uri(uriBuilder -> uriBuilder
+        LindatServiceResponse response =  webClient.post().uri(uriBuilder -> uriBuilder
                 .queryParam("output", "conll")
                 .queryParam("input", "vertical")
                 .build())
@@ -73,6 +76,14 @@ public class NameTagService {
                 .retrieve()
                 .bodyToMono(LindatServiceResponse.class)
                 .block();
+
+        notNull(response, () -> new ExternalServiceException(NAME_TAG_ERROR, "NameTag did not return results"));
+
+        if (response.getResult() != null) {
+            response.setResultLines(response.getResult().split("\n"));
+        }
+
+        return response;
     }
 
     private NameTagMetadata processResponse(LindatServiceResponse response, List<Token> tokens) {

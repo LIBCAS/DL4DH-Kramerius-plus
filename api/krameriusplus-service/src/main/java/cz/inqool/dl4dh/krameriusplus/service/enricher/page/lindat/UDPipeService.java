@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.page.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
+import cz.inqool.dl4dh.krameriusplus.domain.exception.ExternalServiceException;
 import cz.inqool.dl4dh.krameriusplus.dto.LindatServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -16,6 +17,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.notNull;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExternalServiceException.ErrorCode.UD_PIPE_ERROR;
 
 /**
  * @author Norbert Bodnar
@@ -30,6 +34,9 @@ public class UDPipeService {
      * Processes the input text content and sets tokens attribute on page.
      */
     public void tokenize(Page page) {
+        UDPipeParadata udPipeParadata = new UDPipeParadata();
+        udPipeParadata.setRequestSent(Instant.now());
+
         String pageContent = page.getContent();
 
         if (pageContent == null || pageContent.isEmpty()) {
@@ -38,16 +45,19 @@ public class UDPipeService {
 
         LindatServiceResponse response = makeApiCall(pageContent);
 
-        page.setUdPipeParadata(getUDPipeParadata(response.getModel()));
+        fillParadataFromResponse(udPipeParadata, response);
 
-        page.setTokens(parseResponseToTokens(response.getResult()));
+        page.setTokens(parseResponseToTokens(response));
+
+        udPipeParadata.setFinishedProcessing(Instant.now());
+        page.setUdPipeParadata(udPipeParadata);
     }
 
     private LindatServiceResponse makeApiCall(String body) {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("data", body);
 
-        return webClient.post().uri(uriBuilder -> uriBuilder
+        LindatServiceResponse response = webClient.post().uri(uriBuilder -> uriBuilder
                 .queryParam("tokenizer", "ranges")
                 .queryParam("tagger")
                 .queryParam("parser")
@@ -56,18 +66,44 @@ public class UDPipeService {
                 .retrieve()
                 .bodyToMono(LindatServiceResponse.class)
                 .block();
+
+        notNull(response, () -> new ExternalServiceException(UD_PIPE_ERROR, "UDPipe did not return results"));
+
+        if (response.getResult() != null) {
+            response.setResultLines(response.getResult().split("\n"));
+        }
+
+        return response;
     }
 
-    private UDPipeParadata getUDPipeParadata(String model) {
-        UDPipeParadata udPipeParadata = new UDPipeParadata();
-        udPipeParadata.setCreated(Instant.now());
-        udPipeParadata.setModel(model);
-
-        return udPipeParadata;
+    private void fillParadataFromResponse(UDPipeParadata udPipeParadata, LindatServiceResponse response) {
+        udPipeParadata.setResponseReceived(Instant.now());
+        udPipeParadata.setModel(response.getModel());
+        udPipeParadata.setGenerator(getGenerator(response.getResultLines()));
+        udPipeParadata.setLicence(getLicence(response.getResultLines()));
+        udPipeParadata.setAcknowledgements(response.getAcknowledgements());
     }
 
-    private List<Token> parseResponseToTokens(String responseBody) {
-        String[] lines = responseBody.split("\n");
+    private String getLicence(String[] resultLines) {
+        if (resultLines != null && resultLines.length > 2) {
+            String thirdLine = resultLines[2];
+            return thirdLine.split("=")[1].trim();
+        }
+
+        return null;
+    }
+
+    private String getGenerator(String[] resultLines) {
+        if (resultLines != null && resultLines.length > 0) {
+            String firstLine = resultLines[0];
+            return firstLine.split("=")[1].trim();
+        }
+
+        return null;
+    }
+
+    private List<Token> parseResponseToTokens(LindatServiceResponse response) {
+        String[] lines = response.getResultLines();
 
         int tokenIndex = 0;
         boolean skipNext = false;

@@ -17,4 +17,6 @@ public class LindatServiceResponse {
     private String[] acknowledgements;
 
     private String result;
+
+    private String[] resultLines;
 }

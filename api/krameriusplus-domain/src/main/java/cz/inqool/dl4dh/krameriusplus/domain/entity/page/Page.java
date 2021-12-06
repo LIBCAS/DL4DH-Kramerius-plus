@@ -83,13 +83,10 @@ public class Page extends KrameriusObject implements ParentAware {
 
     private MetsMetadata metsMetadata;
 
-    @Transient
     private OCRParadata ocrParadata;
 
-    @Transient
     private UDPipeParadata udPipeParadata;
 
-    @Transient
     private NameTagParadata nameTagParadata;
 
     @JsonIgnore

@@ -89,7 +89,7 @@ public class AltoContentExtractor implements PageDecorator {
             String version = processingSoftware.getSoftwareVersion();
 
             OCRParadata ocrParadata = new OCRParadata();
-            ocrParadata.setCreated(Instant.now());
+            ocrParadata.setRequestSent(Instant.now());
             ocrParadata.setOcrPerformedDate(ocrPerformedDate);
             ocrParadata.setCreator(creator);
             ocrParadata.setSoftwareName(softwareName);
