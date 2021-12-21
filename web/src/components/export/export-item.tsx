@@ -24,13 +24,17 @@ const useStyles = makeStyles(() => ({
 export const ExportItem = ({ exportedPublication }: Props) => {
   const classes = useStyles();
 
-  const { id, publicationId, publicationTitle, created, fileRef } =
+  const { id, publicationId, publicationTitle, created, deleted, fileRef } =
     exportedPublication;
 
   const sizeMB = `${((fileRef?.size ?? 0) / 1048576).toFixed(2)} MB`;
 
   const localizedCreation = created
     ? new Date(created).toLocaleString("cs")
+    : undefined;
+
+  const localizedDeletion = deleted
+    ? new Date(deleted).toLocaleString("cs")
     : undefined;
 
   const handleDownloadExport = () => {
@@ -44,13 +48,14 @@ export const ExportItem = ({ exportedPublication }: Props) => {
     <Paper className={classes.paper}>
       <Grid container justifyContent="center" alignItems="center">
         <Grid item xs={10}>
-          <ReadOnlyField label="id:" value={id} />
-          <ReadOnlyField label="publicationId:" value={publicationId} />
-          <ReadOnlyField label="publicationTitle:" value={publicationTitle} />
-          <ReadOnlyField label="created:" value={localizedCreation} />
-          <ReadOnlyField label="name:" value={fileRef?.name} />
-          <ReadOnlyField label="contentType" value={fileRef?.contentType} />
-          <ReadOnlyField label="size:" value={sizeMB} />
+          <ReadOnlyField label="Id:" value={id} />
+          <ReadOnlyField label="Publikace:" value={publicationTitle} />
+          <ReadOnlyField label="Id publikace:" value={publicationId} />
+          <ReadOnlyField label="Vytvoření:" value={localizedCreation} />
+          {deleted && (<ReadOnlyField label="Zmazáno" value={localizedDeletion} />)}
+          <ReadOnlyField label="Název souboru:" value={fileRef?.name} />
+          <ReadOnlyField label="Typ" value={fileRef?.contentType} />
+          <ReadOnlyField label="Velikosť:" value={sizeMB} />
         </Grid>
         <Grid item xs={2}>
           <Button

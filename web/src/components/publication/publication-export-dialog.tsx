@@ -37,9 +37,7 @@ const exportPublication = async (
       body: JSON.stringify(processedParams),
     });
 
-    return {
-      ok: response.ok,
-    };
+    return response;
   } catch (e) {
     return {
       ok: false,

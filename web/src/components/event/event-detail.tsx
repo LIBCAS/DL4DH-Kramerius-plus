@@ -1,26 +1,34 @@
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import { cancelTask } from '../../modules/enrichment/enrichment-api';
+import { EventDetailItem } from './event-detail-item';
 
 export type EventProps = {
   publicationTitle?: string;
-  created?: string;
+  publicationId: string;
+  created: string;
   started?: string;
   processing?: string;
   state?: string;
+  errorMessage?: string;
   took?: string;
   done?: string;
 };
 
 export const EventDetail = ({
   publicationTitle,
+  publicationId,
   processing,
   created,
   started,
   state,
+  errorMessage,
   took,
   done,
 }: EventProps) => {
+  const disabledCancelButton = state !== "ENRICHING";
   return (
     <Paper
       style={{
@@ -30,47 +38,25 @@ export const EventDetail = ({
       }}
     >
       <Grid container>
-        <Grid item xs={4}>
-          <Typography>Publikace:</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography color="primary">{publicationTitle}</Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography>Status:</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography color="primary">{state}</Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography>Vytvoření:</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography color="primary">{created}</Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography>Spuštění:</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography color="primary">{started}</Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography>Zpracovávání:</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography color="primary">{processing}</Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography>Stav:</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography color="primary">{done}</Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography>Trvanie:</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography color="primary">{took}</Typography>
+        <EventDetailItem title="Publikace" value={publicationTitle}/>
+        <EventDetailItem title="UUID" value={publicationId}/>
+        <EventDetailItem title="Status" value={state}/>
+        <EventDetailItem title="Vytvoření" value={new Date(created).toLocaleString()}/>
+        <EventDetailItem title="Spuštění" value={started && new Date(started).toLocaleString()}/>
+        <EventDetailItem title="Zpracovávání" value={processing}/>
+        <EventDetailItem title="Stav" value={done}/>
+        <EventDetailItem title="Chyba" value={errorMessage}/>
+        <EventDetailItem title="Trvanie" value={took}/>
+        <Grid>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={disabledCancelButton}
+            onClick={() => cancelTask(publicationId)}
+          >
+              Zrušit
+          </Button>
         </Grid>
       </Grid>
     </Paper>

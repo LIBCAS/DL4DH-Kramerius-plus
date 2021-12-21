@@ -34,7 +34,6 @@ public class EnricherService {
 
         if (publication instanceof PagesAware) {
             PagesAware publicationWithPages = (PagesAware) publication;
-//            metsFileFinder.setMetsPathForPages(publicationWithPages.getPages(), publication.getNdkDir()); //TODO: if mets unavailable, continue
             completePageEnricher.enrich(publicationWithPages.getPages(), task);
             fillParadata(publicationWithPages); //TODO: should this be saved at publication level?
         }

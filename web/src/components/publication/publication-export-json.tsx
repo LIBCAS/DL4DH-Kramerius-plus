@@ -107,7 +107,7 @@ export const JSONParams = ({ setParams, params }: Props) => {
           />
         </Grid>
       </Grid>
-      <ExportFilters filters={filters} setParams={setParams} />
+      {/* <ExportFilters filters={filters} setParams={setParams} /> */}
     </div>
   );
 };
