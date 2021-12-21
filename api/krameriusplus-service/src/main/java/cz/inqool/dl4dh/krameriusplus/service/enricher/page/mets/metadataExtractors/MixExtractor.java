@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.mix.MetsMixElement;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.DomParser;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.DomParser;
 import gov.loc.mix.v20.Mix;
 
 public class MixExtractor extends NDKExtractor<MetsMixElement, Mix> {

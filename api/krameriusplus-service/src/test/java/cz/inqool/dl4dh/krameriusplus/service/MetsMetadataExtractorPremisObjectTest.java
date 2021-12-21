@@ -1,18 +1,21 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.object.ObjectCharacteristics;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.object.ObjectIdentifier;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MetsMetadataExtractorPremisObjectTest extends MetsMetadataExtractorTest {
 
+    @BeforeEach
+    public void setUp() {
+        preparePage();
+    }
+
     @Test
     public void hasThreePremisObjects() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(page.getMetsMetadata().getPremisObjects().size()).isEqualTo(3);
@@ -21,9 +24,7 @@ public class MetsMetadataExtractorPremisObjectTest extends MetsMetadataExtractor
 
     @Test
     public void hasThreePremisObjectsWithCorrectIds() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(page.getMetsMetadata().getPremisObjects().get("OBJ_001")).isNotNull();
@@ -35,9 +36,7 @@ public class MetsMetadataExtractorPremisObjectTest extends MetsMetadataExtractor
 
     @Test
     public void isObjectIdentifierTagCorrect() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         ObjectIdentifier extractedObjectIdentifier = page.getMetsMetadata().getPremisObjects().get("OBJ_001").getObjectIdentifier();
 
@@ -49,9 +48,7 @@ public class MetsMetadataExtractorPremisObjectTest extends MetsMetadataExtractor
 
     @Test
     public void isObjectCharacteristicsTagCorrect() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         ObjectCharacteristics objectCharacteristics = page.getMetsMetadata().getPremisObjects().get("OBJ_001").getObjectCharacteristics();
 

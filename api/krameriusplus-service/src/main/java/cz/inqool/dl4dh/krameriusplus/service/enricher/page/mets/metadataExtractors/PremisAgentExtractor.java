@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.agent.MetsPremisAgentElement;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.DomParser;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.DomParser;
 import info.lc.xmlns.premis_v2.AgentComplexType;
 
 import java.util.stream.Collectors;

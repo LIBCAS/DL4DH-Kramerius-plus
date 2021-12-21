@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.MetsMetadata;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.DomParser;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.DomParser;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors.MixExtractor;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors.PremisAgentExtractor;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors.PremisEventExtractor;
@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-
-import java.nio.file.Path;
 
 @Service
 public class MetsExtractor {
@@ -24,8 +22,8 @@ public class MetsExtractor {
         this.domParser = domParser;
     }
 
-    public void enrich(Path pageMets, Page page) {
-        Document document = domParser.parse(pageMets.toFile());
+    public void enrich(Page page) {
+        Document document = domParser.parse(page.getMetsPath().toFile());
         document.getDocumentElement().normalize();
 
         MetsMetadata metsMetadata = new MetsMetadata();

@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.enricher;
+package cz.inqool.dl4dh.krameriusplus.service.enricher.page;
 
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;

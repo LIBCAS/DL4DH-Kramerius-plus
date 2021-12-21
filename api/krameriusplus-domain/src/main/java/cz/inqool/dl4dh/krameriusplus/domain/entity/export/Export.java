@@ -27,6 +27,8 @@ public class Export extends DomainObject {
     @Setter(AccessLevel.NONE)
     private Instant created;
 
+    private Instant deleted;
+
     public Export() {
         this.created = Instant.now();
         this.id = java.util.UUID.randomUUID().toString();

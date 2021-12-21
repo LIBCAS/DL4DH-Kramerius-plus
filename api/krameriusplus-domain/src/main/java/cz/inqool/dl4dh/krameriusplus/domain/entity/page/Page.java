@@ -16,6 +16,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class Page extends KrameriusObject implements ParentAware {
     private String pageType;
 
     @Transient
+    @JsonIgnore
     private String content;
 
     @Transient
@@ -82,6 +84,10 @@ public class Page extends KrameriusObject implements ParentAware {
     private NameTagMetadata nameTagMetadata;
 
     private MetsMetadata metsMetadata;
+
+    @Transient
+    @JsonIgnore
+    private Path metsPath;
 
     private OCRParadata ocrParadata;
 

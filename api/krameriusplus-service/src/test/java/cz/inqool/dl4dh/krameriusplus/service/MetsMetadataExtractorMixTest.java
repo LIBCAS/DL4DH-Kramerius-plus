@@ -1,19 +1,22 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.mix.MetsMixElement;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
 public class MetsMetadataExtractorMixTest extends MetsMetadataExtractorTest {
 
+    @BeforeEach
+    public void setUp() {
+        preparePage();
+    }
+
     @Test
     public void hasTwoMixWithCorrectIds() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(page.getMetsMetadata().getMix().get("MIX_001")).isNotNull();
@@ -24,9 +27,7 @@ public class MetsMetadataExtractorMixTest extends MetsMetadataExtractorTest {
 
     @Test
     public void hasCorrectAttributes() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         MetsMixElement mix = page.getMetsMetadata().getMix().get("MIX_001");
 

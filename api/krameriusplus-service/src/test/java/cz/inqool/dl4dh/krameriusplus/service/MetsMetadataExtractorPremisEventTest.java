@@ -1,17 +1,20 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.event.MetsPremisEventElement;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MetsMetadataExtractorPremisEventTest extends MetsMetadataExtractorTest {
 
+    @BeforeEach
+    public void setUp() {
+        preparePage();
+    }
+
     @Test
     public void hasThreePremisEventsWithCorrectIds() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(page.getMetsMetadata().getPremisEvents().get("EVT_001")).isNotNull();
@@ -23,9 +26,7 @@ public class MetsMetadataExtractorPremisEventTest extends MetsMetadataExtractorT
 
     @Test
     public void hasCorrectAttributes() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         MetsPremisEventElement event = page.getMetsMetadata().getPremisEvents().get("EVT_001");
 

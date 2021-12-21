@@ -1,11 +1,14 @@
-package cz.inqool.dl4dh.krameriusplus.service.enricher;
+package cz.inqool.dl4dh.krameriusplus.service.enricher.publication;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.MetsFileFinder;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,25 +24,28 @@ import java.util.stream.Stream;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException.ErrorCode.KRAMERIUS_ERROR;
 
 @Service
+@Slf4j
 public class PublicationEnricher {
 
     private final TeiConnector teiConnector;
     private final StreamProvider streamProvider;
+    private final MetsFileFinder metsFileFinder;
     private String ndkPath;
 
     @Autowired
-    public PublicationEnricher(TeiConnector teiConnector, StreamProvider streamProvider) {
+    public PublicationEnricher(TeiConnector teiConnector, StreamProvider streamProvider, MetsFileFinder metsFileFinder) {
         this.teiConnector = teiConnector;
         this.streamProvider = streamProvider;
+        this.metsFileFinder = metsFileFinder;
     }
 
     public void enrich(Publication publication) {
         enrichPublicationWithMods(publication);
         enrichPublicationWithTeiHeader(publication);
-        enrichPublicationWithMets(publication);
+        setMainMetsPath(publication);
     }
 
-    private void enrichPublicationWithMets(Publication publication) {
+    private void setMainMetsPath(Publication publication) {
         Path ndkDir = Path.of(ndkPath);
 
         try (Stream<Path> publicationNdkDirs = Files.list(ndkDir)) {
@@ -49,10 +55,17 @@ public class PublicationEnricher {
                     .collect(Collectors.toList());
 
             if (matchingDirs.size() != 1) {
-                throw new IllegalStateException("NDK directory with id=\"" + publication.getId() + "\" not found");
+                log.warn("NDK directory with id=\"" + publication.getId() + "\" not found");
+                return;
             }
 
-            publication.setNdkDir(matchingDirs.get(0));
+            Path publicationMetsDir = matchingDirs.get(0);
+            publication.setNdkDir(publicationMetsDir);
+
+            if (publication instanceof PagesAware) {
+                PagesAware publicationWithPages = (PagesAware) publication;
+                metsFileFinder.setMetsPathForPages(publicationWithPages.getPages(), publicationMetsDir);
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

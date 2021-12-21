@@ -36,7 +36,7 @@ public class WebClientDataProvider implements DataProvider {
                     .bodyToMono(type)
                     .block();
         } catch (WebClientResponseException e) {
-            throw new MissingObjectException(DIGITAL_OBJECT_NOT_FOUND, e);
+            throw new MissingObjectException(DIGITAL_OBJECT_NOT_FOUND, "Object with UUID=" + objectId + " not found", e);
         }
     }
 

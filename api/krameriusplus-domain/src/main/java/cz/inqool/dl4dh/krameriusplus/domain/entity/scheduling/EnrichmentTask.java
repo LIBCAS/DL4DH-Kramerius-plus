@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.Future;
 
 /**
  * @author Norbert Bodnar
@@ -42,6 +43,10 @@ public class EnrichmentTask {
     @JsonIgnore
     public double percentDone;
 
+    @Transient
+    @JsonIgnore
+    private Future<String> future;
+
     public EnrichmentTask(String publicationId) {
         this.publicationId = publicationId;
         created = Instant.now();
@@ -54,6 +59,7 @@ public class EnrichmentTask {
         CREATED,
         DOWNLOADING_PAGES,
         ENRICHING,
+        CANCELED
     }
 
     public String getTook() {
@@ -67,7 +73,7 @@ public class EnrichmentTask {
     }
 
     public String getProcessing() {
-        if (finished != null) {
+        if (finished != null || totalPages == 0) {
             return null;
         }
 
@@ -75,6 +81,9 @@ public class EnrichmentTask {
     }
 
     public String getDone() {
+        if (percentDone == 0.0) {
+            return null;
+        }
         if (state == State.SUCCESSFUL) {
             return "Done";
         }

@@ -1,9 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.FileRefRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -11,15 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,10 +39,6 @@ public class FileService {
 
     private final FileRefRepository store;
 
-    private final static String CRON_EVERY_DAY_AT_MIDNIGHT = "0 0 0 * * ?";
-    // for debugging purposes
-    private final static String CRON_EVERY_MINUTE = "0 * * * * ?";
-
     /**
      * Return the level of file hierarchy (number of sub-directories to be created) to be used in storage. The value
      * must be between 1-16.
@@ -66,7 +57,6 @@ public class FileService {
         this.store = store;
     }
 
-    @Scheduled(cron = CRON_EVERY_DAY_AT_MIDNIGHT)
     public void cleanUp() {
         wipeStrayFiles();
 

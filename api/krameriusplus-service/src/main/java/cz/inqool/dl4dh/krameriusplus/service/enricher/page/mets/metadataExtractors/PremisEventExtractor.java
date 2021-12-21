@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtract
 
 import cz.inqool.dl4dh.krameriusplus.domain.XMLUtils;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.event.MetsPremisEventElement;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.DomParser;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.DomParser;
 import info.lc.xmlns.premis_v2.EventComplexType;
 
 public class PremisEventExtractor extends NDKExtractor<MetsPremisEventElement, EventComplexType> {

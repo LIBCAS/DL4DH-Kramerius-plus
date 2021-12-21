@@ -1,17 +1,20 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.agent.MetsPremisAgentElement;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MetsMetadataExtractorPremisAgentTest extends MetsMetadataExtractorTest {
 
+    @BeforeEach
+    public void setUp() {
+        preparePage();
+    }
+
     @Test
     public void hasOnePremisAgentWithCorrectId() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(page.getMetsMetadata().getPremisAgents().get("AGENT_001")).isNotNull();
@@ -21,9 +24,7 @@ public class MetsMetadataExtractorPremisAgentTest extends MetsMetadataExtractorT
 
     @Test
     public void hasCorrectAttributes() {
-        Page page = new Page();
-
-        metsExtractor.enrich(metsFile, page);
+        metsExtractor.enrich(page);
 
         MetsPremisAgentElement agent = page.getMetsMetadata().getPremisAgents().get("AGENT_001");
 
