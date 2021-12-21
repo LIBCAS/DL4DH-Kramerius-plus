@@ -17,6 +17,11 @@ public class MissingObjectException extends GeneralException implements CodedExc
         this.errorCode = errorCode;
     }
 
+    public MissingObjectException(ErrorCode errorCode, String message, Throwable throwable) {
+        super(message, throwable);
+        this.errorCode = errorCode;
+    }
+
     public enum ErrorCode implements ExceptionCodeEnum {
         PAGE_NOT_FOUND,
         PUBLICATION_NOT_FOUND,

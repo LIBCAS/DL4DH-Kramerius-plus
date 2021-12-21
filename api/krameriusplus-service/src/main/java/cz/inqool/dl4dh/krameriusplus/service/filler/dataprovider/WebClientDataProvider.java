@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.dto.DigitalObjectDto;
+import cz.inqool.dl4dh.krameriusplus.dto.InternalPartDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -35,13 +36,13 @@ public class WebClientDataProvider implements DataProvider {
                     .bodyToMono(type)
                     .block();
         } catch (WebClientResponseException e) {
-            throw new MissingObjectException(DIGITAL_OBJECT_NOT_FOUND, e);
+            throw new MissingObjectException(DIGITAL_OBJECT_NOT_FOUND, "Object with UUID=" + objectId + " not found", e);
         }
     }
 
     @Override
     public <T extends KrameriusObject> List<DigitalObjectDto<T>> getDigitalObjectsForParent(String parentId) {
-        var result = webClient.get()
+        List<DigitalObjectDto<T>> result = webClient.get()
                 .uri("/{parentId}/children", parentId)
                 .acceptCharset(StandardCharsets.UTF_8)
                 .retrieve()
@@ -49,9 +50,16 @@ public class WebClientDataProvider implements DataProvider {
                 })
                 .block();
 
+        removeInternalParts(result);
         setChildrenIndicesAndParentId(parentId, result);
 
         return result;
+    }
+
+    private <T extends KrameriusObject> void removeInternalParts(List<DigitalObjectDto<T>> result) {
+        if (result != null) {
+            result.removeIf(obj -> obj instanceof InternalPartDto);
+        }
     }
 
     private <T extends KrameriusObject> void setChildrenIndicesAndParentId(String parentId, List<DigitalObjectDto<T>> result) {

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.MetsMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
@@ -14,6 +16,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +39,10 @@ public class Page extends KrameriusObject implements ParentAware {
     @Indexed
     private String parentId;
 
+    @Transient
+    @JsonIgnore
+    private Publication parent;
+
     private String rootId;
 
     private List<Token> tokens = new ArrayList<>();
@@ -53,9 +60,11 @@ public class Page extends KrameriusObject implements ParentAware {
     private String pageType;
 
     @Transient
+    @JsonIgnore
     private String content;
 
     @Transient
+    @JsonIgnore
     private Alto alto;
 
     /**
@@ -74,13 +83,16 @@ public class Page extends KrameriusObject implements ParentAware {
 
     private NameTagMetadata nameTagMetadata;
 
+    private MetsMetadata metsMetadata;
+
     @Transient
+    @JsonIgnore
+    private Path metsPath;
+
     private OCRParadata ocrParadata;
 
-    @Transient
     private UDPipeParadata udPipeParadata;
 
-    @Transient
     private NameTagParadata nameTagParadata;
 
     @JsonIgnore

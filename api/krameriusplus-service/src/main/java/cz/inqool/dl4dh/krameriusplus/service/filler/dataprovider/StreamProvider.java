@@ -4,12 +4,12 @@ import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import javax.annotation.Resource;
 import javax.xml.bind.JAXB;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -24,12 +24,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException.
 @Service
 public class StreamProvider {
 
-    private final WebClient webClient;
-
-    @Autowired
-    public StreamProvider(@Value("${kramerius.api:https://kramerius.mzk.cz}") String krameriusApi) {
-        this.webClient = WebClient.create(krameriusApi + "/search/api/v5.0/item");
-    }
+    private WebClient webClient;
 
     public String getNormalizedTextOcr(String pageId) {
         String textOcr = getStreamAsString(pageId, StreamType.TEXT_OCR);
@@ -62,7 +57,7 @@ public class StreamProvider {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-        } catch (WebClientResponseException e) {
+        } catch (WebClientResponseException | WebClientRequestException e) {
             throw new KrameriusException(EXTERNAL_API_ERROR, e);
         }
 
@@ -93,5 +88,10 @@ public class StreamProvider {
         StreamType(String streamId) {
             this.streamId = streamId;
         }
+    }
+
+    @Resource(name = "krameriusWebClient")
+    public void setWebClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 }

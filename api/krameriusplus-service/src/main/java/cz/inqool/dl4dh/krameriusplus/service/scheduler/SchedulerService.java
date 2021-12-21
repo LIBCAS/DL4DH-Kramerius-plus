@@ -7,14 +7,16 @@ import cz.inqool.dl4dh.krameriusplus.service.filler.FillerService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.FAILED;
-import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.isFalse;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.*;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.isTrue;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.SchedulingException.ErrorCode.ALREADY_ENRICHED;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.SchedulingException.ErrorCode.TASK_ALREADY_RUNNING;
@@ -59,13 +61,22 @@ public class SchedulerService {
 
         tasks.put(publicationId, task);
 
-        fillerService.enrichPublication(publicationId, task);
+        task.setFuture(fillerService.enrichPublication(publicationId, task));
 
         return task;
     }
 
     public List<EnrichmentTask> getFinishedTasks() {
-        return enrichmentTaskRepository.findEnrichmentTaskByState(EnrichmentTask.State.SUCCESSFUL);
+        return enrichmentTaskRepository.findFinished(Set.of(SUCCESSFUL, FAILED, CANCELED),
+                PageRequest.of(0, 10),
+                Sort.by(Sort.Direction.DESC, "created"));
+    }
+
+    public void cancelTask(String publicationId) {
+        EnrichmentTask task = tasks.remove(publicationId);
+        task.getFuture().cancel(true);
+        task.setState(CANCELED);
+        enrichmentTaskRepository.save(task);
     }
 
     public static EnrichmentTask getTask(String pid) {
@@ -79,6 +90,6 @@ public class SchedulerService {
     }
 
     private boolean isAnySuccessful(List<EnrichmentTask> enrichmentTasks) {
-        return enrichmentTasks.stream().anyMatch(task -> task.getState() == EnrichmentTask.State.SUCCESSFUL);
+        return enrichmentTasks.stream().anyMatch(task -> task.getState() == SUCCESSFUL);
     }
 }

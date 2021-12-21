@@ -22,8 +22,10 @@ springdoc:
 
 system:
   kramerius:
-  #  api: https://kramerius5.nkp.cz
-    api: https://kramerius.mzk.cz
+  #  api: https://kramerius5.nkp.cz # NK
+  #  api: https://kramerius.mzk.cz  # MZK
+    api: https://kramerius.lib.cas.cz # AV
+  #  api: https://ndk.cz # NDK
   enrichment:
   #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
   #  and ALTO processing does not make manual corrections (while OCR processing does)
@@ -34,5 +36,7 @@ system:
       api: http://lindat.mff.cuni.cz/services/nametag/api/recognize
     tei:
       api: http://localhost:5000/tei
+    ndk:
+      path: C:\inqool\dl4dh\ndk
   json:
     serializeEmptyArrays: true

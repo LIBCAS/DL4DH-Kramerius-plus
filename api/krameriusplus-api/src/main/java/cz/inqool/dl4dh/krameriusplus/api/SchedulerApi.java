@@ -58,4 +58,10 @@ public class SchedulerApi {
     public Collection<EnrichmentTask> getTasksFinished() {
         return schedulerService.getFinishedTasks();
     }
+
+    @Operation(summary = "Cancels a running task")
+    @PostMapping(value = "/tasks/cancel/{id}")
+    public void cancelTask(@PathVariable("id") String publicationId) {
+        schedulerService.cancelTask(publicationId);
+    }
 }

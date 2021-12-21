@@ -48,3 +48,20 @@ export async function getFinishedTasks():Promise<EventProps[]> {
     return [];
   }
 }
+
+export async function cancelTask(id : string) {
+  try {
+    const response = await fetch(`/api/scheduler/tasks/cancel/${id}`, {
+      method: 'POST'
+    })
+    return {
+      ok: response.ok
+    }
+  } catch(e) {
+    console.error(e)
+
+    return {
+      ok: false
+    }
+  }
+}

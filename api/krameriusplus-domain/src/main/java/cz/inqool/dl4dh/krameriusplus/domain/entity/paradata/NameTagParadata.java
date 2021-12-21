@@ -4,12 +4,20 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
 public class NameTagParadata extends Paradata {
 
     private String model;
+
+    private String[] acknowledgements;
+
+    private Instant responseReceived;
+
+    private Instant finishedProcessing;
 
     @Override
     public ExternalServiceType getExternalServiceType() {

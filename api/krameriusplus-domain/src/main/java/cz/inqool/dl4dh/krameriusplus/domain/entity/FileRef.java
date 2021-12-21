@@ -35,6 +35,8 @@ public class FileRef implements Closeable {
 
     private Instant created = Instant.now();
 
+    private Instant deleted;
+
     private static final int DIR_NAME_LENGTH = 2;
 
     /**

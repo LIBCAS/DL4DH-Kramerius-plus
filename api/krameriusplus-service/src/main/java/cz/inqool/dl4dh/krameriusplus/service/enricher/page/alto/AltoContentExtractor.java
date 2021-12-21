@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.enricher.page.alto;
 import cz.inqool.dl4dh.alto.*;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.page.PageEnricher;
+import cz.inqool.dl4dh.krameriusplus.service.enricher.page.PageDecorator;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @Service
 @Order(HIGHEST_PRECEDENCE)
 @Slf4j
-public class AltoContentExtractor implements PageEnricher {
+public class AltoContentExtractor implements PageDecorator {
 
     private final StreamProvider streamProvider;
 
@@ -72,9 +72,16 @@ public class AltoContentExtractor implements PageEnricher {
 
     private OCRParadata extractOcrParadata() {
         try {
-            String ocrPerformedDateString = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingDateTime();
+            LocalDate ocrPerformedDate = null;
+            try {
+                String ocrPerformedDateString = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingDateTime();
 
-            LocalDate ocrPerformedDate = LocalDate.parse(ocrPerformedDateString, formatter);
+                ocrPerformedDate = LocalDate.parse(ocrPerformedDateString, formatter);
+            } catch (Exception e) {
+                // ignore
+                // todo: handle better, we dont want to fail evert time that there is no date
+            }
+
             ProcessingSoftwareType processingSoftware = alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep().getProcessingSoftware();
 
             String creator = processingSoftware.getSoftwareCreator();
@@ -82,7 +89,7 @@ public class AltoContentExtractor implements PageEnricher {
             String version = processingSoftware.getSoftwareVersion();
 
             OCRParadata ocrParadata = new OCRParadata();
-            ocrParadata.setCreated(Instant.now());
+            ocrParadata.setRequestSent(Instant.now());
             ocrParadata.setOcrPerformedDate(ocrPerformedDate);
             ocrParadata.setCreator(creator);
             ocrParadata.setSoftwareName(softwareName);

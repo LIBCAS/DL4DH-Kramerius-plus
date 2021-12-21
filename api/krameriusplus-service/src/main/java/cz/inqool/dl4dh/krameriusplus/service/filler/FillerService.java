@@ -13,12 +13,13 @@ import cz.inqool.dl4dh.krameriusplus.service.scheduler.SchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.concurrent.Future;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.ENRICHING;
-import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.FAILED;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.*;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException.ErrorCode.TYPE_ERROR;
 
 /**
@@ -46,10 +47,10 @@ public class FillerService {
     }
 
     @Async
-    public void enrichPublication(String pid, EnrichmentTask task) {
+    public Future<String> enrichPublication(String id, EnrichmentTask task) {
         try {
-            log.info("Downloading publication");
-            KrameriusObject digitalObject = krameriusProvider.getDigitalObject(pid);
+            log.info("Downloading publication {}", id);
+            KrameriusObject digitalObject = krameriusProvider.getDigitalObject(id);
 
             if (digitalObject instanceof Publication) {
                 enrichPublication((Publication) digitalObject, task);
@@ -60,13 +61,20 @@ public class FillerService {
                         + digitalObject.getClass().getSimpleName() + " not enrichable");
             }
         } catch (Exception e) {
-            log.error("Task wid PID=" + pid + " failed with error: " +  e.getMessage());
-            task.setErrorMessage(e.getMessage());
-            task.setState(FAILED);
+            if (e.getCause() instanceof InterruptedException) {
+                task.setErrorMessage("Interrupted");
+                task.setState(CANCELED);
+            } else {
+                task.setErrorMessage(e.getMessage());
+                task.setState(FAILED);
+            }
+            log.error("Task wid PID=" + id + " failed", e);
+
             enrichmentTaskRepository.save(task);
-            SchedulerService.removeTask(pid);
-            throw e;
+            SchedulerService.removeTask(id);
         }
+
+        return new AsyncResult<>("done");
     }
 
     private void enrichPublication(Publication publication, EnrichmentTask task) {
@@ -83,7 +91,6 @@ public class FillerService {
     }
 
     private void finishTask(EnrichmentTask task) {
-
         task.setFinished(Instant.now());
         task.setState(EnrichmentTask.State.SUCCESSFUL);
 
