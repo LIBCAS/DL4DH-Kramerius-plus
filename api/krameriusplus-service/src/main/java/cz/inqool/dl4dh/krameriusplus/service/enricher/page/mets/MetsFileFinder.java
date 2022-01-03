@@ -1,9 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets;
 
+import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.publication.xml.XMLMetsUnmarshaller;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.publication.xml.dto.MainMetsDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,16 +19,45 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@Slf4j
 public class MetsFileFinder {
 
     private final XMLMetsUnmarshaller metsUnmarshaller;
+
+    private String ndkPath;
 
     @Autowired
     public MetsFileFinder(XMLMetsUnmarshaller metsUnmarshaller) {
         this.metsUnmarshaller = metsUnmarshaller;
     }
 
-    public void setMetsPathForPages(List<Page> pages, Path ndkDir) {
+    public void setMainMetsPath(Publication publication) {
+        if (ndkPath != null) {
+            try (Stream<Path> publicationNdkDirs = Files.list(Path.of(ndkPath))) {
+                List<Path> matchingDirs = publicationNdkDirs
+                        .filter(publicationNdkDir -> Files.isDirectory(publicationNdkDir)
+                                && publicationNdkDir.getFileName().toString().equals(publication.getId().substring(5)))
+                        .collect(Collectors.toList());
+
+                if (matchingDirs.size() != 1) {
+                    log.warn("NDK directory with id=\"" + publication.getId() + "\" not found");
+                    return;
+                }
+
+                Path publicationMetsDir = matchingDirs.get(0);
+                publication.setNdkDir(publicationMetsDir);
+
+                if (publication instanceof PagesAware) {
+                    PagesAware publicationWithPages = (PagesAware) publication;
+                    setMetsPathForPages(publicationWithPages.getPages(), publicationMetsDir);
+                }
+            } catch (Exception e) {
+                log.warn("NDK directory not found for publication: {}", publication.getTitle());
+            }
+        }
+    }
+
+    private void setMetsPathForPages(List<Page> pages, Path ndkDir) {
         Path mainMets = findMainMets(ndkDir);
 
         MainMetsDto mainMetsDto = metsUnmarshaller.unmarshal(mainMets.toFile());
@@ -66,5 +99,10 @@ public class MetsFileFinder {
         } catch (IOException e) {
             throw new UncheckedIOException("Failed listing dir content", e);
         }
+    }
+
+    @Autowired
+    public void setNdkPath(@Value("${system.enrichment.ndk.path}") String path) {
+        this.ndkPath = path;
     }
 }

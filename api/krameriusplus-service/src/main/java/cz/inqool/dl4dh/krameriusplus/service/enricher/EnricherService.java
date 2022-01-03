@@ -4,7 +4,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.CompletePageEnricher;
-import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.MetsFileFinder;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.publication.PublicationEnricher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +18,11 @@ public class EnricherService {
 
     private final PublicationEnricher publicationEnricher;
     private final CompletePageEnricher completePageEnricher;
-    private final MetsFileFinder metsFileFinder;
 
     @Autowired
-    public EnricherService(PublicationEnricher publicationEnricher, CompletePageEnricher completePageEnricher, MetsFileFinder metsFileFinder) {
+    public EnricherService(PublicationEnricher publicationEnricher, CompletePageEnricher completePageEnricher) {
         this.publicationEnricher = publicationEnricher;
         this.completePageEnricher = completePageEnricher;
-        this.metsFileFinder = metsFileFinder;
     }
 
     public void enrich(Publication publication, EnrichmentTask task) {

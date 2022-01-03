@@ -37,6 +37,6 @@ system:
     tei:
       api: http://localhost:5000/tei
     ndk:
-      path: C:\inqool\dl4dh\ndk
+      path: todo
   json:
     serializeEmptyArrays: true
