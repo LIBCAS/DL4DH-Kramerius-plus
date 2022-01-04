@@ -14,7 +14,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
       <Dialog
         onClose={dialogCtx.close}
         opened={dialog.opened}
-        content={dialog.content}
+        Content={dialog.Content}
         size={dialog.size}
         initialValues={dialog.initialValues}
       />

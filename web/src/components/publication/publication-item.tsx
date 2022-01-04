@@ -45,7 +45,7 @@ export const PublicationItem = ({ publication }: Props) => {
       initialValues: {
         id,
       },
-      content: PublicationExportDialog,
+      Content: PublicationExportDialog,
       size: "md",
     });
   };
