@@ -8,7 +8,7 @@ function DefaultDialogContent() {
 
 export function useDialog() {
   const [dialog, setDialog] = useState<DialogProps>({
-    content: DefaultDialogContent,
+    Content: DefaultDialogContent,
     opened: false,
     size: "sm",
   });

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useContext } from "react";
 import { v4 } from "uuid";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -12,7 +12,12 @@ import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
 import { makeStyles } from "@material-ui/core/styles";
 import { toast } from "react-toastify";
 
+import { ApiError } from 'models'
+
+import { DialogContext } from "components/dialog/dialog-context";
+
 import { enrich } from "./enrichment-api";
+import { DefaultDialog } from "components/dialog/knav-dialog/knav-default-dialog";
 
 const useStyles = makeStyles(() => ({
   addButton: {
@@ -52,6 +57,7 @@ const initialValue = { id: v4(), value: "" };
 export const EnrichmentForm = () => {
   const classes = useStyles();
   const [idFields, setIdFields] = useState<Fields[]>([initialValue]);
+  const { open } = useContext(DialogContext)
 
   const disabledSubmitButton = useMemo(() => {
     const foundEmptyValueIndex = idFields.findIndex((f) => !f.value);
@@ -83,9 +89,34 @@ export const EnrichmentForm = () => {
 
       setIdFields([initialValue]);
     } else {
-      toast("Při pokusu o obohacení nastala chyba.", {
-        type: "error",
-      });
+      const { code } = response.data as ApiError
+
+      if(code === 'ALREADY_ENRICHED') {
+        open({
+          Content: () => ( 
+            <DefaultDialog 
+              title="Opakované obohacení" 
+              contentHeight={25}
+              onSubmit={async () => {
+                const response = await enrich(publications, true);
+
+                if (response.ok) {
+                  toast("Opakované obohacení proběhlo úspěšně", {
+                    type: "success",
+                  });
+            
+                setIdFields([initialValue]);
+            }}}>
+              Jedna nebo více publikací již existuje. Přejete si je obohatit znovu?
+          </DefaultDialog>
+          ),
+          size: 'md'
+        })
+      } else {
+        toast("Při pokusu o obohacení nastala chyba.", {
+          type: "error",
+        });
+      }  
     }
   };
 

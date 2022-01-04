@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 
 export type DialogContentProps<T = any> = {
   initialValues?: T;
@@ -8,7 +7,7 @@ export type DialogContentProps<T = any> = {
 export type DialogProps<T = any> = Omit<DialogContentProps<T>, 'onClose'> & {
   opened: boolean;
   size: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  content: (props: DialogContentProps<T>) => ReactNode;
+  Content: (props: DialogContentProps<T>) =>  JSX.Element;
 };
 
 export type DialogContextType = {

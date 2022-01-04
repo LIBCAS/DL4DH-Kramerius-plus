@@ -5,13 +5,13 @@ import { DialogProps } from "./types";
 export function Dialog({
   opened,
   size,
-  content,
+  Content,
   onClose,
   initialValues,
 }: DialogProps & { onClose: () => void }) {
   return (
     <MuiDialog maxWidth={size} open={opened} onClose={onClose}>
-      {content({ initialValues, onClose })}
+      <Content initialValues={initialValues} onClose={onClose} />
     </MuiDialog>
   );
 }

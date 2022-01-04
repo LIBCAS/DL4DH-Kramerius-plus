@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import Button from "@material-ui/core/Button";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -106,11 +105,7 @@ export const PublicationExportDialog = ({
   return (
     <DefaultDialog
       title="Výběr formátu"
-      actions={
-        <Button color="primary" onClick={handleSubmitExport}>
-          Potvrdit
-        </Button>
-      }
+      onSubmit={handleSubmitExport}
       minWidth={400}
       contentHeight={470}
     >

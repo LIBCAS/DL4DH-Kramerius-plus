@@ -1,4 +1,5 @@
-import { FileRef, Publication } from '../../models';
+import { FileRef, Publication } from 'models';
+import fetch from 'utils/fetch'
 
 export const getPublications = async () => {
   try {
