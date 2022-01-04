@@ -9,11 +9,11 @@ import { DialogContext } from "../dialog-context";
 
 interface Props {
   title: string;
-  actions: ReactNode;
   children: ReactNode;
   closeBtnLabel?: string;
   minWidth?: number;
   contentHeight?: number;
+  onSubmit: () => Promise<void>
 }
 
 type StyleProps = Pick<Props, "minWidth" | "contentHeight">;
@@ -42,11 +42,11 @@ const useStyles = makeStyles(() => ({
 
 export function DefaultDialog({
   title,
-  actions,
   children,
   closeBtnLabel = "Zavřít",
   minWidth = 300,
   contentHeight = 200,
+  onSubmit
 }: Props) {
   const { close } = useContext(DialogContext);
   const classes = useStyles({ minWidth, contentHeight });
@@ -56,9 +56,14 @@ export function DefaultDialog({
       <DialogTitle className={classes.title}>{title}</DialogTitle>
       <DialogContent className={classes.content}>{children}</DialogContent>
       <DialogActions className={classes.actions}>
-        {actions}
         <Button key="close" onClick={close}>
           {closeBtnLabel}
+        </Button>
+        <Button onClick={() => {
+          onSubmit()
+          close()
+        }}>
+          Potvrdit
         </Button>
       </DialogActions>
     </div>

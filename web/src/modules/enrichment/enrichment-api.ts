@@ -1,21 +1,27 @@
 import { EventProps } from "../../components/event/event-detail"
+import { ApiError } from "../../models"
 
-export async function enrich(publications: string[]){
+export async function enrich(publications: string[], override?: boolean){
+
+  const requestUrl = override ? '/api/scheduler/schedule?override=true' : '/api/scheduler/schedule'
+
   try {
-    const response = await fetch('/api/scheduler/schedule', {
+    await fetch(requestUrl, {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({publications})
     })
 
     return {
-      ok: response.ok
+      ok: true,
+      data: {},
     }
   } catch(e) {
     console.error(e)
 
     return {
-      ok: false
+      ok: false,
+      data: e as ApiError
     }
   }
 }
