@@ -59,9 +59,10 @@ export function DefaultDialog({
         <Button key="close" onClick={close}>
           {closeBtnLabel}
         </Button>
-        <Button onClick={() => {
-          onSubmit()
-          close()
+        <Button color="primary" 
+          onClick={() => {
+            onSubmit()
+            close()
         }}>
           Potvrdit
         </Button>

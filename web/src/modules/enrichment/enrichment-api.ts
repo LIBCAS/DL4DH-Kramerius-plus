@@ -1,5 +1,6 @@
-import { EventProps } from "../../components/event/event-detail"
-import { ApiError } from "../../models"
+import { EventProps } from "components/event/event-detail"
+import { ApiError } from "models"
+import fetch from "utils/fetch"
 
 export async function enrich(publications: string[], override?: boolean){
 

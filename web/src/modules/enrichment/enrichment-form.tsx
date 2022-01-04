@@ -96,6 +96,7 @@ export const EnrichmentForm = () => {
           Content: () => ( 
             <DefaultDialog 
               title="Opakované obohacení" 
+              contentHeight={25}
               onSubmit={async () => {
                 const response = await enrich(publications, true);
 
