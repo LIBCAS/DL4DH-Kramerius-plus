@@ -78,7 +78,7 @@ export const EnrichmentForm = () => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
-		const publications = idFields.map(f => f.value)
+		const publications = idFields.map(f => f.value.trim())
 
 		const response = await enrich(publications)
 
