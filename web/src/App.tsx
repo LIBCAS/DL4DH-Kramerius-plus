@@ -1,33 +1,33 @@
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { Switch, Route, BrowserRouter } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
+import { Switch, Route, BrowserRouter } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
-import { Navbar } from "./components/NavBar";
-import { Export } from "./modules/export/export";
-import { Enrichment } from "./modules/enrichment/enrichment";
-import { DialogProvider } from "./components/dialog/dialog-context-provider";
+import { Navbar } from './components/NavBar'
+import { Export } from './modules/export/export'
+import { Enrichment } from './modules/enrichment/enrichment'
+import { DialogProvider } from './components/dialog/dialog-context-provider'
 
 function App() {
-  return (
-    <DialogProvider>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <BrowserRouter>
-          <Navbar />
+	return (
+		<DialogProvider>
+			<MuiPickersUtilsProvider utils={DateFnsUtils}>
+				<BrowserRouter>
+					<Navbar />
 
-          <Switch>
-            <Route exact path="/export">
-              <Export />
-            </Route>
-            <Route path="/">
-              <Enrichment />
-            </Route>
-          </Switch>
-        </BrowserRouter>
-      </MuiPickersUtilsProvider>
-      <ToastContainer position="bottom-left" newestOnTop />
-    </DialogProvider>
-  );
+					<Switch>
+						<Route exact path="/export">
+							<Export />
+						</Route>
+						<Route path="/">
+							<Enrichment />
+						</Route>
+					</Switch>
+				</BrowserRouter>
+			</MuiPickersUtilsProvider>
+			<ToastContainer newestOnTop position="bottom-left" />
+		</DialogProvider>
+	)
 }
 
-export default App;
+export default App

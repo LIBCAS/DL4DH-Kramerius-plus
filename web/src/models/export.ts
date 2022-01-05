@@ -1,10 +1,10 @@
-import { FileRef } from "./fileRef";
+import { FileRef } from './fileRef'
 
 export interface Export {
-  id?: string;
-  publicationId?: string;
-  publicationTitle?: string;
-  created?: string;
-  deleted?: string;
-  fileRef?: FileRef;
+	id?: string
+	publicationId?: string
+	publicationTitle?: string
+	created?: string
+	deleted?: string
+	fileRef?: FileRef
 }

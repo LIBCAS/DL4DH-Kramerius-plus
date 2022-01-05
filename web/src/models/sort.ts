@@ -1,4 +1,4 @@
 export interface Sort {
-  field: string;
-  direction: 'ASC' | 'DESC'
+	field: string
+	direction: 'ASC' | 'DESC'
 }

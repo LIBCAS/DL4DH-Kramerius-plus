@@ -1,5 +1,5 @@
 export interface Name {
-  type?: string;
-  namePart?: string;
-  nameIdentifier?: string;
+	type?: string
+	namePart?: string
+	nameIdentifier?: string
 }

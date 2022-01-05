@@ -1,26 +1,26 @@
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
 
 type Props = {
-  label: string;
-  value?: string;
-};
+	label: string
+	value?: string
+}
 
 export const ReadOnlyField = ({ label, value }: Props) => {
-  if (!value) {
-    return <></>;
-  }
+	if (!value) {
+		return <></>
+	}
 
-  return (
-    <Grid container style={{ marginBottom: 5 }}>
-      <Grid item xs={3}>
-        <Typography variant="body2">{label}</Typography>
-      </Grid>
-      <Grid item xs={9}>
-        <Typography color="primary" variant="body2">
-          {value}
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-};
+	return (
+		<Grid container style={{ marginBottom: 5 }}>
+			<Grid item xs={3}>
+				<Typography variant="body2">{label}</Typography>
+			</Grid>
+			<Grid item xs={9}>
+				<Typography color="primary" variant="body2">
+					{value}
+				</Typography>
+			</Grid>
+		</Grid>
+	)
+}

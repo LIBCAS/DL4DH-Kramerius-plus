@@ -11,7 +11,7 @@ export const defaultOptions = {
 export interface ErrorMessage {
 	status: number
 	code: string
-  message: string
+	message: string
 }
 
 interface FetchType {
@@ -29,7 +29,7 @@ interface FetchType {
  */
 export function getErrorMessage(error: ApiError): ErrorMessage {
 	return {
-    status: error.status,
+		status: error.status,
 		code: error.code,
 		message: error.message,
 	}

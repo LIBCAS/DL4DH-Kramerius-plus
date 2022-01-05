@@ -1,5 +1,5 @@
 export interface Identifier {
-  type?: string;
-  invalid?: boolean;
-  value?: string;
+	type?: string
+	invalid?: boolean
+	value?: string
 }
