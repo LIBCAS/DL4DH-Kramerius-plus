@@ -2,8 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.service.tei;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.dto.tei.TeiHeaderFactory;
 import cz.inqool.dl4dh.krameriusplus.service.export.TeiParams;

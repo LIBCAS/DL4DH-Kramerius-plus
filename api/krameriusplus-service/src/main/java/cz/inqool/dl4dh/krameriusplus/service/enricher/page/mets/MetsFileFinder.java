@@ -1,8 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.publication.xml.XMLMetsUnmarshaller;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.publication.xml.dto.MainMetsDto;
 import lombok.extern.slf4j.Slf4j;
@@ -47,10 +46,7 @@ public class MetsFileFinder {
                 Path publicationMetsDir = matchingDirs.get(0);
                 publication.setNdkDir(publicationMetsDir);
 
-                if (publication instanceof PagesAware) {
-                    PagesAware publicationWithPages = (PagesAware) publication;
-                    setMetsPathForPages(publicationWithPages.getPages(), publicationMetsDir);
-                }
+                setMetsPathForPages(publication.getPages(), publicationMetsDir);
             } catch (Exception e) {
                 log.warn("NDK directory not found for publication: {}", publication.getTitle());
             }

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.FileRefRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRef;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRefRepository;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

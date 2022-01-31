@@ -1,11 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.publication;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
+import cz.inqool.dl4dh.krameriusplus.service.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.MetsFileFinder;
-import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

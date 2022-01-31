@@ -2,9 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.enums.NamedEntityType;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.nametag.NamedEntity;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.nametag.NamedEntityType;
 import cz.inqool.dl4dh.krameriusplus.dto.LindatServiceResponse;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.lindat.NameTagService;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.lindat.UDPipeService;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.enums.NamedEntityType.*;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.nametag.NamedEntityType.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**

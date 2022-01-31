@@ -7,7 +7,7 @@ spring:
     mongodb:
       auto-index-creation: true
       database: KrameriusPlus
-      drop-on-start: false
+      drop-on-start: true
 
 logging:
   level:
@@ -23,8 +23,8 @@ springdoc:
 system:
   kramerius:
   #  api: https://kramerius5.nkp.cz # NK
-  #  api: https://kramerius.mzk.cz  # MZK
-    api: https://kramerius.lib.cas.cz # AV
+    api: https://kramerius.mzk.cz  # MZK
+#    api: https://kramerius.lib.cas.cz # AV
   #  api: https://ndk.cz # NDK
   enrichment:
   #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines

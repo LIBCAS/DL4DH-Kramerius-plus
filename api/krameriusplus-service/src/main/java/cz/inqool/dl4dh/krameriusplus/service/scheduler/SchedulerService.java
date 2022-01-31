@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.scheduler;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTaskRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.SchedulingException;
-import cz.inqool.dl4dh.krameriusplus.service.filler.FillerService;
+import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import static cz.inqool.dl4dh.krameriusplus.domain.exception.SchedulingException
 @Slf4j
 public class SchedulerService {
 
-    private final FillerService fillerService;
+    private final PublicationService publicationService;
 
     private final EnrichmentTaskRepository enrichmentTaskRepository;
 
@@ -36,8 +36,8 @@ public class SchedulerService {
     private static final Map<String, EnrichmentTask> tasks = new HashMap<>();
 
     @Autowired
-    public SchedulerService(FillerService fillerService, EnrichmentTaskRepository enrichmentTaskRepository) {
-        this.fillerService = fillerService;
+    public SchedulerService(PublicationService publicationService, EnrichmentTaskRepository enrichmentTaskRepository) {
+        this.publicationService = publicationService;
         this.enrichmentTaskRepository = enrichmentTaskRepository;
     }
 
@@ -61,7 +61,7 @@ public class SchedulerService {
 
         tasks.put(publicationId, task);
 
-        task.setFuture(fillerService.enrichPublication(publicationId, task));
+        task.setFuture(publicationService.enrichPublication(publicationId, task));
 
         return task;
     }

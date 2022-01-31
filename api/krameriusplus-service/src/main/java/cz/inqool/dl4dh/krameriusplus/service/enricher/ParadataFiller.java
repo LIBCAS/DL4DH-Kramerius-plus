@@ -1,16 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
 
 public class ParadataFiller {
 
-    private final PagesAware publication;
+    private final Publication publication;
 
-    public ParadataFiller(PagesAware publication) {
+    public ParadataFiller(Publication publication) {
         this.publication = publication;
     }
 

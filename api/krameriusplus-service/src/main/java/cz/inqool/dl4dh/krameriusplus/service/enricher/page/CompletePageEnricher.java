@@ -24,6 +24,10 @@ public class CompletePageEnricher {
     }
 
     public void enrich(Collection<Page> pages, EnrichmentTask task) {
+        if (pages == null || pages.isEmpty()) {
+            return;
+        }
+
         int done = 1;
         int errorCount = 0;
         int total = pages.size();

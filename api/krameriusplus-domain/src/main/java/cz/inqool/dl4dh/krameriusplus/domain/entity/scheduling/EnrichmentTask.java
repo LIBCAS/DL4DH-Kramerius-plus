@@ -57,7 +57,7 @@ public class EnrichmentTask {
         SUCCESSFUL,
         FAILED,
         CREATED,
-        DOWNLOADING_PAGES,
+        DOWNLOADING,
         ENRICHING,
         CANCELED
     }

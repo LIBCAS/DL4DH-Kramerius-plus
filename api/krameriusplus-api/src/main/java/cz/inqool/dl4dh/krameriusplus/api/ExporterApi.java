@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRef;
+import cz.inqool.dl4dh.krameriusplus.domain.params.Params;
 import cz.inqool.dl4dh.krameriusplus.service.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.service.export.FileService;
 import cz.inqool.dl4dh.krameriusplus.service.export.TeiParams;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.*;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportFormat.*;
 
 /**
  * @author Norbert Bodnar

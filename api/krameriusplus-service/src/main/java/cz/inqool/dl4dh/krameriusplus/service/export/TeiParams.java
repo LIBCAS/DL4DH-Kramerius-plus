@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
-import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.params.filter.Sorting;
+import cz.inqool.dl4dh.krameriusplus.domain.params.Params;
+import cz.inqool.dl4dh.krameriusplus.domain.params.filter.Sorting;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

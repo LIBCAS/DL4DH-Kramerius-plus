@@ -1,15 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.udpipe.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRef;
+import cz.inqool.dl4dh.krameriusplus.domain.params.Params;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.TSV;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportFormat.TSV;
 
 @Slf4j
 public abstract class SvExporter extends AbstractExporter {
@@ -55,9 +54,8 @@ public abstract class SvExporter extends AbstractExporter {
             CSVFormat pagesCsvFormat = CSVFormat.Builder.create(baseCsvFormat).setHeader("file", "publication_id", "id", "order", "title").build();
             CSVPrinter pagesPrinter = new CSVPrinter(pagesBuffer, pagesCsvFormat);
 
-            if (publication instanceof PagesAware) {
                 int pageIndex = 1;
-                for (Page page : ((PagesAware) publication).getPages()) {
+                for (Page page : publication.getPages()) {
                     String pageFileName = "page_"+publicationId.replace("uuid:", "")+"_"+pageIndex+"_"+page.getId().replace("uuid:", "")+filesExtension;
                     pagesPrinter.printRecord(pageFileName, publicationId, page.getId(), pageIndex++, page.getTitle());
 
@@ -66,7 +64,7 @@ public abstract class SvExporter extends AbstractExporter {
                     zip.write(generateCSVPage(page, baseCsvFormat).getBytes());
                     zip.closeEntry();
                 }
-            }
+
 
             // Add pages list
             zip.putNextEntry(new ZipEntry("pages"+filesExtension));

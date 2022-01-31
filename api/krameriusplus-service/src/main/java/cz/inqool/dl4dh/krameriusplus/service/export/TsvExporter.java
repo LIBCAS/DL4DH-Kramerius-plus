@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.TSV;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportFormat.TSV;
 
 @Component
 public class TsvExporter extends SvExporter {

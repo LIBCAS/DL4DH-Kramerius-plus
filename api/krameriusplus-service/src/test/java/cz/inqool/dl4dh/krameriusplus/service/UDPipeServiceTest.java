@@ -1,10 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.MonographWithPages;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.udpipe.LinguisticMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.udpipe.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.lindat.UDPipeService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ public class UDPipeServiceTest {
 
     @Test
     public void testBulk() {
-        MonographWithPages monograph = prepareMonographDto();
+        Monograph monograph = prepareMonographDto();
 
         List<Page> pages = monograph.getPages();
 
@@ -58,8 +58,8 @@ public class UDPipeServiceTest {
         assertEquals(345, pages.get(2).getTokens().get(345).getTokenIndex());
     }
 
-    private MonographWithPages prepareMonographDto() {
-        MonographWithPages monograph = new MonographWithPages();
+    private Monograph prepareMonographDto() {
+        Monograph monograph = new Monograph();
         monograph.setId("uuid:9a9690e0-69e8-11eb-9f97-005056827e51");
         monograph.setTitle("Pan učitel");
         monograph.setPages(new ArrayList<>());

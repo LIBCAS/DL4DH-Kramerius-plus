@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.lindat;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.NameTagMetadata;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.nametag.NameTagMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.nametag.NamedEntity;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.udpipe.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.ExternalServiceException;
 import cz.inqool.dl4dh.krameriusplus.dto.LindatServiceResponse;

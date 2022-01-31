@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service;
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
-import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;
+import cz.inqool.dl4dh.krameriusplus.service.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = EnricherApplicationContext.class)
 public class ModsUtilsTest {

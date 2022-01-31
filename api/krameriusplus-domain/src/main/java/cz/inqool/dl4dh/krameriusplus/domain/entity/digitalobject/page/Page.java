@@ -1,26 +1,27 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.alto.Alto;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.DigitalObject;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.nametag.NameTagMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.udpipe.Token;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.mets.MetsMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.UDPipeParadata;
-import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PAGE;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.KrameriusModel.PAGE;
 
 /**
  * Object representing a page.
@@ -30,18 +31,8 @@ import static cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel.PAGE;
 @Getter
 @Setter
 @Document(collection = "pages")
-public class Page extends DigitalObject implements ParentAware {
-
-    /**
-     * Id of parent object. Multiple object types can contain pages, for example monographs, monographUnits or
-     * periodicalItems
-     */
-    @Indexed
-    private String parentId;
-
-    @Transient
-    @JsonIgnore
-    private Publication parent;
+@TypeAlias(PAGE)
+public class Page extends DigitalObject {
 
     private String rootId;
 
@@ -78,9 +69,6 @@ public class Page extends DigitalObject implements ParentAware {
      */
     private Integer numberOfIllustrations;
 
-    @Indexed
-    private Integer index;
-
     private NameTagMetadata nameTagMetadata;
 
     private MetsMetadata metsMetadata;
@@ -98,8 +86,9 @@ public class Page extends DigitalObject implements ParentAware {
     @JsonIgnore
     private String teiBody;
 
-    @Override
-    public KrameriusModel getModel() {
-        return PAGE;
+    @JsonProperty("details")
+    public void unpackDetails(Map<String, Object> details) {
+        pageType = (String) details.get("type");
+        pageNumber = ((String) details.get("pagenumber")).strip();
     }
 }

@@ -2,8 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.domain.entity.export;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.DomainObject;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRef;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

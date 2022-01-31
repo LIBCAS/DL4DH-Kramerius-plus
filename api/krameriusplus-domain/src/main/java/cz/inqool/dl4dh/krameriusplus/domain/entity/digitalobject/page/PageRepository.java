@@ -1,0 +1,18 @@
+package cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * @author Norbert Bodnar
+ */
+@Repository
+public interface PageRepository extends MongoRepository<Page, String>, PageRepositoryCustom {
+
+    List<Page> findAllByParentIdOrderByIndexAsc(String parentId);
+
+    List<Page> findByParentIdOrderByIndexAsc(String parentId, Pageable pageable);
+}

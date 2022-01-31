@@ -1,14 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat;
-import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.ExportException;
+import cz.inqool.dl4dh.krameriusplus.domain.params.Params;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.service.tei.TeiConnector;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.domain.dao.ExportFormat.TEI;
+import static cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportFormat.TEI;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExportException.ErrorCode.TEI_MERGE_ERROR;
 
 @Component
@@ -43,13 +42,7 @@ public class TeiExporter extends AbstractExporter {
 
         Publication publication = publicationService.findWithPages(publicationId, teiParams.cleanForTei());
 
-        if (!(publication instanceof PagesAware)) {
-            throw new IllegalArgumentException("Tei cannot be generated from a publication which does not have pages");
-        }
-
-        PagesAware publicationWithPages = (PagesAware) publication;
-
-        File tmpFile = getTei(publicationWithPages, teiParams);
+        File tmpFile = getTei(publication, teiParams);
 
         try {
             FileRef file = fileService.create(new FileInputStream(tmpFile), tmpFile.length(),
@@ -74,7 +67,7 @@ public class TeiExporter extends AbstractExporter {
         return TEI;
     }
 
-    private File getTei(PagesAware publication, TeiParams params) {
+    private File getTei(Publication publication, TeiParams params) {
         return teiConnector.merge(publication.getTeiHeader(),
                 publication
                         .getPages()
