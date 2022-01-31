@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.dto.periodical;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.Periodical;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusPublicationAssemblerVisitor;

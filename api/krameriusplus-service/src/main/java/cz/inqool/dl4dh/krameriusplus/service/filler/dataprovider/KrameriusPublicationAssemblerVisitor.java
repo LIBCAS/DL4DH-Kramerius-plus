@@ -1,11 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.Periodical;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalItem;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalVolume;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.MonographUnit;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.periodical.Periodical;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.periodical.PeriodicalItem;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.periodical.PeriodicalVolume;
 import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographUnitDto;

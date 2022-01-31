@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.tei;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.export.TeiParams;
 
 import java.io.File;

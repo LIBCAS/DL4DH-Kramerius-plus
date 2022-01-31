@@ -2,9 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.domain;
 
 import cz.inqool.dl4dh.krameriusplus.DomainApplicationContext;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.MonographWithPages;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Token;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.publication.xml.XMLMetsUnmarshaller;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.publication.xml.dto.MainMetsDto;
 import lombok.extern.slf4j.Slf4j;

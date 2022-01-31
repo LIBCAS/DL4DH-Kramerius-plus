@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.dao.repo;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import org.springframework.stereotype.Repository;
 
 /**

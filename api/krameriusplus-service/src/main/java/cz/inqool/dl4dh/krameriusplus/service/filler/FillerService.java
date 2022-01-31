@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.EnrichmentTaskRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
@@ -50,7 +50,7 @@ public class FillerService {
     public Future<String> enrichPublication(String id, EnrichmentTask task) {
         try {
             log.info("Downloading publication {}", id);
-            KrameriusObject digitalObject = krameriusProvider.getDigitalObject(id);
+            DigitalObject digitalObject = krameriusProvider.getDigitalObject(id);
 
             if (digitalObject instanceof Publication) {
                 enrichPublication((Publication) digitalObject, task);

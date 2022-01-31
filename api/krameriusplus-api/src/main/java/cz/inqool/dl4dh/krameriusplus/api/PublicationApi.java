@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.params.Params;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;

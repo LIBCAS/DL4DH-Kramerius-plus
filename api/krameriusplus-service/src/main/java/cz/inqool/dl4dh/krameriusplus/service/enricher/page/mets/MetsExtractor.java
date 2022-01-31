@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.MetsMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.mets.MetsMetadata;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.DomParser;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors.MixExtractor;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors.PremisAgentExtractor;

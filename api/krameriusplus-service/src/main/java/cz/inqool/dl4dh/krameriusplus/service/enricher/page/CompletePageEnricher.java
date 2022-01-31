@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.MetsPageDecorator;

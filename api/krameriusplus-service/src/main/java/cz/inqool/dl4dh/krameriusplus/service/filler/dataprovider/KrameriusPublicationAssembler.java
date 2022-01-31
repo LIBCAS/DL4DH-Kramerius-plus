@@ -1,14 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographUnit;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithUnits;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.Periodical;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalItem;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.periodical.PeriodicalVolume;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.MonographUnit;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.MonographWithPages;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.MonographWithUnits;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.periodical.Periodical;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.periodical.PeriodicalItem;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.periodical.PeriodicalVolume;
 import cz.inqool.dl4dh.krameriusplus.dto.DigitalObjectDto;
 import cz.inqool.dl4dh.krameriusplus.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.dto.monograph.MonographDto;
@@ -38,10 +38,10 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
 
     @Override
     public Monograph assemble(MonographDto monographDto) {
-        List<DigitalObjectDto<KrameriusObject>> children = getChildren(monographDto.getPid());
+        List<DigitalObjectDto<DigitalObject>> children = getChildren(monographDto.getPid());
 
         // children should never be empty or null;
-        DigitalObjectDto<? extends KrameriusObject> firstChild = children.get(0);
+        DigitalObjectDto<? extends DigitalObject> firstChild = children.get(0);
 
         if (firstChild instanceof MonographUnitDto) {
             return getMonographWithUnits(monographDto, children);
@@ -53,12 +53,12 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
 
     }
 
-    private MonographWithUnits getMonographWithUnits(MonographDto monographDto, List<DigitalObjectDto<KrameriusObject>> children) {
+    private MonographWithUnits getMonographWithUnits(MonographDto monographDto, List<DigitalObjectDto<DigitalObject>> children) {
         monographDto.setContainUnits(true);
         MonographWithUnits monographWithUnits = (MonographWithUnits) monographDto.toEntity();
 
         MonographUnit monographUnit;
-        for (DigitalObjectDto<KrameriusObject> unitDto : children) {
+        for (DigitalObjectDto<DigitalObject> unitDto : children) {
             monographUnit = (MonographUnit) unitDto.accept(this);
             monographWithUnits.getMonographUnits().add(monographUnit);
         }
@@ -66,11 +66,11 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         return monographWithUnits;
     }
 
-    private MonographWithPages getMonographWithPages(MonographDto monographDto, List<DigitalObjectDto<KrameriusObject>> children) {
+    private MonographWithPages getMonographWithPages(MonographDto monographDto, List<DigitalObjectDto<DigitalObject>> children) {
         MonographWithPages monographWithPages = (MonographWithPages) monographDto.toEntity();
 
         Page page;
-        for (DigitalObjectDto<KrameriusObject> pageDto : children) {
+        for (DigitalObjectDto<DigitalObject> pageDto : children) {
             page = (Page) pageDto.accept(this);
             page.setParent(monographWithPages);
             monographWithPages.getPages().add(page);
@@ -146,7 +146,7 @@ public class KrameriusPublicationAssembler implements KrameriusPublicationAssemb
         return page.toEntity();
     }
 
-    private <T extends KrameriusObject> List<DigitalObjectDto<T>> getChildren(String parentId) {
+    private <T extends DigitalObject> List<DigitalObjectDto<T>> getChildren(String parentId) {
         return dataProvider.getDigitalObjectsForParent(parentId);
     }
 }

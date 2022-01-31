@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.dto.monograph;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithPages;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.MonographWithUnits;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.MonographWithPages;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.MonographWithUnits;
 import cz.inqool.dl4dh.krameriusplus.domain.enums.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.dto.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusPublicationAssemblerVisitor;

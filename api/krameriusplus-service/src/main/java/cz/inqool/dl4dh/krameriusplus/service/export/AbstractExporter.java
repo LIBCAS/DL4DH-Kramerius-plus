@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.FileRef;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.domain.dao.cascade;
 
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;

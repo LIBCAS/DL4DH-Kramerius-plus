@@ -6,7 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.dao.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PageRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.dao.repo.PublicationRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.PagesAware;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

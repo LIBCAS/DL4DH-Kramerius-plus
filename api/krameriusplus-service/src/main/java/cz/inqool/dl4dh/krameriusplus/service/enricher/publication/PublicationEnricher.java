@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.publication;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;

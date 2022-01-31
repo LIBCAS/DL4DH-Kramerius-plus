@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.PageDecorator;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.tei.TeiPageDecorator;
 import lombok.extern.slf4j.Slf4j;

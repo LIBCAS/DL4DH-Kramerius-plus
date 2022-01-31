@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.KrameriusObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ParentAware;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.dto.DigitalObjectDto;
 import cz.inqool.dl4dh.krameriusplus.dto.InternalPartDto;
@@ -41,7 +41,7 @@ public class WebClientDataProvider implements DataProvider {
     }
 
     @Override
-    public <T extends KrameriusObject> List<DigitalObjectDto<T>> getDigitalObjectsForParent(String parentId) {
+    public <T extends DigitalObject> List<DigitalObjectDto<T>> getDigitalObjectsForParent(String parentId) {
         List<DigitalObjectDto<T>> result = webClient.get()
                 .uri("/{parentId}/children", parentId)
                 .acceptCharset(StandardCharsets.UTF_8)
@@ -56,13 +56,13 @@ public class WebClientDataProvider implements DataProvider {
         return result;
     }
 
-    private <T extends KrameriusObject> void removeInternalParts(List<DigitalObjectDto<T>> result) {
+    private <T extends DigitalObject> void removeInternalParts(List<DigitalObjectDto<T>> result) {
         if (result != null) {
             result.removeIf(obj -> obj instanceof InternalPartDto);
         }
     }
 
-    private <T extends KrameriusObject> void setChildrenIndicesAndParentId(String parentId, List<DigitalObjectDto<T>> result) {
+    private <T extends DigitalObject> void setChildrenIndicesAndParentId(String parentId, List<DigitalObjectDto<T>> result) {
         int index = 0;
         if (result != null) {
             for (DigitalObjectDto<T> child : result) {

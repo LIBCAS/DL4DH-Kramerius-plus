@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.alto;
 
 import cz.inqool.dl4dh.alto.*;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.PageDecorator;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.StreamProvider;

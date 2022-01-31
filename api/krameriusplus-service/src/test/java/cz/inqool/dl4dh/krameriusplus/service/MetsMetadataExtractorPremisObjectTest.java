@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.object.ObjectCharacteristics;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.mets.object.ObjectIdentifier;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.mets.object.ObjectCharacteristics;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.mets.object.ObjectIdentifier;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

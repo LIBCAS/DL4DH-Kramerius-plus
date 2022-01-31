@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.dto;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 import lombok.Getter;
 import lombok.Setter;
 

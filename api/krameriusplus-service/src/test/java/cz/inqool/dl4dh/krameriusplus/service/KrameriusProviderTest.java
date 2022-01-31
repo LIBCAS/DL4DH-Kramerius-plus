@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.service.filler.dataprovider.KrameriusProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

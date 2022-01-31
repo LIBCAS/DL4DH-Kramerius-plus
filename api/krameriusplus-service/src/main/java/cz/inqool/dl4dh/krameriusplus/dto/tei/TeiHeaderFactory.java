@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.dto.tei;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.Publication;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.Publication;
 
 import java.util.ArrayList;
 import java.util.List;

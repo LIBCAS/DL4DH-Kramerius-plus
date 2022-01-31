@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.page.Page;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.DomParser;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.MetsExtractor;
 
