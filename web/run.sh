@@ -5,6 +5,9 @@ fi
 if [ -z $TEI_HOST ]; then 
     TEI_HOST=127.0.0.1
 fi
+if [ -z $MONGODB_HOST ]; then
+    MONGODB_HOST=127.0.0.1
+fi
 
 cat <<EOT >> /etc/apache2/conf.d/proxy-api.conf
 ProxyPreserveHost On
@@ -20,6 +23,10 @@ ProxyPass "/swagger-ui" "http://$API_HOST:8080/swagger-ui"
 ProxyPassReverse "/swagger-ui" "http://$API_HOST:8080/swagger-ui"
 ProxyPass "/v3" "http://$API_HOST:8080/v3"
 ProxyPassReverse "/v3" "http://$API_HOST:8080/v3"
+
+# MongoDB
+ProxyPass "/db" "http://$MONGODB_HOST:8081/db"
+ProxyPassReverse "/db" "http://$MONGODB_HOST:8081/db"
 
 # TEI Converter
 ProxyPass "/tei" "http://$TEI_HOST:5000/tei"
