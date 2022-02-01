@@ -53,6 +53,8 @@ spec:
               value: password
             - name: MONGO_INITDB_DATABASE
               value: KrameriusPlus
+            - name: ME_CONFIG_SITE_BASEURL
+              value: "/db/"
           resources:
             requests:
               cpu: "20m"
