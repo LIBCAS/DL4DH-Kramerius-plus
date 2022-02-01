@@ -53,8 +53,6 @@ spec:
               value: password
             - name: MONGO_INITDB_DATABASE
               value: KrameriusPlus
-            - name: ME_CONFIG_SITE_BASEURL
-              value: "/db/"
           resources:
             requests:
               cpu: "20m"
@@ -79,6 +77,8 @@ spec:
               value: password
             - name: ME_CONFIG_MONGODB_SERVER
               value: 127.0.0.1
+            - name: ME_CONFIG_SITE_BASEURL
+              value: "/db/"
           resources:
             requests:
               cpu: "20m"
@@ -116,4 +116,4 @@ spec:
       name: mongo
   selector:
     name: kramerius-api
-  clusterIP:
+  clusterIP: 10.3.240.30
