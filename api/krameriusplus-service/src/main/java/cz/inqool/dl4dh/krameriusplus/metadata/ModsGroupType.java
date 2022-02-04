@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.metadata;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata.*;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata.OriginInfo.DateIssued;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata.OriginInfo.Place;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata.*;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata.OriginInfo.DateIssued;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata.OriginInfo.Place;
 import cz.inqool.dl4dh.mods.*;
 
 import javax.xml.bind.JAXBElement;

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service;
 
 import cz.inqool.dl4dh.krameriusplus.EnricherApplicationContext;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.metadata.ModsWrapper;
 import cz.inqool.dl4dh.krameriusplus.service.dataprovider.StreamProvider;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;

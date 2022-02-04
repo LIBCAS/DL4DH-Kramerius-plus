@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.lindat.udpipe.Token;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportFormat;

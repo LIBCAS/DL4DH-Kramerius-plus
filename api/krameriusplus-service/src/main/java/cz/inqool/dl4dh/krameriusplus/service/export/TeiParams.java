@@ -22,18 +22,16 @@ public class TeiParams extends Params {
     private List<String> altoParams = new ArrayList<>();
 
     public TeiParams(Params params) {
-        disablePagination = params.isDisablePagination();
-        pageOffset = params.getPageOffset();
-        pageSize = params.getPageSize();
-        sort = params.getSort();
+        paging = params.getPaging();
+        sorting = params.getSorting();
         filters = params.getFilters();
         includeFields = params.getIncludeFields();
         excludeFields = params.getExcludeFields();
     }
 
     public Params cleanForTei() {
-        sort = new ArrayList<>();
-        sort.add(new Sorting("index", Sort.Direction.ASC));
+        sorting = new ArrayList<>();
+        sorting.add(new Sorting("index", Sort.Direction.ASC));
 
         includeFields = new ArrayList<>();
         includeFields("id", "teiBody");

@@ -1,25 +1,28 @@
 package cz.inqool.dl4dh.krameriusplus.service.scheduler;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTaskRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTaskStore;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.SchedulingException;
+import cz.inqool.dl4dh.krameriusplus.domain.params.Params;
+import cz.inqool.dl4dh.krameriusplus.domain.params.filter.EqFilter;
+import cz.inqool.dl4dh.krameriusplus.domain.params.filter.OrFilter;
+import cz.inqool.dl4dh.krameriusplus.domain.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.service.dataaccess.PublicationService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.entity.scheduling.EnrichmentTask.State.*;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.isTrue;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.SchedulingException.ErrorCode.ALREADY_ENRICHED;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.SchedulingException.ErrorCode.TASK_ALREADY_RUNNING;
+import static java.util.Arrays.asList;
 
 /**
  * @author Norbert Bodnar
@@ -30,15 +33,15 @@ public class SchedulerService {
 
     private final PublicationService publicationService;
 
-    private final EnrichmentTaskRepository enrichmentTaskRepository;
+    private final EnrichmentTaskStore enrichmentTaskStore;
 
     @Getter
     private static final Map<String, EnrichmentTask> tasks = new HashMap<>();
 
     @Autowired
-    public SchedulerService(PublicationService publicationService, EnrichmentTaskRepository enrichmentTaskRepository) {
+    public SchedulerService(PublicationService publicationService, EnrichmentTaskStore enrichmentTaskStore) {
         this.publicationService = publicationService;
-        this.enrichmentTaskRepository = enrichmentTaskRepository;
+        this.enrichmentTaskStore = enrichmentTaskStore;
     }
 
     public EnrichmentTask schedule(String publicationId, boolean overrideExisting) {
@@ -47,7 +50,10 @@ public class SchedulerService {
         isTrue(existingTask == null, () -> new SchedulingException(TASK_ALREADY_RUNNING,
                         "There is already a running task for a publication with this ID"));
 
-        List<EnrichmentTask> enrichmentTasks = enrichmentTaskRepository.findEnrichmentTaskByPublicationId(publicationId);
+        Params params = new Params();
+        params.addFilters(new EqFilter("publicationId", publicationId));
+
+        List<EnrichmentTask> enrichmentTasks = enrichmentTaskStore.listAll(params);
 
         if (isAnySuccessful(enrichmentTasks)) {
             isTrue(overrideExisting, () -> new SchedulingException(ALREADY_ENRICHED,
@@ -57,7 +63,7 @@ public class SchedulerService {
         }
 
         EnrichmentTask task = new EnrichmentTask(publicationId);
-        enrichmentTaskRepository.save(task);
+        enrichmentTaskStore.create(task);
 
         tasks.put(publicationId, task);
 
@@ -67,16 +73,21 @@ public class SchedulerService {
     }
 
     public List<EnrichmentTask> getFinishedTasks() {
-        return enrichmentTaskRepository.findFinished(Set.of(SUCCESSFUL, FAILED, CANCELED),
-                PageRequest.of(0, 10),
-                Sort.by(Sort.Direction.DESC, "created"));
+        Params params = new Params();
+        params.addFilters(new OrFilter(asList(
+                new EqFilter("state", SUCCESSFUL),
+                new EqFilter("state", FAILED),
+                new EqFilter("state", CANCELED))));
+        params.getSorting().add(new Sorting("created", Sort.Direction.DESC));
+
+        return enrichmentTaskStore.listAll(params);
     }
 
     public void cancelTask(String publicationId) {
         EnrichmentTask task = tasks.remove(publicationId);
         task.getFuture().cancel(true);
         task.setState(CANCELED);
-        enrichmentTaskRepository.save(task);
+        enrichmentTaskStore.save(task);
     }
 
     public static EnrichmentTask getTask(String pid) {

@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRef;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.time.Instant;
@@ -16,6 +17,7 @@ import java.time.Instant;
  */
 @Getter
 @Setter
+@TypeAlias("export")
 public class Export extends DomainObject {
 
     @DBRef

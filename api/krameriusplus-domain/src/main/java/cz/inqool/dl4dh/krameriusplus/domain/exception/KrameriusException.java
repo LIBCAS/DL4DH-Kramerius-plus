@@ -6,21 +6,17 @@ import lombok.Getter;
  * @author Norbert Bodnar
  */
 @Getter
-public class KrameriusException extends GeneralException implements CodedException {
-
-    private final ErrorCode errorCode;
+public class KrameriusException extends GeneralException {
 
     public KrameriusException(ErrorCode errorCode, Throwable throwable) {
-        super(throwable);
-        this.errorCode = errorCode;
+        super(throwable.getMessage(), errorCode, LogLevel.ERROR, throwable);
     }
 
     public KrameriusException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+        super(message, errorCode, LogLevel.ERROR);
     }
 
-    public enum ErrorCode implements ExceptionCodeEnum {
+    public enum ErrorCode implements LogCode {
         MISSING_OBJECT,
         MISSING_CHILDREN,
         INVALID_MODEL,

@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.paradata.NameTagParadata;

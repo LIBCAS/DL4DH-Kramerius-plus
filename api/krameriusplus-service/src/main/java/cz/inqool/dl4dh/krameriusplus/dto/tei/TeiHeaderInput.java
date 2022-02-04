@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.dto.tei;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata.Identifier;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata.PhysicalDescription;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata.Identifier;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata.PhysicalDescription;
 import lombok.Setter;
 
 import java.util.List;

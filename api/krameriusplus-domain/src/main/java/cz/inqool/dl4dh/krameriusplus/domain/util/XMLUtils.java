@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.domain;
+package cz.inqool.dl4dh.krameriusplus.domain.util;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

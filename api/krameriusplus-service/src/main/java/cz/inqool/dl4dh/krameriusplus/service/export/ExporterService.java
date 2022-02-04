@@ -4,7 +4,6 @@ import cz.inqool.dl4dh.krameriusplus.domain.entity.export.Export;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.export.ExportRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.file.FileRefRepository;
 import cz.inqool.dl4dh.krameriusplus.domain.params.Params;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ import java.util.Map;
 public class ExporterService {
 
     private int DELETE_AFTER_HOURS;
+
     private final ExportRepository exportRepository;
 
     private final FileService fileService;
@@ -39,7 +39,7 @@ public class ExporterService {
     private final static String CRON_EVERY_MINUTE = "0 * * * * ?";
 
     @Autowired
-    public ExporterService(List<Exporter> exporters, ExportRepository exportRepository, FileRefRepository fileRefRepository, FileService fileService) {
+    public ExporterService(List<Exporter> exporters, ExportRepository exportRepository, FileService fileService) {
         this.exportRepository = exportRepository;
         this.fileService = fileService;
         for (Exporter exporter : exporters) {

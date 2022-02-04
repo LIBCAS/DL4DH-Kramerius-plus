@@ -3,21 +3,13 @@ package cz.inqool.dl4dh.krameriusplus.domain.exception;
 import lombok.Getter;
 
 @Getter
-public class ExportException extends GeneralException implements CodedException {
-
-    private final ErrorCode errorCode;
+public class ExportException extends GeneralException {
 
     public ExportException(ErrorCode errorCode, Throwable throwable) {
-        super(throwable);
-        this.errorCode = errorCode;
+        super(throwable.getMessage(), errorCode, LogLevel.ERROR, throwable);
     }
 
-    public ExportException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
-    }
-
-    public enum ErrorCode implements ExceptionCodeEnum {
+    public enum ErrorCode implements LogCode {
         TEI_MERGE_ERROR,
     }
 }

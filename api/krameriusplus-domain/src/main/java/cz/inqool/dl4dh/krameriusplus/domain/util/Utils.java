@@ -1,9 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.domain.exception;
+package cz.inqool.dl4dh.krameriusplus.domain.util;
 
-import lombok.NonNull;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,12 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-/**
- * Methods from Utils class from UAS
- *
- * @author Norbert Bodnar
- */
-public class ExceptionUtils {
+public class Utils {
 
     public static <T extends RuntimeException> void gt(Integer x, Integer y, Supplier<T> supplier) {
         if (x <= y) {
@@ -155,39 +148,12 @@ public class ExceptionUtils {
     }
 
     /**
-     * Checks whether object is an instance of providen class. Throws an exception if not.
+     * Check whether the given object is a JDK dynamic proxy or a CGLIB proxy.
      *
-     * @param o        object to be checked
-     * @param clazz    class that the object should be instance of
-     * @param supplier provides an exception instance
-     * @param <O>      type of object to be checked
-     * @param <C>      type of class that the object should be instance of
-     * @param <T>      type of exception to be thrown
-     * @throws T if the object is not an instance of clazz
-     * @see Class#isInstance(Object)
+     * @see AopUtils#isAopProxy(Object)
      */
-    public static <O, C extends O, T extends RuntimeException> void isInstance(@Nullable O o, @NonNull Class<C> clazz, @NonNull Supplier<T> supplier) {
-        if (!clazz.isInstance(o)) {
-            throw supplier.get();
-        }
-    }
-
-    /**
-     * Cast object to providen type.
-     *
-     * @param o        object to be casted
-     * @param clazz    type that the object will be casted to
-     * @param supplier provides an exception instance
-     * @param <O>      type of object to be casted
-     * @param <C>      type of class that the object will be casted to
-     * @param <T>      type of exception to be thrown
-     * @return casted object
-     * @throws T if the object is not an instance of clazz
-     * @see Class#cast(Object)
-     */
-    public static <O, C extends O, T extends RuntimeException> C cast(@Nullable O o, @NonNull Class<C> clazz, @NonNull Supplier<T> supplier) {
-        isInstance(o, clazz, supplier);
-        return clazz.cast(o);
+    public static boolean isProxy(Object a) {
+        return (AopUtils.isAopProxy(a) && a instanceof Advised);
     }
 
     /**
@@ -211,12 +177,4 @@ public class ExceptionUtils {
         }
     }
 
-    /**
-     * Check whether the given object is a JDK dynamic proxy or a CGLIB proxy.
-     *
-     * @see AopUtils#isAopProxy(Object)
-     */
-    public static boolean isProxy(Object a) {
-        return (AopUtils.isAopProxy(a) && a instanceof Advised);
-    }
 }

@@ -2,29 +2,37 @@ package cz.inqool.dl4dh.krameriusplus.domain.exception;
 
 import lombok.Getter;
 
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.MissingObjectException.MissingObjectErrorCode.NO_ITEM;
+
 @Getter
-public class MissingObjectException extends GeneralException implements CodedException {
+public class MissingObjectException extends GeneralException {
 
-    private final ErrorCode errorCode;
+    private final Class<?> clazz;
 
-    public MissingObjectException(ErrorCode errorCode, Throwable throwable) {
-        super(throwable);
-        this.errorCode = errorCode;
+    private final String objectId;
+
+    public MissingObjectException(Class<?> clazz, String objectId) {
+        super(NO_ITEM, LogLevel.INFO);
+        this.clazz = clazz;
+        this.objectId = objectId;
     }
 
-    public MissingObjectException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+    @Override
+    public String toString() {
+        return objectId == null ?
+                "MissingObjectException{" +
+                        "clazz=" + clazz +
+                        ", args='" + getArgs() +
+                        "'}"
+                :
+                "MissingObjectException{" +
+                        "clazz=" + clazz +
+                        ", objectId='" + objectId +
+                        "'}";
     }
 
-    public MissingObjectException(ErrorCode errorCode, String message, Throwable throwable) {
-        super(message, throwable);
-        this.errorCode = errorCode;
+    public enum MissingObjectErrorCode implements LogCode {
+        NO_ITEM
     }
 
-    public enum ErrorCode implements ExceptionCodeEnum {
-        PAGE_NOT_FOUND,
-        PUBLICATION_NOT_FOUND,
-        DIGITAL_OBJECT_NOT_FOUND
-    }
 }

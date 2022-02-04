@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.mets.object;
 
-import cz.inqool.dl4dh.krameriusplus.domain.XMLUtils;
+import cz.inqool.dl4dh.krameriusplus.domain.util.XMLUtils;
 import info.lc.xmlns.premis_v2.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

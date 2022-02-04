@@ -3,21 +3,17 @@ package cz.inqool.dl4dh.krameriusplus.domain.exception;
 import lombok.Getter;
 
 @Getter
-public class FileException extends GeneralException implements CodedException {
-
-    private final ErrorCode errorCode;
+public class FileException extends GeneralException {
 
     public FileException(ErrorCode errorCode, Throwable throwable) {
-        super(throwable);
-        this.errorCode = errorCode;
+        super(throwable.getMessage(), errorCode, LogLevel.ERROR, throwable);
     }
 
     public FileException(ErrorCode errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+        super(message, errorCode, LogLevel.ERROR);
     }
 
-    public enum ErrorCode implements ExceptionCodeEnum {
+    public enum ErrorCode implements LogCode {
         FILE_NOT_INITIALIZED,
         FILE_ALREADY_OPENED,
         FAILED_TO_OPEN_FILE,

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors;
 
-import cz.inqool.dl4dh.krameriusplus.domain.XMLUtils;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.mets.event.MetsPremisEventElement;
+import cz.inqool.dl4dh.krameriusplus.domain.util.XMLUtils;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.DomParser;
 import info.lc.xmlns.premis_v2.EventComplexType;
 

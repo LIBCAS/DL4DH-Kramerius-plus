@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.domain.params;
 
 import cz.inqool.dl4dh.krameriusplus.domain.params.filter.Filter;
 import cz.inqool.dl4dh.krameriusplus.domain.params.filter.Sorting;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
@@ -18,13 +19,18 @@ import java.util.stream.Collectors;
 @Setter
 public class Params {
 
-    protected boolean disablePagination = false;
+    /**
+     * Paging configuration
+     * Not applying, if paging equals to null
+     */
+    @Setter(AccessLevel.NONE)
+    protected Paging paging = null;
 
-    protected int pageOffset = 0;
-
-    protected int pageSize = 20;
-
-    protected List<Sorting> sort = new ArrayList<>();
+    /**
+     * Sorting configuration
+     * Not applying, if paging equals to null
+     */
+    protected List<Sorting> sorting = new ArrayList<>();
 
     /**
      * List of filters that will be applied. The operator between them is by default AND
@@ -50,14 +56,20 @@ public class Params {
         return this;
     }
 
-    private Pageable toPageRequest() {
-        Sort sort = Sort.by(getSort()
-                .stream()
-                .map(Sorting::toOrder)
-                .collect(Collectors.toList()));
+    public void setPage(int page) {
+        if (paging == null) {
+            paging = new Paging();
+        }
 
-        return disablePagination ?
-                PageRequest.of(0, Integer.MAX_VALUE, sort) : PageRequest.of(pageOffset, pageSize, sort);
+        paging.setPage(page);
+    }
+
+    public void setPageSize(int pageSize) {
+        if (paging == null) {
+            paging = new Paging();
+        }
+
+        paging.setPageSize(pageSize);
     }
 
     public Query toQuery() {
@@ -74,8 +86,21 @@ public class Params {
             query.fields().exclude(field);
         }
 
+        query.fields().include("_class"); // always include _class field, so MongoDB can deserialize document to POJO
+
         query.with(toPageRequest());
 
         return query;
+    }
+
+    private Pageable toPageRequest() {
+        Sort sort = Sort.by(getSorting()
+                .stream()
+                .map(Sorting::toOrder)
+                .collect(Collectors.toList()));
+
+        return paging == null ?
+                PageRequest.of(0, Integer.MAX_VALUE, sort) :
+                PageRequest.of(paging.getPage(), paging.getPageSize(), sort);
     }
 }

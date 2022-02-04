@@ -27,7 +27,7 @@ public class WebClientConfig {
     private static final int MAX_MEMORY_SIZE = 16777216;
 
     @Bean(name = "krameriusWebClient")
-    public WebClient webClientKramerius(@Value("${system.kramerius.api:https://kramerius.mzk.cz}") String krameriusApi) {
+    public WebClient webClientKramerius(@Value("${system.kramerius.api}") String krameriusApi) {
         return WebClient
                 .builder()
                 .baseUrl(krameriusApi + "/search/api/v5.0/item")

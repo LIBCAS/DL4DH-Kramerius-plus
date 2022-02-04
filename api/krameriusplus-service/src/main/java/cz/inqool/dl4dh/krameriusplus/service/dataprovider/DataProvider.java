@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface DataProvider {
 
-    <T extends DigitalObject> T downloadDigitalObject(String objectId);
+    <T extends DigitalObject> T getDigitalObject(String objectId);
 
     <T extends DigitalObject> List<T> getDigitalObjectsForParent(Publication parent);
 }

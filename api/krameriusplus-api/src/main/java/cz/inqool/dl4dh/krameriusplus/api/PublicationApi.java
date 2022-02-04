@@ -26,10 +26,7 @@ public class PublicationApi {
     @Operation(summary = "Get an enriched publication by PID")
     @PostMapping("/{id}")
     public Publication getEnrichedPublication(@PathVariable("id") String id,
-                                              @RequestBody(required = false) Params params) {
-        if (params == null) {
-            params = new Params();
-        }
+                                              @RequestParam(required = false, defaultValue = "false") boolean includePages) {
 
         return publicationService.findWithPages(id, params);
     }

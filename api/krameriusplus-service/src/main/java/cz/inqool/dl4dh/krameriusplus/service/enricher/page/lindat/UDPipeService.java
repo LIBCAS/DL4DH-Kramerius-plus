@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.notNull;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExternalServiceException.ErrorCode.NAME_TAG_ERROR;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExternalServiceException.ErrorCode.UD_PIPE_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.SystemLogDetails.LogLevel.ERROR;
 
 /**
  * @author Norbert Bodnar
@@ -57,23 +59,27 @@ public class UDPipeService {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("data", body);
 
-        LindatServiceResponse response = webClient.post().uri(uriBuilder -> uriBuilder
-                .queryParam("tokenizer", "ranges")
-                .queryParam("tagger")
-                .queryParam("parser")
-                .build()).body(BodyInserters.fromMultipartData("data", body))
-                .acceptCharset(StandardCharsets.UTF_8)
-                .retrieve()
-                .bodyToMono(LindatServiceResponse.class)
-                .block();
+        try {
+            LindatServiceResponse response = webClient.post().uri(uriBuilder -> uriBuilder
+                    .queryParam("tokenizer", "ranges")
+                    .queryParam("tagger")
+                    .queryParam("parser")
+                    .build()).body(BodyInserters.fromMultipartData("data", body))
+                    .acceptCharset(StandardCharsets.UTF_8)
+                    .retrieve()
+                    .bodyToMono(LindatServiceResponse.class)
+                    .block();
 
-        notNull(response, () -> new ExternalServiceException(UD_PIPE_ERROR, "UDPipe did not return results"));
+            notNull(response, () -> new ExternalServiceException("UDPipe did not return results", UD_PIPE_ERROR, ERROR));
 
-        if (response.getResult() != null) {
-            response.setResultLines(response.getResult().split("\n"));
+            if (response.getResult() != null) {
+                response.setResultLines(response.getResult().split("\n"));
+            }
+
+            return response;
+        } catch (Exception e) {
+            throw new ExternalServiceException(NAME_TAG_ERROR, e);
         }
-
-        return response;
     }
 
     private void fillParadataFromResponse(UDPipeParadata udPipeParadata, LindatServiceResponse response) {

@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.cfg.exceptions.rest;
 
-import cz.inqool.dl4dh.krameriusplus.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.domain.exception.SchedulingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +36,7 @@ public class RestExceptionHandler {
         return defaultExceptionHandling(request, e, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({
-            EnrichingException.class
-    })
+    @ExceptionHandler
     public ResponseEntity<RestException> exception(HttpServletRequest request, Exception e) {
         return defaultExceptionHandling(request, e, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.metadata;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.ModsMetadata;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import cz.inqool.dl4dh.mods.ModsDefinition;
 import lombok.Getter;

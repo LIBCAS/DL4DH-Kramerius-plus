@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.isTrue;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExceptionUtils.notNull;
 import static cz.inqool.dl4dh.krameriusplus.domain.exception.ExternalServiceException.ErrorCode.NAME_TAG_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.SystemLogDetails.LogLevel.ERROR;
+import static cz.inqool.dl4dh.krameriusplus.domain.exception.SystemLogDetails.LogLevel.WARNING;
 
 /**
  * @author Norbert Bodnar
@@ -67,23 +69,27 @@ public class NameTagService {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("data", body);
 
-        LindatServiceResponse response =  webClient.post().uri(uriBuilder -> uriBuilder
-                .queryParam("output", "conll")
-                .queryParam("input", "vertical")
-                .build())
-                .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
-                .acceptCharset(StandardCharsets.UTF_8)
-                .retrieve()
-                .bodyToMono(LindatServiceResponse.class)
-                .block();
+        try {
+            LindatServiceResponse response = webClient.post().uri(uriBuilder -> uriBuilder
+                    .queryParam("output", "conll")
+                    .queryParam("input", "vertical")
+                    .build())
+                    .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
+                    .acceptCharset(StandardCharsets.UTF_8)
+                    .retrieve()
+                    .bodyToMono(LindatServiceResponse.class)
+                    .block();
 
-        notNull(response, () -> new ExternalServiceException(NAME_TAG_ERROR, "NameTag did not return results"));
+            notNull(response, () -> new ExternalServiceException("NameTag did not return results", NAME_TAG_ERROR, ERROR));
 
-        if (response.getResult() != null) {
-            response.setResultLines(response.getResult().split("\n"));
+            if (response.getResult() != null) {
+                response.setResultLines(response.getResult().split("\n"));
+            }
+
+            return response;
+        } catch (Exception e) {
+            throw new ExternalServiceException(NAME_TAG_ERROR, e);
         }
-
-        return response;
     }
 
     private NameTagMetadata processResponse(LindatServiceResponse response, List<Token> tokens) {
@@ -99,7 +105,7 @@ public class NameTagService {
             Token token = tokens.get(tokenCounter++);
 
             isTrue(token.getContent().equals(word),
-                    () -> new ExternalServiceException(NAME_TAG_ERROR, "Response word not equal to input word"));
+                    () -> new ExternalServiceException("Response word not equal to input word", NAME_TAG_ERROR, ERROR));
 
             if (!metadata.equals("O")) {
                 token.setNameTagMetadata(metadata);
@@ -150,8 +156,9 @@ public class NameTagService {
 
             namedEntityMap.put(type, namedEntity);
         } else {
-            isTrue(namedEntityMap.containsKey(type), () -> new ExternalServiceException(NAME_TAG_ERROR,
-                    "Named entity missing \"B\" label representing the start of a named entity type"));
+            isTrue(namedEntityMap.containsKey(type),
+                    () -> new ExternalServiceException("Named entity missing \"B\" label representing the start of a named entity type",
+                            NAME_TAG_ERROR, WARNING));
 
             NamedEntity namedEntity = namedEntityMap.get(type);
             namedEntity.getTokens().add(token);

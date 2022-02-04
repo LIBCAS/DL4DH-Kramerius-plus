@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.enricher.page.mets.metadataExtractors;
 
-import cz.inqool.dl4dh.krameriusplus.domain.XMLUtils;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.mets.MetsElement;
+import cz.inqool.dl4dh.krameriusplus.domain.util.XMLUtils;
 import cz.inqool.dl4dh.krameriusplus.service.enricher.page.DomParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

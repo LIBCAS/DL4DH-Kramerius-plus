@@ -1,11 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.domain.cascade;
 
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.internalpart.InternalPart;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.internalpart.InternalPartRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.internalpart.InternalPartStore;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.PageRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.PageStore;
 import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.PublicationRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.PublicationStore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -22,18 +22,18 @@ import java.util.Collection;
 public class CascadeCallback implements ReflectionUtils.FieldCallback {
 
     private final Object source;
-    private final PublicationRepository publicationRepository;
-    private final PageRepository pageRepository;
-    private final InternalPartRepository internalPartRepository;
+    private final PublicationStore publicationStore;
+    private final PageStore pageStore;
+    private final InternalPartStore internalPartStore;
 
     public CascadeCallback(Object source,
-                           PublicationRepository publicationRepository,
-                           PageRepository pageRepository,
-                           InternalPartRepository internalPartRepository) {
+                           PublicationStore publicationStore,
+                           PageStore pageStore,
+                           InternalPartStore internalPartStore) {
         this.source = source;
-        this.publicationRepository = publicationRepository;
-        this.pageRepository = pageRepository;
-        this.internalPartRepository = internalPartRepository;
+        this.publicationStore = publicationStore;
+        this.pageStore = pageStore;
+        this.internalPartStore = internalPartStore;
     }
 
     @Override
@@ -46,11 +46,11 @@ public class CascadeCallback implements ReflectionUtils.FieldCallback {
             if (isNotEmptyCollection(fieldValue)) {
                 Collection<?> collectionFieldValue = (Collection<?>) fieldValue;
                 if (valuesAreInstanceOf(collectionFieldValue, Publication.class)) {
-                    publicationRepository.saveAll((Collection<Publication>) collectionFieldValue);
+                    publicationStore.create((Collection<Publication>) collectionFieldValue);
                 } else if (valuesAreInstanceOf(collectionFieldValue, InternalPart.class)) {
-                    internalPartRepository.saveAll((Collection<InternalPart>) collectionFieldValue);
+                    internalPartStore.create((Collection<InternalPart>) collectionFieldValue);
                 } else if (valuesAreInstanceOf(collectionFieldValue, Page.class)) {
-                    pageRepository.saveAll((Collection<Page>) collectionFieldValue);
+                    pageStore.create((Collection<Page>) collectionFieldValue);
                 }
             }
         }

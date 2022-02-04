@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.domain.cascade;
 
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.internalpart.InternalPartRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.PageRepository;
-import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.PublicationRepository;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.internalpart.InternalPartStore;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.page.PageStore;
+import cz.inqool.dl4dh.krameriusplus.domain.entity.digitalobject.publication.PublicationStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
@@ -15,25 +15,25 @@ import org.springframework.util.ReflectionUtils;
 @Component
 public class CascadingMongoEventListener extends AbstractMongoEventListener<Object> {
 
-    private final PublicationRepository publicationRepository;
+    private final PublicationStore publicationStore;
 
-    private final PageRepository pageRepository;
+    private final PageStore pageStore;
 
-    private final InternalPartRepository internalPartRepository;
+    private final InternalPartStore internalPartStore;
 
     @Autowired
-    public CascadingMongoEventListener(PublicationRepository publicationRepository,
-                                       PageRepository pageRepository,
-                                       InternalPartRepository internalPartRepository) {
-        this.publicationRepository = publicationRepository;
-        this.pageRepository = pageRepository;
-        this.internalPartRepository = internalPartRepository;
+    public CascadingMongoEventListener(PublicationStore publicationStore,
+                                       PageStore pageStore,
+                                       InternalPartStore internalPartStore) {
+        this.publicationStore = publicationStore;
+        this.pageStore = pageStore;
+        this.internalPartStore = internalPartStore;
     }
 
     @Override
     public void onBeforeConvert(BeforeConvertEvent<Object> event) {
         Object source = event.getSource();
         ReflectionUtils.doWithFields(source.getClass(),
-                new CascadeCallback(source, publicationRepository, pageRepository, internalPartRepository));
+                new CascadeCallback(source, publicationStore, pageStore, internalPartStore));
     }
 }
