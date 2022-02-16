@@ -8,6 +8,6 @@ RUN chmod +x /run.sh && \
       openjdk11-jre openjdk11-jre-headless openssl fontconfig ttf-dejavu && \
     rm -rf /var/cache/apk/*
 
-COPY krameriusplus-api/target/krameriusplus-api-*.jar /usr/src/api.jar
+COPY krameriusplus-app/target/krameriusplus-app-*.jar /usr/src/api.jar
 
 ENTRYPOINT ["/run.sh"]

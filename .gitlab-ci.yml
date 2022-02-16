@@ -18,7 +18,7 @@ api-build:
     - "createDocker"
   artifacts:
     paths:
-      - api/krameriusplus-api/target/krameriusplus-api-*.jar
+      - api/krameriusplus-app/target/krameriusplus-app-*.jar
 
 api-deploy:
   stage: deploy
