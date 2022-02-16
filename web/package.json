@@ -29,7 +29,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -40,7 +40,7 @@
       "react-app/jest"
     ]
   },
-  "proxy": "http://localhost:8080/",
+  "proxy": "http://10.3.240.30:8080/",
   "browserslist": {
     "production": [
       ">0.2%",
