@@ -24,50 +24,11 @@ const useStyles = makeStyles(() => ({
 
 export const JSONParams = ({ setParams, params }: Props) => {
 	const classes = useStyles()
-	const {
-		disablePagination = false,
-		pageOffset = 0,
-		pageSize = 20,
-		sort = [],
-		includeFields = [],
-	} = params
+	const { includeFields = [], excludeFields = [] } = params
 
 	return (
 		<div className={classes.root}>
-			<Typography>Parametry</Typography>
-
-			<Grid container>
-				<CheckboxField
-					label="Zakázat stránkování"
-					name="disablePagination"
-					value={disablePagination}
-					onChange={v => setParams(p => ({ ...p, disablePagination: v }))}
-				/>
-			</Grid>
-
-			<Grid container spacing={2}>
-				<Grid item xs={6}>
-					<TextField
-						disabled={disablePagination}
-						label="Stránka"
-						name="pageOffset"
-						type="number"
-						value={pageOffset}
-						onChange={v => setParams(p => ({ ...p, pageOffset: Number(v) }))}
-					/>
-				</Grid>
-
-				<Grid item xs={6}>
-					<TextField
-						disabled={disablePagination}
-						label="Záznamy na stránku"
-						name="pageSize"
-						type="number"
-						value={pageSize}
-						onChange={v => setParams(p => ({ ...p, pageSize: Number(v) }))}
-					/>
-				</Grid>
-			</Grid>
+			<Typography>Parametry stránek</Typography>
 
 			<Grid container spacing={2}>
 				<Grid item xs={6}>
@@ -86,18 +47,19 @@ export const JSONParams = ({ setParams, params }: Props) => {
 						}
 					/>
 				</Grid>
+
 				<Grid item xs={6}>
-					<SelectField<Sort>
-						items={sortOptions}
-						label="Sort"
-						labelMapper={o => o.direction}
-						name="sort"
-						optionMapper={o => o.direction}
-						value={sort}
+					<SelectField<{ id: string; label: string }>
+						items={fieldOptions}
+						label="Nezahrnout pole"
+						multiple
+						name="excludeFields"
+						optionMapper={o => o.id}
+						value={excludeFields}
 						onChange={v =>
 							setParams(p => ({
 								...p,
-								sort: v as Sort,
+								excludeFields: v as string[],
 							}))
 						}
 					/>

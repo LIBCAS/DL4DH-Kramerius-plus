@@ -8,4 +8,5 @@ export interface Params {
 	sort?: Sort
 	filters?: Filter[]
 	includeFields?: string[]
+	excludeFields?: string[]
 }
