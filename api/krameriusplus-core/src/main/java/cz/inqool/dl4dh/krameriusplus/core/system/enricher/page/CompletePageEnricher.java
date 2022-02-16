@@ -32,7 +32,7 @@ public class CompletePageEnricher {
         task.setTotalPages(total);
 
         for (Page page : pages) {
-            task.setCurrentPage(done);
+            task.setCurrentPage(done++);
 
             try {
                 enrichPage(page);
@@ -41,7 +41,6 @@ public class CompletePageEnricher {
                 errorCount++;
                 log.warn("Error enriching page with ID={}, cause: {}", page.getId(), e.getMessage());
             }
-            task.setPercentDone(calculatePercentDone(total, done++));
         }
 
         if (errorCount == total) {
@@ -51,11 +50,5 @@ public class CompletePageEnricher {
 
     public void enrichPage(Page page) {
         pageEnricher.enrichPage(page);
-    }
-
-    //todo: this has nothing to do here, but the whole enrichmentTask progress setting kinda sucks. We need a better
-    //      system to keep track of the progress (maybe JMS ?)
-    private double calculatePercentDone(int total, int done) {
-        return Math.round((done / (double) total) * 10000) / (double) 100;
     }
 }

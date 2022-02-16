@@ -30,7 +30,7 @@ public abstract class DomainStore<T extends DomainObject> implements Store<T> {
     /**
      * MongoDB driver
      */
-    private final MongoOperations mongoOperations;
+    protected final MongoOperations mongoOperations;
 
     private final EntityInformation<T, String> entityInformation;
 

@@ -27,10 +27,11 @@ public class WebClientConfig {
     private static final int MAX_MEMORY_SIZE = 16777216;
 
     @Bean(name = "krameriusWebClient")
-    public WebClient webClientKramerius(@Value("${system.kramerius.api}") String krameriusApi) {
+    public WebClient webClientKramerius(@Value("${system.kramerius}") KrameriusInstance krameriusInstance) {
+
         return WebClient
                 .builder()
-                .baseUrl(krameriusApi + "/search/api/v5.0/item")
+                .baseUrl(krameriusInstance.getUrl() + "/search/api/v5.0/item")
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(MAX_MEMORY_SIZE))

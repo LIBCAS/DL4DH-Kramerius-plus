@@ -43,6 +43,8 @@ public abstract class Publication extends DigitalObject {
 
     private NameTagParadata nameTagParadata;
 
+    private boolean hasPages = false;
+
     @Transient
     @JsonIgnore
     private Path ndkDir;

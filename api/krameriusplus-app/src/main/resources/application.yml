@@ -10,7 +10,7 @@ spring:
 
 logging:
   level:
-    cz.inqool.dl4dh.krameriusplus.service.enricher.UDPipeService: OFF
+    cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.lindat.UDPipeService: OFF
     cz.inqool.dl4dh.krameriusplus.service.enricher.NameTagService: OFF
 #    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
   interceptor:
@@ -20,11 +20,7 @@ springdoc:
   swagger-ui.path: /swagger
 
 system:
-  kramerius:
-  #  api: https://kramerius5.nkp.cz # NK
-    api: https://kramerius.mzk.cz  # MZK
-#    api: https://kramerius.lib.cas.cz # AV
-  #  api: https://ndk.cz # NDK
+  kramerius: MZK
   enrichment:
   #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
   #  and ALTO processing does not make manual corrections (while OCR processing does)

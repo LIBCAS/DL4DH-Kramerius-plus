@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.cfg.exceptions;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.CodedException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.GeneralException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.Getter;
 import org.springframework.lang.NonNull;
@@ -15,7 +15,7 @@ import java.time.Instant;
 public abstract class ExceptionDTO {
 
     protected String timestamp;
-    protected Enum<? extends CodedException.ExceptionCodeEnum> code;
+    protected Enum<? extends SystemLogDetails.LogCode> code;
     protected Class<?> exception;
     protected String message;
     protected String cause;
@@ -27,8 +27,8 @@ public abstract class ExceptionDTO {
 
     protected ExceptionDTO(@NonNull Throwable exception, String message) {
         this.timestamp = Instant.now().toString();
-        if (exception instanceof CodedException) {
-            this.code = ((CodedException) exception).getErrorCode();
+        if (exception instanceof SystemLogDetails) {
+            this.code = ((SystemLogDetails) exception).getErrorCode();
         }
         this.message = message;
         this.exception = exception.getClass();

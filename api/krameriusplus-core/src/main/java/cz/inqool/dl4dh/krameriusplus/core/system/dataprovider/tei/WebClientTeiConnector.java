@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.Resource;
@@ -74,6 +75,8 @@ public class WebClientTeiConnector implements TeiConnector {
             throw new EnrichingException(EnrichingException.ErrorCode.SERIALIZING_ERROR, e);
         } catch (WebClientResponseException e) {
             throw new EnrichingException(EnrichingException.ErrorCode.TEI_ERROR, e);
+        } catch (WebClientRequestException e) {
+            throw new EnrichingException("TEI Converter not found", EnrichingException.ErrorCode.TEI_ERROR, e);
         }
     }
 

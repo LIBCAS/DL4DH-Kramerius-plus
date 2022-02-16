@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.scheduling.EnrichmentState.CREATED;
-import static cz.inqool.dl4dh.krameriusplus.core.system.scheduling.EnrichmentState.SUCCESSFUL;
 
 /**
  * @author Norbert Bodnar
@@ -52,13 +51,8 @@ public class EnrichmentTask extends DomainObject {
         private EnrichmentState state;
         private String errorMessage;
         private List<EnrichmentSubTask> subtasks = new ArrayList<>();
-        @JsonIgnore
         private int totalPages = 0;
-        @JsonIgnore
         private int currentPage = 0;
-        @Transient
-        @JsonIgnore
-        public double percentDone;
 
         public EnrichmentSubTask(String publicationId) {
             this.publicationId = publicationId;
@@ -84,14 +78,37 @@ public class EnrichmentTask extends DomainObject {
             return currentPage + "/" + totalPages;
         }
 
+        public double getPercentDone() {
+            double pagesDone = calculatePagesDone();
+
+            if (subtasks.isEmpty()) {
+                return pagesDone;
+            } else {
+                double oneTaskWeight = totalPages == 0 ? 1.0 / subtasks.size() : 1.0 / (subtasks.size() + 1);
+                double done = totalPages == 0 ? 0 : pagesDone * oneTaskWeight;
+
+                for (var subtask : subtasks) {
+                    done += (subtask.getPercentDone() * oneTaskWeight);
+                }
+
+                return Math.round(done * 100) / 100.0;
+            }
+        }
+
+        private double calculatePagesDone() {
+            if (totalPages == 0) {
+                return 0;
+            }
+
+            if (currentPage == totalPages) {
+                return 1;
+            }
+
+            return Math.round((currentPage / (double) totalPages) * 100000) / (double) 100000;
+        }
+
         public String getDone() {
-            if (percentDone == 0.0) {
-                return null;
-            }
-            if (state == SUCCESSFUL) {
-                return "Done";
-            }
-            return percentDone + "%";
+            return (getPercentDone() * 100) + "%";
         }
     }
 
@@ -105,6 +122,11 @@ public class EnrichmentTask extends DomainObject {
 
     public String getDone() {
         return subtask.getDone();
+    }
+
+    @JsonIgnore
+    public double getPercentDone() {
+        return subtask.getPercentDone();
     }
 
     public void setErrorMessage(String message) {

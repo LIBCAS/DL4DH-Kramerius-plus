@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.scheduling.EnrichmentState.CANCELED;
-import static cz.inqool.dl4dh.krameriusplus.core.system.scheduling.EnrichmentState.FAILED;
+import static cz.inqool.dl4dh.krameriusplus.core.system.scheduling.EnrichmentState.*;
 
 /**
  * @author Norbert Bodnar
@@ -59,26 +58,26 @@ public class PublicationService {
     @Async
     public Future<String> enrichPublication(String id, EnrichmentTask task) {
         try {
+            task.setState(DOWNLOADING);
             DigitalObject digitalObject = dataProvider.getDigitalObject(id);
 
             if (!(digitalObject instanceof Publication)) {
                 throw new IllegalArgumentException("Provided ID is not an ID of a Digital Object of type Publication");
             }
-
             enricher.enrich((Publication) digitalObject, task.getSubtask());
-        } catch (Exception e) {
-            if (e.getCause() instanceof InterruptedException) {
+        } catch (Exception exception) {
+            if (exception.getCause() instanceof InterruptedException) {
                 task.setErrorMessage("Interrupted");
                 task.setState(CANCELED);
             } else {
-                task.setErrorMessage(e.getMessage());
+                task.setErrorMessage(exception.getMessage());
                 task.setState(FAILED);
             }
-            log.error("Task wid PID=" + id + " failed", e);
-        } finally {
-            enrichmentTaskStore.update(task);
-            SchedulerService.removeTask(id);
+            log.error("Task wid PID=" + id + " failed", exception);
         }
+
+        enrichmentTaskStore.update(task);
+        SchedulerService.removeTask(id);
 
         return new AsyncResult<>("done");
     }

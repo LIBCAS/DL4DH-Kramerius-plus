@@ -43,7 +43,7 @@ public class PublicationApi {
     public List<Publication> list(@RequestBody(required = false) Params params) {
         if (params == null) {
             params = new Params();
-            params.includeFields("title", "date", "issueNumber", "index", "partNumber", "_class", "volumeYear");
+            params.includeFields("title", "date", "issueNumber", "index", "partNumber", "volumeYear");
         }
 
         return publicationService.list(params);

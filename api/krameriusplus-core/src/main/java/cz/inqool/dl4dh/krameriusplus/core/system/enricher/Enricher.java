@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.scheduling.EnrichmentState.SUCCESSFUL;
+import static cz.inqool.dl4dh.krameriusplus.core.system.scheduling.EnrichmentState.*;
 
 /**
  * @author Norbert Bodnar
@@ -43,7 +43,8 @@ public class Enricher {
 
     public void enrich(Publication publication, EnrichmentTask.EnrichmentSubTask task) {
         assemblePublication(publication, task);
-        enrichOne(publication, task);
+
+        boolean isSuccessful = enrichOne(publication, task);
 
         for (DigitalObject child : publication.getChildren()) {
             if (child instanceof Publication) {
@@ -51,7 +52,9 @@ public class Enricher {
             }
         }
 
-        finishTask(task);
+        if (isSuccessful) {
+            finishTask(task);
+        }
     }
 
     private EnrichmentTask.EnrichmentSubTask findSubtaskForPublication(EnrichmentTask.EnrichmentSubTask task, String publicationId) {
@@ -62,18 +65,35 @@ public class Enricher {
                 .orElseThrow(() -> new IllegalStateException("Missing subtask for publication with id " + publicationId));
     }
 
-    private void enrichOne(Publication publication, EnrichmentTask.EnrichmentSubTask task) {
-        publicationEnricher.enrich(publication);
-        completePageEnricher.enrich(publication.getPages(), task);
+    private boolean enrichOne(Publication publication, EnrichmentTask.EnrichmentSubTask task) {
+        try {
+            task.setState(ENRICHING);
+            publicationEnricher.enrich(publication);
+            completePageEnricher.enrich(publication.getPages(), task);
 
-        fillParadata(publication);
+            fillParadata(publication);
 
-        publicationStore.save(publication);
-        pageStore.save(publication.getPages());
+            publicationStore.save(publication);
+            pageStore.save(publication.getPages());
+
+            return true;
+        } catch (Exception exception) {
+            if (exception.getCause() instanceof InterruptedException) {
+                task.setErrorMessage("Interrupted");
+                task.setState(CANCELED);
+            } else {
+                task.setErrorMessage(exception.getMessage());
+                task.setState(FAILED);
+            }
+            log.error("Subtask wid PID=" + publication.getId() + " failed", exception);
+
+            return false;
+        }
     }
 
     private void assemblePublication(Publication publication, EnrichmentTask.EnrichmentSubTask task) {
         // get children
+        task.setState(DOWNLOADING);
         List<DigitalObject> childObjects = dataProvider.getDigitalObjectsForParent(publication);
 
         // separate into pages and digitalObjects
