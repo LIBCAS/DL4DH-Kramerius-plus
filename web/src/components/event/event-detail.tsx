@@ -1,7 +1,10 @@
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
-import { cancelTask } from '../../modules/enrichment/enrichment-api'
+
+import { Accordion } from 'components/accordion/accordion'
+
+import { cancelTask } from 'modules/enrichment/enrichment-api'
 import { EventDetailItem } from './event-detail-item'
 
 export type EventProps = {
@@ -14,22 +17,35 @@ export type EventProps = {
 	errorMessage?: string
 	took?: string
 	done?: string
+	subtasks?: EventProps[]
+}
+
+export type SingleEvent = {
+	id: string
+	subtask: EventProps
+	done?: string
 }
 
 export const EventDetail = ({
-	publicationTitle,
-	publicationId,
-	processing,
 	created,
-	started,
 	state,
+	publicationId,
+	publicationTitle,
+	started,
 	errorMessage,
 	took,
+	processing,
+	subtasks = [],
 	done,
-}: EventProps) => {
+	disableElevation = false,
+}: EventProps & { disableElevation?: boolean }) => {
 	const disabledCancelButton = state !== 'ENRICHING'
+
+	const hasSubtasks = subtasks.length > 0
+
 	return (
 		<Paper
+			elevation={disableElevation ? 0 : 1}
 			style={{
 				width: '100%',
 				padding: '10px 20px',
@@ -52,6 +68,19 @@ export const EventDetail = ({
 				<EventDetailItem title="Stav" value={done} />
 				<EventDetailItem title="Chyba" value={errorMessage} />
 				<EventDetailItem title="Trvanie" value={took} />
+
+				{hasSubtasks && (
+					<Accordion label="Podúkoly">
+						{subtasks.map(subtask => (
+							<EventDetail
+								{...subtask}
+								key={subtask.publicationId}
+								disableElevation
+							/>
+						))}
+					</Accordion>
+				)}
+
 				<Grid>
 					<Button
 						color="primary"

@@ -3,11 +3,9 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { Params, Sort } from '../../models'
-import { CheckboxField } from '../checkbox-field/checkbox-field'
-import { TextField } from '../text-field/text-field'
+import { Params } from '../../models'
 import { SelectField } from '../select-field/select-field'
-import { fieldOptions, sortOptions } from './publication-items'
+import { fieldOptions } from './publication-items'
 
 type Props = {
 	params: Params
@@ -20,6 +18,9 @@ const useStyles = makeStyles(() => ({
 		marginBottom: 10,
 		width: 400,
 	},
+	parameters: {
+		marginBottom: '1rem',
+	},
 }))
 
 export const JSONParams = ({ setParams, params }: Props) => {
@@ -28,11 +29,12 @@ export const JSONParams = ({ setParams, params }: Props) => {
 
 	return (
 		<div className={classes.root}>
-			<Typography>Parametry stránek</Typography>
+			<Typography className={classes.parameters}>Parametry stránek</Typography>
 
 			<Grid container spacing={2}>
-				<Grid item xs={6}>
+				<Grid item xs={12}>
 					<SelectField<{ id: string; label: string }>
+						disabled={excludeFields.length > 0}
 						items={fieldOptions}
 						label="Zahrnout pole"
 						multiple
@@ -48,8 +50,9 @@ export const JSONParams = ({ setParams, params }: Props) => {
 					/>
 				</Grid>
 
-				<Grid item xs={6}>
+				<Grid item xs={12}>
 					<SelectField<{ id: string; label: string }>
+						disabled={includeFields.length > 0}
 						items={fieldOptions}
 						label="Nezahrnout pole"
 						multiple

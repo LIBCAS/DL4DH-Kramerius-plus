@@ -7,7 +7,7 @@ import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { EventProps, EventDetail } from '../../components/event/event-detail'
+import { SingleEvent, EventDetail } from '../../components/event/event-detail'
 import { useInterval } from '../../hooks/use-interval'
 import { getRunningTasks, getFinishedTasks } from './enrichment-api'
 
@@ -90,13 +90,17 @@ const TabPanel = (props: TabPanelProps) => {
 }
 
 const RunningEvents = () => {
-	const [runningEvents, setRunningEvents] = useState<EventProps[]>([])
+	const [runningEvents, setRunningEvents] = useState<SingleEvent[]>([])
 
-	useInterval(async () => {
-		const events = await getRunningTasks()
+	useInterval(
+		async () => {
+			const events = await getRunningTasks()
 
-		setRunningEvents(events)
-	}, 1000)
+			setRunningEvents(events)
+		},
+		2000,
+		true,
+	)
 
 	if (runningEvents.length === 0) {
 		return <p>Žádné běžící procesy.</p>
@@ -104,21 +108,25 @@ const RunningEvents = () => {
 
 	return (
 		<Grid container>
-			{runningEvents.map((re, i) => (
-				<EventDetail key={`${re.publicationTitle}-${i}`} {...re} />
+			{runningEvents.map(({ id, subtask }, i) => (
+				<EventDetail key={`${id}-${i}`} {...subtask} />
 			))}
 		</Grid>
 	)
 }
 
 const FinishedEvents = () => {
-	const [finishedEvents, setFinishedEvents] = useState<EventProps[]>([])
+	const [finishedEvents, setFinishedEvents] = useState<SingleEvent[]>([])
 
-	useInterval(async () => {
-		const events = await getFinishedTasks()
+	useInterval(
+		async () => {
+			const events = await getFinishedTasks()
 
-		setFinishedEvents(events)
-	}, 1000)
+			setFinishedEvents(events)
+		},
+		2000,
+		true,
+	)
 
 	if (finishedEvents.length === 0) {
 		return <p>Žádné dokončené procesy.</p>
@@ -126,8 +134,8 @@ const FinishedEvents = () => {
 
 	return (
 		<Grid container>
-			{finishedEvents.map((re, i) => (
-				<EventDetail key={`${re.publicationTitle}-${i}`} {...re} />
+			{finishedEvents.map(({ id, subtask }, i) => (
+				<EventDetail key={`${id}-${i}`} {...subtask} />
 			))}
 		</Grid>
 	)
