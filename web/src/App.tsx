@@ -3,7 +3,7 @@ import DateFnsUtils from '@date-io/date-fns'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
-import { Navbar } from './components/NavBar'
+import { Navbar } from './components/navbar/navbar'
 import { Export } from './modules/export/export'
 import { Enrichment } from './modules/enrichment/enrichment'
 import { DialogProvider } from './components/dialog/dialog-context-provider'

@@ -3,15 +3,12 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { Sort, TeiParams } from '../../models'
-import { CheckboxField } from '../checkbox-field/checkbox-field'
-import { TextField } from '../text-field/text-field'
+import { TeiParams } from '../../models'
 import { SelectField } from '../select-field/select-field'
 import { AltoParam, PipeParam, TagParam } from '../../models/tei-params'
 import {
 	altoParamsOptions,
 	nameTagParamsOptions,
-	sortOptions,
 	udPipeParamsOptions,
 } from './publication-items'
 
@@ -26,6 +23,9 @@ const useStyles = makeStyles(() => ({
 		marginBottom: 10,
 		width: 400,
 	},
+	parameters: {
+		marginBottom: '1rem',
+	},
 }))
 
 export const TEIParams = ({ setParams, params }: Props) => {
@@ -34,10 +34,10 @@ export const TEIParams = ({ setParams, params }: Props) => {
 
 	return (
 		<div className={classes.root}>
-			<Typography>Parametry stránek</Typography>
+			<Typography className={classes.parameters}>Parametry stránek</Typography>
 
 			<Grid container spacing={2}>
-				<Grid item xs={6}>
+				<Grid item xs={12}>
 					<SelectField<AltoParam>
 						items={altoParamsOptions}
 						label="altoParams"
@@ -54,10 +54,8 @@ export const TEIParams = ({ setParams, params }: Props) => {
 						}
 					/>
 				</Grid>
-			</Grid>
 
-			<Grid container spacing={2}>
-				<Grid item xs={6}>
+				<Grid item xs={12}>
 					<SelectField<TagParam>
 						items={nameTagParamsOptions}
 						label="nameTagParams"
@@ -74,10 +72,8 @@ export const TEIParams = ({ setParams, params }: Props) => {
 						}
 					/>
 				</Grid>
-			</Grid>
 
-			<Grid container spacing={2}>
-				<Grid item xs={6}>
+				<Grid item xs={12}>
 					<SelectField<PipeParam>
 						items={udPipeParamsOptions}
 						label="udPipeParams"

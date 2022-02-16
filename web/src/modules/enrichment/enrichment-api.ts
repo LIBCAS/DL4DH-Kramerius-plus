@@ -1,4 +1,4 @@
-import { EventProps } from 'components/event/event-detail'
+import { SingleEvent } from 'components/event/event-detail'
 import { ApiError } from 'models'
 import fetch from 'utils/fetch'
 
@@ -28,13 +28,13 @@ export async function enrich(publications: string[], override?: boolean) {
 	}
 }
 
-export async function getRunningTasks(): Promise<EventProps[]> {
+export async function getRunningTasks(): Promise<SingleEvent[]> {
 	try {
 		const response = await fetch('/api/scheduler/tasks/queue', {
 			method: 'GET',
 		})
 
-		const json: EventProps[] = await response.json()
+		const json: SingleEvent[] = await response.json()
 
 		return json
 	} catch (e) {
@@ -42,13 +42,13 @@ export async function getRunningTasks(): Promise<EventProps[]> {
 	}
 }
 
-export async function getFinishedTasks(): Promise<EventProps[]> {
+export async function getFinishedTasks(): Promise<SingleEvent[]> {
 	try {
 		const response = await fetch('/api/scheduler/tasks/finished', {
 			method: 'GET',
 		})
 
-		const json: EventProps[] = await response.json()
+		const json: SingleEvent[] = await response.json()
 
 		return json
 	} catch (e) {
