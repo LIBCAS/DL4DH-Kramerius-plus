@@ -10,6 +10,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,11 +52,10 @@ public class ExporterService {
     }
 
     @Transactional
-    public Export export(String publicationId, Params params, ExportFormat format) {
+    @Async
+    public void export(String publicationId, Params params, ExportFormat format) {
         Export export = exporters.get(format).export(publicationId, params);
         exportStore.create(export);
-
-        return export;
     }
 
     @Scheduled(cron = CRON_EVERY_DAY_AT_MIDNIGHT)

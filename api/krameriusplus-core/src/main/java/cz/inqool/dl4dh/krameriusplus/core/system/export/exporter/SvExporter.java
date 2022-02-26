@@ -38,13 +38,13 @@ public abstract class SvExporter extends AbstractExporter {
 
         CSVFormat baseCsvFormat = format.equals(ExportFormat.TSV) ? CSVFormat.TDF : CSVFormat.DEFAULT;
         String filesExtension = format.equals(ExportFormat.TSV) ? ".tsv" : ".csv";
-        try {
-            // Create zip
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ZipOutputStream zip = new ZipOutputStream(bout);
+
+        // Create zip
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream();
+             ZipOutputStream zip = new ZipOutputStream(bout)) {
 
             // Add metadata
-            zip.putNextEntry(new ZipEntry("metadata"+filesExtension));
+            zip.putNextEntry(new ZipEntry("metadata" + filesExtension));
             zip.write(generateCSVMetadata(publication, baseCsvFormat).getBytes());
             zip.closeEntry();
 
@@ -53,29 +53,32 @@ public abstract class SvExporter extends AbstractExporter {
             CSVFormat pagesCsvFormat = CSVFormat.Builder.create(baseCsvFormat).setHeader("file", "publication_id", "id", "order", "title").build();
             CSVPrinter pagesPrinter = new CSVPrinter(pagesBuffer, pagesCsvFormat);
 
-                int pageIndex = 1;
-                for (Page page : publication.getPages()) {
-                    String pageFileName = "page_"+publicationId.replace("uuid:", "")+"_"+pageIndex+"_"+page.getId().replace("uuid:", "")+filesExtension;
-                    pagesPrinter.printRecord(pageFileName, publicationId, page.getId(), pageIndex++, page.getTitle());
+            int pageIndex = 1;
+            for (Page page : publication.getPages()) {
+                String pageFileName = "page_" + publicationId.replace("uuid:", "") + "_" + pageIndex + "_" + page.getId().replace("uuid:", "") + filesExtension;
+                pagesPrinter.printRecord(pageFileName, publicationId, page.getId(), pageIndex++, page.getTitle());
 
-                    // Add page content
-                    zip.putNextEntry(new ZipEntry(pageFileName));
-                    zip.write(generateCSVPage(page, baseCsvFormat).getBytes());
-                    zip.closeEntry();
-                }
+                // Add page content
+                zip.putNextEntry(new ZipEntry(pageFileName));
+                zip.write(generateCSVPage(page, baseCsvFormat).getBytes());
+                zip.closeEntry();
+            }
 
 
             // Add pages list
-            zip.putNextEntry(new ZipEntry("pages"+filesExtension));
+            zip.putNextEntry(new ZipEntry("pages" + filesExtension));
             zip.write(pagesBuffer.toString().getBytes());
             zip.closeEntry();
 
             zip.close();
             byte[] output = bout.toByteArray();
-            FileRef file = fileService.create(new ByteArrayInputStream(output), output.length,
-                    getFormat().getFileName(publicationId), "application/zip");
 
-            return createExport(publication, file);
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(output)) {
+                FileRef file = fileService.create(bis, output.length,
+                        getFormat().getFileName(publicationId), "application/zip");
+
+                return createExport(publication, file);
+            }
         } catch (IOException e) {
             throw new IllegalStateException("Could not write publication to string.");
         }
@@ -113,14 +116,14 @@ public abstract class SvExporter extends AbstractExporter {
             // Mods identifiers
             int identifierIndex = 0;
             for (ModsMetadata.Identifier identifier : publication.getModsMetadata().getIdentifiers()) {
-                String key = "mods.identifier["+identifierIndex+"]";
+                String key = "mods.identifier[" + identifierIndex + "]";
 
-                columns.add(key+".type");
-                row.put(key+".type", identifier.getType());
-                columns.add(key+".invalid");
-                row.put(key+".invalid", identifier.getInvalid());
-                columns.add(key+".value");
-                row.put(key+".value", identifier.getValue());
+                columns.add(key + ".type");
+                row.put(key + ".type", identifier.getType());
+                columns.add(key + ".invalid");
+                row.put(key + ".invalid", identifier.getInvalid());
+                columns.add(key + ".value");
+                row.put(key + ".value", identifier.getValue());
                 identifierIndex += 1;
             }
 
@@ -131,27 +134,27 @@ public abstract class SvExporter extends AbstractExporter {
 
                 int placeIndex = 0;
                 for (ModsMetadata.OriginInfo.Place place : publication.getModsMetadata().getOriginInfo().getPlaces()) {
-                    String key = "mods.originInfo.place["+placeIndex+"]";
+                    String key = "mods.originInfo.place[" + placeIndex + "]";
 
-                    columns.add(key+".type");
-                    row.put(key+".type", place.getType());
-                    columns.add(key+".authority");
-                    row.put(key+".authority", place.getAuthority());
-                    columns.add(key+".type");
-                    row.put(key+".type", place.getType());
+                    columns.add(key + ".type");
+                    row.put(key + ".type", place.getType());
+                    columns.add(key + ".authority");
+                    row.put(key + ".authority", place.getAuthority());
+                    columns.add(key + ".type");
+                    row.put(key + ".type", place.getType());
                     placeIndex += 1;
                 }
 
                 int dateIssuedIndex = 0;
                 for (ModsMetadata.OriginInfo.DateIssued dateIssued : publication.getModsMetadata().getOriginInfo().getDateIssued()) {
-                    String key = "mods.originInfo.dateIssued["+dateIssuedIndex+"]";
+                    String key = "mods.originInfo.dateIssued[" + dateIssuedIndex + "]";
 
-                    columns.add(key+".encoding");
-                    row.put(key+".encoding", dateIssued.getEncoding());
-                    columns.add(key+".point");
-                    row.put(key+".point", dateIssued.getPoint());
-                    columns.add(key+".value");
-                    row.put(key+".value", dateIssued.getValue());
+                    columns.add(key + ".encoding");
+                    row.put(key + ".encoding", dateIssued.getEncoding());
+                    columns.add(key + ".point");
+                    row.put(key + ".point", dateIssued.getPoint());
+                    columns.add(key + ".value");
+                    row.put(key + ".value", dateIssued.getValue());
                     dateIssuedIndex += 1;
                 }
             }
@@ -169,7 +172,7 @@ public abstract class SvExporter extends AbstractExporter {
         for (Map<String, Object> r : rows) {
             printer.printRecord(
                     columns.stream().map(c -> r.getOrDefault(c, "")
-            ).collect(Collectors.toList()));
+                    ).collect(Collectors.toList()));
         }
         return buffer.toString();
     }
@@ -190,8 +193,8 @@ public abstract class SvExporter extends AbstractExporter {
                 }
             }
         });
-        featsColumns.forEach(f -> header.add("udpipe.feats."+f));
-        miscColumns.forEach(m -> header.add("udpipe.misc."+m));
+        featsColumns.forEach(f -> header.add("udpipe.feats." + f));
+        miscColumns.forEach(m -> header.add("udpipe.misc." + m));
 
         StringBuilder buffer = new StringBuilder();
         CSVPrinter printer = new CSVPrinter(buffer, baseCsvFormat);

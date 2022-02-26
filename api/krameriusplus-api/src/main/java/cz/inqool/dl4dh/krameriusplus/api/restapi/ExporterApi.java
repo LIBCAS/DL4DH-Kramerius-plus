@@ -32,41 +32,41 @@ public class ExporterApi {
     }
 
     @PostMapping("/{id}/json")
-    public Export exportJson(@PathVariable("id") String publicationId,
+    public void exportJson(@PathVariable("id") String publicationId,
                              @RequestBody(required = false) Params params) {
         if (params == null) {
             params = new Params();
         }
 
-        return exporterService.export(publicationId, params, ExportFormat.JSON);
+        exporterService.export(publicationId, params, ExportFormat.JSON);
     }
 
     @PostMapping("/{id}/tei")
-    public Export exportTei(@PathVariable("id") String publicationId,
+    public void exportTei(@PathVariable("id") String publicationId,
                             @RequestBody(required = false) TeiParams params) {
         if (params == null) {
             params = new TeiParams();
         }
 
-        return exporterService.export(publicationId, params, ExportFormat.TEI);
+        exporterService.export(publicationId, params, ExportFormat.TEI);
     }
 
     @PostMapping("/{id}/csv")
-    public Export exportCsv(@PathVariable("id") String publicationId,
+    public void exportCsv(@PathVariable("id") String publicationId,
                             @RequestBody(required = false) Params params) {
         if (params == null) {
             params = new Params();
         }
-        return exporterService.export(publicationId, params, ExportFormat.CSV);
+        exporterService.export(publicationId, params, ExportFormat.CSV);
     }
 
     @PostMapping("/{id}/tsv")
-    public Export exportTsv(@PathVariable("id") String publicationId,
+    public void exportTsv(@PathVariable("id") String publicationId,
                             @RequestBody(required = false) Params params) {
         if (params == null) {
             params = new Params();
         }
-        return exporterService.export(publicationId, params, ExportFormat.TSV);
+        exporterService.export(publicationId, params, ExportFormat.TSV);
     }
 
     @GetMapping("/list")

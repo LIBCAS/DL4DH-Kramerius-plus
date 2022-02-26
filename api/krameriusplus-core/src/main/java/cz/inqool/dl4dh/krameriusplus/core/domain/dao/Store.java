@@ -84,7 +84,7 @@ public interface Store<T extends DomainObject> {
     Collection<T> list(@NonNull List<String> ids);
 
     /**
-     * Returns all stored instances.
+     * Returns all stored instances. This operation might be very memory consuming.
      *
      * @return
      */
