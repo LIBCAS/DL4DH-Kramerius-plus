@@ -1,5 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.config;
 
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
 import org.springframework.http.codec.xml.Jaxb2XmlEncoder;
 import org.springframework.util.MimeTypeUtils;
@@ -16,7 +20,9 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
+import javax.net.ssl.SSLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,20 +32,31 @@ public class WebClientConfig {
 
     private static final int MAX_MEMORY_SIZE = 16777216;
 
-    @Bean(name = "krameriusWebClient")
-    public WebClient webClientKramerius(@Value("${system.kramerius}") KrameriusInstance krameriusInstance) {
+    private WebClient getWebClient(String url) throws SSLException {
+        SslContext sslContext = SslContextBuilder
+                .forClient()
+                .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                .build();
 
-        return WebClient
-                .builder()
-                .baseUrl(krameriusInstance.getUrl() + "/search/api/v5.0/item")
+        HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
+
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient)) // TODO: UNSAFE!! enable ssl
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(MAX_MEMORY_SIZE))
+                .baseUrl(url)
                 .exchangeStrategies(ExchangeStrategies.builder().codecs((configurer) -> {
                     configurer.defaultCodecs().jaxb2Encoder(new Jaxb2XmlEncoder());
-                    configurer.defaultCodecs().jaxb2Decoder(new Jaxb2XmlDecoder(MimeTypeUtils.TEXT_XML, MimeTypeUtils.TEXT_PLAIN));
-                }).build())
+                    configurer.defaultCodecs().jaxb2Decoder(new Jaxb2XmlDecoder(MimeTypeUtils.TEXT_XML, MimeTypeUtils.TEXT_PLAIN)); })
+                        .build())
                 .build();
+    }
+
+    @Bean(name = "krameriusWebClient")
+    public WebClient webClientKramerius(@Value("${system.kramerius}") KrameriusInstance krameriusInstance) throws SSLException {
+
+        return getWebClient(krameriusInstance.getUrl() + "/search/api/v5.0/item");
     }
 
     private ExchangeFilterFunction logRequest() {
@@ -53,42 +70,19 @@ public class WebClientConfig {
 
     @Bean(name = "udPipeWebClient")
     public WebClient webClientUDPipe(@Value("${system.enrichment.udpipe.api:http://lindat.mff.cuni.cz/services/udpipe/api/process}")
-                                                 String udPipeApi) {
-        return WebClient
-                .builder()
-                .baseUrl(udPipeApi)
-                .codecs(configurer -> configurer
-                        .defaultCodecs()
-                        .maxInMemorySize(MAX_MEMORY_SIZE))
-                .build();
+                                             String udPipeApi) throws SSLException {
+        return getWebClient(udPipeApi);
     }
 
     @Bean(name = "nameTagWebClient")
     public WebClient webClientNameTag(@Value("${system.enrichment.nametag.api:http://lindat.mff.cuni.cz/services/nametag/api/recognize}")
-                                                  String nameTagApi) {
-        return WebClient
-                .builder()
-                .baseUrl(nameTagApi)
-                .codecs(configurer -> configurer
-                        .defaultCodecs()
-                        .maxInMemorySize(MAX_MEMORY_SIZE))
-                .build();
+                                              String nameTagApi) throws SSLException {
+        return getWebClient(nameTagApi);
     }
 
     @Bean(name = "teiWebClient")
-    public WebClient webClientTei(@Value("${system.enrichment.tei.api:http://localhost:5000/tei}") String teiApi) {
-        return WebClient
-                .builder()
-                .baseUrl(teiApi)
-                // enable for logging
-//                .clientConnector(new ReactorClientHttpConnector(HttpClient.create().wiretap("reactor.netty.http.client.HttpClient", LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL)))
-//                .filters(exchangeFilterFunctions -> {
-//                    exchangeFilterFunctions.add(logRequest());
-//                })
-                .codecs(configurer -> configurer
-                        .defaultCodecs()
-                        .maxInMemorySize(MAX_MEMORY_SIZE))
-                .build();
+    public WebClient webClientTei(@Value("${system.enrichment.tei.api:http://localhost:5000/tei}") String teiApi) throws SSLException {
+        return getWebClient(teiApi);
     }
 
     @Bean
