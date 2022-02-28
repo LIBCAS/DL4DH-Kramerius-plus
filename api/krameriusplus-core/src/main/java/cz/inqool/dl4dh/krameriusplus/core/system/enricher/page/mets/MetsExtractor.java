@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import java.nio.file.Path;
+
 @Service
 public class MetsExtractor {
 
@@ -23,7 +25,13 @@ public class MetsExtractor {
     }
 
     public void enrich(Page page) {
-        Document document = domParser.parse(page.getMetsPath().toFile());
+        Path metsPath = page.getMetsPath();
+
+        if (metsPath == null) {
+            return;
+        }
+
+        Document document = domParser.parse(metsPath.toFile());
         document.getDocumentElement().normalize();
 
         MetsMetadata metsMetadata = new MetsMetadata();

@@ -63,19 +63,35 @@ public class MetsFileFinder {
         for (MainMetsDto.StructMap structMap : structMaps) {
             if (structMap.getType().equals("PHYSICAL")) {
                 for (MainMetsDto.Div pageInfo : structMap.getDiv().getDivs()) {
-                    String pageMets = null;
+                    String pageMetsFilename = null;
 
                     for (var child : pageInfo.getChildren()) {
-                        if (child.getFileId().startsWith("amd")) {
-                            pageMets = child.getFileId() + ".xml";
+                        if (child.getFileId().startsWith("amd") || child.getFileId().startsWith("AMD")) {
+                            pageMetsFilename = child.getFileId() + ".xml";
                         }
                     }
 
-                    if (pageMets == null) {
-                        throw new IllegalStateException("Mets for page not found");
-                    }
+                    if (pageMetsFilename != null) {
+                        Page correspondingPage = pages
+                                .stream()
+                                .filter(page -> page.getPageNumber() != null && page.getPageNumber().equals(pageInfo.getOrderLabel()))
+                                .findFirst()
+                                .orElse(null);
 
-                    pages.get(pageInfo.getOrder() - 1).setMetsPath(ndkDir.resolve("amdsec").resolve(pageMets));
+                        if (correspondingPage != null) {
+                            Path metsPath = ndkDir.resolve("amdSec").resolve(pageMetsFilename);
+
+                            if (!Files.exists(metsPath)) {
+                                metsPath = ndkDir.resolve("amdsec").resolve(pageMetsFilename);
+                            }
+
+                            if (!Files.exists(metsPath)) {
+                                log.warn("Mets path not found for page: {}", correspondingPage.getId());
+                            } else {
+                                correspondingPage.setMetsPath(metsPath);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -84,7 +100,7 @@ public class MetsFileFinder {
     private Path findMainMets(Path ndkDir) {
         try (Stream<Path> files = Files.list(ndkDir)) {
             List<Path> matchingFiles = files
-                    .filter(file -> file.getFileName().toString().startsWith("mets") && file.toString().endsWith(".xml"))
+                    .filter(this::matchMainMetsFilename)
                     .collect(Collectors.toList());
 
             if (matchingFiles.size() != 1) {
@@ -95,6 +111,12 @@ public class MetsFileFinder {
         } catch (IOException e) {
             throw new UncheckedIOException("Failed listing dir content", e);
         }
+    }
+
+    private boolean matchMainMetsFilename(Path file) {
+        return (file.getFileName().toString().startsWith("mets")
+                || file.getFileName().toString().startsWith("METS"))
+                && file.toString().endsWith(".xml");
     }
 
     @Autowired
