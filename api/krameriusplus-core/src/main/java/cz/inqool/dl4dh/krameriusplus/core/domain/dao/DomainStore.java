@@ -21,6 +21,8 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 public abstract class DomainStore<T extends DomainObject> implements Store<T> {
 
+    private static final int BATCH_SIZE = 100;
+
     /**
      * Entity class object
      */
@@ -51,7 +53,7 @@ public abstract class DomainStore<T extends DomainObject> implements Store<T> {
             return emptyList();
         }
 
-        return mongoOperations.insertAll(entities);
+        return insertBatched(entities);
     }
 
     @Override
@@ -73,8 +75,7 @@ public abstract class DomainStore<T extends DomainObject> implements Store<T> {
         boolean allNew = source.stream().allMatch(entityInformation::isNew);
 
         if (allNew) {
-            List<? extends T> result = source.stream().collect(Collectors.toList());
-            return new ArrayList<>(mongoOperations.insert(result));
+            return insertBatched(entities);
         }
 
         return source.stream().map(this::save).collect(Collectors.toList());
@@ -160,5 +161,18 @@ public abstract class DomainStore<T extends DomainObject> implements Store<T> {
         }
 
         return removed;
+    }
+
+    private Collection<? extends T> insertBatched(Collection<? extends T> entities) {
+        List<T> result = new ArrayList<>(entities);
+        List<T> saved = new ArrayList<>();
+        int offset = 0;
+        do {
+            saved.addAll(mongoOperations.insert(
+                    result.subList(offset, Math.min(offset + BATCH_SIZE, result.size()))));
+            offset += BATCH_SIZE;
+        } while (saved.size() != result.size());
+
+        return new ArrayList<>(saved);
     }
 }
