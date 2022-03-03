@@ -12,6 +12,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.scheduling.EnrichmentTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Instant;
 import java.util.List;
@@ -30,21 +31,24 @@ public class Enricher {
     private final PublicationStore publicationStore;
     private final PageStore pageStore;
     private final DataProvider dataProvider;
+    private final TransactionTemplate transactionTemplate;
 
     @Autowired
     public Enricher(PublicationEnricher publicationEnricher, CompletePageEnricher completePageEnricher,
-                    PublicationStore publicationStore, PageStore pageStore, DataProvider dataProvider) {
+                    PublicationStore publicationStore, PageStore pageStore, DataProvider dataProvider,
+                    TransactionTemplate transactionTemplate) {
         this.publicationEnricher = publicationEnricher;
         this.completePageEnricher = completePageEnricher;
         this.publicationStore = publicationStore;
         this.pageStore = pageStore;
         this.dataProvider = dataProvider;
+        this.transactionTemplate = transactionTemplate;
     }
 
     public void enrich(Publication publication, EnrichmentTask.EnrichmentSubTask task) {
         assemblePublication(publication, task);
 
-        boolean isSuccessful = enrichOne(publication, task);
+        Boolean isSuccessful = transactionTemplate.execute(t -> enrichOne(publication, task));
 
         for (DigitalObject child : publication.getChildren()) {
             if (child instanceof Publication) {
@@ -52,7 +56,7 @@ public class Enricher {
             }
         }
 
-        if (isSuccessful) {
+        if (isSuccessful != null && isSuccessful) {
             finishTask(task);
         }
     }
@@ -65,7 +69,7 @@ public class Enricher {
                 .orElseThrow(() -> new IllegalStateException("Missing subtask for publication with id " + publicationId));
     }
 
-    private boolean enrichOne(Publication publication, EnrichmentTask.EnrichmentSubTask task) {
+    private Boolean enrichOne(Publication publication, EnrichmentTask.EnrichmentSubTask task) {
         try {
             task.setState(ENRICHING);
             publicationEnricher.enrich(publication);

@@ -21,7 +21,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 public abstract class DomainStore<T extends DomainObject> implements Store<T> {
 
-    private static final int BATCH_SIZE = 30;
+    private static final int BATCH_SIZE = 20;
 
     /**
      * Entity class object
