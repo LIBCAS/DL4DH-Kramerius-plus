@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import io.swagger.v3.oas.annotations.Operation;

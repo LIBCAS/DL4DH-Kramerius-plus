@@ -1,26 +1,50 @@
 spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/kramerius_plus_db
+#    username: postgres
+#    password: uzidem9izo
   datasource:
-    url: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
-    username:
-    password:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+  liquibase:
+    changeLog: classpath:/dbchangelog.xml
   data:
     mongodb:
       auto-index-creation: true
       database: KrameriusPlus
-
-logging:
-  level:
-    cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.lindat.UDPipeService: OFF
-    cz.inqool.dl4dh.krameriusplus.service.enricher.NameTagService: OFF
+  activemq:
+    user: admin
+    password: admin
+    broker-url: tcp://localhost:61616
+  batch:
+    initialize-schema: always
+    job:
+      enabled: false
 #    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
   interceptor:
     body: SHORT
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
 
 springdoc:
   swagger-ui.path: /swagger
 
 system:
-  kramerius: NK
+  kramerius: MZK
   enrichment:
   #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
   #  and ALTO processing does not make manual corrections (while OCR processing does)
@@ -35,3 +59,10 @@ system:
       path: todo
   json:
     serializeEmptyArrays: true
+
+active-mq:
+  queues:
+    exporting-queue: export
+    enriching-queue: enriching
+  messaging:
+    auto-consume: true

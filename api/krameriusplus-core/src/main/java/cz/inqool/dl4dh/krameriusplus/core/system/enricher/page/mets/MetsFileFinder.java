@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.mets;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.enricher.publication.xml.XMLMetsUnmarshaller;
 import cz.inqool.dl4dh.krameriusplus.core.system.enricher.publication.xml.dto.MainMetsDto;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,33 +30,31 @@ public class MetsFileFinder {
         this.metsUnmarshaller = metsUnmarshaller;
     }
 
-    public void setMainMetsPath(Publication publication) {
+    public Optional<Path> getMainMetsPath(String publicationId) {
         if (ndkPath != null) {
             try (Stream<Path> publicationNdkDirs = Files.list(Path.of(ndkPath))) {
                 List<Path> matchingDirs = publicationNdkDirs
                         .filter(publicationNdkDir -> Files.isDirectory(publicationNdkDir)
-                                && publicationNdkDir.getFileName().toString().equals(publication.getId().substring(5)))
+                                && publicationNdkDir.getFileName().toString().equals(publicationId.substring(5)))
                         .collect(Collectors.toList());
 
                 if (matchingDirs.size() != 1) {
-                    log.warn("NDK directory with id=\"" + publication.getId() + "\" not found");
-                    return;
+                    log.warn("NDK directory with id=\"" + publicationId + "\" not found");
+                    return Optional.empty();
                 }
 
-                Path publicationMetsDir = matchingDirs.get(0);
-                publication.setNdkDir(publicationMetsDir);
-
-                setMetsPathForPages(publication.getPages(), publicationMetsDir);
-            } catch (Exception e) {
-                log.warn("NDK directory not found for publication: {}", publication.getTitle());
+                return Optional.of(findMainMets(matchingDirs.get(0)));
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
+
+        log.warn("NDK directory not set");
+        return Optional.empty();
     }
 
-    private void setMetsPathForPages(List<Page> pages, Path ndkDir) {
-        Path mainMets = findMainMets(ndkDir);
-
-        MainMetsDto mainMetsDto = metsUnmarshaller.unmarshal(mainMets.toFile());
+    public void assignMetsPathForPages(List<Page> pages, Path mainMetsPath) {
+        MainMetsDto mainMetsDto = metsUnmarshaller.unmarshal(mainMetsPath.toFile());
 
         List<MainMetsDto.StructMap> structMaps = mainMetsDto.getStructMap();
 
@@ -79,17 +77,19 @@ public class MetsFileFinder {
                                 .orElse(null);
 
                         if (correspondingPage != null) {
-                            Path metsPath = ndkDir.resolve("amdSec").resolve(pageMetsFilename);
+                            Path metsPath = mainMetsPath.resolveSibling("amdSec").resolve(pageMetsFilename);
 
                             if (!Files.exists(metsPath)) {
-                                metsPath = ndkDir.resolve("amdsec").resolve(pageMetsFilename);
+                                metsPath = mainMetsPath.resolveSibling("amdsec").resolve(pageMetsFilename);
                             }
 
                             if (!Files.exists(metsPath)) {
                                 log.warn("Mets path not found for page: {}", correspondingPage.getId());
                             } else {
-                                correspondingPage.setMetsPath(metsPath);
+                                correspondingPage.setMetsPath(metsPath.toString());
                             }
+                        } else {
+                            log.trace("METS file {} could not be associated with any page", pageMetsFilename);
                         }
                     }
                 }

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.filter.EqFilter;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.EqFilter;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;

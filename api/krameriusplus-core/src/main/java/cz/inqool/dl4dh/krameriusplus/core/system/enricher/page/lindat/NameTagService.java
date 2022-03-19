@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.lindat;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.ExternalServiceException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SystemLogDetails;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NamedEntity;

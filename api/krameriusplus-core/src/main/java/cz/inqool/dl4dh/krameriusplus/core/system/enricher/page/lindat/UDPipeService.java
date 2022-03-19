@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.lindat;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.ExternalServiceException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SystemLogDetails;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
@@ -137,7 +137,7 @@ public class UDPipeService {
                 metadata.setPosition(Integer.parseInt(columns[0]));
             } catch (NumberFormatException e) {
                 // metadata for this word are split into two lines
-                log.warn("Error parsing output line number on: " + line);
+                log.trace("Error parsing output line number on: " + line);
                 previousMiscColumn = columns[9];
                 previousContent = columns[1];
                 continue;
@@ -186,7 +186,7 @@ public class UDPipeService {
 
     private String parseColumn(String columnValue) {
         if (columnValue == null || columnValue.isEmpty()) {
-            log.error("Missing column value in response");
+            log.trace("Missing column value in response");
             return null;
         }
 

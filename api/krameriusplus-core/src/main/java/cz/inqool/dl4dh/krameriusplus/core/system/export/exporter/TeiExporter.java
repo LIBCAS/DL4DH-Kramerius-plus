@@ -1,11 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.export.exporter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExportException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.TeiParams;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.ExportException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.tei.TeiConnector;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
@@ -20,10 +19,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExportException.ErrorCode.TEI_MERGE_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.ExportException.ErrorCode.TEI_MERGE_ERROR;
 
 @Component
 @Slf4j
@@ -69,13 +66,14 @@ public class TeiExporter extends AbstractExporter {
     }
 
     private File getTei(Publication publication, TeiParams params) {
-        return teiConnector.merge(publication.getTeiHeader(),
-                publication
-                        .getPages()
-                        .stream()
-                        .map(Page::getTeiBody)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList()),
-                params);
+//        return teiConnector.merge(publication.getTeiHeader(),
+//                publication
+//                        .getPages()
+//                        .stream()
+//                        .map(Page::getTeiBody)
+//                        .filter(Objects::nonNull)
+//                        .collect(Collectors.toList()),
+//                params);
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

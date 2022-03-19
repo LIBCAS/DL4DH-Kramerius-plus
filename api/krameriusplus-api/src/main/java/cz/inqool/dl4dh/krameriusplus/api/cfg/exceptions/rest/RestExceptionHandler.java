@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.cfg.exceptions.rest;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SchedulingException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

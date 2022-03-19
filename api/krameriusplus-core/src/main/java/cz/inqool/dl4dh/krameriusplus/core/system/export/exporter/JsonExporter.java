@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.export.exporter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;

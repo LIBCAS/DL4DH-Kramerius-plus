@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.cfg.exceptions;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.GeneralException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.GeneralException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SystemLogDetails;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.Getter;
 import org.springframework.lang.NonNull;

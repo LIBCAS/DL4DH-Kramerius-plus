@@ -1,9 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.export;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.filter.AndFilter;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.filter.LtFilter;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.filter.NullFilter;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.exporter.Exporter;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
@@ -16,12 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
 
 /**
  * @author Norbert Bodnar
@@ -82,12 +76,13 @@ public class ExporterService {
     }
 
     public List<Export> listToDelete() {
-        Params params = new Params();
-        params.addFilters(new AndFilter(asList(
-                new LtFilter("created", Instant.now().minus(DELETE_AFTER_HOURS, ChronoUnit.HOURS)),
-                new NullFilter("deleted"))));
-
-        return exportStore.listAll(params);
+//        Params params = new Params();
+//        params.addFilters(new AndFilter(asList(
+//                new LtFilter("created", Instant.now().minus(DELETE_AFTER_HOURS, ChronoUnit.HOURS)),
+//                new NullFilter("deleted"))));
+//
+//        return exportStore.listAll(params);
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Autowired

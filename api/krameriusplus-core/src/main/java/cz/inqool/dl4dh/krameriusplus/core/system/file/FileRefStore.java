@@ -1,15 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.DomainStore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
+import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.store.DatedStore;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FileRefStore extends DomainStore<FileRef> {
+public class FileRefStore extends DatedStore<FileRef, QFileRef> {
 
-    @Autowired
-    public FileRefStore(MongoOperations mongoOperations) {
-        super(FileRef.class, mongoOperations);
+    public FileRefStore() {
+        super(FileRef.class, QFileRef.class);
     }
 }

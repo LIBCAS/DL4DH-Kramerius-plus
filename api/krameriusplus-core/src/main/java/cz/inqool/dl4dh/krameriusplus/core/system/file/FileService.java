@@ -1,7 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Paging;
+import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Params;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -203,11 +204,14 @@ public class FileService {
 
         List<FileRef> fileRefs;
         do {
-            Params params = new Params();
-            params.setPage(page++);
-            params.setPageSize(pageSize);
+            Paging paging = new Paging();
+            paging.setPage(page++);
+            paging.setPageSize(pageSize);
 
-            fileRefs = store.listAll(params);
+            Params params = new Params();
+            params.setPaging(paging);
+
+            fileRefs = store.listAll(params).getContent();
             fileRefs.forEach(fileRef -> existingFileIDs.add(fileRef.getId()));
         } while (fileRefs.size() == pageSize);
 

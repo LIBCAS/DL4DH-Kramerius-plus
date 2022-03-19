@@ -23,7 +23,8 @@ public abstract class AbstractExporter implements Exporter {
 
     protected Export createExport(Publication publication, FileRef fileRef) {
         Export export = new Export();
-        export.setPublication(publication);
+        export.setPublicationId(publication.getId());
+        export.setPublicationTitle(publication.getTitle());
         export.setFileRef(fileRef);
 
         return export;

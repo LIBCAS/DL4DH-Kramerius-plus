@@ -1,14 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.alto;
 
-import cz.inqool.dl4dh.alto.*;
-import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius.StreamProvider;
+import cz.inqool.dl4dh.alto.ProcessingSoftwareType;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.PageDecorator;
+import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.alto.dto.AltoDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.alto.dto.BlockTypeDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.alto.dto.PageSpaceTypeDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.alto.dto.TextBlockTypeDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCRParadata;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -16,33 +16,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-
-@Service
-@Order(HIGHEST_PRECEDENCE)
 @Slf4j
-public class AltoContentExtractor implements PageDecorator {
-
-    private final StreamProvider streamProvider;
-
-    private Alto alto;
+public class AltoContentExtractor {
 
     private StringBuilder pageContent;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Autowired
-    public AltoContentExtractor(StreamProvider streamProvider) {
-        this.streamProvider = streamProvider;
-    }
-
-    @Override
-    public void enrichPage(Page page) {
-        alto = streamProvider.getAlto(page.getId());
+    public void enrichPage(@NonNull Page page, @NonNull AltoDto alto) {
         pageContent = new StringBuilder();
 
         var pageElements = Optional.ofNullable(alto.getLayout())
-                .map(Alto.Layout::getPage)
+                .map(AltoDto.LayoutDto::getPage)
                 .orElse(new ArrayList<>());
 
         for (var pageElement : pageElements) {
@@ -53,14 +38,14 @@ public class AltoContentExtractor implements PageDecorator {
             removeLastSpace();
         }
 
-        page.setAlto(alto);
-        page.setOcrParadata(extractOcrParadata());
+        page.setAltoLayout(alto.getLayout());
+        page.setOcrParadata(extractOcrParadata(alto));
         page.setContent(pageContent.toString());
     }
 
-    private void processPageElement(Alto.Layout.Page pageElement) {
+    private void processPageElement(AltoDto.LayoutDto.PageDto pageElement) {
         for (var block : Optional.ofNullable(pageElement.getPrintSpace())
-                .map(PageSpaceType::getTextBlockOrIllustrationOrGraphicalElement)
+                .map(PageSpaceTypeDto::getBlockTypes)
                 .orElse(new ArrayList<>())) {
             processBlockElement(block);
         }
@@ -70,7 +55,7 @@ public class AltoContentExtractor implements PageDecorator {
         pageContent.setLength(pageContent.length() - 1);
     }
 
-    private OCRParadata extractOcrParadata() {
+    private OCRParadata extractOcrParadata(AltoDto alto) {
         try {
             LocalDate ocrPerformedDate = null;
             try {
@@ -105,25 +90,25 @@ public class AltoContentExtractor implements PageDecorator {
         }
     }
 
-    private void processBlockElement(BlockType block) {
-        if (block instanceof TextBlockType) {
-            processTextBlockElement((TextBlockType) block);
+    private void processBlockElement(BlockTypeDto block) {
+        if (block instanceof TextBlockTypeDto) {
+            processTextBlockElement((TextBlockTypeDto) block);
         }
     }
 
-    private void processTextBlockElement(TextBlockType textBlock) {
+    private void processTextBlockElement(TextBlockTypeDto textBlock) {
         for (var line : textBlock.getTextLine()) {
             processLineElement(line);
         }
     }
 
-    private void processLineElement(TextBlockType.TextLine line) {
+    private void processLineElement(TextBlockTypeDto.TextLineDto line) {
         boolean omitSpaceAtEndOfLine = false;
 
         for (Object linePart : line.getStringAndSP()) {
-            if (linePart instanceof StringType) {
-                omitSpaceAtEndOfLine = processWordAndReturnOmitSpaceFlag((StringType) linePart);
-            } else if (linePart instanceof TextBlockType.TextLine.SP) {
+            if (linePart instanceof TextBlockTypeDto.TextLineDto.StringTypeDto) {
+                omitSpaceAtEndOfLine = processWordAndReturnOmitSpaceFlag((TextBlockTypeDto.TextLineDto.StringTypeDto) linePart);
+            } else if (linePart instanceof TextBlockTypeDto.TextLineDto.SpDto) {
                 pageContent.append(" ");
             }
         }
@@ -138,7 +123,7 @@ public class AltoContentExtractor implements PageDecorator {
      * divided word at the end of the line and the space after the end of the line should be omitted,
      * false otherwise
      */
-    private boolean processWordAndReturnOmitSpaceFlag(StringType wordElement) {
+    private boolean processWordAndReturnOmitSpaceFlag(TextBlockTypeDto.TextLineDto.StringTypeDto wordElement) {
         if (isWordDivided(wordElement)) {
             if (isSecondPartOfDividedWord(wordElement)) {
                 return false;
@@ -146,20 +131,20 @@ public class AltoContentExtractor implements PageDecorator {
             pageContent.append(getFullWord(wordElement));
             return true;
         } else {
-            pageContent.append(wordElement.getCONTENT());
+            pageContent.append(wordElement.getContent());
             return false;
         }
     }
 
-    private String getFullWord(StringType wordElement) {
-        return wordElement.getSUBSCONTENT();
+    private String getFullWord(TextBlockTypeDto.TextLineDto.StringTypeDto wordElement) {
+        return wordElement.getSubscontent();
     }
 
-    private boolean isWordDivided(StringType wordElement) {
+    private boolean isWordDivided(TextBlockTypeDto.TextLineDto.StringTypeDto wordElement) {
         return getFullWord(wordElement) != null;
     }
 
-    private boolean isSecondPartOfDividedWord(StringType wordElement) {
-        return wordElement.getSUBSTYPE() != null && wordElement.getSUBSTYPE().equals("HypPart2");
+    private boolean isSecondPartOfDividedWord(TextBlockTypeDto.TextLineDto.StringTypeDto wordElement) {
+        return wordElement.getSubstype() != null && wordElement.getSubstype().equals("HypPart2");
     }
 }

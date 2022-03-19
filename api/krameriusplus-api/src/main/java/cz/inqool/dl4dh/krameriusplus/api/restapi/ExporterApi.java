@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.TeiParams;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
