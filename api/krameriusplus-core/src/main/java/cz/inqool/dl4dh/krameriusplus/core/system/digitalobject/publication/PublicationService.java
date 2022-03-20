@@ -8,7 +8,6 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.utils.Utils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +20,9 @@ import java.util.List;
 @Slf4j
 public class PublicationService {
 
-    private final PublicationStore publicationStore;
+    private PublicationStore publicationStore;
 
-    private final PageStore pageStore;
-
-    @Autowired
-    public PublicationService(PublicationStore publicationStore,
-                              PageStore pageRepository) {
-        this.publicationStore = publicationStore;
-        this.pageStore = pageRepository;
-    }
+    private PageStore pageStore;
 
     public Publication save(@NonNull Publication publication) {
         publication = publicationStore.save(publication);
@@ -38,33 +30,6 @@ public class PublicationService {
 
         return publication;
     }
-
-//    @Async
-//    public Future<String> enrichPublication(String id, EnrichmentTask task) {
-//        try {
-//            task.setState(DOWNLOADING);
-//            DigitalObject digitalObject = dataProvider.getDigitalObject(id);
-//
-//            if (!(digitalObject instanceof Publication)) {
-//                throw new IllegalArgumentException("Provided ID is not an ID of a Digital Object of type Publication");
-//            }
-//            enricher.enrich((Publication) digitalObject, task.getSubtask());
-//        } catch (Exception exception) {
-//            if (exception.getCause() instanceof InterruptedException) {
-//                task.setErrorMessage("Interrupted");
-//                task.setState(CANCELED);
-//            } else {
-//                task.setErrorMessage(exception.getMessage());
-//                task.setState(FAILED);
-//            }
-//            log.error("Task wid PID=" + id + " failed", exception);
-//        }
-//
-//        enrichmentTaskStore.update(task);
-//        SchedulerService.removeTask(id);
-//
-//        return new AsyncResult<>("done");
-//    }
 
     /**
      * Returns the publication with given ID with all its fields
@@ -95,5 +60,13 @@ public class PublicationService {
 
     public List<Publication> list(Params params) {
         return publicationStore.listAll(params);
+    }
+
+    public void setPublicationStore(PublicationStore publicationStore) {
+        this.publicationStore = publicationStore;
+    }
+
+    public void setPageStore(PageStore pageStore) {
+        this.pageStore = pageStore;
     }
 }

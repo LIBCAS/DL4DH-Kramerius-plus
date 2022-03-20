@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.clean_up_pages;
+package cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.enrich_pages.enrich_pages_nametag;
 
 import cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.PageMongoItemReader;
 import cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.PageMongoItemWriter;
@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
 
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingSteps.CleanUpPages.STEP_NAME;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingSteps.EnrichPagesNameTag.STEP_NAME;
 
 @Configuration
-public class CleanUpPagesStepConfig {
+public class EnrichPagesNameTagStepConfig {
 
     private StepBuilderFactory stepBuilderFactory;
 
@@ -28,7 +28,7 @@ public class CleanUpPagesStepConfig {
     @Bean(name = STEP_NAME)
     public Step step() {
         return stepBuilderFactory.get(STEP_NAME)
-                .<Page, Page>chunk(10)
+                .<Page, Page> chunk(5)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -45,7 +45,7 @@ public class CleanUpPagesStepConfig {
         this.reader = reader;
     }
 
-    @Resource(name = EnrichingSteps.CleanUpPages.PROCESSOR_NAME)
+    @Resource(name = EnrichingSteps.EnrichPagesNameTag.PROCESSOR_NAME)
     public void setProcessor(ItemProcessor processor) {
         this.processor = processor;
     }

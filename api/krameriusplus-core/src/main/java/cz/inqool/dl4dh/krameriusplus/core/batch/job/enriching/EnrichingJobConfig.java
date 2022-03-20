@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.Steps;
+import cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingSteps;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -27,33 +27,33 @@ public class EnrichingJobConfig {
         return jobBuilderFactory
                 .get(ENRICHING_JOB)
                 .incrementer(new RunIdIncrementer())
-                .start(steps.get(Steps.DownloadPublicationStep.STEP_NAME))
-                .next(steps.get(Steps.EnrichPublicationMods.STEP_NAME))
-                .next(steps.get(Steps.EnrichPublicationTei.STEP_NAME))
+                .start(steps.get(EnrichingSteps.DownloadPublicationStep.STEP_NAME))
+                .next(steps.get(EnrichingSteps.EnrichPublicationMods.STEP_NAME))
+                .next(steps.get(EnrichingSteps.EnrichPublicationTei.STEP_NAME))
 
-                .next(steps.get(Steps.PrepareNdkPublicationPath.STEP_NAME))
+                .next(steps.get(EnrichingSteps.PrepareNdkPublicationPath.STEP_NAME))
                 .on("COMPLETED")
-                .to(steps.get(Steps.PrepareNdkPagesPath.STEP_NAME))
-                .from(steps.get(Steps.PrepareNdkPublicationPath.STEP_NAME))
+                .to(steps.get(EnrichingSteps.PrepareNdkPagesPath.STEP_NAME))
+                .from(steps.get(EnrichingSteps.PrepareNdkPublicationPath.STEP_NAME))
                 .on("*")
-                .to(steps.get(Steps.DownloadPagesAltoStep.STEP_NAME))
+                .to(steps.get(EnrichingSteps.DownloadPagesAltoStep.STEP_NAME))
 
-                .from(steps.get(Steps.PrepareNdkPagesPath.STEP_NAME))
+                .from(steps.get(EnrichingSteps.PrepareNdkPagesPath.STEP_NAME))
                 .on("COMPLETED")
-                .to(steps.get(Steps.EnrichPagesNdk.STEP_NAME))
-                .from(steps.get(Steps.PrepareNdkPagesPath.STEP_NAME))
+                .to(steps.get(EnrichingSteps.EnrichPagesNdk.STEP_NAME))
+                .from(steps.get(EnrichingSteps.PrepareNdkPagesPath.STEP_NAME))
                 .on("*")
-                .to(steps.get(Steps.DownloadPagesAltoStep.STEP_NAME))
+                .to(steps.get(EnrichingSteps.DownloadPagesAltoStep.STEP_NAME))
 
-                .from(steps.get(Steps.EnrichPagesNdk.STEP_NAME))
+                .from(steps.get(EnrichingSteps.EnrichPagesNdk.STEP_NAME))
 
-                .next(steps.get(Steps.DownloadPagesAltoStep.STEP_NAME))
-                .next(steps.get(Steps.EnrichPagesUDPipe.STEP_NAME))
+                .next(steps.get(EnrichingSteps.DownloadPagesAltoStep.STEP_NAME))
+                .next(steps.get(EnrichingSteps.EnrichPagesUDPipe.STEP_NAME))
 
-                .next(steps.get(Steps.EnrichPagesNameTag.STEP_NAME))
-                .next(steps.get(Steps.EnrichPagesAlto.STEP_NAME))
-                .next(steps.get(Steps.EnrichPagesTei.STEP_NAME))
-                .next(steps.get(Steps.CleanUpPages.STEP_NAME))
+                .next(steps.get(EnrichingSteps.EnrichPagesNameTag.STEP_NAME))
+                .next(steps.get(EnrichingSteps.EnrichPagesAlto.STEP_NAME))
+                .next(steps.get(EnrichingSteps.EnrichPagesTei.STEP_NAME))
+                .next(steps.get(EnrichingSteps.CleanUpPages.STEP_NAME))
                 .end()
                 .build();
     }
@@ -64,7 +64,7 @@ public class EnrichingJobConfig {
     }
 
     @Autowired
-    public void setDownloadingPublicationStep(List<Step> steps) {
+    public void setSteps(List<Step> steps) {
         steps.forEach(step -> this.steps.put(step.getName(), step));
     }
 }

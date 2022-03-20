@@ -4,16 +4,20 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class ExportMessage {
 
-    private final String publicationId;
+    private String publicationId;
 
-    private final Params params;
+    private String publicationTitle;
 
-    private final ExportFormat exportFormat;
+    private Params params;
+
+    private ExportFormat exportFormat;
 }

@@ -24,6 +24,26 @@
             <column name="size" type="bigint"/>
             <column name="hierarchical_level" type="int"/>
         </createTable>
+
+        <createTable tableName="export">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="export_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="publication_id" type="${id}"/>
+            <column name="publication_title" type="nvarchar(255)"/>
+            <column name="file_ref_id" type="${id}">
+                <constraints foreignKeyName="export_file_ref_FK"
+                             referencedTableName="file_ref"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>
