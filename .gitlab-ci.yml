@@ -88,3 +88,14 @@ web-stop:
   script:
     - "cd web"
     - "kubectl delete -f .deployment.yml -n production"
+
+activemq-build:
+  stage: build
+  only:
+    - master
+  when: manual
+  variables:
+    IMAGE_NAME: kramerius/activemq
+  script:
+    - "cd activemq"
+    - "createDocker"

@@ -1,0 +1,25 @@
+2022-03-26 15:33:25,872 | INFO  | Refreshing org.apache.activemq.xbean.XBeanBrokerFactory$1@4cf777e8: startup date [Sat Mar 26 15:33:25 GMT 2022]; root of context hierarchy | org.apache.activemq.xbean.XBeanBrokerFactory$1 | main
+2022-03-26 15:33:26,881 | INFO  | Using Persistence Adapter: KahaDBPersistenceAdapter[/opt/activemq/data/kahadb] | org.apache.activemq.broker.BrokerService | main
+2022-03-26 15:33:27,073 | INFO  | PListStore:[/opt/activemq/data/localhost/tmp_storage] started | org.apache.activemq.store.kahadb.plist.PListStoreImpl | main
+2022-03-26 15:33:27,233 | INFO  | Apache ActiveMQ 5.15.4 (localhost, ID:385ee23254a3-38749-1648308807088-0:1) is starting | org.apache.activemq.broker.BrokerService | main
+2022-03-26 15:33:27,253 | INFO  | Listening for connections at: tcp://385ee23254a3:61616?maximumConnections=1000&wireFormat.maxFrameSize=104857600 | org.apache.activemq.transport.TransportServerThreadSupport | main
+2022-03-26 15:33:27,255 | INFO  | Connector openwire started | org.apache.activemq.broker.TransportConnector | main
+2022-03-26 15:33:27,261 | INFO  | Listening for connections at: amqp://385ee23254a3:5672?maximumConnections=1000&wireFormat.maxFrameSize=104857600 | org.apache.activemq.transport.TransportServerThreadSupport | main
+2022-03-26 15:33:27,263 | INFO  | Connector amqp started | org.apache.activemq.broker.TransportConnector | main
+2022-03-26 15:33:27,271 | INFO  | Listening for connections at: stomp://385ee23254a3:61613?maximumConnections=1000&wireFormat.maxFrameSize=104857600 | org.apache.activemq.transport.TransportServerThreadSupport | main
+2022-03-26 15:33:27,272 | INFO  | Connector stomp started | org.apache.activemq.broker.TransportConnector | main
+2022-03-26 15:33:27,277 | INFO  | Listening for connections at: mqtt://385ee23254a3:1883?maximumConnections=1000&wireFormat.maxFrameSize=104857600 | org.apache.activemq.transport.TransportServerThreadSupport | main
+2022-03-26 15:33:27,280 | INFO  | Connector mqtt started | org.apache.activemq.broker.TransportConnector | main
+2022-03-26 15:33:27,400 | WARN  | ServletContext@o.e.j.s.ServletContextHandler@20c0a64d{/,null,STARTING} has uncovered http methods for path: / | org.eclipse.jetty.security.SecurityHandler | main
+2022-03-26 15:33:27,448 | INFO  | Listening for connections at ws://385ee23254a3:61614?maximumConnections=1000&wireFormat.maxFrameSize=104857600 | org.apache.activemq.transport.ws.WSTransportServer | main
+2022-03-26 15:33:27,449 | INFO  | Connector ws started | org.apache.activemq.broker.TransportConnector | main
+2022-03-26 15:33:27,451 | INFO  | Apache ActiveMQ 5.15.4 (localhost, ID:385ee23254a3-38749-1648308807088-0:1) started | org.apache.activemq.broker.BrokerService | main
+2022-03-26 15:33:27,452 | INFO  | For help or more information please see: http://activemq.apache.org | org.apache.activemq.broker.BrokerService | main
+2022-03-26 15:33:27,455 | WARN  | Store limit is 102400 mb (current store usage is 0 mb). The data directory: /opt/activemq/data/kahadb only has 19663 mb of usable space. - resetting to maximum available disk space: 19663 mb | org.apache.activemq.broker.BrokerService | main
+2022-03-26 15:33:27,457 | WARN  | Temporary Store limit is 51200 mb (current store usage is 0 mb). The data directory: /opt/activemq/data only has 19663 mb of usable space. - resetting to maximum available disk space: 19663 mb | org.apache.activemq.broker.BrokerService | main
+2022-03-26 15:33:28,051 | INFO  | No Spring WebApplicationInitializer types detected on classpath | /admin | main
+2022-03-26 15:33:28,181 | INFO  | ActiveMQ WebConsole available at http://0.0.0.0:8161/ | org.apache.activemq.web.WebConsoleStarter | main
+2022-03-26 15:33:28,182 | INFO  | ActiveMQ Jolokia REST API available at http://0.0.0.0:8161/api/jolokia/ | org.apache.activemq.web.WebConsoleStarter | main
+2022-03-26 15:33:28,231 | INFO  | Initializing Spring FrameworkServlet 'dispatcher' | /admin | main
+2022-03-26 15:33:28,404 | INFO  | No Spring WebApplicationInitializer types detected on classpath | /api | main
+2022-03-26 15:33:28,479 | INFO  | jolokia-agent: Using policy access restrictor classpath:/jolokia-access.xml | /api | main

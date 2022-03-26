@@ -21,14 +21,14 @@ spec:
         - name: kramerius-api
           image: eu.gcr.io/inqool-1301/cz.inqool.kramerius/api:latest
           env:
-            - name: SPRING_DATA_MONGODB_USERNAME
-              value: root
-            - name: SPRING_DATA_MONGODB_PASSWORD
-              value: password
-            - name: SPRING_DATASOURCE_URL
-              value: "mongodb://kramerius-db:27017/?compressors=disabled&gssapiServiceName=mongodb&connectTimeoutMS=30000"
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://root:password@kramerius-db:27017/?gssapiServiceName=mongodb&connectTimeoutMS=30000"
             - name: SYSTEM_ENRICHMENT_TEI_API
               value: "http://10.3.240.31:5000/tei"
+            - name: SPRING_ACTIVEMQ_BROKER-URL
+              value: "tcp://kramerius-activemq:61616"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://kramerius:changeit@kramerius-postgresql/kramerius_plus_db"
           resources:
             requests:
               cpu: "20m"
@@ -90,6 +90,43 @@ spec:
             - name: http
               containerPort: 8081
               protocol: TCP
+        - name: kramerius-activemq
+          image: eu.gcr.io/inqool-1301/cz.inqool.kramerius/activemq:latest
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
+          ports:
+            - name: http
+              containerPort: 61616
+              protocol: TCP
+        - name: kramerius-postgresql
+          image: postgres:14.2-alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              value: changeit
+            - name: POSTGRES_USER
+              value: kramerius
+            - name: POSTGRES_DB
+              value: kramerius_plus_db
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "32Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          ports:
+            - name: http
+              containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /var/lib/postgresql/data/
+              subPath: kramerius-api/postgresqldb
       volumes:
         - name: shared-storage
           persistentVolumeClaim:
