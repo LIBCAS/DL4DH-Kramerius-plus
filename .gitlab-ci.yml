@@ -6,6 +6,7 @@ api-build:
   stage: build
   only:
     - master
+  when: manual
   tags:
     - maven
     - java11
@@ -52,6 +53,7 @@ web-build:
   stage: build
   only:
     - master
+  when: manual
   tags:
     - yarn
   variables:
