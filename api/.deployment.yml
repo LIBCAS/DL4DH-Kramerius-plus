@@ -101,7 +101,7 @@ spec:
               memory: "64Mi"
             limits:
               cpu: "100m"
-              memory: "160Mi"
+              memory: "256Mi"
           ports:
             - name: http
               containerPort: 61616
