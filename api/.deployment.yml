@@ -92,16 +92,13 @@ spec:
               protocol: TCP
         - name: kramerius-activemq
           image: eu.gcr.io/inqool-1301/cz.inqool.kramerius/activemq:latest
-          env:
-            - name: JAVA_OPTS
-              value: "-Xms64m -Xmx128m"
           resources:
             requests:
               cpu: "50m"
               memory: "64Mi"
             limits:
               cpu: "100m"
-              memory: "256Mi"
+              memory: "160Mi"
           ports:
             - name: http
               containerPort: 61616
