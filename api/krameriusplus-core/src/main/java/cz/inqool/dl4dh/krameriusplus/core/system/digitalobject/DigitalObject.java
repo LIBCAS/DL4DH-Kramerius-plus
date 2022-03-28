@@ -1,9 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.dao.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.internalpart.InternalPart;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.Monograph;
@@ -15,6 +16,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel.*;
 
@@ -44,4 +48,19 @@ public abstract class DigitalObject extends DomainObject {
 
     @Indexed
     private Integer index;
+
+    private List<DigitalObjectContext> context = new ArrayList<>();
+
+    @JsonProperty("context")
+    public void unpackContext(List<List<DigitalObjectContext>> context) {
+        if (context == null) {
+            return;
+        }
+
+        if (context.size() > 1) {
+            throw new IllegalStateException("When can context have more than 1 inner array?");
+        }
+
+        this.context = context.get(0);
+    }
 }

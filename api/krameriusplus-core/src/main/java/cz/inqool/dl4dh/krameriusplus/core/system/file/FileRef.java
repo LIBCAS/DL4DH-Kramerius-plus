@@ -1,24 +1,22 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.DomainObject;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.FileException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.object.DatedObject;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.Instant;
-import java.util.UUID;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException.ErrorCode.*;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.FileException.ErrorCode.*;
 import static java.nio.file.Files.newInputStream;
 
 /**
@@ -28,12 +26,8 @@ import static java.nio.file.Files.newInputStream;
  */
 @Getter
 @Setter
-@Document(collection = "files")
-public class FileRef extends DomainObject implements Closeable {
-
-    private Instant created = Instant.now();
-
-    private Instant deleted;
+@Entity
+public class FileRef extends DatedObject implements Closeable {
 
     private static final int DIR_NAME_LENGTH = 2;
 
@@ -71,10 +65,6 @@ public class FileRef extends DomainObject implements Closeable {
     @JsonIgnore
     @Transient
     private InputStream stream;
-
-    public FileRef() {
-        this.id = UUID.randomUUID().toString();
-    }
 
     /**
      * Get path to this file in corresponding local file system. This instance must be obtained via FileService

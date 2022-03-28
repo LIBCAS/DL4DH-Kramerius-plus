@@ -2,12 +2,12 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.MetsMetadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.alto.dto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeParadata;
@@ -17,7 +17,6 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,13 +48,19 @@ public class Page extends DigitalObject {
      */
     private String pageType;
 
-    @Transient
+    /**
+     * Content of the page in plaintext. Temporarily stored in DB so other steps
+     * in EnrichingJob can access it when needed. Should be removed after the job is finished.
+     */
     @JsonIgnore
     private String content;
 
-    @Transient
+    /**
+     * Generated ALTO object. Temporarily stored in DB so other steps
+     * in EnrichingJob can access it when needed. Should be removed after the job is finished.
+     */
     @JsonIgnore
-    private Alto alto;
+    private AltoDto.LayoutDto altoLayout;
 
     /**
      * Storing it as a string for page numbers like "[1a]"
@@ -74,7 +79,7 @@ public class Page extends DigitalObject {
 
     @Transient
     @JsonIgnore
-    private Path metsPath;
+    private String ndkFilePath;
 
     private OCRParadata ocrParadata;
 
@@ -82,8 +87,7 @@ public class Page extends DigitalObject {
 
     private NameTagParadata nameTagParadata;
 
-    @JsonIgnore
-    private String teiBody;
+    private String teiBodyFileId;
 
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.DomainStore;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.dao.DomainStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Repository;
@@ -20,7 +20,6 @@ public class PageStore extends DomainStore<Page> {
     @Override
     public List<Page> listAll(Params params) {
         List<Page> result = new ArrayList<>();
-
 
         List<Page> batch;
         params.setPageSize(20);

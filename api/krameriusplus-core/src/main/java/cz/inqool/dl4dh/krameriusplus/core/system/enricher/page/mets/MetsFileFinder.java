@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.mets;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.enricher.publication.xml.XMLMetsUnmarshaller;
 import cz.inqool.dl4dh.krameriusplus.core.system.enricher.publication.xml.dto.MainMetsDto;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,74 +30,30 @@ public class MetsFileFinder {
         this.metsUnmarshaller = metsUnmarshaller;
     }
 
-    public void setMainMetsPath(Publication publication) {
+    public Optional<Path> findNdkPublicationDirectory(String publicationId) {
         if (ndkPath != null) {
-            try (Stream<Path> publicationNdkDirs = Files.list(Path.of(ndkPath))) {
-                List<Path> matchingDirs = publicationNdkDirs
-                        .filter(publicationNdkDir -> Files.isDirectory(publicationNdkDir)
-                                && publicationNdkDir.getFileName().toString().equals(publication.getId().substring(5)))
+            try (Stream<Path> ndkFiles = Files.list(Path.of(ndkPath))) {
+                List<Path> matchingDirs = ndkFiles
+                        .filter(Files::isDirectory)
+                        .filter(dir -> dir.getFileName().toString().equals(publicationId.substring(5)))
                         .collect(Collectors.toList());
 
                 if (matchingDirs.size() != 1) {
-                    log.warn("NDK directory with id=\"" + publication.getId() + "\" not found");
-                    return;
+                    log.warn("NDK directory with id=\"" + publicationId + "\" not found");
+                    return Optional.empty();
                 }
 
-                Path publicationMetsDir = matchingDirs.get(0);
-                publication.setNdkDir(publicationMetsDir);
-
-                setMetsPathForPages(publication.getPages(), publicationMetsDir);
-            } catch (Exception e) {
-                log.warn("NDK directory not found for publication: {}", publication.getTitle());
+                return Optional.of(matchingDirs.get(0));
+            } catch (IOException e) {
+                throw new UncheckedIOException("Failed to list files in folder '" + ndkPath + "'", e);
             }
         }
+
+        log.warn("NDK directory not set");
+        return Optional.empty();
     }
 
-    private void setMetsPathForPages(List<Page> pages, Path ndkDir) {
-        Path mainMets = findMainMets(ndkDir);
-
-        MainMetsDto mainMetsDto = metsUnmarshaller.unmarshal(mainMets.toFile());
-
-        List<MainMetsDto.StructMap> structMaps = mainMetsDto.getStructMap();
-
-        for (MainMetsDto.StructMap structMap : structMaps) {
-            if (structMap.getType().equals("PHYSICAL")) {
-                for (MainMetsDto.Div pageInfo : structMap.getDiv().getDivs()) {
-                    String pageMetsFilename = null;
-
-                    for (var child : pageInfo.getChildren()) {
-                        if (child.getFileId().startsWith("amd") || child.getFileId().startsWith("AMD")) {
-                            pageMetsFilename = child.getFileId() + ".xml";
-                        }
-                    }
-
-                    if (pageMetsFilename != null) {
-                        Page correspondingPage = pages
-                                .stream()
-                                .filter(page -> page.getPageNumber() != null && page.getPageNumber().equals(pageInfo.getOrderLabel()))
-                                .findFirst()
-                                .orElse(null);
-
-                        if (correspondingPage != null) {
-                            Path metsPath = ndkDir.resolve("amdSec").resolve(pageMetsFilename);
-
-                            if (!Files.exists(metsPath)) {
-                                metsPath = ndkDir.resolve("amdsec").resolve(pageMetsFilename);
-                            }
-
-                            if (!Files.exists(metsPath)) {
-                                log.warn("Mets path not found for page: {}", correspondingPage.getId());
-                            } else {
-                                correspondingPage.setMetsPath(metsPath);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private Path findMainMets(Path ndkDir) {
+    public Path findMainMetsFile(Path ndkDir) {
         try (Stream<Path> files = Files.list(ndkDir)) {
             List<Path> matchingFiles = files
                     .filter(this::matchMainMetsFilename)
@@ -113,10 +69,34 @@ public class MetsFileFinder {
         }
     }
 
+    /**
+     * Tries to identify NDK files for pages by looking at the <mets:structMap TYPE="PHYSICAL"> elements in the
+     * main mets file and matches {@link Page#getTitle()} with ORDERLABEL attribute in <mets:div> elements.
+     * @param mainMetsPath
+     */
+    public List<MainMetsDto.Div> getMetsDivElements(Path mainMetsPath) {
+        MainMetsDto mainMetsDto = metsUnmarshaller.unmarshal(mainMetsPath.toFile());
+
+        Optional<MainMetsDto.StructMap> physicalStructureMap = getPhysicalStructureMap(mainMetsDto);
+
+        if (physicalStructureMap.isPresent()) {
+            return physicalStructureMap.get().getDiv().getDivs();
+        }
+
+        throw new IllegalStateException("MainMets file '" + mainMetsPath.getFileName().toString()
+                + "' does not have mets:div elements under <mets:structMap TYPE=\"PHYSICAL\"> element");
+    }
+
+    private Optional<MainMetsDto.StructMap> getPhysicalStructureMap(MainMetsDto mainMetsDto) {
+        return mainMetsDto.getStructMap()
+                .stream()
+                .filter(structMap -> structMap.getType().equalsIgnoreCase("PHYSICAL"))
+                .findFirst();
+    }
+
     private boolean matchMainMetsFilename(Path file) {
-        return (file.getFileName().toString().startsWith("mets")
-                || file.getFileName().toString().startsWith("METS"))
-                && file.toString().endsWith(".xml");
+        return file.getFileName().toString().substring(0, 4).equalsIgnoreCase("mets")
+                && file.getFileName().toString().endsWith(".xml");
     }
 
     @Autowired

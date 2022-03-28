@@ -98,7 +98,7 @@ export const EnrichmentForm = () => {
 							contentHeight={25}
 							title="Opakované obohacení"
 							onSubmit={async () => {
-								const response = await enrich(publications, true)
+								const response = await enrich(publications)
 
 								if (response.ok) {
 									toast('Opakované obohacení proběhlo úspěšně', {

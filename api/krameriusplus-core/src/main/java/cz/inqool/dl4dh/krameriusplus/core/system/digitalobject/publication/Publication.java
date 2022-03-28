@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
@@ -11,7 +10,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +21,16 @@ import java.util.List;
 @Document(collection = "publications")
 public abstract class Publication extends DigitalObject {
 
+    /**
+     * Child publications. Can be manually pulled from DB based on {@code DomainObject#parentId}. Child publications
+     * must be saved manually.
+     */
     @Transient
     private List<DigitalObject> children = new ArrayList<>();
 
+    /**
+     * Pages can be pulled from DB based on {@code DomainObject#parentId}. Pages must be saved manually.
+     */
     @Transient
     private List<Page> pages = new ArrayList<>();
 
@@ -43,12 +48,7 @@ public abstract class Publication extends DigitalObject {
 
     private NameTagParadata nameTagParadata;
 
-    private boolean hasPages = false;
+    private String ndkDirPath;
 
-    @Transient
-    @JsonIgnore
-    private Path ndkDir;
-
-    @JsonIgnore
-    private String teiHeader;
+    private String teiHeaderFileId;
 }

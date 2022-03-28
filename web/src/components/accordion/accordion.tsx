@@ -11,9 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
 		root: {
 			width: '100%',
 		},
-		heading: {
-			fontWeight: theme.typography.fontWeightRegular,
-		},
 		summary: {
 			padding: 0,
 		},
@@ -40,7 +37,7 @@ export const Accordion: FC<Props> = ({ children, label }) => {
 					expandIcon={<ExpandMoreIcon />}
 					id="panel1a-header"
 				>
-					<Typography className={classes.heading}>{label}</Typography>
+					<Typography>{label}</Typography>
 				</AccordionSummary>
 				<AccordionDetails className={classes.details}>
 					{children}

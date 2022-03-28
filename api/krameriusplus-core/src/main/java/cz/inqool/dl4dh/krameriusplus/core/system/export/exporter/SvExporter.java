@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.export.exporter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.ModsMetadata;
@@ -30,6 +30,53 @@ public abstract class SvExporter extends AbstractExporter {
     public SvExporter(ObjectMapper objectMapper, FileService fileService, PublicationService publicationService, ExportFormat format) {
         super(objectMapper, fileService, publicationService);
         this.format = format;
+    }
+
+    @Override
+    public FileRef generateFile(Publication publication) {
+        CSVFormat baseCsvFormat = format.equals(ExportFormat.TSV) ? CSVFormat.TDF : CSVFormat.DEFAULT;
+        String filesExtension = format.equals(ExportFormat.TSV) ? ".tsv" : ".csv";
+
+        // Create zip
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream();
+             ZipOutputStream zip = new ZipOutputStream(bout)) {
+
+            // Add metadata
+            zip.putNextEntry(new ZipEntry("metadata" + filesExtension));
+            zip.write(generateCSVMetadata(publication, baseCsvFormat).getBytes());
+            zip.closeEntry();
+
+            // Create pages
+            StringBuilder pagesBuffer = new StringBuilder();
+            CSVFormat pagesCsvFormat = CSVFormat.Builder.create(baseCsvFormat).setHeader("file", "publication_id", "id", "order", "title").build();
+            CSVPrinter pagesPrinter = new CSVPrinter(pagesBuffer, pagesCsvFormat);
+
+            int pageIndex = 1;
+            for (Page page : publication.getPages()) {
+                String pageFileName = "page_" + publication.getId().replace("uuid:", "") + "_" + pageIndex + "_" + page.getId().replace("uuid:", "") + filesExtension;
+                pagesPrinter.printRecord(pageFileName, publication.getId(), page.getId(), pageIndex++, page.getTitle());
+
+                // Add page content
+                zip.putNextEntry(new ZipEntry(pageFileName));
+                zip.write(generateCSVPage(page, baseCsvFormat).getBytes());
+                zip.closeEntry();
+            }
+
+            // Add pages list
+            zip.putNextEntry(new ZipEntry("pages" + filesExtension));
+            zip.write(pagesBuffer.toString().getBytes());
+            zip.closeEntry();
+
+            zip.close();
+            byte[] output = bout.toByteArray();
+
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(output)) {
+                return fileService.create(bis, output.length,
+                        getFormat().getFileName(publication.getId()), "application/zip");
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not write publication to string.");
+        }
     }
 
     @Override
