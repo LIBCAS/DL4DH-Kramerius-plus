@@ -3,8 +3,10 @@ package cz.inqool.dl4dh.krameriusplus.core.batch.job.dto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.ExitStatus;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,10 +36,22 @@ public class StepExecutionDto {
 
     private Date lastUpdated;
 
-    private String exitStatus;
+    private ExitStatus exitStatus;
 
     private boolean terminateOnly;
 
     private int filterCount;
 
+    private List<Throwable> failureExceptions;
+
+    /**
+     * Returns the difference in milliseconds
+     */
+    public Long getDuration() {
+        if (endTime == null || startTime == null) {
+            return  null;
+        }
+
+        return endTime.getTime() - startTime.getTime();
+    }
 }

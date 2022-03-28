@@ -1,15 +1,19 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.job.dto;
 
 import org.mapstruct.Mapper;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Mapper
 public interface JobMapper {
 
     JobExecutionDto jobExecutionToJobExecutionDto(JobExecution jobExecution);
+
+    default Map<String, JobParameter> jobParametersToMap(JobParameters jobParameters) {
+        return new HashMap<>(jobParameters.getParameters());
+    }
 
     JobInstanceDto jobInstanceToJobInstanceDto(JobInstance jobInstance);
 

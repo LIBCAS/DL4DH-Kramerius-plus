@@ -3,7 +3,6 @@ package cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius;
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import lombok.Getter;
 import org.springframework.core.ParameterizedTypeReference;
@@ -47,10 +46,10 @@ public class WebClientDataProvider implements DataProvider, StreamProvider {
     }
 
     @Override
-    public List<DigitalObject> getDigitalObjectsForParent(Publication parent) {
-        List<DigitalObject> result = callInternal(String.format("/%s/children", parent.getId()), new ParameterizedTypeReference<>() {});
+    public List<DigitalObject> getDigitalObjectsForParent(String parentId) {
+        List<DigitalObject> result = callInternal(String.format("/%s/children", parentId), new ParameterizedTypeReference<>() {});
 
-        setChildrenIndicesAndParentId(parent.getId(), result);
+        setChildrenIndicesAndParentId(parentId, result);
 
         return result;
     }

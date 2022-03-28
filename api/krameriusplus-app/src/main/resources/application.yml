@@ -31,14 +31,14 @@ spring:
   interceptor:
     body: SHORT
 
-logging:
-  level:
-    org:
-      springframework:
-        data:
-          mongodb:
-            core:
-              MongoTemplate: DEBUG
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        data:
+#          mongodb:
+#            core:
+#              MongoTemplate: DEBUG
 
 springdoc:
   swagger-ui.path: /swagger

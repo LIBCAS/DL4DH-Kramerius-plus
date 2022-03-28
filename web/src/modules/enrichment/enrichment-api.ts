@@ -2,10 +2,8 @@ import { SingleEvent } from 'components/event/event-detail'
 import { ApiError } from 'models'
 import fetch from 'utils/fetch'
 
-export async function enrich(publications: string[], override?: boolean) {
-	const requestUrl = override
-		? '/api/scheduler/schedule?override=true'
-		: '/api/scheduler/schedule'
+export async function enrich(publications: string[]) {
+	const requestUrl = '/api/job/instance/enrich'
 
 	try {
 		await fetch(requestUrl, {
@@ -30,7 +28,7 @@ export async function enrich(publications: string[], override?: boolean) {
 
 export async function getRunningTasks(): Promise<SingleEvent[]> {
 	try {
-		const response = await fetch('/api/scheduler/tasks/queue', {
+		const response = await fetch('/api/job/list', {
 			method: 'GET',
 		})
 

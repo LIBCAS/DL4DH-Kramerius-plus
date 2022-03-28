@@ -17,10 +17,10 @@ public class JmsProducer {
 
     private ActiveMQQueue exportingQueue;
 
-    public void sendEnrichMessage(String publicationId){
+    public void sendEnrichMessage(EnrichMessage enrichMessage){
         try{
-            log.info("Attempting Send message : "+ publicationId);
-            jmsTemplate.convertAndSend(enrichingQueue, publicationId);
+            log.info("Attempting Send message : "+ enrichMessage.toString());
+            jmsTemplate.convertAndSend(enrichingQueue, enrichMessage);
         } catch(Exception e) {
             log.error("Received Exception during send Message: ", e);
         }

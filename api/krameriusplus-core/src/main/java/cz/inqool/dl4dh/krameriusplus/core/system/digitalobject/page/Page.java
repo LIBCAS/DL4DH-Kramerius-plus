@@ -79,7 +79,7 @@ public class Page extends DigitalObject {
 
     @Transient
     @JsonIgnore
-    private String metsPath;
+    private String ndkFilePath;
 
     private OCRParadata ocrParadata;
 

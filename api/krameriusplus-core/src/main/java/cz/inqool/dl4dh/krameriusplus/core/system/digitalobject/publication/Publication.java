@@ -48,7 +48,7 @@ public abstract class Publication extends DigitalObject {
 
     private NameTagParadata nameTagParadata;
 
-    private String mainMetsPath;
+    private String ndkDirPath;
 
     private String teiHeaderFileId;
 }

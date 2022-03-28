@@ -15,9 +15,13 @@ public interface AltoMapper {
 
     AltoDto toAltoDto(Alto alto);
 
-    default PageSpaceTypeDto toPageSpaceTypeDto(PageSpaceType blockType) {
+    default PageSpaceTypeDto toPageSpaceTypeDto(PageSpaceType pageSpaceType) {
+        if (pageSpaceType == null) {
+            return null;
+        }
+
         PageSpaceTypeDto dto = new PageSpaceTypeDto();
-        dto.setBlockTypes(blockType.getTextBlockOrIllustrationOrGraphicalElement()
+        dto.setBlockTypes(pageSpaceType.getTextBlockOrIllustrationOrGraphicalElement()
                 .stream()
                 .filter(block -> block instanceof TextBlockType)
                 .map(block -> toTextBlockTypeDto((TextBlockType) block))
@@ -30,6 +34,10 @@ public interface AltoMapper {
 
 
     default TextBlockTypeDto.TextLineDto toTextLine(TextBlockType.TextLine textLine) {
+        if (textLine == null) {
+            return null;
+        }
+
         TextBlockTypeDto.TextLineDto dto = new TextBlockTypeDto.TextLineDto();
         dto.setStringAndSP(textLine.getStringAndSP()
                 .stream()

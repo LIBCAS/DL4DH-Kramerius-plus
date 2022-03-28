@@ -25,7 +25,7 @@ public class MetsEnricher {
     }
 
     public void enrich(Page page) {
-        Path metsPath = Path.of(page.getMetsPath());
+        Path metsPath = Path.of(page.getNdkFilePath());
 
         if (metsPath == null) {
             return;

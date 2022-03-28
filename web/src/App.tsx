@@ -7,6 +7,8 @@ import { Navbar } from './components/navbar/navbar'
 import { Export } from './modules/export/export'
 import { Enrichment } from './modules/enrichment/enrichment'
 import { DialogProvider } from './components/dialog/dialog-context-provider'
+import { JobPage } from 'modules/jobs/job-page'
+import { PublicationsPage } from 'modules/publications/publications-page'
 
 function App() {
 	return (
@@ -19,7 +21,16 @@ function App() {
 						<Route exact path="/export">
 							<Export />
 						</Route>
-						<Route path="/">
+						<Route exact path="/publications">
+							<PublicationsPage />
+						</Route>
+						<Route exact path="/jobs/enriching">
+							<JobPage jobName="enriching" />
+						</Route>
+						<Route exact path="/jobs/export">
+							<JobPage jobName="export" />
+						</Route>
+						<Route exact path="/">
 							<Enrichment />
 						</Route>
 					</Switch>

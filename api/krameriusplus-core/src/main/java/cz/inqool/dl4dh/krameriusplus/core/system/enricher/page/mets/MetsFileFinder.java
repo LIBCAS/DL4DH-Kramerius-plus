@@ -30,12 +30,12 @@ public class MetsFileFinder {
         this.metsUnmarshaller = metsUnmarshaller;
     }
 
-    public Optional<Path> getMainMetsPath(String publicationId) {
+    public Optional<Path> findNdkPublicationDirectory(String publicationId) {
         if (ndkPath != null) {
-            try (Stream<Path> publicationNdkDirs = Files.list(Path.of(ndkPath))) {
-                List<Path> matchingDirs = publicationNdkDirs
-                        .filter(publicationNdkDir -> Files.isDirectory(publicationNdkDir)
-                                && publicationNdkDir.getFileName().toString().equals(publicationId.substring(5)))
+            try (Stream<Path> ndkFiles = Files.list(Path.of(ndkPath))) {
+                List<Path> matchingDirs = ndkFiles
+                        .filter(Files::isDirectory)
+                        .filter(dir -> dir.getFileName().toString().equals(publicationId.substring(5)))
                         .collect(Collectors.toList());
 
                 if (matchingDirs.size() != 1) {
@@ -43,9 +43,9 @@ public class MetsFileFinder {
                     return Optional.empty();
                 }
 
-                return Optional.of(findMainMets(matchingDirs.get(0)));
+                return Optional.of(matchingDirs.get(0));
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                throw new UncheckedIOException("Failed to list files in folder '" + ndkPath + "'", e);
             }
         }
 
@@ -53,51 +53,7 @@ public class MetsFileFinder {
         return Optional.empty();
     }
 
-    public void assignMetsPathForPages(List<Page> pages, Path mainMetsPath) {
-        MainMetsDto mainMetsDto = metsUnmarshaller.unmarshal(mainMetsPath.toFile());
-
-        List<MainMetsDto.StructMap> structMaps = mainMetsDto.getStructMap();
-
-        for (MainMetsDto.StructMap structMap : structMaps) {
-            if (structMap.getType().equals("PHYSICAL")) {
-                for (MainMetsDto.Div pageInfo : structMap.getDiv().getDivs()) {
-                    String pageMetsFilename = null;
-
-                    for (var child : pageInfo.getChildren()) {
-                        if (child.getFileId().startsWith("amd") || child.getFileId().startsWith("AMD")) {
-                            pageMetsFilename = child.getFileId() + ".xml";
-                        }
-                    }
-
-                    if (pageMetsFilename != null) {
-                        Page correspondingPage = pages
-                                .stream()
-                                .filter(page -> page.getPageNumber() != null && page.getPageNumber().equals(pageInfo.getOrderLabel()))
-                                .findFirst()
-                                .orElse(null);
-
-                        if (correspondingPage != null) {
-                            Path metsPath = mainMetsPath.resolveSibling("amdSec").resolve(pageMetsFilename);
-
-                            if (!Files.exists(metsPath)) {
-                                metsPath = mainMetsPath.resolveSibling("amdsec").resolve(pageMetsFilename);
-                            }
-
-                            if (!Files.exists(metsPath)) {
-                                log.warn("Mets path not found for page: {}", correspondingPage.getId());
-                            } else {
-                                correspondingPage.setMetsPath(metsPath.toString());
-                            }
-                        } else {
-                            log.trace("METS file {} could not be associated with any page", pageMetsFilename);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private Path findMainMets(Path ndkDir) {
+    public Path findMainMetsFile(Path ndkDir) {
         try (Stream<Path> files = Files.list(ndkDir)) {
             List<Path> matchingFiles = files
                     .filter(this::matchMainMetsFilename)
@@ -113,10 +69,34 @@ public class MetsFileFinder {
         }
     }
 
+    /**
+     * Tries to identify NDK files for pages by looking at the <mets:structMap TYPE="PHYSICAL"> elements in the
+     * main mets file and matches {@link Page#getTitle()} with ORDERLABEL attribute in <mets:div> elements.
+     * @param mainMetsPath
+     */
+    public List<MainMetsDto.Div> getMetsDivElements(Path mainMetsPath) {
+        MainMetsDto mainMetsDto = metsUnmarshaller.unmarshal(mainMetsPath.toFile());
+
+        Optional<MainMetsDto.StructMap> physicalStructureMap = getPhysicalStructureMap(mainMetsDto);
+
+        if (physicalStructureMap.isPresent()) {
+            return physicalStructureMap.get().getDiv().getDivs();
+        }
+
+        throw new IllegalStateException("MainMets file '" + mainMetsPath.getFileName().toString()
+                + "' does not have mets:div elements under <mets:structMap TYPE=\"PHYSICAL\"> element");
+    }
+
+    private Optional<MainMetsDto.StructMap> getPhysicalStructureMap(MainMetsDto mainMetsDto) {
+        return mainMetsDto.getStructMap()
+                .stream()
+                .filter(structMap -> structMap.getType().equalsIgnoreCase("PHYSICAL"))
+                .findFirst();
+    }
+
     private boolean matchMainMetsFilename(Path file) {
-        return (file.getFileName().toString().startsWith("mets")
-                || file.getFileName().toString().startsWith("METS"))
-                && file.toString().endsWith(".xml");
+        return file.getFileName().toString().substring(0, 4).equalsIgnoreCase("mets")
+                && file.getFileName().toString().endsWith(".xml");
     }
 
     @Autowired

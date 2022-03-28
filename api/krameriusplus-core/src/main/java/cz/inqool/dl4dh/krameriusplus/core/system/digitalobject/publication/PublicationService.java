@@ -8,6 +8,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.utils.Utils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -62,10 +63,12 @@ public class PublicationService {
         return publicationStore.listAll(params);
     }
 
+    @Autowired
     public void setPublicationStore(PublicationStore publicationStore) {
         this.publicationStore = publicationStore;
     }
 
+    @Autowired
     public void setPageStore(PageStore pageStore) {
         this.pageStore = pageStore;
     }

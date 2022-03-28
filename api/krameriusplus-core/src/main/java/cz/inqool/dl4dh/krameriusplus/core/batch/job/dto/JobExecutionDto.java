@@ -3,9 +3,10 @@ package cz.inqool.dl4dh.krameriusplus.core.batch.job.dto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.JobParameter;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 @Getter
 @Setter
@@ -25,7 +26,21 @@ public class JobExecutionDto {
 
     private Date lastUpdated;
 
-    private String exitStatus;
+    private ExitStatus exitStatus;
 
     private String jobConfigurationName;
+
+    private List<Throwable> failureExceptions;
+
+    private Map<String, JobParameter> jobParameters = new HashMap<>();
+    /**
+     * Returns the difference in milliseconds
+     */
+    public Long getDuration() {
+        if (endTime == null || startTime == null) {
+            return  null;
+        }
+
+        return endTime.getTime() - startTime.getTime();
+    }
 }

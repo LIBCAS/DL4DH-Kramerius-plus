@@ -3,7 +3,6 @@ package cz.inqool.dl4dh.krameriusplus.api.restapi;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,20 +22,9 @@ public class PublicationApi {
         this.publicationService = publicationService;
     }
 
-    @Operation(summary = "Get an enriched publication by PID")
-    @PostMapping("/{id}")
-    public Publication getEnrichedPublication(@PathVariable("id") String id,
-                                              @RequestBody(required = false) Params pageParams) {
-        if (pageParams == null) {
-            pageParams = new Params();
-        }
-
-        return publicationService.findWithPages(id, pageParams);
-    }
-
-    @GetMapping("/list")
-    public List<Publication> listGet() {
-        return publicationService.list(new Params());
+    @GetMapping("/{id}")
+    public Publication find(@PathVariable("id") String publicationId) {
+        return publicationService.find(publicationId);
     }
 
     @PostMapping("/list")

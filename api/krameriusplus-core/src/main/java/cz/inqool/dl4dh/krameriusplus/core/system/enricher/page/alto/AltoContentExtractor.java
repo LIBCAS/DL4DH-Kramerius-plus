@@ -23,7 +23,13 @@ public class AltoContentExtractor {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public void enrichPage(@NonNull Page page, @NonNull AltoDto alto) {
+    private final Page page;
+
+    public AltoContentExtractor(@NonNull Page page) {
+        this.page = page;
+    }
+
+    public void enrichPage(@NonNull AltoDto alto) {
         pageContent = new StringBuilder();
 
         var pageElements = Optional.ofNullable(alto.getLayout())
@@ -82,7 +88,7 @@ public class AltoContentExtractor {
 
             return ocrParadata;
         } catch (IndexOutOfBoundsException exception) {
-            log.error("No OCR metadata for publication");
+            log.error("No OCR metadata for page {}", page.getId());
             return null;
         } catch (Exception exception) {
             log.error("Error extracting paradata from OCR", exception);
