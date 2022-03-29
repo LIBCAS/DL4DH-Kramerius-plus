@@ -28,7 +28,15 @@ spec:
             - name: SPRING_ACTIVEMQ_BROKER-URL
               value: "tcp://kramerius-activemq:61616"
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:postgresql://kramerius:changeit@kramerius-postgresql/kramerius_plus_db"
+              value: "jdbc:postgresql://kramerius-postgresql/kramerius_plus_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "kramerius"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "changeit"
+            - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
+              value: "org.postgresql.Driver"
+            - name: SPRING_JPA_DATABASE-PLATFORM
+              value: "org.hibernate.dialect.PostgreSQLDialect"
           resources:
             requests:
               cpu: "20m"
