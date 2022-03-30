@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 } from 'uuid'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
@@ -27,17 +27,17 @@ export const ExportedPublications = () => {
 		[],
 	)
 
-	useInterval(
-		async () => {
+	useEffect(() => {
+		async function fetchExports() {
 			const result = await getExportedPublications()
 
 			if (result.length > 0) {
 				setExportedPublications(result)
 			}
-		},
-		5000,
-		true,
-	)
+		}
+
+		fetchExports()
+	}, [])
 
 	return (
 		<Paper className={classes.paper}>

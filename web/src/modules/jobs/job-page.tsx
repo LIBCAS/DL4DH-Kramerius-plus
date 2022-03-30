@@ -3,8 +3,8 @@ import { GridRowParams } from '@mui/x-data-grid'
 import { JobInstance } from 'models/job-instance'
 import { useEffect, useState } from 'react'
 import { getJobInstances } from './job-api'
-import { JobDetail } from './job-detail/job-detail'
-import { JobList } from './job-list'
+import { JobDetail } from './job-detail'
+import { JobList } from './job-instance/job-instance-list'
 
 type Props = {
 	jobName: string
@@ -20,6 +20,11 @@ export const JobPage = ({ jobName }: Props) => {
 			setJobInstances(response)
 		}
 		fetchInstances()
+
+		return () => {
+			setSelectedJob(undefined)
+			setJobInstances([])
+		}
 	}, [jobName])
 
 	const onRowClickCallback = (params: GridRowParams) => {
@@ -32,12 +37,14 @@ export const JobPage = ({ jobName }: Props) => {
 
 	return (
 		<Grid container spacing={2}>
-			<Grid item xs={4}>
+			<Grid item xs={3}>
 				<JobList jobs={jobInstances} onRowClick={onRowClickCallback} />
 			</Grid>
-			<Grid item xs={8}>
-				<JobDetail job={selectedJob} />
-			</Grid>
+			{selectedJob && (
+				<Grid item xs={9}>
+					<JobDetail jobInstance={selectedJob} />
+				</Grid>
+			)}
 		</Grid>
 	)
 }

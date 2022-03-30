@@ -10,7 +10,7 @@ type Props = {
 export const StepExecutionDetail = ({ stepExecution }: Props) => {
 	return (
 		<Box justifyItems="flex-start">
-			<Box>
+			<Box paddingBottom={3}>
 				<Typography variant="h6">Zvolený krok</Typography>
 			</Box>
 			<Box>

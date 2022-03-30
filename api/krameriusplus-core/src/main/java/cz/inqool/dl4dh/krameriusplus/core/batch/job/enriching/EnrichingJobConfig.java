@@ -38,10 +38,9 @@ public class EnrichingJobConfig {
                 })
                 .incrementer(new RunIdIncrementer())
                 .start(downloadFlow())
-                .next(ndkFlow())
-                .on("*").to(steps.get(ENRICH_PUBLICATION_TEI))
-                .next(enrichPagesFlow()).on("FAILED").fail()
-                .from(ndkFlow()).on("*").to(steps.get(CLEAN_UP_PAGES))
+                .next(ndkFlow()).on("*").to(steps.get(ENRICH_PUBLICATION_TEI))
+                .next(enrichPagesFlow()).on("FAILED").fail().next(steps.get(CLEAN_UP_PAGES))
+                .from(enrichPagesFlow()).on("*").to(steps.get(CLEAN_UP_PAGES))
                 .end()
                 .build();
     }

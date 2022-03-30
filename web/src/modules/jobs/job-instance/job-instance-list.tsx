@@ -27,7 +27,10 @@ export const JobList = ({ jobs, onRowClick }: Props) => {
 			<DataGrid
 				autoHeight={true}
 				columns={columns}
+				disableColumnFilter
+				disableColumnMenu
 				rows={jobs}
+				rowsPerPageOptions={[]}
 				onRowClick={onRowClick}
 			/>
 		</Paper>

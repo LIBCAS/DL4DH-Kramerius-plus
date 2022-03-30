@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { Box } from '@mui/system'
 import {
 	DataGrid,
@@ -7,14 +7,11 @@ import {
 	GridValueFormatterParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
-import { ReadOnlyField } from 'components/read-only-field/read-only-field'
-import { JobExecution, JobInstance } from 'models'
-import { useEffect, useState } from 'react'
-import { getJobExecutions } from '../job-api'
-import { JobExecutionDetail } from './job-execution-detail'
+import { JobExecution } from 'models'
 
 type Props = {
-	job: JobInstance
+	executions: JobExecution[]
+	onRowClick: (params: GridRowParams) => void
 }
 
 const dateTimeFormatter = (params: GridValueFormatterParams) => {
@@ -76,47 +73,20 @@ const executionColumns: GridColDef[] = [
 	},
 ]
 
-export const JobInstanceDetail = ({ job }: Props) => {
-	const [jobExecutions, setJobExecutions] = useState<JobExecution[]>([])
-	const [selectedExecution, setSelectedExecution] = useState<JobExecution>()
-
-	useEffect(() => {
-		async function fetchExecutions() {
-			const response = await getJobExecutions('' + job.id)
-			setJobExecutions(response)
-		}
-		fetchExecutions()
-	}, [job])
-
-	const handleExecutionClick = (params: GridRowParams) => {
-		const job = jobExecutions.find(exec => exec.id === params.row['id'])
-		setSelectedExecution(job)
-	}
-
+export const JobExecutionList = ({ executions, onRowClick }: Props) => {
 	return (
-		<Grid container direction="column" spacing={3}>
-			<Grid item xs>
-				<Box>
-					<ReadOnlyField label="ID" value={'' + job?.id} />
-					<ReadOnlyField label="Název úlohy" value={job?.jobName} />
-				</Box>
-			</Grid>
-			<Grid item xs>
+		<Box>
+			<Box paddingBottom={3}>
 				<Typography variant="h6">Spustenia</Typography>
-			</Grid>
-			<Grid item xs>
+			</Box>
+			<Box>
 				<DataGrid
 					autoHeight={true}
 					columns={executionColumns}
-					rows={jobExecutions}
-					onRowClick={handleExecutionClick}
+					rows={executions}
+					onRowClick={onRowClick}
 				/>
-			</Grid>
-			{selectedExecution && (
-				<Grid item xs>
-					<JobExecutionDetail jobExecution={selectedExecution} />
-				</Grid>
-			)}
-		</Grid>
+			</Box>
+		</Box>
 	)
 }

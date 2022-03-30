@@ -23,7 +23,8 @@ public class CleanUpPages {
                                  ItemProcessor<Page, Page> cleanUpProcessor,
                                  MongoItemWriter<Page> writer) {
         return stepBuilderFactory.get(CLEAN_UP_PAGES)
-                .<Page, Page>chunk(10)
+                .allowStartIfComplete(true)
+                .<Page, Page>chunk(5)
                 .reader(reader)
                 .processor(cleanUpProcessor)
                 .writer(writer)

@@ -1,9 +1,9 @@
 import { Grid, makeStyles, Paper } from '@material-ui/core'
 import { JobInstance } from 'models/job-instance'
-import { JobInstanceDetail } from './job-instance-detail'
+import { JobInstanceDetail } from './job-instance/job-instance-detail'
 
 type Props = {
-	job?: JobInstance
+	jobInstance: JobInstance
 }
 
 const useStyles = makeStyles(() => ({
@@ -12,15 +12,15 @@ const useStyles = makeStyles(() => ({
 	},
 }))
 
-export const JobDetail = ({ job }: Props) => {
+export const JobDetail = ({ jobInstance }: Props) => {
 	const classes = useStyles()
 
 	return (
-		<Paper className={classes.paper}>
+		<Paper className={classes.paper} elevation={4}>
 			<Grid container xs={12}>
-				{job && (
+				{jobInstance && (
 					<Grid item style={{ width: '100%' }}>
-						<JobInstanceDetail job={job} />
+						<JobInstanceDetail job={jobInstance} />
 					</Grid>
 				)}
 			</Grid>
