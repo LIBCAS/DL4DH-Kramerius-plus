@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sleep 10
+sleep 15
 
 cd /usr/src
 java -jar -Xmx1024m api.jar > api.stdout 2> api.stderr

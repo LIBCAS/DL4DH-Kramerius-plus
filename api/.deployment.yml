@@ -22,17 +22,25 @@ spec:
           image: eu.gcr.io/inqool-1301/cz.inqool.kramerius/api:latest
           env:
             - name: SPRING_DATA_MONGODB_URI
-              value: "mongodb://root:password@kramerius-db:27017/?gssapiServiceName=mongodb&connectTimeoutMS=30000"
+              value: "mongodb://root:password@127.0.0.1:27017/?gssapiServiceName=mongodb&connectTimeoutMS=30000"
             - name: SYSTEM_ENRICHMENT_TEI_API
               value: "http://10.3.240.31:5000/tei"
             - name: SPRING_ACTIVEMQ_BROKER-URL
-              value: "tcp://kramerius-activemq:61616"
+              value: "tcp://127.0.0.1:61616"
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:postgresql://kramerius:changeit@kramerius-postgresql/kramerius_plus_db"
+              value: "jdbc:postgresql://127.0.0.1:5432/kramerius_plus_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "kramerius"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "changeit"
+            - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
+              value: "org.postgresql.Driver"
+            - name: SPRING_JPA_DATABASE-PLATFORM
+              value: "org.hibernate.dialect.PostgreSQLDialect"
           resources:
             requests:
               cpu: "20m"
-              memory: "32Mi"
+              memory: "512Mi"
             limits:
               cpu: "1000m"
               memory: "1152Mi"
@@ -56,10 +64,10 @@ spec:
           resources:
             requests:
               cpu: "20m"
-              memory: "32Mi"
+              memory: "468Mi"
             limits:
               cpu: "500m"
-              memory: "128Mi"
+              memory: "512Mi"
           ports:
             - name: http
               containerPort: 27017
@@ -95,10 +103,10 @@ spec:
           resources:
             requests:
               cpu: "50m"
-              memory: "128Mi"
+              memory: "256Mi"
             limits:
               cpu: "100m"
-              memory: "160Mi"
+              memory: "288Mi"
           ports:
             - name: http
               containerPort: 61616
