@@ -64,10 +64,10 @@ spec:
           resources:
             requests:
               cpu: "20m"
-              memory: "32Mi"
+              memory: "256Mi"
             limits:
               cpu: "500m"
-              memory: "128Mi"
+              memory: "512Mi"
           ports:
             - name: http
               containerPort: 27017
