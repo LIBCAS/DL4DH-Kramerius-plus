@@ -3,7 +3,7 @@ import { ApiError } from 'models'
 import fetch from 'utils/fetch'
 
 export async function enrich(publications: string[]) {
-	const requestUrl = '/api/job/instance/enrich'
+	const requestUrl = '/api/enrich'
 
 	try {
 		await fetch(requestUrl, {
