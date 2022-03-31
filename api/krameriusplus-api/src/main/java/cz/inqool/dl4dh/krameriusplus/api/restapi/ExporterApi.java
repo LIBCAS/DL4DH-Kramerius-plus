@@ -2,6 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
+import cz.inqool.dl4dh.krameriusplus.core.jms.ExportMessage;
+import cz.inqool.dl4dh.krameriusplus.core.jms.JmsProducer;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
@@ -13,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,14 +30,39 @@ public class ExporterApi {
 
     private final ExporterService exporterService;
     private final FileService fileService;
+    private final PublicationService publicationService;
+    private final JmsProducer jmsProducer;
 
     @Autowired
-    public ExporterApi(ExporterService exporterService, FileService fileService) {
+    public ExporterApi(ExporterService exporterService,
+                       FileService fileService,
+                       PublicationService publicationService,
+                       JmsProducer jmsProducer) {
         this.exporterService = exporterService;
         this.fileService = fileService;
+        this.publicationService = publicationService;
+        this.jmsProducer = jmsProducer;
     }
 
-    @PostMapping("/{id}/json")
+    @PostMapping("/{id}/{format}")
+    public void export(@PathVariable("id") String publicationId,
+                       @PathVariable("format") String stringFormat,
+                       @RequestBody(required = false) Params params) {
+        Publication publication = publicationService.find(publicationId);
+
+        if (params == null) {
+            params = new Params();
+        }
+
+        jmsProducer.sendExportMessage(
+                ExportMessage.newInstance(publicationId,
+                        publication.getTitle(),
+                        params,
+                        ExportFormat.fromString(stringFormat),
+                        Date.from(Instant.now())));
+    }
+
+    @PostMapping("/old/{id}/json")
     public void exportJson(@PathVariable("id") String publicationId,
                              @RequestBody(required = false) Params params) {
         if (params == null) {
@@ -41,7 +72,7 @@ public class ExporterApi {
         exporterService.export(publicationId, params, ExportFormat.JSON);
     }
 
-    @PostMapping("/{id}/tei")
+    @PostMapping("/old/{id}/tei")
     public void exportTei(@PathVariable("id") String publicationId,
                             @RequestBody(required = false) TeiParams params) {
         if (params == null) {
@@ -51,7 +82,7 @@ public class ExporterApi {
         exporterService.export(publicationId, params, ExportFormat.TEI);
     }
 
-    @PostMapping("/{id}/csv")
+    @PostMapping("/old/{id}/csv")
     public void exportCsv(@PathVariable("id") String publicationId,
                             @RequestBody(required = false) Params params) {
         if (params == null) {
@@ -60,7 +91,7 @@ public class ExporterApi {
         exporterService.export(publicationId, params, ExportFormat.CSV);
     }
 
-    @PostMapping("/{id}/tsv")
+    @PostMapping("/old/{id}/tsv")
     public void exportTsv(@PathVariable("id") String publicationId,
                             @RequestBody(required = false) Params params) {
         if (params == null) {

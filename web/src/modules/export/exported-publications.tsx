@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { FileRef } from '../../models'
 import { ExportItem } from '../../components/export/export-item'
-import { useInterval } from '../../hooks/use-interval'
 import { getExportedPublications } from './export-api'
 
 const useStyles = makeStyles(() => ({

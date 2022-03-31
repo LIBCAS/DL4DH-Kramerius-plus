@@ -3,6 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.core.jms;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.batch.job.JobService;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -34,6 +36,8 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
     private MessageConverter messageConverter;
 
     private ObjectMapper objectMapper;
+
+    private ExporterService exporterService;
 
     @Override
     public void configureJmsListeners(JmsListenerEndpointRegistrar registrar) {
@@ -78,13 +82,31 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
             try {
                 ExportMessage exportMessage = (ExportMessage) messageConverter.fromMessage(message);
 
-                JobParameters jobParameters = new JobParametersBuilder()
-                        .addString("publicationId", exportMessage.getPublicationId())
-                        .addString("publicationTitle", exportMessage.getPublicationTitle())
-                        .addString("params", objectMapper.writeValueAsString(exportMessage.getParams()))
-                        .toJobParameters();
+                if (exportMessage.getExecutionId() != null) {
+                    jobService.restartJob(exportMessage.getExecutionId());
+                } else {
+                    switch (exportMessage.getExportFormat()) {
+                        case JSON:
+                            JobParameters jobParameters = new JobParametersBuilder()
+                                    .addString("publicationId", exportMessage.getPublicationId())
+                                    .addString("publicationTitle", exportMessage.getPublicationTitle())
+                                    .addDate("timestamp", exportMessage.getTimestamp())
+                                    .addString("params", objectMapper.writeValueAsString(exportMessage.getParams()))
+                                    .toJobParameters();
 
-                jobService.runJob(jsonExportingJob, jobParameters);
+                            jobService.runJob(jsonExportingJob, jobParameters);
+                            break;
+                        case TEI:
+                            exporterService.export(exportMessage.getPublicationId(), exportMessage.getParams(), ExportFormat.TEI);
+                            break;
+                        case CSV:
+                            exporterService.export(exportMessage.getPublicationId(), exportMessage.getParams(), ExportFormat.CSV);
+                            break;
+                        case TSV:
+                            exporterService.export(exportMessage.getPublicationId(), exportMessage.getParams(), ExportFormat.TSV);
+                            break;
+                    }
+                }
             } catch (JMSException e) {
                 log.error("Received Exception : "+ e);
             } catch (JsonProcessingException exception) {
@@ -118,5 +140,10 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
     @Autowired
     public void setJobService(JobService jobService) {
         this.jobService = jobService;
+    }
+
+    @Autowired
+    public void setExporterService(ExporterService exporterService) {
+        this.exporterService = exporterService;
     }
 }

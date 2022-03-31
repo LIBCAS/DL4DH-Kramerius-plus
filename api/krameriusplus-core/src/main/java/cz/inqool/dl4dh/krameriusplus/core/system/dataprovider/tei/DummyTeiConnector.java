@@ -10,6 +10,7 @@ import org.springframework.util.StreamUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class DummyTeiConnector implements TeiConnector {
 
     @SneakyThrows
     @Override
-    public File merge(String teiHeader, List<String> teiPages, TeiParams params) {
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params) {
         File file = File.createTempFile("download", "tmp");
         StreamUtils.copy("Test TEI full".getBytes(StandardCharsets.UTF_8), new FileOutputStream(file));
 

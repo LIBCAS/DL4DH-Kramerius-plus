@@ -24,10 +24,9 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.Resource;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -81,16 +80,16 @@ public class WebClientTeiConnector implements TeiConnector {
     }
 
     @Override
-    public File merge(String teiHeader, List<String> teiPages, TeiParams params) {
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setAccept(List.of(MediaType.APPLICATION_XML));
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("header", new MultipartInputStreamFileResource(new ByteArrayInputStream(teiHeader.getBytes(StandardCharsets.UTF_8)), "header"));
+        body.add("header", new MultipartInputStreamFileResource(teiHeader, "header"));
 
-        for (String teiPage : teiPages) {
-            body.add("page[]", new MultipartInputStreamFileResource(new ByteArrayInputStream(teiPage.getBytes(StandardCharsets.UTF_8)), "page.xml"));
+        for (InputStream teiPage : teiPages) {
+            body.add("page[]", new MultipartInputStreamFileResource(teiPage, "page.xml"));
         }
 
         params.getUdPipeParams().forEach(param -> body.add("UDPipe", param));
