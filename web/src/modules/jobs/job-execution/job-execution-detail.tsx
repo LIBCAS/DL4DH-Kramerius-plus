@@ -25,7 +25,7 @@ export const JobExecutionDetail = ({ jobExecution }: Props) => {
 		<Box p={3}>
 			<Grid container direction="column" spacing={3}>
 				<Grid item xs>
-					<Typography variant="h6">Zvolené spustenie</Typography>
+					<Typography variant="h6">Zvolený běh</Typography>
 				</Grid>
 				<Grid item xs>
 					<Box flex="true" flexDirection="row">

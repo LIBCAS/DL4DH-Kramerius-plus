@@ -77,7 +77,7 @@ export const JobExecutionList = ({ executions, onRowClick }: Props) => {
 	return (
 		<Box>
 			<Box paddingBottom={3}>
-				<Typography variant="h6">Spustenia</Typography>
+				<Typography variant="h6">Běhy</Typography>
 			</Box>
 			<Box>
 				<DataGrid
