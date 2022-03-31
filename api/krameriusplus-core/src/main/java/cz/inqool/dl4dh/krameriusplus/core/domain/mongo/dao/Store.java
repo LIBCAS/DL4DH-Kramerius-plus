@@ -76,6 +76,13 @@ public interface Store<T extends DomainObject> {
     T find(@NonNull String id, List<String> includeFields);
 
     /**
+     * Checks if an object with given ID exists in the database
+     * @param id id of object to check
+     * @return true if object exists, false otherwise
+     */
+    boolean exists(@NonNull String id);
+
+    /**
      * Finds all the instances corresponding to the specified list of IDs.
      *
      * @param ids list of IDs

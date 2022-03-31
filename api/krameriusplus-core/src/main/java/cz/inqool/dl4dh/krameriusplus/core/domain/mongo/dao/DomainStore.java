@@ -123,6 +123,14 @@ public abstract class DomainStore<T extends DomainObject> implements Store<T> {
     }
 
     @Override
+    public boolean exists(@NonNull String id) {
+        Query query = new Query();
+        query.addCriteria(where("id").is(id));
+
+        return mongoOperations.exists(query, type);
+    }
+
+    @Override
     public Collection<T> list(@NonNull List<String> ids) {
         if (ids.isEmpty()) {
             return emptyList();

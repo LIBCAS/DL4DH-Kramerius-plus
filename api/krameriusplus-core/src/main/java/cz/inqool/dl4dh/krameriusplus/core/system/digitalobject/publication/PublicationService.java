@@ -42,6 +42,10 @@ public class PublicationService {
         return publication;
     }
 
+    public boolean exists(String publicationId) {
+        return publicationStore.exists(publicationId);
+    }
+
     /**
      * Returns a publication with given ID, including its pages depending on the given {@param param}
      */

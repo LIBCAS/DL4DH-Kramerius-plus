@@ -56,7 +56,7 @@ system:
     tei:
       api: http://localhost:5000/tei
     ndk:
-      path: todo
+#      path: todo
   json:
     serializeEmptyArrays: true
 

@@ -100,7 +100,7 @@ public class MetsFileFinder {
     }
 
     @Autowired
-    public void setNdkPath(@Value("${system.enrichment.ndk.path}") String path) {
+    public void setNdkPath(@Value("${system.enrichment.ndk.path:}") String path) {
         this.ndkPath = path;
     }
 }
