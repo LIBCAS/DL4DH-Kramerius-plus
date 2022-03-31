@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 public interface TeiConnector {
@@ -13,5 +14,5 @@ public interface TeiConnector {
 
     String convertToTeiHeader(Publication publication);
 
-    File merge(String teiHeader, List<String> teiPages, TeiParams params);
+    File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params);
 }

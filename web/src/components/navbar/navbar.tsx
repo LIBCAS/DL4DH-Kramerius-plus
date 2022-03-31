@@ -43,17 +43,17 @@ export const Navbar = () => {
 					>
 						Obohacení
 					</Button>
-					<Button color="inherit" component={Link} to="/publications">
-						Publikace
-					</Button>
-					<Button color="inherit" component={Link} to="/export">
-						Exporty
-					</Button>
 					<Button color="inherit" component={Link} to="/jobs/enriching">
 						Úlohy obohacení
 					</Button>
 					<Button color="inherit" component={Link} to="/jobs/export">
 						Úlohy exportování
+					</Button>
+					<Button color="inherit" component={Link} to="/publications">
+						Publikace
+					</Button>
+					<Button color="inherit" component={Link} to="/export">
+						Exporty
 					</Button>
 				</div>
 				<div style={{ display: 'flex', flexDirection: 'column' }}>

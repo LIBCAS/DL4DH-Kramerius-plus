@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.ExportException
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.tei.TeiConnector;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.ExportException.ErrorCode.TEI_MERGE_ERROR;
 
@@ -83,15 +87,25 @@ public class TeiExporter extends AbstractExporter {
     }
 
     private File getTei(Publication publication, TeiParams params) {
-//
-//        return teiConnector.merge(publication.getTeiHeader(),
-//                publication
-//                        .getPages()
-//                        .stream()
-//                        .map(Page::getTeiBody)
-//                        .filter(Objects::nonNull)
-//                        .collect(Collectors.toList()),
-//                params);
-        throw new UnsupportedOperationException("Not implemented");
+        FileRef teiHeader = fileService.find(publication.getTeiHeaderFileId());
+        List<FileRef> teiPages = new ArrayList<>();
+
+        for (Page page : publication.getPages()) {
+            teiPages.add(fileService.find(page.getTeiBodyFileId()));
+        }
+
+        teiHeader.open();
+        teiPages.forEach(FileRef::open);
+
+        File file = teiConnector.merge(teiHeader.getStream(),
+                teiPages.stream()
+                        .map(FileRef::getStream)
+                        .collect(Collectors.toList()),
+                params);
+
+        teiHeader.close();
+        teiPages.forEach(FileRef::close);
+
+        return file;
     }
 }

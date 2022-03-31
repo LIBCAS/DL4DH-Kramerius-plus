@@ -33,7 +33,7 @@ public class TeiParams extends Params {
         sorting.add(new Sorting("index", Sort.Direction.ASC));
 
         includeFields = new ArrayList<>();
-        includeFields("id", "teiBody");
+        includeFields("id", "teiBodyFileId");
 
         return this;
     }

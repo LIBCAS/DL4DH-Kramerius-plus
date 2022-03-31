@@ -65,7 +65,7 @@ export const JobInstanceDetail = ({ job }: Props) => {
 					<ReadOnlyField label="Název úlohy" value={job?.jobName} />
 				</Box>
 				<Box paddingBottom={2}>
-					{lastExecution && lastExecution.exitStatus.exitCode === 'FAILED' && (
+					{lastExecution && lastExecution.status === 'FAILED' && (
 						<Button
 							color="primary"
 							type="submit"

@@ -1,6 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
@@ -18,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,15 +33,26 @@ public class CommonBeans {
 
     @Bean
     @StepScope
-    public MongoItemReader<Page> pageReader(MongoOperations mongoOperations,
-                                       @Value("#{jobParameters['publicationId']}") String publicationId) {
+    public MongoItemReader<Page> pageReader(ObjectMapper objectMapper,
+                                            MongoOperations mongoOperations,
+                                            @Value("#{jobParameters['publicationId']}") String publicationId,
+                                            @Value("#{jobParameters['params']}") String params) throws JsonProcessingException {
+        Query query = new Query();
+
+        if (params != null) {
+            Params queryParams = objectMapper.readValue(params, Params.class);
+            query = queryParams.toQuery();
+        }
+
+        query.addCriteria(where("parentId").is(publicationId));
+
         return new MongoItemReaderBuilder<Page>()
                 .name("currentPage")
                 .template(mongoOperations)
                 .collection("pages")
                 .targetType(Page.class)
                 .pageSize(10)
-                .query(query(where("parentId").is(publicationId)))
+                .query(query)
                 .sorts(Map.of("index", Sort.Direction.ASC))
                 .build();
     }
