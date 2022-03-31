@@ -2,8 +2,8 @@ import { SingleEvent } from 'components/event/event-detail'
 import { ApiError } from 'models'
 import fetch from 'utils/fetch'
 
-export async function enrich(publications: string[]) {
-	const requestUrl = '/api/enrich'
+export async function enrich(publications: string[], override: boolean) {
+	const requestUrl = override ? '/api/enrich?override=true' : '/api/enrich'
 
 	try {
 		await fetch(requestUrl, {

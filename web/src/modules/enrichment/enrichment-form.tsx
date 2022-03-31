@@ -80,7 +80,7 @@ export const EnrichmentForm = () => {
 
 		const publications = idFields.map(f => f.value.trim())
 
-		const response = await enrich(publications)
+		const response = await enrich(publications, false)
 
 		if (response.ok) {
 			toast('Operace proběhla úspěšně', {
@@ -98,7 +98,7 @@ export const EnrichmentForm = () => {
 							contentHeight={25}
 							title="Opakované obohacení"
 							onSubmit={async () => {
-								const response = await enrich(publications)
+								const response = await enrich(publications, true)
 
 								if (response.ok) {
 									toast('Opakované obohacení proběhlo úspěšně', {
