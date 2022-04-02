@@ -10,9 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.isTrue;
@@ -109,5 +107,14 @@ public class Params {
         return paging == null ?
                 PageRequest.of(0, Integer.MAX_VALUE, sort) :
                 PageRequest.of(paging.getPage(), paging.getPageSize(), sort);
+    }
+
+    public Map<String, Integer> toFieldsMap() {
+        Map<String, Integer> result = new HashMap<>();
+
+        includeFields.forEach(includeField -> result.put(includeField, 1));
+        excludeFields.forEach(excludeField -> result.put(excludeField, 0));
+
+        return result;
     }
 }

@@ -46,16 +46,12 @@ const exportPublication = async (
 
 const defaultJSONParams: Params = {
 	disablePagination: false,
-	pageOffset: 0,
-	pageSize: 20,
 	filters: [],
 	includeFields: [],
 }
 
 const defaultTeiParams: TeiParams = {
 	disablePagination: false,
-	pageOffset: 0,
-	pageSize: 20,
 	filters: [],
 	includeFields: [],
 	udPipeParams: [],

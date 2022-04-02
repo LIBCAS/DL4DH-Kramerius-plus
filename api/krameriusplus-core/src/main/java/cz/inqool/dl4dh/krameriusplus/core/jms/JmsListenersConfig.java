@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.batch.job.JobService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -31,13 +30,13 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
 
     private Job jsonExportingJob;
 
+    private Job exportingJob;
+
     private JobService jobService;
 
     private MessageConverter messageConverter;
 
     private ObjectMapper objectMapper;
-
-    private ExporterService exporterService;
 
     @Override
     public void configureJmsListeners(JmsListenerEndpointRegistrar registrar) {
@@ -85,26 +84,18 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
                 if (exportMessage.getExecutionId() != null) {
                     jobService.restartJob(exportMessage.getExecutionId());
                 } else {
-                    switch (exportMessage.getExportFormat()) {
-                        case JSON:
-                            JobParameters jobParameters = new JobParametersBuilder()
-                                    .addString("publicationId", exportMessage.getPublicationId())
-                                    .addString("publicationTitle", exportMessage.getPublicationTitle())
-                                    .addDate("timestamp", exportMessage.getTimestamp())
-                                    .addString("params", objectMapper.writeValueAsString(exportMessage.getParams()))
-                                    .toJobParameters();
+                    JobParameters jobParameters = new JobParametersBuilder()
+                            .addString("publicationId", exportMessage.getPublicationId())
+                            .addString("publicationTitle", exportMessage.getPublicationTitle())
+                            .addDate("timestamp", exportMessage.getTimestamp())
+                            .addString("params", objectMapper.writeValueAsString(exportMessage.getParams()))
+                            .addString("exportFormat", exportMessage.getExportFormat().name())
+                            .toJobParameters();
 
-                            jobService.runJob(jsonExportingJob, jobParameters);
-                            break;
-                        case TEI:
-                            exporterService.export(exportMessage.getPublicationId(), exportMessage.getParams(), ExportFormat.TEI);
-                            break;
-                        case CSV:
-                            exporterService.export(exportMessage.getPublicationId(), exportMessage.getParams(), ExportFormat.CSV);
-                            break;
-                        case TSV:
-                            exporterService.export(exportMessage.getPublicationId(), exportMessage.getParams(), ExportFormat.TSV);
-                            break;
+                    if (exportMessage.getExportFormat() == ExportFormat.JSON) {
+                        jobService.runJob(jsonExportingJob, jobParameters);
+                    } else {
+                        jobService.runJob(exportingJob, jobParameters);
                     }
                 }
             } catch (JMSException e) {
@@ -123,8 +114,13 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
     }
 
     @Autowired
-    public void setExportingJob(Job jsonExportingJob) {
+    public void setJsonExportingJob(Job jsonExportingJob) {
         this.jsonExportingJob = jsonExportingJob;
+    }
+
+    @Autowired
+    public void setExportingJob(Job exportingJob) {
+        this.exportingJob = exportingJob;
     }
 
     @Autowired
@@ -140,10 +136,5 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
     @Autowired
     public void setJobService(JobService jobService) {
         this.jobService = jobService;
-    }
-
-    @Autowired
-    public void setExporterService(ExporterService exporterService) {
-        this.exporterService = exporterService;
     }
 }
