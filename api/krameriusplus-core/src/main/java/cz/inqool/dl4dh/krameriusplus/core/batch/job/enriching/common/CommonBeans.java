@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
@@ -24,6 +25,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -37,16 +39,28 @@ public class CommonBeans {
                                             MongoOperations mongoOperations,
                                             @Value("#{jobParameters['publicationId']}") String publicationId,
                                             @Value("#{jobParameters['params']}") String params) throws JsonProcessingException {
+
+        MongoItemReaderBuilder<Page> readerBuilder =new MongoItemReaderBuilder<>();
         Query query = new Query();
+        query.addCriteria(where("parentId").is(publicationId));
 
         if (params != null) {
             Params queryParams = objectMapper.readValue(params, Params.class);
-            query = queryParams.toQuery();
+
+            if (queryParams.getPaging() != null) {
+                readerBuilder.maxItemCount(queryParams.getPaging().getPageSize());
+                readerBuilder.currentItemCount(queryParams.getPaging().getPage() * queryParams.getPaging().getPageSize());
+            }
+
+            readerBuilder.fields(objectMapper.writeValueAsString(queryParams.toFieldsMap()));
+            readerBuilder.sorts(queryParams.getSorting().stream().collect(Collectors.toMap(Sorting::getField, Sorting::getDirection)));
+
+            queryParams.getFilters().forEach(filter -> query.addCriteria(filter.toCriteria()));
         }
 
-        query.addCriteria(where("parentId").is(publicationId));
 
-        return new MongoItemReaderBuilder<Page>()
+
+        return readerBuilder
                 .name("currentPage")
                 .template(mongoOperations)
                 .collection("pages")

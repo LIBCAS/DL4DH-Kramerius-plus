@@ -12,6 +12,7 @@ import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.EnrichingJobConfig.ENRICHING_JOB;
 import static cz.inqool.dl4dh.krameriusplus.core.batch.job.export.json.JsonExportingJobConfig.JSON_EXPORTING_JOB;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.export.tei.ExportingJobConfig.EXPORTING_JOB;
 
 @RestController
 @RequestMapping("/api/job")
@@ -39,7 +40,10 @@ public class JobApi {
 
     @GetMapping("/instance/export/list")
     public List<JobInstanceDto> listExportingJobs() {
-        return jobService.listJobInstances(JSON_EXPORTING_JOB);
+        List<JobInstanceDto> jobInstanceDtos = jobService.listJobInstances(JSON_EXPORTING_JOB);
+        jobInstanceDtos.addAll(jobService.listJobInstances(EXPORTING_JOB));
+
+        return jobInstanceDtos;
     }
 
     @GetMapping("/instance/{instanceId}/executions")
