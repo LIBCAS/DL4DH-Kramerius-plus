@@ -52,6 +52,9 @@ spec:
             - name: shared-storage
               mountPath: /usr/src/data
               subPath: kramerius-api/data
+            - name: shared-storage
+              mountPath: /usr/src/ndk
+              subPath: kramerius-api/ndk
         - name: kramerius-db
           image: mongo:5.0.2
           env:
