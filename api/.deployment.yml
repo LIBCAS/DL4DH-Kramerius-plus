@@ -25,6 +25,8 @@ spec:
               value: "mongodb://root:password@127.0.0.1:27017/?gssapiServiceName=mongodb&connectTimeoutMS=30000"
             - name: SYSTEM_ENRICHMENT_TEI_API
               value: "http://10.3.240.31:5000/tei"
+            - name: SYSTEM_ENRICHMENT_NDK_PATH
+              value: "/usr/src/ndk"
             - name: SPRING_ACTIVEMQ_BROKER-URL
               value: "tcp://127.0.0.1:61616"
             - name: SPRING_DATASOURCE_URL
