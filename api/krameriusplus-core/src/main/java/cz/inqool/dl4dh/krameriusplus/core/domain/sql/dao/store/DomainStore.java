@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.store;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -26,6 +26,7 @@ import org.springframework.data.querydsl.QSort;
 
 import javax.persistence.EntityManager;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -185,6 +186,39 @@ public abstract class DomainStore<T extends DomainObject, Q extends EntityPathBa
         return entity;
     }
 
+    public QueryResults<T> list(Params params) {
+        JPAQuery<T> query = query().select(qObject).from(qObject);
+
+        if (params.getFilters() != null) {
+            params.getFilters().forEach(filter -> this.applyFilter(query, filter));
+        }
+
+        OrderSpecifier<?>[] orderSpecifier;
+        if (params.getSorting() != null) {
+            String sortByAttribute = params.getSorting().getField();
+            if (Order.DESC.equals(params.getSorting().getSort().query())) {
+                orderSpecifier = getOrderSpecifierDescending(qObject, sortByAttribute);
+            } else {
+                orderSpecifier = getOrderSpecifierAscending(qObject, sortByAttribute);
+            }
+        } else {
+            orderSpecifier = defaultListAllOrder(qObject);
+        }
+
+        query.orderBy(orderSpecifier);
+
+        if (params.getPaging() != null) {
+            query.offset((long) params.getPaging().getPage() * params.getPaging().getPageSize());
+            query.limit(params.getPaging().getPageSize());
+        }
+
+        QueryResults<T> result = query.fetchResults();
+
+        detachAll();
+
+        return result;
+    }
+
     /**
      * Finds all the instances corresponding to the specified list of IDs.
      * <p>
@@ -260,11 +294,11 @@ public abstract class DomainStore<T extends DomainObject, Q extends EntityPathBa
         if (paging == null && sorting == null) {
             int pageSize = countAll().intValue();
             return listAll(0, (pageSize <= 0) ? 1 : pageSize, filters, true);
-        } else if (paging != null && sorting == null)  {
+        } else if (paging != null && sorting == null) {
             return listAll(paging.getPage(), paging.getPageSize(), filters, params.isLazyLoading());
-        }else if (paging == null && sorting != null) {
+        } else if (paging == null && sorting != null) {
             return listAllSorted(sorting.getField(), sorting.getSort().query(), filters, params.isLazyLoading());
-        }else {
+        } else {
             return listAllSorted(sorting.getField(), sorting.getSort().query(), paging.getPage(), paging.getPageSize(), filters, params.isLazyLoading());
         }
     }
@@ -470,6 +504,7 @@ public abstract class DomainStore<T extends DomainObject, Q extends EntityPathBa
 
     private Q constructQObject(Class<T> type, Class<Q> qType) {
         String name = type.getSimpleName();
+        name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
 
         try {
             Constructor<Q> constructor = qType.getConstructor(String.class);
@@ -479,36 +514,47 @@ public abstract class DomainStore<T extends DomainObject, Q extends EntityPathBa
         }
     }
 
+    @SneakyThrows
     protected void applyFilter(JPAQuery<T> query, Filter filter) {
-        String field = filter.getField();
-        String value = filter.getValue();
-        Class<?> fieldType = this.resolveClass(type, field);
+        Field field = this.resolveField(type, filter.getField());
+        Expression<?> path = this.resolvePath(filter.getField());
 
-        // todo: refactor it to a more convenient form
-        Predicate predicate = null;
-        if (Enum.class.isAssignableFrom(fieldType)) {
-            EnumPath<?> enumPath = Expressions.enumPath((Class<? extends Enum>)fieldType, field);
-
-            predicate = Expressions.predicate(filter.getOperator().ops(),
-                    enumPath.stringValue(), Expressions.constant(value.toUpperCase()));
-        }else{
-            SimplePath<T> fieldPath = Expressions.path(type, field);
-            Expression<String> valuePath = Expressions.constant(filter.getValue());
-            predicate = Expressions.predicate(filter.getOperator().ops(), fieldPath, valuePath);
+        Expression<?> valueExpression;
+        if (Enum.class.isAssignableFrom(field.getType())) {
+            valueExpression = Expressions.constant(Enum.valueOf((Class<Enum>) field.getType(), filter.getValue()));
+        } else {
+            valueExpression = Expressions.constant(filter.getValue());
         }
-
-        query.where(predicate);
+        query.where(Expressions.predicate(
+                filter.getOperator().ops(),
+                path,
+                valueExpression));
     }
 
     @SneakyThrows
-    private Class<?> resolveClass(Class<?> type, String field) {
-        Class<?> fieldType = type;
-
-        String[] fieldTypes = field.split("\\.");
-        for (String tmp : fieldTypes) {
-            fieldType = fieldType.getDeclaredField(tmp).getType();
+    private Expression<?> resolvePath(String fieldName) {
+        for (Field field : qType.getDeclaredFields()) {
+            if (Expression.class.isAssignableFrom(field.getType()) && field.getName().equals(fieldName)) {
+                return (Expression<?>) field.get(qObject);
+            }
         }
-        return fieldType;
+
+        throw new IllegalStateException("No field of " + qType.getName() + " matches field " + fieldName);
+    }
+
+    @SneakyThrows
+    private Field resolveField(Class<?> clazz, String fieldName) {
+        if (clazz == Object.class) {
+            throw new IllegalArgumentException("No field with name " + fieldName + " found on given object");
+        }
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getName().equals(fieldName)) {
+                return field;
+            }
+        }
+
+        return resolveField(clazz.getSuperclass(), fieldName);
     }
 
     protected void applyWhereExpressions(JPAQuery<T> query) {

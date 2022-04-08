@@ -1,9 +1,10 @@
 import { Paper } from '@material-ui/core'
 import { DataGrid, GridRowParams } from '@mui/x-data-grid'
-import { JobInstance } from 'models/job-instance'
+import { JobEvent } from 'models/job-event'
+import { dateTimeFormatter } from 'utils/formatters'
 
 type Props = {
-	jobs: JobInstance[]
+	jobs: JobEvent[]
 	onRowClick: (params: GridRowParams) => void
 }
 
@@ -11,17 +12,19 @@ const columns = [
 	{
 		field: 'id',
 		headerName: 'ID',
-		width: 90,
-		type: 'number',
+		width: 300,
+		type: 'string',
 	},
 	{
-		field: 'jobName',
-		headerName: 'Název úlohy',
+		field: 'created',
+		headerName: 'Vytvořeno',
 		flex: 1,
+		type: 'datetime',
+		valueFormatter: dateTimeFormatter,
 	},
 ]
 
-export const JobList = ({ jobs, onRowClick }: Props) => {
+export const JobEventList = ({ jobs, onRowClick }: Props) => {
 	return (
 		<Paper>
 			<DataGrid

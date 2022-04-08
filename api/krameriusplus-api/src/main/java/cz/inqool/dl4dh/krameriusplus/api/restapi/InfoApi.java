@@ -14,7 +14,6 @@ import java.util.Map;
 @RequestMapping("/api/info")
 public class InfoApi {
 
-
     @Operation(summary = "Get current instance")
     @GetMapping("/kramerius")
     public ResponseEntity<?> getCurrentInstance(@Value("${system.kramerius}") KrameriusInstance krameriusInstance) {

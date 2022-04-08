@@ -1,58 +1,39 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.JobService;
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.dto.JobExecutionDto;
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.dto.JobInstanceDto;
-import cz.inqool.dl4dh.krameriusplus.core.jms.EnrichMessage;
-import cz.inqool.dl4dh.krameriusplus.core.jms.JmsProducer;
+import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.EnrichingJobConfig.ENRICHING_JOB;
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.export.json.JsonExportingJobConfig.JSON_EXPORTING_JOB;
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.export.tei.ExportingJobConfig.EXPORTING_JOB;
 
 @RestController
 @RequestMapping("/api/job")
 public class JobApi {
 
-    private final JobService jobService;
-
-    private final JmsProducer jmsProducer;
+    private final JobEventService jobEventService;
 
     @Autowired
-    public JobApi(JobService jobService, JmsProducer jmsProducer) {
-        this.jobService = jobService;
-        this.jmsProducer = jmsProducer;
+    public JobApi(JobEventService jobEventService) {
+        this.jobEventService = jobEventService;
     }
 
-    @GetMapping("/list")
-    public List<String> listJobs() {
-        return jobService.listJobs();
+    @PostMapping("/list")
+    public QueryResults<JobEventDto> listJobs(@RequestBody(required = false) Params params) {
+        if (params == null) {
+            params = new Params();
+        }
+
+        return jobEventService.list(params);
     }
 
-    @GetMapping("/instance/enriching/list")
-    public List<JobInstanceDto> listEnrichingJobs() {
-        return jobService.listJobInstances(ENRICHING_JOB);
+    @GetMapping("/{id}")
+    public JobEventDto findJob(@PathVariable("id") String id) {
+        return jobEventService.find(id);
     }
 
-    @GetMapping("/instance/export/list")
-    public List<JobInstanceDto> listExportingJobs() {
-        List<JobInstanceDto> jobInstanceDtos = jobService.listJobInstances(JSON_EXPORTING_JOB);
-        jobInstanceDtos.addAll(jobService.listJobInstances(EXPORTING_JOB));
-
-        return jobInstanceDtos;
-    }
-
-    @GetMapping("/instance/{instanceId}/executions")
-    public List<JobExecutionDto> listInstanceRuns(@PathVariable("instanceId") Long instanceId) {
-        return jobService.listJobExecutions(instanceId);
-    }
-
-    @PostMapping("/execution/{executionId}/restart")
-    public void restartJob(@PathVariable("executionId") Long executionId) {
-        jmsProducer.sendEnrichMessage(new EnrichMessage(executionId));
+    @PostMapping("/{id}/restart")
+    public JobEventDto restartJob(@PathVariable("id") String jobEventId) {
+        return jobEventService.runJob(jobEventId);
     }
 }

@@ -1,16 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
+import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.PublicationContainerDto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingException;
-import cz.inqool.dl4dh.krameriusplus.core.jms.EnrichMessage;
-import cz.inqool.dl4dh.krameriusplus.core.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.EnrichingJobEventCreateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingException.ErrorCode.ALREADY_ENRICHED;
@@ -19,24 +18,25 @@ import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.Scheduli
 @RequestMapping("/api/enrich")
 public class EnrichmentApi {
 
-    private final JmsProducer jmsProducer;
-
     private final PublicationService publicationService;
 
+    private final JobEventService jobEventService;
+
     @Autowired
-    public EnrichmentApi(JmsProducer jmsProducer, PublicationService publicationService) {
-        this.jmsProducer = jmsProducer;
+    public EnrichmentApi(PublicationService publicationService, JobEventService jobEventService) {
         this.publicationService = publicationService;
+        this.jobEventService = jobEventService;
     }
 
-    @PostMapping()
-    public void enrich(@RequestBody PublicationContainerDto publicationsDto, @RequestParam(value = "override", defaultValue = "false") boolean override) {
+    @PostMapping
+    public EnrichResponseDto enrich(@RequestBody PublicationContainerDto publicationsDto, @RequestParam(value = "override", defaultValue = "false") boolean override) {
         List<String> alreadyEnrichedPublications = new ArrayList<>();
-        for (String publicationId : publicationsDto.getPublications()) {
-            if (publicationService.exists(publicationId)) {
-                alreadyEnrichedPublications.add(publicationId);
+
+        publicationsDto.getPublications().forEach(pubId -> {
+            if (publicationService.exists(pubId)) {
+                alreadyEnrichedPublications.add(pubId);
             }
-        }
+        });
 
         if (!alreadyEnrichedPublications.isEmpty() && !override) {
             throw new SchedulingException(ALREADY_ENRICHED,
@@ -44,8 +44,14 @@ public class EnrichmentApi {
                             " 'override=true'");
         }
 
+        EnrichResponseDto responseDto = new EnrichResponseDto();
+
         for (String publicationId : publicationsDto.getPublications()) {
-            jmsProducer.sendEnrichMessage(new EnrichMessage(publicationId, Date.from(Instant.now())));
+            EnrichingJobEventCreateDto createDto = new EnrichingJobEventCreateDto();
+            createDto.setPublicationId(publicationId);
+            responseDto.getEnrichJobs().add(jobEventService.create(createDto));
         }
+
+        return responseDto;
     }
 }

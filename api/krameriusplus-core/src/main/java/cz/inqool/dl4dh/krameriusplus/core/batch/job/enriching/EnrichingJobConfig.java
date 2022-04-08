@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching;
 
+import cz.inqool.dl4dh.krameriusplus.core.batch.job.KrameriusJob;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.Step;
@@ -21,8 +22,6 @@ import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.Enric
 @Configuration
 public class EnrichingJobConfig {
 
-    public static final String ENRICHING_JOB = "enrichingJob";
-
     private JobBuilderFactory jobBuilderFactory;
 
     private final Map<String, Step> steps = new HashMap<>();
@@ -30,7 +29,7 @@ public class EnrichingJobConfig {
     @Bean
     public Job enrichingJob() {
         return jobBuilderFactory
-                .get(ENRICHING_JOB)
+                .get(KrameriusJob.ENRICHING_JOB.name())
                 .validator(parameters -> {
                     if (parameters == null || parameters.getString("publicationId") == null) {
                         throw new JobParametersInvalidException("Parameter 'publicationId' missing.");

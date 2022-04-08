@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography'
 
 type Props = {
 	label: string
-	value?: string
+	value?: any
 }
 
 export const ReadOnlyField = ({ label, value }: Props) => {

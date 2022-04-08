@@ -4,8 +4,8 @@ import { Box } from '@mui/system'
 import { ReadOnlyField } from 'components/read-only-field/read-only-field'
 import { Publication } from 'models'
 import { useContext } from 'react'
-import { DialogContext } from '../dialog/dialog-context'
-import { PublicationExportDialog } from './publication-export-dialog'
+import { DialogContext } from '../../components/dialog/dialog-context'
+import { PublicationExportDialog } from '../../components/publication/publication-export-dialog'
 
 type Props = {
 	publication: Publication

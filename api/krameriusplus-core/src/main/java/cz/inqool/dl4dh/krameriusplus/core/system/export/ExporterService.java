@@ -7,12 +7,12 @@ import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,6 @@ public class ExporterService {
     }
 
     @Transactional
-    @Async
     public void export(String publicationId, Params params, ExportFormat format) {
         Export export = exporters.get(format).export(publicationId, params);
         exportStore.create(export);
@@ -76,13 +75,7 @@ public class ExporterService {
     }
 
     public List<Export> listToDelete() {
-//        Params params = new Params();
-//        params.addFilters(new AndFilter(asList(
-//                new LtFilter("created", Instant.now().minus(DELETE_AFTER_HOURS, ChronoUnit.HOURS)),
-//                new NullFilter("deleted"))));
-//
-//        return exportStore.listAll(params);
-        throw new UnsupportedOperationException("Not implemented");
+        return exportStore.listDeletedOlderThan(Instant.now().minus(DELETE_AFTER_HOURS, ChronoUnit.HOURS));
     }
 
     @Autowired

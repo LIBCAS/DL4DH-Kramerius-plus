@@ -67,6 +67,16 @@ public class JsonUtils {
         }
     }
 
+    public static <T> T fromJsonString(@NonNull String json, @NonNull JavaType type) {
+        ensureObjectMapperInitialized();
+
+        try {
+            return objectMapper.readValue(json, type);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(format("Failed to read JSON value as %s", type.getTypeName()), e);
+        }
+    }
+
     public static <T> T fromJsonStringParametrized(@NonNull String json, @NonNull Class<T> parametrized, Class<?>... parameterTypes) {
         ensureObjectMapperInitialized();
 

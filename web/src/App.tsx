@@ -25,10 +25,10 @@ function App() {
 							<PublicationsPage />
 						</Route>
 						<Route exact path="/jobs/enriching">
-							<JobPage jobName="enriching" />
+							<JobPage jobName="ENRICHING_JOB" />
 						</Route>
 						<Route exact path="/jobs/export">
-							<JobPage jobName="export" />
+							<JobPage jobName="EXPORTING_JOB" />
 						</Route>
 						<Route exact path="/">
 							<Enrichment />

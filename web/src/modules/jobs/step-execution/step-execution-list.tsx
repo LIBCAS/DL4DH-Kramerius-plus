@@ -4,32 +4,14 @@ import {
 	DataGrid,
 	GridColDef,
 	GridRowParams,
-	GridValueFormatterParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { StepExecution } from 'models'
+import { dateTimeFormatter, durationFormatter } from 'utils/formatters'
 
 type Props = {
 	executions: StepExecution[]
 	onRowClick: (params: GridRowParams) => void
-}
-
-const dateTimeFormatter = (params: GridValueFormatterParams) => {
-	if (params.value === undefined) {
-		return undefined
-	}
-
-	const date = new Date(params.value as string)
-	return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}:${date.getMilliseconds()}`
-}
-
-const durationFormatter = (params: GridValueFormatterParams) => {
-	const durationInMillis = params.value as number
-	if (durationInMillis === undefined) {
-		return undefined
-	}
-
-	return new Date(durationInMillis).toISOString().slice(11, -1)
 }
 
 const getExitCode = (params: GridValueGetterParams) => {
@@ -78,7 +60,7 @@ export const StepExecutionList = ({ executions, onRowClick }: Props) => {
 	return (
 		<Box>
 			<Box paddingBottom={3}>
-				<Typography variant="h6">Vykonané kroky</Typography>
+				<Typography variant="h6">Vykonané kroky v zvolenom běhu</Typography>
 			</Box>
 			<Box paddingBottom={3}>
 				<DataGrid

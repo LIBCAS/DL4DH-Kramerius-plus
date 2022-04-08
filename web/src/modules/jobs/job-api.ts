@@ -1,31 +1,50 @@
 import { JobExecution } from 'models/job-execution'
-import { JobInstance } from 'models/job-instance'
+import { JobEvent } from 'models/job-event'
+import { QueryResult } from 'models/query-results'
+import { toast } from 'react-toastify'
 
-export const getJobNames = async () => {
+export const listJobEvents = async (jobName: string) => {
 	try {
-		const response = await fetch('/api/job/list', {
-			method: 'GET',
+		const response = await fetch(`/api/job/list`, {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				filters: [
+					{
+						field: 'krameriusJob',
+						operator: 'EQ',
+						value: jobName,
+					},
+				],
+			}),
 		})
 
-		const json: string[] = await response.json()
+		const json: QueryResult<JobEvent> = await response.json()
+
+		console.log(json)
 
 		return json
 	} catch (e) {
-		return []
+		return undefined
 	}
 }
 
-export const getJobInstances = async (jobName: string) => {
+export const getJobEvent = async (jobEventId: string) => {
 	try {
-		const response = await fetch(`/api/job/instance/${jobName}/list`, {
+		const response = await fetch(`/api/job/${jobEventId}`, {
 			method: 'GET',
 		})
 
-		const json: JobInstance[] = await response.json()
+		const json: JobEvent = await response.json()
+
+		console.log(json)
 
 		return json
 	} catch (e) {
-		return []
+		toast(e as string)
 	}
 }
 
@@ -57,9 +76,9 @@ export const getJobExecution = async (executionId: string) => {
 	}
 }
 
-export const restartJobExecution = async (executionId: number) => {
+export const restartJobExecution = async (jobEventId: string) => {
 	try {
-		await fetch(`/api/job/execution/${executionId}/restart`, {
+		await fetch(`/api/job/${jobEventId}/restart`, {
 			method: 'POST',
 		})
 
