@@ -18,6 +18,7 @@ public class Filter {
     @NotNull
     private Operator operator = Operator.CONTAINS;
 
+    @NotNull
     private String value;
 
 }

@@ -1,8 +1,8 @@
-import { Box, spacing } from '@mui/system'
-import { PublicationDetail } from 'components/publication/publication-detail'
-import { PublicationList } from 'components/publication/publication-list'
+import { Box } from '@mui/system'
+import { PublicationDetail } from 'modules/publications/publication-detail'
 import { Publication } from 'models'
 import { useState } from 'react'
+import { PublicationList } from './publication-list'
 
 export const PublicationsPage = () => {
 	const [selectedPublication, setSelectedPublication] = useState<Publication>()

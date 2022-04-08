@@ -39,23 +39,6 @@ public class TeiExporter extends AbstractExporter {
     }
 
     @Override
-    public FileRef generateFile(Publication publication) {
-//        File tmpFile = getTei(publication, teiParams);
-//
-//        try (InputStream is = new FileInputStream(tmpFile)) {
-//            FileRef file = fileService.create(, tmpFile.length(),
-//                    getFormat().getFileName(publicationId), ContentType.TEXT_XML.getMimeType());
-//
-//            return createExport(publication, file);
-//        } catch (FileNotFoundException e) {
-//            throw new ExportException(TEI_MERGE_ERROR, e);
-//        } catch (IOException e) {
-//            throw new UncheckedIOException(e);
-//        }
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
-    @Override
     public Export export(String publicationId, Params params) {
         TeiParams teiParams = convert(params);
 

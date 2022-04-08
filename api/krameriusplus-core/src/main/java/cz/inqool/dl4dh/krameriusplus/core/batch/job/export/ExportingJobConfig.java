@@ -1,13 +1,10 @@
-package cz.inqool.dl4dh.krameriusplus.core.batch.job.export.tei;
+package cz.inqool.dl4dh.krameriusplus.core.batch.job.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -18,10 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.KrameriusJob.EXPORTING_JOB;
+
 @Configuration
 public class ExportingJobConfig {
-
-    public static final String EXPORTING_JOB = "exportingJob";
 
     private JobBuilderFactory jobBuilderFactory;
 
@@ -31,17 +32,10 @@ public class ExportingJobConfig {
 
     private ObjectMapper objectMapper;
 
-    @Bean(EXPORTING_JOB)
-    public Job teiExportingJob() {
-        return jobBuilderFactory.get(EXPORTING_JOB)
-                .validator(parameters -> {
-                    if (parameters == null ||
-                            parameters.getString("publicationId") == null ||
-                            parameters.getString("params") == null ||
-                            parameters.getString("exportFormat") == null) {
-                        throw new JobParametersInvalidException("Parameter 'publicationId', 'params' or 'exportFormat' missing.");
-                    }
-                })
+    @Bean
+    public Job exportingJob() {
+        return jobBuilderFactory.get(EXPORTING_JOB.name())
+                .validator(validator())
                 .incrementer(new RunIdIncrementer())
                 .start(exportingStep())
                 .build();
@@ -49,7 +43,7 @@ public class ExportingJobConfig {
 
     @Bean
     public Step exportingStep() {
-        return stepBuilderFactory.get("TEI_EXPORTING_STEP")
+        return stepBuilderFactory.get("EXPORTING_STEP")
                 .tasklet(exportingTasklet())
                 .build();
     }
@@ -66,6 +60,37 @@ public class ExportingJobConfig {
             exporterService.export(publicationId, params, exportFormat);
 
             return RepeatStatus.FINISHED;
+        };
+    }
+
+    private JobParametersValidator validator() {
+        return parameters -> {
+            if (parameters == null) {
+                throw new NullPointerException("jobParameters");
+            }
+
+            Map<String, Object> invalidParameters = new HashMap<>();
+
+            if (parameters.getString("publicationId") == null) {
+                invalidParameters.put("publicationId", null);
+            }
+
+            if (parameters.getString("params") == null) {
+                invalidParameters.put("params", null);
+            }
+
+            if (parameters.getString("exportFormat") == null) {
+                invalidParameters.put("exportFormat", null);
+            }
+
+            if (Arrays.stream(ExportFormat.values())
+                    .noneMatch(value -> value.name().equals(parameters.getString("exportFormat")))) {
+                invalidParameters.put("exportFormat", parameters.getString("exportFormat"));
+            }
+
+            if (!invalidParameters.isEmpty()) {
+                throw new JobParametersInvalidException("Invalid parameters: " + invalidParameters);
+            }
         };
     }
 

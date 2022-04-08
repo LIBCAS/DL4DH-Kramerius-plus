@@ -10,6 +10,10 @@ spring:
     password: password
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
   h2:
     console:
       enabled: true
@@ -28,6 +32,8 @@ spring:
     job:
       enabled: false
 #    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
+  main:
+    allow-bean-definition-overriding: true
   interceptor:
     body: SHORT
 
@@ -61,8 +67,5 @@ system:
     serializeEmptyArrays: true
 
 active-mq:
-  queues:
-    exporting-queue: export
-    enriching-queue: enriching
   messaging:
     auto-consume: true

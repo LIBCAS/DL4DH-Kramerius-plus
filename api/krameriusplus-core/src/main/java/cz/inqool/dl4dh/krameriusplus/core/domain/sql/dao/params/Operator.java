@@ -5,7 +5,7 @@ import com.querydsl.core.types.Ops;
 public enum Operator {
 
     CONTAINS(Ops.STRING_CONTAINS_IC),
-    EQ(Ops.EQ_IGNORE_CASE);
+    EQ(Ops.EQ);
 
     private Ops ops;
 

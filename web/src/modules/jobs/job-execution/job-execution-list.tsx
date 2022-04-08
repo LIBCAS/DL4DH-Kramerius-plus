@@ -4,31 +4,14 @@ import {
 	DataGrid,
 	GridColDef,
 	GridRowParams,
-	GridValueFormatterParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { JobExecution } from 'models'
+import { dateTimeFormatter, durationFormatter } from 'utils/formatters'
 
 type Props = {
 	executions: JobExecution[]
 	onRowClick: (params: GridRowParams) => void
-}
-
-const dateTimeFormatter = (params: GridValueFormatterParams) => {
-	if (params.value === undefined) {
-		return undefined
-	}
-	const date = new Date(params.value as string)
-	return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}:${date.getMilliseconds()}`
-}
-
-const durationFormatter = (params: GridValueFormatterParams) => {
-	const durationInMillis = params.value as number
-	if (durationInMillis === undefined) {
-		return undefined
-	}
-
-	return new Date(durationInMillis).toISOString().slice(11, -1)
 }
 
 const getExitCode = (params: GridValueGetterParams) => {
@@ -37,12 +20,6 @@ const getExitCode = (params: GridValueGetterParams) => {
 
 const executionColumns: GridColDef[] = [
 	{
-		field: 'id',
-		headerName: 'ID',
-		width: 90,
-		type: 'number',
-	},
-	{
 		field: 'status',
 		headerName: 'Stav',
 		width: 150,
@@ -50,19 +27,20 @@ const executionColumns: GridColDef[] = [
 	{
 		field: 'startTime',
 		headerName: 'Čas spustenia',
-		width: 220,
+		width: 200,
 		valueFormatter: dateTimeFormatter,
 	},
 	{
 		field: 'endTime',
 		headerName: 'Čas ukončenia',
-		width: 220,
+		width: 200,
 		valueFormatter: dateTimeFormatter,
 	},
 	{
 		field: 'duration',
-		headerName: 'Trvanie (HH:mm:ss.SSS)',
-		width: 200,
+		headerName: 'Trvanie',
+		description: '(HH:mm:ss.SSS)',
+		width: 120,
 		valueFormatter: durationFormatter,
 	},
 	{
