@@ -1,4 +1,5 @@
+import { MapType } from './map-type'
+
 export interface InstanceInfo {
-	instance: string
-	url: string
+	info: MapType
 }
