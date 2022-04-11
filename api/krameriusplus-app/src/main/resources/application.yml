@@ -28,10 +28,11 @@ spring:
     password: admin
     broker-url: tcp://localhost:61616
   batch:
-    initialize-schema: always
     job:
       enabled: false
-#    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
+    jdbc:
+      initialize-schema: always
+  #    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
   main:
     allow-bean-definition-overriding: true
   interceptor:
@@ -50,7 +51,8 @@ springdoc:
   swagger-ui.path: /swagger
 
 system:
-  kramerius: NDK
+  kramerius:
+    code: nkp
   enrichment:
   #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
   #  and ALTO processing does not make manual corrections (while OCR processing does)

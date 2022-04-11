@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -25,6 +26,9 @@ import reactor.netty.http.client.HttpClient;
 import javax.net.ssl.SSLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Configuration
 @Slf4j
@@ -53,10 +57,28 @@ public class WebClientConfig {
                 .build();
     }
 
-    @Bean(name = "krameriusWebClient")
-    public WebClient webClientKramerius(@Value("${system.kramerius}") KrameriusInstance krameriusInstance) throws SSLException {
+    @Bean
+    public KrameriusInfo krameriusInfo(@Value("${system.kramerius.code}") String krameriusCode) {
+        WebClient webClient = WebClient.builder().build();
+        List<Map<String, Object>> krameriusInfos = webClient
+                .get()
+                .uri("https://registr.digitalniknihovna.cz/libraries.json")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
+                .block();
 
-        return getWebClient(krameriusInstance.getUrl() + "/search/api/v5.0/item");
+        notNull(krameriusInfos, () -> new IllegalStateException("GET to 'https://registr.digitalniknihovna.cz/libraries.json' did not return any results"));
+
+        return krameriusInfos.stream()
+                .filter(kramerius -> ((String) kramerius.get("code")).equalsIgnoreCase(krameriusCode))
+                .map(KrameriusInfo::new)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find Kramerius instance for code: " + krameriusCode));
+    }
+
+    @Bean(name = "krameriusWebClient")
+    public WebClient webClientKramerius(KrameriusInfo krameriusInfo) throws SSLException {
+        return getWebClient(krameriusInfo.getInfo().get("url") + "/search/api/v5.0/item");
     }
 
     private ExchangeFilterFunction logRequest() {

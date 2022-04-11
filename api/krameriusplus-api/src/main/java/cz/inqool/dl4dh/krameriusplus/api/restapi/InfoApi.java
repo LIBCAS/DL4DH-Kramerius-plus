@@ -1,9 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
-import cz.inqool.dl4dh.krameriusplus.core.config.KrameriusInstance;
+import cz.inqool.dl4dh.krameriusplus.core.config.KrameriusInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,20 +20,20 @@ public class InfoApi {
 
     private final BuildProperties buildProperties;
 
+    private final KrameriusInfo krameriusInstance;
+
     private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @Autowired
-    public InfoApi(BuildProperties buildProperties) {
+    public InfoApi(BuildProperties buildProperties, KrameriusInfo krameriusInstance) {
         this.buildProperties = buildProperties;
+        this.krameriusInstance = krameriusInstance;
     }
 
     @Operation(summary = "Get current instance")
     @GetMapping("/kramerius")
-    public ResponseEntity<?> getCurrentInstance(@Value("${system.kramerius}") KrameriusInstance krameriusInstance) {
-        return ResponseEntity.ok(
-                Map.of(
-                        "instance", krameriusInstance,
-                        "url", krameriusInstance.getUrl()));
+    public ResponseEntity<KrameriusInfo> getCurrentInstance() {
+        return ResponseEntity.ok(krameriusInstance);
     }
 
     @GetMapping("/version")
