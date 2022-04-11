@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -59,21 +60,23 @@ public class WebClientConfig {
 
     @Bean
     public KrameriusInfo krameriusInfo(@Value("${system.kramerius.code}") String krameriusCode) {
+        String uri = UriComponentsBuilder
+                .fromHttpUrl("https://registr.digitalniknihovna.cz/libraries/")
+                .path(krameriusCode + ".json")
+                .build()
+                .toUriString();
+
         WebClient webClient = WebClient.builder().build();
-        List<Map<String, Object>> krameriusInfos = webClient
+        Map<String, Object> krameriusInfos = webClient
                 .get()
-                .uri("https://registr.digitalniknihovna.cz/libraries.json")
+                .uri(uri)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
 
-        notNull(krameriusInfos, () -> new IllegalStateException("GET to 'https://registr.digitalniknihovna.cz/libraries.json' did not return any results"));
+        notNull(krameriusInfos, () -> new IllegalStateException("GET to '" + uri +"' did not return any results"));
 
-        return krameriusInfos.stream()
-                .filter(kramerius -> ((String) kramerius.get("code")).equalsIgnoreCase(krameriusCode))
-                .map(KrameriusInfo::new)
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Could not find Kramerius instance for code: " + krameriusCode));
+        return new KrameriusInfo(krameriusInfos);
     }
 
     @Bean(name = "krameriusWebClient")
