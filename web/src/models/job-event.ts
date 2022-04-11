@@ -1,11 +1,11 @@
 import { JobExecution } from 'models'
-import { JobEventParameters } from './job-event-parameters'
+import { MapType } from './map-type'
 
 export interface JobEvent {
 	id: string
 	created: Date
 	jobName?: string
 	publicationId: string
-	parameters: JobEventParameters
+	parameters: MapType
 	executions: JobExecution[]
 }

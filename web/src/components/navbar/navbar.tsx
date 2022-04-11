@@ -58,10 +58,10 @@ export const Navbar = () => {
 				</div>
 				<div style={{ display: 'flex', flexDirection: 'column' }}>
 					<Typography className={classes.instanceInfo} component="span">
-						Url: {url}
+						Instance: {instance}
 					</Typography>
 					<Typography className={classes.instanceInfo} component="span">
-						Instance: {instance}
+						Url: {url}
 					</Typography>
 				</div>
 			</Toolbar>

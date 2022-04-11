@@ -23,7 +23,7 @@ export const useNavbar = () => {
 	}, [])
 
 	return {
-		instance: data?.instance,
-		url: data?.url,
+		instance: data?.info.name,
+		url: data?.info.url,
 	}
 }

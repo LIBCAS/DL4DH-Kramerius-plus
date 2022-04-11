@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -19,12 +20,16 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import javax.net.ssl.SSLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Configuration
 @Slf4j
@@ -53,10 +58,30 @@ public class WebClientConfig {
                 .build();
     }
 
-    @Bean(name = "krameriusWebClient")
-    public WebClient webClientKramerius(@Value("${system.kramerius}") KrameriusInstance krameriusInstance) throws SSLException {
+    @Bean
+    public KrameriusInfo krameriusInfo(@Value("${system.kramerius.code}") String krameriusCode) {
+        String uri = UriComponentsBuilder
+                .fromHttpUrl("https://registr.digitalniknihovna.cz/libraries/")
+                .path(krameriusCode + ".json")
+                .build()
+                .toUriString();
 
-        return getWebClient(krameriusInstance.getUrl() + "/search/api/v5.0/item");
+        WebClient webClient = WebClient.builder().build();
+        Map<String, Object> krameriusInfos = webClient
+                .get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .block();
+
+        notNull(krameriusInfos, () -> new IllegalStateException("GET to '" + uri +"' did not return any results"));
+
+        return new KrameriusInfo(krameriusInfos);
+    }
+
+    @Bean(name = "krameriusWebClient")
+    public WebClient webClientKramerius(KrameriusInfo krameriusInfo) throws SSLException {
+        return getWebClient(krameriusInfo.getInfo().get("url") + "/search/api/v5.0/item");
     }
 
     private ExchangeFilterFunction logRequest() {
