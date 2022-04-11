@@ -5,13 +5,14 @@
     <parent>
         <artifactId>krameriusplus</artifactId>
         <groupId>cz.inqool.dl4dh</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>krameriusplus-api</artifactId>
     <packaging>jar</packaging>
     <name>Kramerius+ - api</name>
+    <version>${revision}</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -22,7 +23,6 @@
         <dependency>
             <groupId>cz.inqool.dl4dh</groupId>
             <artifactId>krameriusplus-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -35,5 +35,21 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
     </dependencies>
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>build-info</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
 
 </project>
