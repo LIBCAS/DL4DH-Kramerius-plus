@@ -7,11 +7,12 @@
     <artifactId>krameriusplus-core</artifactId>
     <packaging>jar</packaging>
     <name>Kramerius+ - core</name>
+    <version>${revision}</version>
 
     <parent>
         <artifactId>krameriusplus</artifactId>
         <groupId>cz.inqool.dl4dh</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <properties>
