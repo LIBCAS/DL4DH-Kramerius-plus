@@ -164,6 +164,10 @@ spec:
       targetPort: 8081
       protocol: TCP
       name: mongo
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: postgre
   selector:
     name: kramerius-api
   clusterIP: 10.3.240.30
