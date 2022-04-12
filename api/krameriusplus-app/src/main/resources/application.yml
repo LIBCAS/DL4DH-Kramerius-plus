@@ -2,7 +2,7 @@ spring:
 #  datasource:
 #    url: jdbc:postgresql://localhost:5432/kramerius_plus_db
 #    username: postgres
-#    password: uzidem9izo
+#    password: changeit
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
