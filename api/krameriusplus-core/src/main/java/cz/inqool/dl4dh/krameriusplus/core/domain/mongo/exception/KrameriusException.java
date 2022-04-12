@@ -17,9 +17,11 @@ public class KrameriusException extends GeneralException {
     }
 
     public enum ErrorCode implements LogCode {
-        MISSING_OBJECT,
+        NOT_FOUND,
         MISSING_CHILDREN,
         EXTERNAL_API_ERROR,
+        NOT_RESPONDING,
+        UNDEFINED,
         MISSING_STREAM,
         NO_PAGE_HAD_ALTO,
         INTERRUPTED,
