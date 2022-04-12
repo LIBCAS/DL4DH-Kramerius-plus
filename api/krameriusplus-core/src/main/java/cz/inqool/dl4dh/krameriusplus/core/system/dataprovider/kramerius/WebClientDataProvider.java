@@ -8,12 +8,14 @@ import lombok.Getter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.KrameriusException.ErrorCode.EXTERNAL_API_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.KrameriusException.ErrorCode.*;
 
 /**
  * @author Norbert Bodnar
@@ -62,8 +64,15 @@ public class WebClientDataProvider implements DataProvider, StreamProvider {
                     .retrieve()
                     .bodyToMono(typeReference)
                     .block();
-        } catch (Exception e) {
+        } catch (WebClientResponseException e) {
+            if (e.getRawStatusCode() == 404) {
+                throw new KrameriusException(NOT_FOUND, e);
+            }
             throw new KrameriusException(EXTERNAL_API_ERROR, e);
+        } catch (WebClientRequestException e) {
+            throw new KrameriusException(NOT_RESPONDING, e);
+        } catch (Exception e) {
+            throw new KrameriusException(UNDEFINED, e);
         }
     }
 
