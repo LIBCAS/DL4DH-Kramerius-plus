@@ -29,7 +29,7 @@ public class EnrichingJobConfig {
     @Bean
     public Job enrichingJob() {
         return jobBuilderFactory
-                .get(KrameriusJob.ENRICHING_JOB.name())
+                .get(KrameriusJob.ENRICH_EXTERNAL.name())
                 .validator(parameters -> {
                     if (parameters == null || parameters.getString("publicationId") == null) {
                         throw new JobParametersInvalidException("Parameter 'publicationId' missing.");
