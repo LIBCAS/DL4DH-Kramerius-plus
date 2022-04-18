@@ -2,9 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.jms.JmsProducer;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventMapper;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.JobEventCreateDto;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.batch.core.Job;
@@ -13,10 +13,8 @@ import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.JobOperator;
-import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -39,10 +37,6 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     private JobOperator jobOperator;
 
     private JobExplorer jobExplorer;
-
-    private JobRepository jobRepository;
-
-    private TransactionTemplate transactionTemplate;
 
     @Override
     public JobEventDto create(@Valid @NonNull JobEventCreateDto createDto) {
@@ -82,7 +76,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
             }
 
             jobEvent.setLastExecutionId(newExecutionId);
-            return mapper.toDto(transactionTemplate.execute(t -> store.update(jobEvent)));
+            return mapper.toDto(store.update(jobEvent));
         } catch (Exception e) {
             throw new IllegalStateException("Failed to run job", e);
         }
@@ -121,10 +115,5 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Autowired
     public void setJobExplorer(JobExplorer jobExplorer) {
         this.jobExplorer = jobExplorer;
-    }
-
-    @Autowired
-    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
-        this.transactionTemplate = transactionTemplate;
     }
 }

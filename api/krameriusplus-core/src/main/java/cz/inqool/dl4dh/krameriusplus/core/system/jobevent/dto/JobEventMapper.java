@@ -3,6 +3,9 @@ package cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.mapper.DatedObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.job.dto.JobMapper;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.DownloadKStructureCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.ExportingJobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.JobEventCreateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.batch.core.JobExecution;
@@ -16,8 +19,8 @@ public interface JobEventMapper extends DatedObjectMapper<JobEvent, JobEventCrea
     JobMapper jobMapper = Mappers.getMapper(JobMapper.class);
 
     default JobEvent fromCreateDto(JobEventCreateDto dto) {
-        if (dto instanceof EnrichingJobEventCreateDto) {
-            return fromCreateDto((EnrichingJobEventCreateDto) dto);
+        if (dto instanceof DownloadKStructureCreateDto) {
+            return fromCreateDto((DownloadKStructureCreateDto) dto);
         } else if (dto instanceof ExportingJobEventCreateDto) {
             return fromCreateDto((ExportingJobEventCreateDto) dto);
         } else {
@@ -37,7 +40,7 @@ public interface JobEventMapper extends DatedObjectMapper<JobEvent, JobEventCrea
     }
 
 
-    JobEvent fromCreateDto(EnrichingJobEventCreateDto dto);
+    JobEvent fromCreateDto(DownloadKStructureCreateDto dto);
 
     default JobEvent fromCreateDto(ExportingJobEventCreateDto dto) {
         if (dto == null) {

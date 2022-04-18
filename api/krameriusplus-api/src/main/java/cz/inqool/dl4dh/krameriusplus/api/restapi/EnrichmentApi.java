@@ -6,7 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingExcep
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius.WebClientDataProvider;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.EnrichingJobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.DownloadKStructureCreateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +58,7 @@ public class EnrichmentApi {
         EnrichResponseDto responseDto = new EnrichResponseDto();
 
         for (String publicationId : publicationsDto.getPublications()) {
-            EnrichingJobEventCreateDto createDto = new EnrichingJobEventCreateDto();
+            DownloadKStructureCreateDto createDto = new DownloadKStructureCreateDto();
             createDto.setPublicationId(publicationId);
             responseDto.getEnrichJobs().add(jobEventService.create(createDto));
         }

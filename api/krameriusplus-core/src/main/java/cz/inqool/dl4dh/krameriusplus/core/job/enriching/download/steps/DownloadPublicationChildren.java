@@ -5,8 +5,8 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.EnrichingJobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.DownloadKStructureCreateDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -80,7 +80,7 @@ public class DownloadPublicationChildren {
             } else if (digitalObject instanceof Publication) {
                 JobEventDto parent = new JobEventDto();
                 parent.setId(jobEventId);
-                EnrichingJobEventCreateDto createDto = new EnrichingJobEventCreateDto();
+                DownloadKStructureCreateDto createDto = new DownloadKStructureCreateDto();
                 createDto.setPublicationId(digitalObject.getId());
                 createDto.setParent(parent);
                 jobEventService.create(createDto);
