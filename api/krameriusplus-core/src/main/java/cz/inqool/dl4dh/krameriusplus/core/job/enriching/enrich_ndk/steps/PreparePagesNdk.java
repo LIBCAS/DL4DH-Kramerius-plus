@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_ndk;
+package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_ndk.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;

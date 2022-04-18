@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.job.enriching.download;
+package cz.inqool.dl4dh.krameriusplus.core.job.enriching.download.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius.DataProvider;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;

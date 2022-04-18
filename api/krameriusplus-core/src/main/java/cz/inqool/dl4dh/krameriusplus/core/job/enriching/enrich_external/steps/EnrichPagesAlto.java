@@ -1,7 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external;
+package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.lindat.NameTagService;
+import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.alto.AltoMetadataEnricher;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -12,30 +12,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep.ENRICH_PAGES_NAME_TAG;
+import static cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep.ENRICH_PAGES_ALTO;
 
 @Configuration
-public class EnrichPagesNameTag {
+public class EnrichPagesAlto {
 
     private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Step enrichPagesNameTagStep(ItemReader<Page> reader,
-                                       ItemProcessor<Page, Page> enrichPagesNameTagProcessor,
-                                       MongoItemWriter<Page> writer) {
-        return stepBuilderFactory.get(ENRICH_PAGES_NAME_TAG)
+    public Step enrichPagesAltoStep(ItemReader<Page> reader,
+                                    ItemProcessor<Page, Page> enrichPagesAltoProcessor,
+                                    MongoItemWriter<Page> writer) {
+        return stepBuilderFactory.get(ENRICH_PAGES_ALTO)
                 .<Page, Page> chunk(5)
                 .reader(reader)
-                .processor(enrichPagesNameTagProcessor)
+                .processor(enrichPagesAltoProcessor)
                 .writer(writer)
                 .build();
     }
 
     @Bean
     @StepScope
-    protected ItemProcessor<Page, Page> enrichPagesNameTagProcessor(NameTagService nameTagService) {
+    protected ItemProcessor<Page, Page> enrichPagesAltoProcessor() {
         return page -> {
-            nameTagService.processTokens(page);
+            new AltoMetadataEnricher(page).enrichPage();
 
             return page;
         };

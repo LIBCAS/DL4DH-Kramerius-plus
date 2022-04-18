@@ -1,7 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external;
+package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external.steps;
 
-import cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.lindat.NameTagService;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -12,32 +12,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep.ENRICH_PAGES_NAME_TAG;
+
 @Configuration
-public class CleanUpPages {
+public class EnrichPagesNameTag {
 
     private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Step cleanUpPagesStep(ItemReader<Page> reader,
-                                 ItemProcessor<Page, Page> cleanUpProcessor,
-                                 MongoItemWriter<Page> writer) {
-        return stepBuilderFactory.get(JobStep.CLEAN_UP_PAGES)
-                .allowStartIfComplete(true)
-                .<Page, Page>chunk(5)
+    public Step enrichPagesNameTagStep(ItemReader<Page> reader,
+                                       ItemProcessor<Page, Page> enrichPagesNameTagProcessor,
+                                       MongoItemWriter<Page> writer) {
+        return stepBuilderFactory.get(ENRICH_PAGES_NAME_TAG)
+                .<Page, Page> chunk(5)
                 .reader(reader)
-                .processor(cleanUpProcessor)
+                .processor(enrichPagesNameTagProcessor)
                 .writer(writer)
                 .build();
     }
 
     @Bean
     @StepScope
-    ItemProcessor<Page, Page> cleanUpProcessor() {
-        return item -> {
-            item.setAltoLayout(null);
-            item.setContent(null);
+    protected ItemProcessor<Page, Page> enrichPagesNameTagProcessor(NameTagService nameTagService) {
+        return page -> {
+            nameTagService.processTokens(page);
 
-            return item;
+            return page;
         };
     }
 

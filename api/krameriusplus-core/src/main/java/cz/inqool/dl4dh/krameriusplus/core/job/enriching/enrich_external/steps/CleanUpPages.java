@@ -1,7 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external;
+package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external.steps;
 
+import cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.lindat.UDPipeService;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -12,32 +12,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep.ENRICH_PAGES_UD_PIPE;
-
 @Configuration
-public class EnrichPagesUDPipe {
+public class CleanUpPages {
 
     private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Step enrichPagesUDPipeStep(ItemReader<Page> reader,
-                                      ItemProcessor<Page, Page> enrichPagesUDPipeProcessor,
-                                      MongoItemWriter<Page> writer) {
-        return stepBuilderFactory.get(ENRICH_PAGES_UD_PIPE)
-                .<Page, Page> chunk(5)
+    public Step cleanUpPagesStep(ItemReader<Page> reader,
+                                 ItemProcessor<Page, Page> cleanUpProcessor,
+                                 MongoItemWriter<Page> writer) {
+        return stepBuilderFactory.get(JobStep.CLEAN_UP_PAGES)
+                .allowStartIfComplete(true)
+                .<Page, Page>chunk(5)
                 .reader(reader)
-                .processor(enrichPagesUDPipeProcessor)
+                .processor(cleanUpProcessor)
                 .writer(writer)
                 .build();
     }
 
     @Bean
     @StepScope
-    protected ItemProcessor<Page, Page> enrichPagesUDPipeProcessor(UDPipeService udPipeService) {
-        return page -> {
-            udPipeService.tokenize(page);
+    ItemProcessor<Page, Page> cleanUpProcessor() {
+        return item -> {
+            item.setAltoLayout(null);
+            item.setContent(null);
 
-            return page;
+            return item;
         };
     }
 

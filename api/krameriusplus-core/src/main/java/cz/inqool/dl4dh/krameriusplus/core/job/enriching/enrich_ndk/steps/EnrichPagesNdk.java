@@ -1,7 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external;
+package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_ndk.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.alto.AltoMetadataEnricher;
+import cz.inqool.dl4dh.krameriusplus.core.system.enricher.page.mets.MetsEnricher;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -12,30 +12,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep.ENRICH_PAGES_ALTO;
+import static cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep.ENRICH_PAGES_NDK;
 
 @Configuration
-public class EnrichPagesAlto {
+public class EnrichPagesNdk {
 
     private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Step enrichPagesAltoStep(ItemReader<Page> reader,
-                                    ItemProcessor<Page, Page> enrichPagesAltoProcessor,
-                                    MongoItemWriter<Page> writer) {
-        return stepBuilderFactory.get(ENRICH_PAGES_ALTO)
+    public Step enrichPagesNdkStep(ItemReader<Page> reader,
+                                   ItemProcessor<Page, Page> enrichPagesNdkProcessor,
+                                   MongoItemWriter<Page> writer) {
+        return stepBuilderFactory.get(ENRICH_PAGES_NDK)
                 .<Page, Page> chunk(5)
                 .reader(reader)
-                .processor(enrichPagesAltoProcessor)
+                .processor(enrichPagesNdkProcessor)
                 .writer(writer)
                 .build();
     }
 
     @Bean
     @StepScope
-    protected ItemProcessor<Page, Page> enrichPagesAltoProcessor() {
+    ItemProcessor<Page, Page> enrichPagesNdkProcessor(MetsEnricher metsEnricher) {
         return page -> {
-            new AltoMetadataEnricher(page).enrichPage();
+            metsEnricher.enrich(page);
 
             return page;
         };

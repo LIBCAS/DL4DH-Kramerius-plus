@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_tei;
+package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_tei.tei;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.tei.TeiConnector;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;

@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external;
+package cz.inqool.dl4dh.krameriusplus.core.job.enriching.enrich_external.steps;
 
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius.StreamProvider;
