@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.jms;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
 import lombok.extern.slf4j.Slf4j;

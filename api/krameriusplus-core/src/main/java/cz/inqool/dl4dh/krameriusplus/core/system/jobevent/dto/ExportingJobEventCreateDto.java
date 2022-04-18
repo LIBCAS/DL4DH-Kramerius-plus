@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.dto.JobMapper;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.mapper.DatedObjectMapper;
+import cz.inqool.dl4dh.krameriusplus.core.job.dto.JobMapper;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.object.DatedObject;
+import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJob;
 import lombok.Getter;
 
 @Getter
