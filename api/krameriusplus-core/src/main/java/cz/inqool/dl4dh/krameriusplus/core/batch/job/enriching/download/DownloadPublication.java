@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingStep.DOWNLOAD_PUBLICATION;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.JobStep.DOWNLOAD_PUBLICATION;
 
 @Configuration
 @Slf4j

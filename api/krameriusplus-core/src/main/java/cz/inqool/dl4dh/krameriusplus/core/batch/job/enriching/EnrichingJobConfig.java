@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingStep.*;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.JobStep.*;
 
 @Configuration
 public class EnrichingJobConfig {

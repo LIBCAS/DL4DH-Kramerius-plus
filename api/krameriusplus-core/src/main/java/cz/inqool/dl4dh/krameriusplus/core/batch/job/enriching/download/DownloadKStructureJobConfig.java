@@ -8,8 +8,8 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingStep.DOWNLOAD_PUBLICATION;
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingStep.DOWNLOAD_PUBLICATION_CHILDREN;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.JobStep.DOWNLOAD_PUBLICATION;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.JobStep.DOWNLOAD_PUBLICATION_CHILDREN;
 
 @Configuration
 public class DownloadKStructureJobConfig extends CommonJobConfig {

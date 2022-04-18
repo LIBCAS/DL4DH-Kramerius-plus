@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingStep.DOWNLOAD_PUBLICATION_CHILDREN;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.JobStep.DOWNLOAD_PUBLICATION_CHILDREN;
 
 
 @Slf4j

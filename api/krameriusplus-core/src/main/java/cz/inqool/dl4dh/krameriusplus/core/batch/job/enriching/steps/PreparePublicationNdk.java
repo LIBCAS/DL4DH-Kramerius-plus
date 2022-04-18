@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingStep.PREPARE_PUBLICATION_NDK;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.JobStep.PREPARE_PUBLICATION_NDK;
 
 @Configuration
 public class PreparePublicationNdk {

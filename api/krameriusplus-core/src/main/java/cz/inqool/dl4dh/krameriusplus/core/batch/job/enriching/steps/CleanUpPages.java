@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingStep.CLEAN_UP_PAGES;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.JobStep.CLEAN_UP_PAGES;
 
 @Configuration
 public class CleanUpPages {

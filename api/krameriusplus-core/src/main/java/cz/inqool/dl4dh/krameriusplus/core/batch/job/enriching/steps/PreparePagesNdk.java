@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.steps.EnrichingStep.PREPARE_PAGES_NDK;
+import static cz.inqool.dl4dh.krameriusplus.core.batch.job.enriching.common.JobStep.PREPARE_PAGES_NDK;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
