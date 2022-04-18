@@ -18,6 +18,7 @@ public class EnrichExternalJobConfig extends CommonJobConfig {
                 .next(steps.get(ENRICH_PAGES_UD_PIPE))
                 .next(steps.get(ENRICH_PAGES_NAME_TAG))
                 .next(steps.get(ENRICH_PAGES_ALTO))
+                .next(steps.get(CLEAN_UP_PAGES))
                 .build();
     }
 }
