@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.jms;
 
-import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,9 @@ import org.springframework.jms.support.converter.MessageConverter;
 
 import javax.jms.JMSException;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.ENRICHING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.EXPORTING_QUEUE;
+
 @Slf4j
 @Configuration
 public class JmsListenersConfig implements JmsListenerConfigurer {
@@ -24,8 +26,8 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
 
     @Override
     public void configureJmsListeners(JmsListenerEndpointRegistrar registrar) {
-        registrar.registerEndpoint(createListener(KrameriusJob.ENRICHING_JOB.getQueueName()));
-        registrar.registerEndpoint(createListener(KrameriusJob.EXPORTING_JOB.getQueueName()));
+        registrar.registerEndpoint(createListener(ENRICHING_QUEUE.getQueueName()));
+        registrar.registerEndpoint(createListener(EXPORTING_QUEUE.getQueueName()));
     }
 
     private JmsListenerEndpoint createListener(String destination) {
