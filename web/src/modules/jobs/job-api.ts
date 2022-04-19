@@ -1,30 +1,25 @@
 import { JobExecution } from 'models/job-execution'
 import { JobEvent } from 'models/job-event'
-import { QueryResult } from 'models/query-results'
 import { toast } from 'react-toastify'
+import { JobType } from 'models/job-type'
 
-export const listJobEvents = async (jobName: string) => {
+export const listJobEvents = async (
+	jobType: JobType,
+	publicationId?: string,
+) => {
 	try {
-		const response = await fetch(`/api/job/list`, {
-			method: 'POST',
+		const url = publicationId
+			? `/api/job/list/${JobType[jobType].toLowerCase()}/${publicationId}`
+			: `/api/job/list/${JobType[jobType].toLowerCase()}`
+		const response = await fetch(url, {
+			method: 'GET',
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({
-				filters: [
-					{
-						field: 'krameriusJob',
-						operator: 'EQ',
-						value: jobName,
-					},
-				],
-			}),
 		})
 
-		const json: QueryResult<JobEvent> = await response.json()
-
-		console.log(json)
+		const json: JobEvent[] = await response.json()
 
 		return json
 	} catch (e) {
@@ -39,8 +34,6 @@ export const getJobEvent = async (jobEventId: string) => {
 		})
 
 		const json: JobEvent = await response.json()
-
-		console.log(json)
 
 		return json
 	} catch (e) {

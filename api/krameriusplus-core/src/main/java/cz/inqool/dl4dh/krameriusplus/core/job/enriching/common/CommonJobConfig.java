@@ -12,6 +12,8 @@ public abstract class CommonJobConfig {
 
     protected final Map<String, Step> steps = new HashMap<>();
 
+    protected JobListener jobListener;
+
     protected JobBuilderFactory jobBuilderFactory;
 
     @Autowired
@@ -22,5 +24,10 @@ public abstract class CommonJobConfig {
     @Autowired
     public void setSteps(List<Step> steps) {
         steps.forEach(step -> this.steps.put(step.getName(), step));
+    }
+
+    @Autowired
+    public void setJobListener(JobListener jobListener) {
+        this.jobListener = jobListener;
     }
 }

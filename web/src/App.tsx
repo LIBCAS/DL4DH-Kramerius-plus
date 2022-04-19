@@ -9,6 +9,7 @@ import { Enrichment } from './modules/enrichment/enrichment'
 import { DialogProvider } from './components/dialog/dialog-context-provider'
 import { JobPage } from 'modules/jobs/job-page'
 import { PublicationsPage } from 'modules/publications/publications-page'
+import { JobType } from 'models/job-type'
 
 function App() {
 	return (
@@ -16,23 +17,23 @@ function App() {
 			<MuiPickersUtilsProvider utils={DateFnsUtils}>
 				<BrowserRouter>
 					<Navbar />
-
 					<Switch>
 						<Route exact path="/export">
 							<Export />
 						</Route>
-						<Route exact path="/publications">
+						<Route exact path="/publications/:publicationId?">
 							<PublicationsPage />
 						</Route>
-						<Route exact path="/jobs/enriching">
-							<JobPage jobName="ENRICHING_JOB" />
+						<Route exact path="/jobs/enriching/:jobId?">
+							<JobPage jobType={JobType.Enriching} />
 						</Route>
 						<Route exact path="/jobs/export">
-							<JobPage jobName="EXPORTING_JOB" />
+							<JobPage jobType={JobType.Exporting} />
 						</Route>
 						<Route exact path="/">
 							<Enrichment />
 						</Route>
+						<Route render={() => 'Not found'} />
 					</Switch>
 				</BrowserRouter>
 			</MuiPickersUtilsProvider>

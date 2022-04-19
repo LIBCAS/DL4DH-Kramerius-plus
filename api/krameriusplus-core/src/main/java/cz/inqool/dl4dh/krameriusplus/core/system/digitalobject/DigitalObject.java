@@ -61,6 +61,6 @@ public abstract class DigitalObject extends DomainObject {
             throw new IllegalStateException("When can context have more than 1 inner array?");
         }
 
-        this.context = context.get(0);
+        this.context = new ArrayList<>(context.get(0));
     }
 }

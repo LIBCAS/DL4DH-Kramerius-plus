@@ -13,8 +13,9 @@ import static cz.inqool.dl4dh.krameriusplus.core.job.enriching.common.JobStep.EN
 public class EnrichTeiJobConfig extends CommonJobConfig {
 
     @Bean
-    public Job enrichTeiJobConfig() {
+    public Job enrichTeiJob() {
         return jobBuilderFactory.get(ENRICH_TEI.name())
+                .listener(jobListener)
                 .start(steps.get(ENRICH_PUBLICATION_TEI))
                 .next(steps.get(ENRICH_PAGES_TEI))
                 .build();

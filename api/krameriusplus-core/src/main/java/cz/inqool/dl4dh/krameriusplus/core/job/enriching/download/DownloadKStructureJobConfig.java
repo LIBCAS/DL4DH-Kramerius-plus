@@ -19,6 +19,7 @@ public class DownloadKStructureJobConfig extends CommonJobConfig {
         return jobBuilderFactory
                 .get(KrameriusJob.DOWNLOAD_K_STRUCTURE.name())
                 .validator(validator)
+                .listener(jobListener)
                 .incrementer(new RunIdIncrementer())
                 .start(steps.get(DOWNLOAD_PUBLICATION))
                 .next(steps.get(DOWNLOAD_PUBLICATION_CHILDREN))

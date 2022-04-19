@@ -1,23 +1,31 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.jms.JmsProducer;
+import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventMapper;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.JobEventCreateDto;
 import lombok.Getter;
 import lombok.NonNull;
-import org.springframework.batch.core.Job;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Service
 public class JobEventService implements DatedService<JobEvent, JobEventCreateDto, JobEventDto> {
@@ -28,19 +36,16 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Getter
     private JobEventMapper mapper;
 
-    private Map<String, Job> jobs = new HashMap<>();
-
     private JmsProducer jmsProducer;
-
-    private JobLauncher jobLauncher;
-
-    private JobOperator jobOperator;
 
     private JobExplorer jobExplorer;
 
+    private TransactionTemplate transactionTemplate;
+
     @Override
     public JobEventDto create(@Valid @NonNull JobEventCreateDto createDto) {
-        JobEvent jobEvent = getStore().create(getMapper().fromCreateDto(createDto));
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        JobEvent jobEvent = transactionTemplate.execute(t -> getStore().create(getMapper().fromCreateDto(createDto)));
 
         jmsProducer.sendMessage(jobEvent);
 
@@ -50,6 +55,8 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Override
     public JobEventDto find(@NonNull String id) {
         JobEvent jobEvent = store.find(id);
+        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, id));
+
         List<JobExecution> executions = new ArrayList<>();
 
         if (jobEvent.getInstanceId() != null) {
@@ -60,26 +67,31 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         return mapper.toDto(jobEvent, executions);
     }
 
-    public JobEventDto runJob(String jobEventId) {
-        JobEvent jobEvent = store.find(jobEventId);
+    @Transactional
+    public void updateJobStatus(String jobEventId, BatchStatus status) {
+        store.updateJobStatus(jobEventId, status);
+    }
 
-        Job jobToRun = jobs.get(jobEvent.getKrameriusJob().name());
+    public List<JobEventDto> listEnrichingJobs() {
+        return mapToDto(store.listJobsByType(KrameriusJob.getEnrichingJobs()));
+    }
 
-        try {
-            Long newExecutionId;
-            if (jobEvent.getLastExecutionId() != null) {
-                newExecutionId = jobOperator.restart(jobEvent.getLastExecutionId());
-            } else {
-                JobExecution jobExecution = jobLauncher.run(jobToRun, jobEvent.toJobParameters());
-                jobEvent.setInstanceId(jobExecution.getJobInstance().getInstanceId());
-                newExecutionId = jobExecution.getId();
-            }
+    public List<JobEventDto> listEnrichingJobs(String publicationId) {
+        return mapToDto(store.listJobsByTypeAndPublicationId(KrameriusJob.getEnrichingJobs(), publicationId));
+    }
 
-            jobEvent.setLastExecutionId(newExecutionId);
-            return mapper.toDto(store.update(jobEvent));
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to run job", e);
-        }
+    public List<JobEventDto> listExportingJobs() {
+        return mapToDto(store.listJobsByType(KrameriusJob.getExportingJobs()));
+    }
+
+    public List<JobEventDto> listExportingJobs(String publicationId) {
+        return mapToDto(store.listJobsByTypeAndPublicationId(KrameriusJob.getExportingJobs(), publicationId));
+    }
+
+    private List<JobEventDto> mapToDto(List<JobEvent> jobEvents) {
+        return jobEvents.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Autowired
@@ -97,23 +109,14 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         this.jmsProducer = jmsProducer;
     }
 
-    @Autowired
-    public void setJobs(Set<Job> jobs) {
-        jobs.forEach(job -> this.jobs.put(job.getName(), job));
-    }
-
-    @Autowired
-    public void setJobService(JobLauncher jobLauncher) {
-        this.jobLauncher = jobLauncher;
-    }
-
-    @Autowired
-    public void setJobOperator(JobOperator jobOperator) {
-        this.jobOperator = jobOperator;
-    }
 
     @Autowired
     public void setJobExplorer(JobExplorer jobExplorer) {
         this.jobExplorer = jobExplorer;
+    }
+
+    @Autowired
+    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+        this.transactionTemplate = transactionTemplate;
     }
 }

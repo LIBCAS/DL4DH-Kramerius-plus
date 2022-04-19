@@ -10,8 +10,14 @@ public class PublicationJobValidator implements JobParametersValidator {
 
     @Override
     public void validate(JobParameters jobParameters) throws JobParametersInvalidException {
-        if (jobParameters == null || jobParameters.getString("publicationId") == null) {
+        if (jobParameters == null) {
+            throw new JobParametersInvalidException("JobParameters are null.");
+        }
+        if (jobParameters.getString("publicationId") == null) {
             throw new JobParametersInvalidException("Parameter 'publicationId' missing.");
+        }
+        if (jobParameters.getString("jobEventId") == null) {
+            throw new JobParametersInvalidException("Parameter 'jobEventId' missing.");
         }
     }
 }

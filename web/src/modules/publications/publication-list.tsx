@@ -1,55 +1,38 @@
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid'
 import { Publication } from 'models'
-import { getPublication, getPublications } from 'modules/export/export-api'
-import { useEffect, useState } from 'react'
 
 type Props = {
-	onRowClick: (params: Publication | undefined) => void
+	publications: Publication[]
+	onRowClick: (params: GridRowParams) => void
 }
 
 const columns: GridColDef[] = [
 	{
 		field: 'id',
 		headerName: 'UUID',
-		width: 300,
+		width: 200,
 	},
 	{
 		field: 'title',
 		headerName: 'Název',
-		width: 500,
+		width: 400,
 	},
 	{
 		field: 'model',
 		headerName: 'Model',
-		width: 100,
+		flex: 1,
 	},
 ]
 
-export const PublicationList = ({ onRowClick }: Props) => {
-	const [publications, setPublications] = useState<Publication[]>([])
-
-	useEffect(() => {
-		async function fetchPublications() {
-			const response = await getPublications()
-			setPublications(response)
-		}
-		fetchPublications()
-	}, [])
-
-	const handleClick = (params: GridRowParams) => {
-		async function fetchPublication() {
-			const response = await getPublication(params.row['id'])
-			onRowClick(response)
-		}
-		fetchPublication()
-	}
-
+export const PublicationList = ({ publications, onRowClick }: Props) => {
 	return (
 		<DataGrid
 			autoHeight={true}
 			columns={columns}
+			pageSize={10}
 			rows={publications}
-			onRowClick={handleClick}
+			rowsPerPageOptions={[]}
+			onRowClick={onRowClick}
 		/>
 	)
 }

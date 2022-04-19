@@ -2,6 +2,7 @@ import { ModsMetadata } from '.'
 import { PublicationModel } from '../enums/publicationModel'
 
 export interface Publication {
+	context: any
 	id: string
 	title?: string
 	collections?: string[]

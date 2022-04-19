@@ -16,7 +16,7 @@ import { ApiError } from 'models'
 
 import { DialogContext } from 'components/dialog/dialog-context'
 
-import { enrich } from './enrichment-api'
+import { downloadKStructure } from './enrichment-api'
 import { DefaultDialog } from 'components/dialog/knav-dialog/knav-default-dialog'
 
 const useStyles = makeStyles(() => ({
@@ -80,7 +80,7 @@ export const EnrichmentForm = () => {
 
 		const publications = idFields.map(f => f.value.trim())
 
-		const response = await enrich(publications, false)
+		const response = await downloadKStructure(publications, false)
 
 		if (response.ok) {
 			toast('Operace proběhla úspěšně', {
@@ -98,7 +98,7 @@ export const EnrichmentForm = () => {
 							contentHeight={25}
 							title="Opakované obohacení"
 							onSubmit={async () => {
-								const response = await enrich(publications, true)
+								const response = await downloadKStructure(publications, true)
 
 								if (response.ok) {
 									toast('Opakované obohacení proběhlo úspěšně', {

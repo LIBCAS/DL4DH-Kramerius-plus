@@ -42,6 +42,15 @@ spring:
 #  level:
 #    org:
 #      springframework:
+#        orm:
+#          jpa: DEBUG
+#        transaction: DEBUG
+#      hibernate:
+#        sql: debug
+#        type:
+#          descriptor:
+#            sql: trace
+#      springframework:
 #        data:
 #          mongodb:
 #            core:

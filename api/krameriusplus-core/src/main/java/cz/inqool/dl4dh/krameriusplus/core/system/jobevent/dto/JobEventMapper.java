@@ -3,7 +3,6 @@ package cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.mapper.DatedObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.job.dto.JobMapper;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.DownloadKStructureCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.ExportingJobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.JobEventCreateDto;
 import org.mapstruct.Mapper;
@@ -18,13 +17,14 @@ public interface JobEventMapper extends DatedObjectMapper<JobEvent, JobEventCrea
 
     JobMapper jobMapper = Mappers.getMapper(JobMapper.class);
 
+    JobEvent fromCreateJobEventCreateDto(JobEventCreateDto dto);
+
+    @Override
     default JobEvent fromCreateDto(JobEventCreateDto dto) {
-        if (dto instanceof DownloadKStructureCreateDto) {
-            return fromCreateDto((DownloadKStructureCreateDto) dto);
-        } else if (dto instanceof ExportingJobEventCreateDto) {
+        if (dto instanceof ExportingJobEventCreateDto) {
             return fromCreateDto((ExportingJobEventCreateDto) dto);
         } else {
-            throw new IllegalStateException("No mapping for this instance type");
+            return fromCreateJobEventCreateDto(dto);
         }
     }
 
@@ -39,19 +39,12 @@ public interface JobEventMapper extends DatedObjectMapper<JobEvent, JobEventCrea
         return eventDto;
     }
 
-
-    JobEvent fromCreateDto(DownloadKStructureCreateDto dto);
-
     default JobEvent fromCreateDto(ExportingJobEventCreateDto dto) {
         if (dto == null) {
             return null;
         }
 
-        JobEvent jobEvent = new JobEvent();
-        jobEvent.setJobName(dto.getJobName());
-        jobEvent.setParent(fromDto(dto.getParent()));
-        jobEvent.setPublicationId(dto.getPublicationId());
-        jobEvent.setKrameriusJob(dto.getKrameriusJob());
+        JobEvent jobEvent = fromCreateJobEventCreateDto(dto);
         jobEvent.getParameters().put("publicationTitle", dto.getPublicationTitle());
         jobEvent.getParameters().put("params", dto.getParams());
         jobEvent.getParameters().put("exportFormat", dto.getExportFormat());

@@ -14,6 +14,7 @@ public class EnrichNdkJobConfig extends CommonJobConfig {
     @Bean
     public Job enrichNdkJob() {
         return jobBuilderFactory.get(ENRICH_NDK.name())
+                .listener(jobListener)
                 .start(steps.get(PREPARE_PUBLICATION_NDK))
                 .next(steps.get(ENRICH_PUBLICATION_NDK))
                 .next(steps.get(PREPARE_PAGES_NDK))

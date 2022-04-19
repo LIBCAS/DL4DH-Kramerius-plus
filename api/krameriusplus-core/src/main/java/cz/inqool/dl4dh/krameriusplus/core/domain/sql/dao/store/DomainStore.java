@@ -154,7 +154,12 @@ public abstract class DomainStore<T extends DomainObject, Q extends EntityPathBa
      */
     @Override
     public T find(@NonNull String id) {
-        return find(id, true);
+        T entity = entityManager.find(type, id);
+
+        detach(entity);
+
+        return entity;
+//        return find(id, true);
     }
 
     /**
