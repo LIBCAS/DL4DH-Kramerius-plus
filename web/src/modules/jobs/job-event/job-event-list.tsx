@@ -18,9 +18,14 @@ const columns = [
 	{
 		field: 'created',
 		headerName: 'Vytvořeno',
-		flex: 1,
+		width: 200,
 		type: 'datetime',
 		valueFormatter: dateTimeFormatter,
+	},
+	{
+		field: 'lastExecutionStatus',
+		headerName: 'Stav posledního spuštění',
+		flex: 1,
 	},
 ]
 
@@ -32,6 +37,7 @@ export const JobEventList = ({ jobs, onRowClick }: Props) => {
 				columns={columns}
 				disableColumnFilter
 				disableColumnMenu
+				pageSize={10}
 				rows={jobs}
 				rowsPerPageOptions={[]}
 				onRowClick={onRowClick}

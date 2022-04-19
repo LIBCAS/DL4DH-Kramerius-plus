@@ -31,6 +31,7 @@ public class JmsConfig {
         return connectionFactory ->
         {
             RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
+            redeliveryPolicy.setInitialRedeliveryDelay(500);
             redeliveryPolicy.setMaximumRedeliveries(0);
             connectionFactory.setRedeliveryPolicy(redeliveryPolicy);
         };

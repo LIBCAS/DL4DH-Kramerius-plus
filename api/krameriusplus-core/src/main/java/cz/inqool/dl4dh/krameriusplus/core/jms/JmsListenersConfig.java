@@ -1,8 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.jms;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -14,18 +13,21 @@ import org.springframework.jms.support.converter.MessageConverter;
 
 import javax.jms.JMSException;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.ENRICHING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.EXPORTING_QUEUE;
+
 @Slf4j
 @Configuration
 public class JmsListenersConfig implements JmsListenerConfigurer {
 
-    private JobEventService jobEventService;
+    private JobEventRunner jobEventRunner;
 
     private MessageConverter messageConverter;
 
     @Override
     public void configureJmsListeners(JmsListenerEndpointRegistrar registrar) {
-        registrar.registerEndpoint(createListener(KrameriusJob.ENRICHING_JOB.getQueueName()));
-        registrar.registerEndpoint(createListener(KrameriusJob.EXPORTING_JOB.getQueueName()));
+        registrar.registerEndpoint(createListener(ENRICHING_QUEUE.getQueueName()));
+        registrar.registerEndpoint(createListener(EXPORTING_QUEUE.getQueueName()));
     }
 
     private JmsListenerEndpoint createListener(String destination) {
@@ -33,11 +35,12 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
         endpoint.setId(destination);
         endpoint.setDestination(destination);
         endpoint.setMessageListener(message -> {
-            log.trace("Message received {}", message);
+            log.debug("Message received {}", message);
             try {
                 JobEvent jobEvent = (JobEvent) messageConverter.fromMessage(message);
 
-                jobEventService.runJob(jobEvent.getId());
+                log.debug("Message content: {}", jobEvent);
+                jobEventRunner.runJob(jobEvent.getId());
             } catch (JMSException e) {
                 log.error("Received Exception : " + e);
             }
@@ -52,7 +55,7 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
     }
 
     @Autowired
-    public void setJobEventService(JobEventService jobEventService) {
-        this.jobEventService = jobEventService;
+    public void setJobEventRunner(JobEventRunner jobEventRunner) {
+        this.jobEventRunner = jobEventRunner;
     }
 }

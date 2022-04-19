@@ -99,10 +99,15 @@ public class Params {
     }
 
     private Pageable toPageRequest() {
-        Sort sort = Sort.by(getSorting()
-                .stream()
-                .map(Sorting::toOrder)
-                .collect(Collectors.toList()));
+        Sort sort;
+        if (sorting.isEmpty()) {
+            sort = Sort.by(Sort.Direction.DESC, "created");
+        } else {
+            sort = Sort.by(getSorting()
+                    .stream()
+                    .map(Sorting::toOrder)
+                    .collect(Collectors.toList()));
+        }
 
         return paging == null ?
                 PageRequest.of(0, Integer.MAX_VALUE, sort) :

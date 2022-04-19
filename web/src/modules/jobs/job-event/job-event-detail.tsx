@@ -8,6 +8,7 @@ import { restartJobExecution } from '../job-api'
 import { JobExecutionList } from '../job-execution/job-execution-list'
 import { JobExecutionDetail } from '../job-execution/job-execution-detail'
 import { toast } from 'react-toastify'
+import { useHistory } from 'react-router'
 
 type Props = {
 	jobEvent: JobEvent
@@ -17,15 +18,20 @@ const useStyles = makeStyles(() => ({
 	paper: {
 		padding: '20px',
 	},
+	button: {
+		textTransform: 'none',
+		padding: '6px 10px',
+	},
 }))
 
-export const JobEventDetail = ({ jobEvent: job }: Props) => {
+export const JobEventDetail = ({ jobEvent }: Props) => {
 	const classes = useStyles()
+	const { replace } = useHistory()
 
 	const [selectedExecution, setSelectedExecution] = useState<JobExecution>()
 
 	const handleExecutionClick = (params: GridRowParams) => {
-		const jobExecution = job.executions.find(
+		const jobExecution = jobEvent.executions.find(
 			exec => exec.id === params.row['id'],
 		)
 		setSelectedExecution(jobExecution)
@@ -33,7 +39,7 @@ export const JobEventDetail = ({ jobEvent: job }: Props) => {
 
 	const handleRestart = () => {
 		async function doRestart() {
-			const response = await restartJobExecution(job.id) // show notification that restart called successfully
+			const response = await restartJobExecution(jobEvent.id) // show notification that restart called successfully
 			if (response.ok) {
 				toast('Operace proběhla úspěšně', {
 					type: 'success',
@@ -43,28 +49,51 @@ export const JobEventDetail = ({ jobEvent: job }: Props) => {
 		doRestart()
 	}
 
+	const onPublicationButtonClick = () => {
+		replace(`/publications/${jobEvent.publicationId}`)
+	}
+
 	return (
 		<Paper className={classes.paper} elevation={4}>
 			<Grid container direction="column" spacing={3}>
 				<Grid item xs>
-					<Box>
-						<ReadOnlyField label="ID" value={'' + job?.id} />
-						<ReadOnlyField label="Název úlohy" value={job?.jobName} />
-						<ReadOnlyField label="ID Publikace" value={job?.publicationId} />
-						<ReadOnlyField
-							label="Parametre"
-							value={Object.entries(job.parameters).map(([key, value]) => (
-								<ReadOnlyField
-									key={key}
-									label={key}
-									value={JSON.stringify(value)}
-								/>
-							))}
-						/>
+					<Box display="flex" flexDirection="row">
+						<Box width="80%">
+							<ReadOnlyField label="ID" value={'' + jobEvent?.id} />
+							<ReadOnlyField label="Název úlohy" value={jobEvent?.jobName} />
+							<ReadOnlyField
+								label="ID Publikace"
+								value={jobEvent?.publicationId}
+							/>
+							<ReadOnlyField label="Typ úlohy" value={jobEvent?.krameriusJob} />
+							<ReadOnlyField
+								label="Parametre"
+								value={Object.entries(jobEvent.parameters).map(
+									([key, value]) => (
+										<ReadOnlyField
+											key={key}
+											label={key}
+											value={JSON.stringify(value)}
+										/>
+									),
+								)}
+							/>
+						</Box>
+						<Box sx={{ p: 4 }}>
+							<Button
+								className={classes.button}
+								color="primary"
+								variant="contained"
+								onClick={onPublicationButtonClick}
+							>
+								Zobrazit publikaci
+							</Button>
+						</Box>
 					</Box>
 					<Box paddingBottom={2}>
-						{job.executions.length > 0 &&
-							job.executions[job.executions.length - 1].status === 'FAILED' && (
+						{jobEvent.executions.length > 0 &&
+							jobEvent.executions[jobEvent.executions.length - 1].status ===
+								'FAILED' && (
 								<Button
 									color="primary"
 									type="submit"
@@ -78,7 +107,7 @@ export const JobEventDetail = ({ jobEvent: job }: Props) => {
 				</Grid>
 				<Grid item xs>
 					<JobExecutionList
-						executions={job.executions}
+						executions={jobEvent.executions}
 						onRowClick={handleExecutionClick}
 					/>
 				</Grid>

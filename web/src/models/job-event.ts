@@ -1,4 +1,5 @@
 import { JobExecution } from 'models'
+import { KrameriusJob } from './kramerius-job'
 import { MapType } from './map-type'
 
 export interface JobEvent {
@@ -8,4 +9,6 @@ export interface JobEvent {
 	publicationId: string
 	parameters: MapType
 	executions: JobExecution[]
+	krameriusJob: KrameriusJob
+	lastExecutionStatus: string
 }
