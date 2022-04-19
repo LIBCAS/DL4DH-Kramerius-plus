@@ -15,7 +15,7 @@ public class JmsProducer {
 
     public void sendMessage(JobEvent jobEvent) {
         try{
-            log.info("Attempting Send message : " + jobEvent.toString());
+            log.debug("Attempting Send message : " + jobEvent.toString());
             jmsTemplate.convertAndSend(jobEvent.getKrameriusJob().getQueueName(), jobEvent,
                     message -> {
                         message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, 500);

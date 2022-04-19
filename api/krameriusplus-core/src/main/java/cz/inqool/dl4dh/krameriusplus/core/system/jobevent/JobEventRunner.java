@@ -30,7 +30,7 @@ public class JobEventRunner {
     private final Map<String, Job> jobs = new HashMap<>();
 
     public JobEventDto runJob(String jobEventId) {
-        log.info("Finding jobEvent with id={} to run", jobEventId);
+        log.debug("Finding jobEvent with id={} to run", jobEventId);
         JobEventDto jobEvent = jobEventService.find(jobEventId);
 
         Job jobToRun = jobs.get(jobEvent.getKrameriusJob().name());
@@ -38,10 +38,10 @@ public class JobEventRunner {
         try {
             Long newExecutionId;
             if (jobEvent.getLastExecutionId() != null) {
-                log.info("Restarting jobEvent {}", jobEvent);
+                log.debug("Restarting jobEvent {}", jobEvent);
                 newExecutionId = jobOperator.restart(jobEvent.getLastExecutionId());
             } else {
-                log.info("Starting jobEvent {}", jobEvent);
+                log.debug("Starting jobEvent {}", jobEvent);
                 JobExecution jobExecution = jobLauncher.run(jobToRun, toJobParameters(jobEvent));
                 jobEvent.setInstanceId(jobExecution.getJobInstance().getInstanceId());
                 newExecutionId = jobExecution.getId();
@@ -49,7 +49,7 @@ public class JobEventRunner {
 
             jobEvent.setLastExecutionId(newExecutionId);
 
-            log.info("Storing changes to jobEvent {}", jobEvent);
+            log.debug("Storing changes to jobEvent {}", jobEvent);
             return jobEventService.update(jobEvent);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to run job", e);

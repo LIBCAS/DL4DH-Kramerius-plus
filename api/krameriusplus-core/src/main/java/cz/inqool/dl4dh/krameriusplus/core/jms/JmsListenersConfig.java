@@ -35,11 +35,11 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
         endpoint.setId(destination);
         endpoint.setDestination(destination);
         endpoint.setMessageListener(message -> {
-            log.info("Message received {}", message);
+            log.debug("Message received {}", message);
             try {
                 JobEvent jobEvent = (JobEvent) messageConverter.fromMessage(message);
 
-                log.info("Message content: {}", jobEvent);
+                log.debug("Message content: {}", jobEvent);
                 jobEventRunner.runJob(jobEvent.getId());
             } catch (JMSException e) {
                 log.error("Received Exception : " + e);
