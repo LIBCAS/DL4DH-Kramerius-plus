@@ -19,6 +19,8 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
         List<JobEvent> result = query()
                 .select(qObject)
                 .where(qObject.krameriusJob.in(jobTypes))
+                .where(qObject.deleted.isNull())
+                .orderBy(qObject.created.desc())
                 .fetch();
 
         detachAll();
@@ -31,6 +33,8 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
                 .select(qObject)
                 .where(qObject.krameriusJob.in(jobTypes))
                 .where(qObject.publicationId.eq(publicationId))
+                .where(qObject.deleted.isNull())
+                .orderBy(qObject.created.desc())
                 .fetch();
 
         detachAll();
