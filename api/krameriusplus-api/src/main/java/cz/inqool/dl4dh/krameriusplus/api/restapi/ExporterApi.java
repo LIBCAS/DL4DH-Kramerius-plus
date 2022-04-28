@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
-import cz.inqool.dl4dh.krameriusplus.core.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
@@ -31,18 +30,16 @@ public class ExporterApi {
     private final ExporterService exporterService;
     private final FileService fileService;
     private final PublicationService publicationService;
-    private final JmsProducer jmsProducer;
     private final JobEventService jobEventService;
 
     @Autowired
     public ExporterApi(ExporterService exporterService,
                        FileService fileService,
                        PublicationService publicationService,
-                       JmsProducer jmsProducer, JobEventService jobEventService) {
+                       JobEventService jobEventService) {
         this.exporterService = exporterService;
         this.fileService = fileService;
         this.publicationService = publicationService;
-        this.jmsProducer = jmsProducer;
         this.jobEventService = jobEventService;
     }
 

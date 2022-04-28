@@ -4,12 +4,11 @@ import { Publication } from 'models'
 import { useEffect, useState } from 'react'
 import { PublicationList } from './publication-list'
 import { useHistory, useParams } from 'react-router'
-import { getPublication, listPublications } from './publication-api'
+import { getPublication } from './publication-api'
 import { GridRowParams } from '@mui/x-data-grid'
 
 export const PublicationsPage = () => {
 	const [selectedPublication, setSelectedPublication] = useState<Publication>()
-	const [publications, setPublications] = useState<Publication[]>([])
 	const { publicationId } = useParams<{ publicationId: string }>()
 	const { replace } = useHistory()
 
@@ -17,14 +16,6 @@ export const PublicationsPage = () => {
 		const publication = await getPublication(publicationId)
 		setSelectedPublication(publication)
 	}
-
-	useEffect(() => {
-		async function fetchPublications() {
-			const response = await listPublications()
-			setPublications(response)
-		}
-		fetchPublications()
-	}, [])
 
 	useEffect(() => {
 		if (publicationId) {
@@ -39,7 +30,7 @@ export const PublicationsPage = () => {
 	return (
 		<Box display="flex" flexDirection="row">
 			<Box paddingRight={2} width="40%">
-				<PublicationList publications={publications} onRowClick={handleClick} />
+				<PublicationList onRowClick={handleClick} />
 			</Box>
 			{selectedPublication && (
 				<Box width="60%">

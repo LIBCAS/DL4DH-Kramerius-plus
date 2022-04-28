@@ -2,15 +2,20 @@ import { JobExecution } from 'models/job-execution'
 import { JobEvent } from 'models/job-event'
 import { toast } from 'react-toastify'
 import { JobType } from 'models/job-type'
+import { QueryResults } from 'models/query-results'
 
 export const listJobEvents = async (
 	jobType: JobType,
+	page: number,
+	pageSize: number,
 	publicationId?: string,
 ) => {
 	try {
+		const jobTypeString = JobType[jobType].toLowerCase()
+		const baseUrl = `/api/job/list/${jobTypeString}?page=${page}&pageSize=${pageSize}`
 		const url = publicationId
-			? `/api/job/list/${JobType[jobType].toLowerCase()}/${publicationId}`
-			: `/api/job/list/${JobType[jobType].toLowerCase()}`
+			? baseUrl + `&publicationId=${publicationId}`
+			: baseUrl
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
@@ -19,11 +24,11 @@ export const listJobEvents = async (
 			},
 		})
 
-		const json: JobEvent[] = await response.json()
+		const json: QueryResults<JobEvent> = await response.json()
 
 		return json
 	} catch (e) {
-		return undefined
+		toast(e as string)
 	}
 }
 

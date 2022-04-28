@@ -1,10 +1,9 @@
 import { Sort } from '.'
 import { Filter } from './filter'
+import { Paging } from './paging'
 
 export interface Params {
-	disablePagination?: boolean
-	pageOffset?: number
-	pageSize?: number
+	paging?: Paging
 	sort?: Sort
 	filters?: Filter[]
 	includeFields?: string[]

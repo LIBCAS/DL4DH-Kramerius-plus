@@ -27,7 +27,7 @@ function App() {
 						<Route exact path="/jobs/enriching/:jobId?">
 							<JobPage jobType={JobType.Enriching} />
 						</Route>
-						<Route exact path="/jobs/export">
+						<Route exact path="/jobs/exporting/:jobId?">
 							<JobPage jobType={JobType.Exporting} />
 						</Route>
 						<Route exact path="/">

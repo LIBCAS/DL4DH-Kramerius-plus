@@ -1,12 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author Norbert Bodnar
@@ -27,13 +25,9 @@ public class PublicationApi {
         return publicationService.find(publicationId);
     }
 
-    @PostMapping("/list")
-    public List<Publication> list(@RequestBody(required = false) Params params) {
-        if (params == null) {
-            params = new Params();
-            params.includeFields("title", "date", "issueNumber", "index", "partNumber", "volumeYear");
-        }
-
-        return publicationService.list(params);
+    @GetMapping("/list")
+    public QueryResults<Publication> list(@RequestParam(value = "page", defaultValue = "0") int page,
+                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        return publicationService.list(page, pageSize);
     }
 }

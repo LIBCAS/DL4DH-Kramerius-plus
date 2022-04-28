@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.mongo.dao;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import lombok.NonNull;
 
@@ -89,6 +90,15 @@ public interface Store<T extends DomainObject> {
      * @return collection of found instances
      */
     Collection<T> list(@NonNull List<String> ids);
+
+    /**
+     * List with pagination
+     *
+     * @param page index of page
+     * @param pageSize size of page
+     * @return
+     */
+    QueryResults<T> list(int page, int pageSize);
 
     /**
      * Returns all stored instances. This operation might be very memory consuming.

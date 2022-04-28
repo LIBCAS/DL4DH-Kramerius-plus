@@ -1,4 +1,4 @@
-export interface QueryResult<T> {
+export interface QueryResults<T> {
 	limit: number
 	offset: number
 	total: number

@@ -43,9 +43,9 @@ const useStyles = makeStyles(() => ({
 export const PublicationDetail = ({ publication }: Props) => {
 	const classes = useStyles()
 	const { open } = useContext(DialogContext)
-	const [jobs, setJobs] = useState<JobEvent[]>([])
 	const [selectedJobType, setSelectedJobType] = useState<KrameriusJob>()
 	const { replace } = useHistory()
+	const [lastRender, setLastRender] = useState<number>(Date.now())
 
 	const handleOpenExportDialog = () => {
 		open({
@@ -59,11 +59,6 @@ export const PublicationDetail = ({ publication }: Props) => {
 
 	const onRowClick = (params: GridRowParams) => {
 		replace(`/jobs/enriching/${params.row['id']}`)
-	}
-
-	async function fetchJobs() {
-		const response = await listJobEvents(JobType.Enriching, publication.id)
-		setJobs(response ? response : [])
 	}
 
 	const createNewJob = async () => {
@@ -84,17 +79,14 @@ export const PublicationDetail = ({ publication }: Props) => {
 			toast('Operace proběhla úspěšně', {
 				type: 'success',
 			})
-			fetchJobs()
 		} else {
 			toast('Při pokusu o obohacení nastala chyba.', {
 				type: 'error',
 			})
 		}
-	}
 
-	useEffect(() => {
-		fetchJobs()
-	}, [])
+		setLastRender(Date.now())
+	}
 
 	function getButtonVariant(
 		selectedOnType: KrameriusJob,
@@ -182,7 +174,9 @@ export const PublicationDetail = ({ publication }: Props) => {
 				{selectedJobType !== undefined && (
 					<Box sx={{ p: 3 }}>
 						<JobEventList
-							jobs={jobs.filter(job => job.krameriusJob === selectedJobType)}
+							key={lastRender}
+							filterOnlyType={selectedJobType}
+							jobType={JobType.Enriching}
 							onRowClick={onRowClick}
 						/>
 					</Box>

@@ -12,7 +12,6 @@ import org.springframework.context.annotation.ComponentScan;
 @EntityScan(basePackages = "cz.inqool.dl4dh.krameriusplus")
 @SpringBootApplication
 public class App {
-
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
     }

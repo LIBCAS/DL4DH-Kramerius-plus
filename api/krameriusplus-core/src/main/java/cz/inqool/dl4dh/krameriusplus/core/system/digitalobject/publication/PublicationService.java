@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.EqFilter;
@@ -61,6 +62,10 @@ public class PublicationService {
         publication.setPages(pageStore.listAll(pageParams));
 
         return publication;
+    }
+
+    public QueryResults<Publication> list(int page, int pageSize) {
+        return publicationStore.list(page, pageSize);
     }
 
     public List<Publication> list(Params params) {

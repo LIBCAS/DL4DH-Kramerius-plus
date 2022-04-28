@@ -12,5 +12,4 @@ public class PublicationStore extends DomainStore<Publication> {
     public PublicationStore(MongoOperations mongoOperations) {
         super(Publication.class, mongoOperations);
     }
-
 }
