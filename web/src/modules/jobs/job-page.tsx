@@ -13,7 +13,6 @@ type Props = {
 }
 
 export const JobPage = ({ jobType }: Props) => {
-	const [jobEvents, setJobEvents] = useState<JobEvent[]>()
 	const [selectedJob, setSelectedJob] = useState<JobEvent>()
 	const { jobId } = useParams<{ jobId: string }>()
 	const { replace } = useHistory()
@@ -24,37 +23,28 @@ export const JobPage = ({ jobType }: Props) => {
 	}
 
 	useEffect(() => {
-		async function fetchInstances() {
-			const response = await listJobEvents(jobType)
-			setJobEvents(response)
-		}
-		fetchInstances()
-
 		if (jobId) {
 			fetchJobDetail(jobId)
 		}
 
 		return () => {
 			setSelectedJob(undefined)
-			setJobEvents(undefined)
 		}
-	}, [jobType])
+	}, [jobId, jobType])
 
 	const onRowClickCallback = (params: GridRowParams) => {
 		fetchJobDetail(params.row['id'])
-		replace(`/jobs/enriching/${params.row['id']}`)
+		replace(`/jobs/${JobType[jobType].toLocaleLowerCase()}/${params.row['id']}`)
 	}
 
 	return (
 		<Grid container spacing={2}>
-			{jobEvents && (
-				<Grid item xs={4}>
-					<JobEventList jobs={jobEvents} onRowClick={onRowClickCallback} />
-				</Grid>
-			)}
+			<Grid item xs={4}>
+				<JobEventList jobType={jobType} onRowClick={onRowClickCallback} />
+			</Grid>
 			{selectedJob && (
 				<Grid item xs={8}>
-					<JobEventDetail jobEvent={selectedJob} />
+					<JobEventDetail jobEventId={selectedJob.id} />
 				</Grid>
 			)}
 		</Grid>

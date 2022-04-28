@@ -3,7 +3,7 @@ import fetch from 'utils/fetch'
 
 export const getExportedPublications = async () => {
 	try {
-		const response = await fetch('/api/export/list', {
+		const response = await fetch('/api/exporting/list', {
 			method: 'GET',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
 		})

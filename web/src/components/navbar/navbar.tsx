@@ -46,7 +46,7 @@ export const Navbar = () => {
 					<Button color="inherit" component={Link} to="/jobs/enriching">
 						Úlohy obohacení
 					</Button>
-					<Button color="inherit" component={Link} to="/jobs/export">
+					<Button color="inherit" component={Link} to="/jobs/exporting">
 						Úlohy exportování
 					</Button>
 					<Button color="inherit" component={Link} to="/publications">

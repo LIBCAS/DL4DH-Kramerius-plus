@@ -30,7 +30,7 @@ const exportPublication = async (
 	}
 
 	try {
-		const response = await fetch(`/api/export/${id}/${format}`, {
+		const response = await fetch(`/api/exporting/${id}/${format}`, {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
 			body: JSON.stringify(processedParams),
@@ -45,13 +45,11 @@ const exportPublication = async (
 }
 
 const defaultJSONParams: Params = {
-	disablePagination: false,
 	filters: [],
 	includeFields: [],
 }
 
 const defaultTeiParams: TeiParams = {
-	disablePagination: false,
 	filters: [],
 	includeFields: [],
 	udPipeParams: [],
