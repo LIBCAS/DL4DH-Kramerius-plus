@@ -1,9 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.mongo.dao;
 
 import com.mongodb.client.result.DeleteResult;
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import lombok.Getter;
 import lombok.NonNull;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.support.MongoRepositoryFactory;
@@ -137,6 +140,15 @@ public abstract class DomainStore<T extends DomainObject> implements Store<T> {
         }
 
         return mongoOperations.find(query(where("_id").in(ids)), type);
+    }
+
+    @Override
+    public QueryResults<T> list(int page, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "created"));
+
+        long total = mongoOperations.count(new Query(), type);
+
+        return new QueryResults<>(mongoOperations.find(new Query().with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
     }
 
     @Override

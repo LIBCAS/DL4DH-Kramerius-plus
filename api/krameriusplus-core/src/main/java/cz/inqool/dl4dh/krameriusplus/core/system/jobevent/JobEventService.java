@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.jms.JmsProducer;
@@ -72,20 +73,16 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         store.updateJobStatus(jobEventId, status);
     }
 
-    public List<JobEventDto> listEnrichingJobs() {
-        return mapToDto(store.listJobsByType(KrameriusJob.getEnrichingJobs()));
+    public QueryResults<JobEventDto> listEnrichingJobs(String publicationId, int page, int pageSize) {
+        QueryResults<JobEvent> result = store.listJobsByType(KrameriusJob.getEnrichingJobs(), publicationId, page, pageSize);
+
+        return new QueryResults<>(mapToDto(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
     }
 
-    public List<JobEventDto> listEnrichingJobs(String publicationId) {
-        return mapToDto(store.listJobsByTypeAndPublicationId(KrameriusJob.getEnrichingJobs(), publicationId));
-    }
+    public QueryResults<JobEventDto> listExportingJobs(String publicationId, int page, int pageSize) {
+        QueryResults<JobEvent> result = store.listJobsByType(KrameriusJob.getExportingJobs(), publicationId, page, pageSize);
 
-    public List<JobEventDto> listExportingJobs() {
-        return mapToDto(store.listJobsByType(KrameriusJob.getExportingJobs()));
-    }
-
-    public List<JobEventDto> listExportingJobs(String publicationId) {
-        return mapToDto(store.listJobsByTypeAndPublicationId(KrameriusJob.getExportingJobs(), publicationId));
+        return new QueryResults<>(mapToDto(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
     }
 
     private List<JobEventDto> mapToDto(List<JobEvent> jobEvents) {

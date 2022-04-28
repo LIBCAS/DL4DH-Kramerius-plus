@@ -1,4 +1,5 @@
 import { Publication } from 'models'
+import { QueryResults } from 'models/query-results'
 import { toast } from 'react-toastify'
 
 export const getPublication = async (publicationId: string) => {
@@ -16,17 +17,20 @@ export const getPublication = async (publicationId: string) => {
 	}
 }
 
-export const listPublications = async () => {
+export const listPublications = async (page: number, pageSize: number) => {
 	try {
-		const response = await fetch('/api/publication/list', {
-			method: 'POST',
-			headers: new Headers({ 'Content-Type': 'application/json' }),
-		})
+		const response = await fetch(
+			`/api/publication/list?page=${page}&pageSize=${pageSize}`,
+			{
+				method: 'GET',
+				headers: new Headers({ 'Content-Type': 'application/json' }),
+			},
+		)
 
-		const json: Publication[] = await response.json()
+		const json: QueryResults<Publication> = await response.json()
 
 		return json
 	} catch (e) {
-		return []
+		toast(e as string)
 	}
 }
