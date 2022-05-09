@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.Filter;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.Sorting;
-import lombok.AccessLevel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
@@ -17,28 +17,33 @@ import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.isTrue;
 
 @Getter
 @Setter
+@Schema(description = "Set of parameters that control filtering, paging and sorting.")
 public class Params {
 
     /**
      * Paging configuration
      * Not applying, if paging equals to null
      */
-    @Setter(AccessLevel.NONE)
+    @Schema(description = "Paging configuration. If null, paging is disabled.")
     protected Paging paging = null;
 
     /**
      * Sorting configuration
      * Not applying, if paging equals to null
      */
+    @Schema(description = "Sorting configuration. If null, defaults to sort by 'created' DESC.")
     protected List<Sorting> sorting = new ArrayList<>();
 
     /**
      * List of filters that will be applied. The operator between them is by default AND
      */
+    @Schema(description = "List of filters that will be applied. The operator between them is by default AND.")
     protected List<Filter> filters = new ArrayList<>();
 
+    @Schema(description = "List of field names to include when fetching data. Cannot be combined with 'excludeFilters'.")
     protected List<String> includeFields = new ArrayList<>();
 
+    @Schema(description = "List of field names to exclude when fetching data. Cannot be combined with 'includeFilters'.")
     protected List<String> excludeFields = new ArrayList<>();
 
     public Params addFilters(Filter... filter) {
@@ -54,22 +59,6 @@ public class Params {
     public Params excludeFields(String... field) {
         excludeFields.addAll(Arrays.asList(field));
         return this;
-    }
-
-    public void setPage(int page) {
-        if (paging == null) {
-            paging = new Paging();
-        }
-
-        paging.setPage(page);
-    }
-
-    public void setPageSize(int pageSize) {
-        if (paging == null) {
-            paging = new Paging();
-        }
-
-        paging.setPageSize(pageSize);
     }
 
     public Query toQuery() {

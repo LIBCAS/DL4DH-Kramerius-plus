@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
 import cz.inqool.dl4dh.krameriusplus.core.config.KrameriusInfo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+@Tag(name = "Info", description = "Info")
 @RestController
 @RequestMapping("/api/info")
 public class InfoApi {
@@ -30,12 +32,14 @@ public class InfoApi {
         this.krameriusInstance = krameriusInstance;
     }
 
-    @Operation(summary = "Get current instance")
+    @Operation(summary = "Get information about current instance of Kramerius, to which Kramerius+ is connected. " +
+            "Information is downloaded from https://registr.digitalniknihovna.cz/libraries on application startup.")
     @GetMapping("/kramerius")
     public ResponseEntity<KrameriusInfo> getCurrentInstance() {
         return ResponseEntity.ok(krameriusInstance);
     }
 
+    @Operation(summary = "Get information about current version and last build time of Kramerius+.")
     @GetMapping("/version")
     public Map<String, String> getCurrentVersion() {
         return Map.of("version", buildProperties.getVersion(),

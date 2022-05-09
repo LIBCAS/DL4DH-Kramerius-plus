@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
@@ -48,7 +49,9 @@ public abstract class Publication extends DigitalObject {
 
     private NameTagParadata nameTagParadata;
 
+    @JsonIgnore
     private String ndkDirPath;
 
+    @JsonIgnore
     private String teiHeaderFileId;
 }

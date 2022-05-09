@@ -12,10 +12,15 @@ import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.ExportingJobEventCreateDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +28,8 @@ import java.util.List;
 /**
  * @author Norbert Bodnar
  */
+@Validated
+@Tag(name = "Export", description = "Exportování")
 @RestController
 @RequestMapping("/api/export")
 public class ExporterApi {
@@ -43,6 +50,9 @@ public class ExporterApi {
         this.jobEventService = jobEventService;
     }
 
+    @Operation(summary = "Create and start a new job of type EXPORT for TEI format. Job is started asynchronously. " +
+            "TEI format has it's own endpoint because it has it's own type of parameters.")
+    @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/tei")
     public JobEventDto exportTei(@PathVariable("id") String publicationId,
                               @RequestBody(required = false) TeiParams params) {
@@ -61,10 +71,18 @@ public class ExporterApi {
         return jobEventService.create(createDto);
     }
 
+    @Operation(summary = "Create and start a new job of type EXPORT for formats other then TEI. Job is started asynchronously. ")
+    @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/{format}")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                              @PathVariable("format") String stringFormat,
+                              @Schema(allowableValues = {"json", "csv", "tsv"}) @PathVariable("format") String stringFormat,
                               @RequestBody(required = false) Params params) {
+        ExportFormat exportFormat = ExportFormat.fromString(stringFormat);
+        if (exportFormat == ExportFormat.TEI) {
+            throw new IllegalArgumentException("For export in TEI format, use endpoint /api/export/{id}/tei, " +
+                    "which can process extended TEI parameters.");
+        }
+
         Publication publication = publicationService.find(publicationId);
 
         if (params == null) {
@@ -73,18 +91,22 @@ public class ExporterApi {
 
         ExportingJobEventCreateDto createDto = new ExportingJobEventCreateDto();
         createDto.setPublicationId(publicationId);
-        createDto.setExportFormat(ExportFormat.fromString(stringFormat));
+        createDto.setExportFormat(exportFormat);
         createDto.setParams(params);
         createDto.setPublicationTitle(publication.getTitle());
 
         return jobEventService.create(createDto);
     }
 
+    @Operation(summary = "List all exports.")
+    @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping("/list")
     public List<Export> listExports() {
         return exporterService.list();
     }
 
+    @Operation(summary = "Download export.")
+    @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(value = "/download/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> download(@PathVariable("id") String fileRefId) {
         FileRef file = fileService.find(fileRefId);

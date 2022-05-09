@@ -18,5 +18,5 @@ public class ExportingJobEventCreateDto extends JobEventCreateDto {
     private ExportFormat exportFormat;
 
     @Setter(AccessLevel.NONE)
-    private KrameriusJob krameriusJob = KrameriusJob.EXPORTING_JOB;
+    private KrameriusJob krameriusJob = KrameriusJob.EXPORT;
 }

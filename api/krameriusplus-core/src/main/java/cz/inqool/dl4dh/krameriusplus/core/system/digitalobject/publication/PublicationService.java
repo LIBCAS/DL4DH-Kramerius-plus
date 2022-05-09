@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectEx
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.EqFilter;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.Sorting;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.utils.Utils;
 import lombok.NonNull;
@@ -41,6 +42,14 @@ public class PublicationService {
         Utils.notNull(publication, () -> new MissingObjectException(Publication.class, publicationId));
 
         return publication;
+    }
+
+    public QueryResults<Publication> listChildren(String publicationId, int page, int pageSize) {
+        return publicationStore.list(publicationId, page, pageSize);
+    }
+
+    public QueryResults<Page> listPages(String publicationId, int page, int pageSize) {
+        return pageStore.list(publicationId, page, pageSize);
     }
 
     public boolean exists(String publicationId) {

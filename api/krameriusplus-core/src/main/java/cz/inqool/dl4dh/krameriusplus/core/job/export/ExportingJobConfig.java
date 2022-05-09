@@ -33,7 +33,7 @@ public class ExportingJobConfig {
 
     @Bean
     public Job exportingJob() {
-        return jobBuilderFactory.get(KrameriusJob.EXPORTING_JOB.name())
+        return jobBuilderFactory.get(KrameriusJob.EXPORT.name())
                 .validator(validator())
                 .incrementer(new RunIdIncrementer())
                 .start(exportingStep())
