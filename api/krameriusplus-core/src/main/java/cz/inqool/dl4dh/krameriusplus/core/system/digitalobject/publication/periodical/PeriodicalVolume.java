@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.periodical;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
+
+import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel.PERIODICAL_VOLUME;
 
 /**
  * Represents a volume for a periodical. One periodical can have multiple volumes. Volumes are mostly identified
@@ -19,6 +22,7 @@ import java.util.Map;
 @Getter
 @Setter
 @TypeAlias(KrameriusModel.PERIODICAL_VOLUME)
+@JsonTypeName(PERIODICAL_VOLUME)
 @Document(collection = "publications")
 public class PeriodicalVolume extends Publication {
 
@@ -34,5 +38,10 @@ public class PeriodicalVolume extends Publication {
     public void unpackDetails(Map<String, Object> details) {
         volumeNumber = (String) details.get("volumeNumber");
         volumeYear = ((String) details.get("year"));
+    }
+
+    @Override
+    public String getModel() {
+        return PERIODICAL_VOLUME;
     }
 }

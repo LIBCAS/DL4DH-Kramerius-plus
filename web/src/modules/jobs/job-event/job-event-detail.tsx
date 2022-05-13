@@ -88,16 +88,21 @@ export const JobEventDetail = ({ jobEventId }: Props) => {
 									label="ID Publikace"
 									value={job?.publicationId}
 								/>
-								<ReadOnlyField label="Typ úlohy" value={job?.krameriusJob} />
+								<ReadOnlyField
+									label="Typ úlohy"
+									value={job?.config.krameriusJob}
+								/>
 								<ReadOnlyField
 									label="Parametre"
-									value={Object.entries(job.parameters).map(([key, value]) => (
-										<ReadOnlyField
-											key={key}
-											label={key}
-											value={JSON.stringify(value)}
-										/>
-									))}
+									value={Object.entries(job.config.parameters).map(
+										([key, value]) => (
+											<ReadOnlyField
+												key={key}
+												label={key}
+												value={JSON.stringify(value)}
+											/>
+										),
+									)}
 								/>
 							</Box>
 							<Box sx={{ p: 2 }}>

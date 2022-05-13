@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.jms;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventRunner;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventRunner;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventRunDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,8 @@ import org.springframework.jms.support.converter.MessageConverter;
 
 import javax.jms.JMSException;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.ENRICHING_QUEUE;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.EXPORTING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventQueue.ENRICHING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventQueue.EXPORTING_QUEUE;
 
 @Slf4j
 @Configuration
@@ -37,10 +37,10 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
         endpoint.setMessageListener(message -> {
             log.debug("Message received {}", message);
             try {
-                JobEvent jobEvent = (JobEvent) messageConverter.fromMessage(message);
+                JobEventRunDto jobEvent = (JobEventRunDto) messageConverter.fromMessage(message);
 
                 log.debug("Message content: {}", jobEvent);
-                jobEventRunner.runJob(jobEvent.getId());
+                jobEventRunner.runJob(jobEvent);
             } catch (JMSException e) {
                 log.error("Received Exception : " + e);
             }

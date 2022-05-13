@@ -16,8 +16,13 @@ import { ApiError } from 'models'
 
 import { DialogContext } from 'components/dialog/dialog-context'
 
-import { downloadKStructure } from './enrichment-api'
+import { createPlan, downloadKStructure } from './enrichment-api'
 import { DefaultDialog } from 'components/dialog/knav-dialog/knav-default-dialog'
+import { JobEventConfigCreateDto } from 'models/job-event-config-create-dto'
+import { Box } from '@mui/system'
+import { KrameriusJob } from 'models/kramerius-job'
+import { Stack } from '@mui/material'
+import { Avatar, Chip } from '@material-ui/core'
 
 const useStyles = makeStyles(() => ({
 	addButton: {
@@ -27,6 +32,11 @@ const useStyles = makeStyles(() => ({
 	paper: {
 		padding: '10px 24px',
 		minHeight: 140,
+	},
+	configPaper: {
+		marginTop: '10px',
+		padding: '10px 24px',
+		minHeight: 20,
 	},
 	input: {
 		'& input': {
@@ -54,9 +64,14 @@ type Fields = {
 
 const initialValue = { id: v4(), value: '' }
 
+const initialJobConfig = { krameriusJob: KrameriusJob.DOWNLOAD_K_STRUCTURE }
+
 export const EnrichmentForm = () => {
 	const classes = useStyles()
 	const [idFields, setIdFields] = useState<Fields[]>([initialValue])
+	const [jobEventConfigs, setJobEventConfigs] = useState<
+		JobEventConfigCreateDto[]
+	>([initialJobConfig])
 	const { open } = useContext(DialogContext)
 
 	const disabledSubmitButton = useMemo(() => {
@@ -69,6 +84,18 @@ export const EnrichmentForm = () => {
 	const addField = () =>
 		setIdFields(idFields => [...idFields, { id: v4(), value: '' }])
 
+	const addConfigField = (krameriusJob: KrameriusJob) =>
+		setJobEventConfigs(jobEventConfigs => [
+			...jobEventConfigs,
+			{ krameriusJob },
+		])
+
+	const removeConfigField = (index: number) => {
+		const newFields = [...jobEventConfigs]
+		newFields.splice(index, 1)
+		setJobEventConfigs(newFields)
+	}
+
 	// removes field
 	const removeField = (id: string) => {
 		const newFields = idFields.filter(f => f.id !== id)
@@ -80,7 +107,7 @@ export const EnrichmentForm = () => {
 
 		const publications = idFields.map(f => f.value.trim())
 
-		const response = await downloadKStructure(publications, false)
+		const response = await createPlan(publications, jobEventConfigs)
 
 		if (response.ok) {
 			toast('Operace proběhla úspěšně', {
@@ -141,58 +168,135 @@ export const EnrichmentForm = () => {
 	return (
 		<Paper className={classes.paper}>
 			<form onSubmit={handleSubmit}>
-				<div className={classes.formTitle}>
-					<Typography color="primary" variant="h6">
-						UUID publikací:
-					</Typography>
-				</div>
 				<Grid container justifyContent="space-between" spacing={2}>
-					<Grid item xs={9}>
-						{idFields.map(({ id, value }, i) => (
-							<TextField
-								key={id}
-								InputProps={{
-									endAdornment:
-										i !== 0 ? (
-											<InputAdornment position="end">
-												<IconButton
-													color="primary"
-													size="small"
-													onClick={() => removeField(id)}
-												>
-													<RemoveCircleOutlineIcon fontSize="small" />
-												</IconButton>
-											</InputAdornment>
-										) : (
-											<></>
-										),
-								}}
-								classes={{ root: classes.input }}
-								fullWidth
-								name={id}
-								placeholder="Vložte uuid publikace"
-								value={value}
-								variant="outlined"
-								onChange={handleChange}
-							/>
-						))}
-						<Button
-							className={classes.addButton}
-							color="primary"
-							startIcon={<AddCircleOutlineIcon />}
-							onClick={addField}
-						>
-							Přidat publikaci
-						</Button>
+					<Grid item xs={5}>
+						<Paper className={classes.paper}>
+							<Box sx={{ pb: 2 }}>
+								<Typography color="primary" variant="h6">
+									UUID publikací:
+								</Typography>
+							</Box>
+							<Box>
+								{idFields.map(({ id, value }, i) => (
+									<TextField
+										key={id}
+										InputProps={{
+											endAdornment:
+												i !== 0 ? (
+													<InputAdornment position="end">
+														<IconButton
+															color="primary"
+															size="small"
+															onClick={() => removeField(id)}
+														>
+															<RemoveCircleOutlineIcon fontSize="small" />
+														</IconButton>
+													</InputAdornment>
+												) : (
+													<></>
+												),
+										}}
+										classes={{ root: classes.input }}
+										fullWidth
+										name={id}
+										placeholder="Vložte uuid publikace"
+										value={value}
+										variant="outlined"
+										onChange={handleChange}
+									/>
+								))}
+								<Button
+									className={classes.addButton}
+									color="primary"
+									startIcon={<AddCircleOutlineIcon />}
+									onClick={addField}
+								>
+									Přidat publikaci
+								</Button>
+							</Box>
+						</Paper>
 					</Grid>
-					<Grid className={classes.submitButton} item xs={3}>
+					<Grid item xs={4}>
+						<Paper className={classes.paper}>
+							<Box sx={{ pb: 2 }}>
+								<Typography color="primary" variant="h6">
+									Konfigurace:
+								</Typography>
+							</Box>
+							<Stack
+								alignItems="center"
+								display="flex"
+								height="100%"
+								justifyContent="center"
+								spacing={1}
+							>
+								{jobEventConfigs.map((config, i) => (
+									<Chip
+										key={i}
+										avatar={<Avatar>{i + 1}.</Avatar>}
+										label={config.krameriusJob}
+										variant="outlined"
+										onDelete={() => removeConfigField(i)}
+									/>
+								))}
+							</Stack>
+							<Box sx={{ p: 2 }}>
+								<Box sx={{ pb: 2 }}>
+									<Typography color="primary" variant="body1">
+										Přidat konfiguraci
+									</Typography>
+								</Box>
+								<Stack spacing={1}>
+									<Button
+										className={classes.addButton}
+										color="primary"
+										startIcon={<AddCircleOutlineIcon />}
+										variant="contained"
+										onClick={() =>
+											addConfigField(KrameriusJob.DOWNLOAD_K_STRUCTURE)
+										}
+									>
+										DOWNLOAD_K_STRUCTURE
+									</Button>
+									<Button
+										className={classes.addButton}
+										color="primary"
+										startIcon={<AddCircleOutlineIcon />}
+										variant="contained"
+										onClick={() => addConfigField(KrameriusJob.ENRICH_EXTERNAL)}
+									>
+										ENRICH_EXTERNAL
+									</Button>
+									<Button
+										className={classes.addButton}
+										color="primary"
+										startIcon={<AddCircleOutlineIcon />}
+										variant="contained"
+										onClick={() => addConfigField(KrameriusJob.ENRICH_NDK)}
+									>
+										ENRICH_NDK
+									</Button>
+									<Button
+										className={classes.addButton}
+										color="primary"
+										startIcon={<AddCircleOutlineIcon />}
+										variant="contained"
+										onClick={() => addConfigField(KrameriusJob.ENRICH_TEI)}
+									>
+										ENRICH_TEI
+									</Button>
+								</Stack>
+							</Box>
+						</Paper>
+					</Grid>
+					<Grid className={classes.submitButton} item xs={2}>
 						<Button
 							color="primary"
 							disabled={disabledSubmitButton}
 							type="submit"
 							variant="contained"
 						>
-							Obohatit
+							Vytvořit plán obohacení
 						</Button>
 					</Grid>
 				</Grid>

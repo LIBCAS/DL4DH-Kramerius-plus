@@ -11,27 +11,30 @@ import org.springframework.batch.core.launch.support.SimpleJobOperator;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfig {
 
-//    @Bean
-//    public TaskExecutor threadPoolTaskExecutor(){
-//        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-//        executor.setMaxPoolSize(12);
-//        executor.setCorePoolSize(8);
-//        executor.setQueueCapacity(15);
-//
-//        return executor;
-//    }
+    @Bean
+    @Primary
+    public TaskExecutor threadPoolTaskExecutor(){
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setMaxPoolSize(8);
+        executor.setCorePoolSize(5);
+        executor.setQueueCapacity(100);
+
+        return executor;
+    }
 
     @Bean
-    public JobLauncher jobLauncher(final JobRepository jobRepository) throws Exception {
+    public JobLauncher jobLauncher(final JobRepository jobRepository, TaskExecutor taskExecutor) throws Exception {
         SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
         jobLauncher.setJobRepository(jobRepository);
-        jobLauncher.setTaskExecutor(new SimpleAsyncTaskExecutor());
+        jobLauncher.setTaskExecutor(taskExecutor);
         jobLauncher.afterPropertiesSet();
         return jobLauncher;
     }

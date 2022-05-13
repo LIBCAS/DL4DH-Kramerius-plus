@@ -1,10 +1,20 @@
-import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid'
+import {
+	DataGrid,
+	GridColDef,
+	GridRowParams,
+	GridValueGetterParams,
+} from '@mui/x-data-grid'
 import { Publication } from 'models'
 import { useEffect, useState } from 'react'
 import { listPublications } from './publication-api'
 
 type Props = {
 	onRowClick: (params: GridRowParams) => void
+}
+
+const getModel = (params: GridValueGetterParams) => {
+	console.log(params.row['model'])
+	return params.row['model']
 }
 
 const columns: GridColDef[] = [
@@ -22,6 +32,7 @@ const columns: GridColDef[] = [
 		field: 'model',
 		headerName: 'Model',
 		flex: 1,
+		valueGetter: getModel,
 	},
 ]
 

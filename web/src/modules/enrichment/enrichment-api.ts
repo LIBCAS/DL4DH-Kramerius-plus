@@ -1,25 +1,49 @@
 import { SingleEvent } from 'components/event/event-detail'
 import { ApiError } from 'models'
+import { JobEventConfigCreateDto } from 'models/job-event-config-create-dto'
 import { JobEventCreateDto } from 'models/job-event-create-dto'
+import { KrameriusJob } from 'models/kramerius-job'
 import fetch from 'utils/fetch'
+
+export async function createPlan(
+	publicationIds: string[],
+	configs: JobEventConfigCreateDto[],
+) {
+	try {
+		await fetch('/api/enrich/plan', {
+			method: 'POST',
+			headers: new Headers({ 'Content-Type': 'application/json' }),
+			body: JSON.stringify({ publicationIds, configs }),
+		})
+
+		return {
+			ok: true,
+			data: {},
+		}
+	} catch (e) {
+		console.error(e)
+
+		return {
+			ok: false,
+			data: e as ApiError,
+		}
+	}
+}
 
 export async function downloadKStructure(
 	publicationIds: string[],
 	override: boolean,
 ) {
 	const requestUrl = '/api/enrich/download-k-structure'
-	const publications: JobEventCreateDto[] = publicationIds.map(
-		publicationId =>
-			<JobEventCreateDto>{
-				publicationId,
-			},
-	)
+	const config = {
+		krameriusJob: KrameriusJob.DOWNLOAD_K_STRUCTURE,
+	}
 
 	try {
 		await fetch(requestUrl, {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publications, override }),
+			body: JSON.stringify({ publicationIds, config, override }),
 		})
 
 		return {
@@ -38,13 +62,15 @@ export async function downloadKStructure(
 
 export async function enrichExternal(publicationIds: string[]) {
 	const requestUrl = '/api/enrich/enrich-external'
-	const publications = mapToCreateDto(publicationIds)
+	const config = {
+		krameriusJob: KrameriusJob.ENRICH_EXTERNAL,
+	}
 
 	try {
 		await fetch(requestUrl, {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publications }),
+			body: JSON.stringify({ publicationIds, config }),
 		})
 
 		return {
@@ -63,13 +89,15 @@ export async function enrichExternal(publicationIds: string[]) {
 
 export async function enrichNdk(publicationIds: string[]) {
 	const requestUrl = '/api/enrich/enrich-ndk'
-	const publications = mapToCreateDto(publicationIds)
+	const config = {
+		krameriusJob: KrameriusJob.ENRICH_NDK,
+	}
 
 	try {
 		await fetch(requestUrl, {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publications }),
+			body: JSON.stringify({ publicationIds, config }),
 		})
 
 		return {
@@ -88,13 +116,15 @@ export async function enrichNdk(publicationIds: string[]) {
 
 export async function enrichTei(publicationIds: string[]) {
 	const requestUrl = '/api/enrich/enrich-tei'
-	const publications = mapToCreateDto(publicationIds)
+	const config = {
+		krameriusJob: KrameriusJob.ENRICH_TEI,
+	}
 
 	try {
 		await fetch(requestUrl, {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publications }),
+			body: JSON.stringify({ publicationIds, config }),
 		})
 
 		return {
@@ -109,17 +139,6 @@ export async function enrichTei(publicationIds: string[]) {
 			data: e as ApiError,
 		}
 	}
-}
-
-function mapToCreateDto(publicationIds: string[]): JobEventCreateDto[] {
-	const publications: JobEventCreateDto[] = publicationIds.map(
-		publicationId =>
-			<JobEventCreateDto>{
-				publicationId,
-			},
-	)
-
-	return publications
 }
 
 export async function getRunningTasks(): Promise<SingleEvent[]> {

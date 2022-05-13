@@ -78,4 +78,45 @@
         </addColumn>
     </changeSet>
 
+    
+    <changeSet id="4" author="bodnar">
+        <createTable tableName="job_plan">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="job_plan_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+        </createTable>
+
+        <createTable tableName="scheduled_job_event">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="scheduled_job_event_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="execution_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_event_id" type="${id}">
+                <constraints foreignKeyName="scheduled_job_event_job_event_FK"
+                             referencedTableName="job_event"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="job_plan_id" type="${id}">
+                <constraints foreignKeyName="scheduled_job_event_job_plan_FK"
+                             referencedTableName="job_plan"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

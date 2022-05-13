@@ -10,7 +10,8 @@ import { listJobEvents } from '../job-api'
 type Props = {
 	jobType: JobType
 	onRowClick: (params: GridRowParams) => void
-	filterOnlyType?: KrameriusJob
+	krameriusJob?: KrameriusJob
+	publicationId?: string
 }
 
 const columns = [
@@ -37,10 +38,11 @@ const columns = [
 export const JobEventList = ({
 	jobType,
 	onRowClick,
-	filterOnlyType,
+	krameriusJob,
+	publicationId,
 }: Props) => {
 	const [rowCount, setRowCount] = useState<number>()
-	const [jobs, setJobs] = useState<JobEvent[]>([])
+	const [jobEvents, setJobEvents] = useState<JobEvent[]>([])
 	const [page, setPage] = useState<number>(0)
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
@@ -48,15 +50,21 @@ export const JobEventList = ({
 
 	useEffect(() => {
 		async function fetchJobs() {
-			const response = await listJobEvents(jobType, page, 10)
+			const response = await listJobEvents(
+				jobType,
+				page,
+				10,
+				publicationId,
+				krameriusJob,
+			)
 
 			if (response) {
-				setJobs(response.results)
+				setJobEvents(response.results)
 				setRowCount(response.total)
 			}
 		}
 		fetchJobs()
-	}, [jobType, page])
+	}, [page, krameriusJob, publicationId])
 
 	useEffect(() => {
 		setRowCountState(prevRowCountState =>
@@ -76,11 +84,7 @@ export const JobEventList = ({
 				pageSize={10}
 				paginationMode="server"
 				rowCount={rowCountState}
-				rows={
-					filterOnlyType
-						? jobs.filter(job => job.krameriusJob == filterOnlyType)
-						: jobs
-				}
+				rows={jobEvents}
 				rowsPerPageOptions={[]}
 				onPageChange={onPageChange}
 				onRowClick={onRowClick}

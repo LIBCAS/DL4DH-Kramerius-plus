@@ -68,6 +68,7 @@ export const StepExecutionList = ({ executions, onRowClick }: Props) => {
 					columns={stepColumns}
 					getRowId={r => r.stepName}
 					rows={executions}
+					rowsPerPageOptions={[]}
 					onRowClick={onRowClick}
 				/>
 			</Box>

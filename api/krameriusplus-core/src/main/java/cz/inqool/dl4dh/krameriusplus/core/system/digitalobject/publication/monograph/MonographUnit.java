@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import lombok.Getter;
@@ -10,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel.MONOGRAPH_UNIT;
+
 /**
  * Object representing a MonographUnit. MonographUnits must contain pages directly as children
  *
@@ -18,6 +21,7 @@ import java.util.Map;
 @Getter
 @Setter
 @TypeAlias(KrameriusModel.MONOGRAPH_UNIT)
+@JsonTypeName(MONOGRAPH_UNIT)
 @Document(collection = "publications")
 public class MonographUnit extends Publication {
 
@@ -34,5 +38,10 @@ public class MonographUnit extends Publication {
     public void unpackDetails(Map<String, Object> details) {
         partNumber = (String) details.get("partNumber");
         partTitle = ((String) details.get("title"));
+    }
+
+    @Override
+    public String getModel() {
+        return MONOGRAPH_UNIT;
     }
 }

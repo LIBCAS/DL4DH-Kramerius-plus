@@ -62,6 +62,7 @@ export const JobExecutionList = ({ executions, onRowClick }: Props) => {
 					autoHeight={true}
 					columns={executionColumns}
 					rows={executions}
+					rowsPerPageOptions={[]}
 					onRowClick={onRowClick}
 				/>
 			</Box>

@@ -10,7 +10,7 @@ spring:
     password: password
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
@@ -38,18 +38,24 @@ spring:
   interceptor:
     body: SHORT
 
-#logging:
-#  level:
+logging:
+  level:
+    cz:
+      inqool:
+        dl4dh:
+          krameriusplus:
+            core:
+              system:
+                job:
+                  jobconfig:
+                    enriching:
+                      common:
+                        JobListener: DEBUG
 #    org:
 #      springframework:
 #        orm:
 #          jpa: DEBUG
 #        transaction: DEBUG
-#      hibernate:
-#        sql: debug
-#        type:
-#          descriptor:
-#            sql: trace
 #      springframework:
 #        data:
 #          mongodb:
