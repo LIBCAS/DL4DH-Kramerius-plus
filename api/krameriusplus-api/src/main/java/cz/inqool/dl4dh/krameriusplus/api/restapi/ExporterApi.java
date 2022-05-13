@@ -68,7 +68,10 @@ public class ExporterApi {
         createDto.setParams(params);
         createDto.setPublicationTitle(publication.getTitle());
 
-        return jobEventService.create(createDto);
+        JobEventDto jobEvent = jobEventService.create(createDto);
+        jobEventService.enqueueJob(jobEvent.getId());
+
+        return jobEvent;
     }
 
     @Operation(summary = "Create and start a new job of type EXPORT for formats other then TEI. Job is started asynchronously. ")
@@ -95,7 +98,10 @@ public class ExporterApi {
         createDto.setParams(params);
         createDto.setPublicationTitle(publication.getTitle());
 
-        return jobEventService.create(createDto);
+        JobEventDto jobEvent = jobEventService.create(createDto);
+        jobEventService.enqueueJob(jobEvent.getId());
+
+        return jobEvent;
     }
 
     @Operation(summary = "List all exports.")

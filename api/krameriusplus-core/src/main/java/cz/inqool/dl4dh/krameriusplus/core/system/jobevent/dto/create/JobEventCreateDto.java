@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.dto.DatedObjectCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 public abstract class JobEventCreateDto extends DatedObjectCreateDto {
 
     @Schema(description = "Optional name for this job")

@@ -40,7 +40,7 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
                 JobEvent jobEvent = (JobEvent) messageConverter.fromMessage(message);
 
                 log.debug("Message content: {}", jobEvent);
-                jobEventRunner.runJob(jobEvent.getId());
+                jobEventRunner.runJob(jobEvent);
             } catch (JMSException e) {
                 log.error("Received Exception : " + e);
             }

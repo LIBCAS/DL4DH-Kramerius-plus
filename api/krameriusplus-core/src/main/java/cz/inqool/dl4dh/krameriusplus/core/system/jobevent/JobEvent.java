@@ -40,4 +40,8 @@ public class JobEvent extends DatedObject {
     @NotNull
     @Enumerated(EnumType.STRING)
     private KrameriusJob krameriusJob;
+
+    public boolean wasExecuted() {
+        return lastExecutionId != null;
+    }
 }

@@ -83,7 +83,8 @@ public class DownloadPublicationChildren {
                 DownloadKStructureCreateDto createDto = new DownloadKStructureCreateDto();
                 createDto.setPublicationId(digitalObject.getId());
                 createDto.setParent(parent);
-                jobEventService.create(createDto);
+                JobEventDto jobEventDto = jobEventService.create(createDto);
+                jobEventService.enqueueJob(jobEventDto.getId());
             }
 
             return null;

@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventRunner;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,12 +17,9 @@ public class JobApi {
 
     private final JobEventService jobEventService;
 
-    private final JobEventRunner jobEventRunner;
-
     @Autowired
-    public JobApi(JobEventService jobEventService, JobEventRunner jobEventRunner) {
+    public JobApi(JobEventService jobEventService) {
         this.jobEventService = jobEventService;
-        this.jobEventRunner = jobEventRunner;
     }
 
     @Operation(summary = "List enriching jobs.")
@@ -57,6 +53,6 @@ public class JobApi {
     @ApiResponse(responseCode = "400", description = "Job with given ID could not be restarted.")
     @PostMapping("/{id}/restart")
     public JobEventDto restartJob(@PathVariable("id") String jobEventId) {
-        return jobEventRunner.runJob(jobEventId); //TODO: send to queue
+        return jobEventService.enqueueJob(jobEventId);
     }
 }

@@ -16,11 +16,8 @@ import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,12 +38,9 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     private JobExplorer jobExplorer;
 
-    private TransactionTemplate transactionTemplate;
-
-    @Override
-    public JobEventDto create(@Valid @NonNull JobEventCreateDto createDto) {
-        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        JobEvent jobEvent = transactionTemplate.execute(t -> getStore().create(getMapper().fromCreateDto(createDto)));
+    public JobEventDto enqueueJob(String jobEventId) {
+        JobEvent jobEvent = store.find(jobEventId);
+        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
         jmsProducer.sendMessage(jobEvent);
 
@@ -106,14 +100,8 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         this.jmsProducer = jmsProducer;
     }
 
-
     @Autowired
     public void setJobExplorer(JobExplorer jobExplorer) {
         this.jobExplorer = jobExplorer;
-    }
-
-    @Autowired
-    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
-        this.transactionTemplate = transactionTemplate;
     }
 }

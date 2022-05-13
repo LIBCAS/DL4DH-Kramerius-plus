@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -11,6 +10,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.Set;
 @Slf4j
 public class JobEventRunner {
 
-    private JobEventService jobEventService;
+    private JobEventStore jobEventStore;
 
     private JobLauncher jobLauncher;
 
@@ -29,10 +29,9 @@ public class JobEventRunner {
 
     private final Map<String, Job> jobs = new HashMap<>();
 
-    public JobEventDto runJob(String jobEventId) {
-        log.debug("Finding jobEvent with id={} to run", jobEventId);
-        JobEventDto jobEvent = jobEventService.find(jobEventId);
+    private TransactionTemplate transactionTemplate;
 
+    public JobEvent runJob(JobEvent jobEvent) {
         Job jobToRun = jobs.get(jobEvent.getKrameriusJob().name());
 
         try {
@@ -50,20 +49,20 @@ public class JobEventRunner {
             jobEvent.setLastExecutionId(newExecutionId);
 
             log.debug("Storing changes to jobEvent {}", jobEvent);
-            return jobEventService.update(jobEvent);
+            return transactionTemplate.execute(t -> jobEventStore.update(jobEvent));
         } catch (Exception e) {
             throw new IllegalStateException("Failed to run job", e);
         }
     }
 
-    private JobParameters toJobParameters(JobEventDto jobEventDto) {
+    private JobParameters toJobParameters(JobEvent jobEvent) {
         JobParametersBuilder builder = new JobParametersBuilder()
-                .addString("jobEventId", jobEventDto.getId())
-                .addString("jobEventName", jobEventDto.getJobName())
-                .addString("publicationId", jobEventDto.getPublicationId())
-                .addDate("created", Date.from(jobEventDto.getCreated()));
+                .addString("jobEventId", jobEvent.getId())
+                .addString("jobEventName", jobEvent.getJobName())
+                .addString("publicationId", jobEvent.getPublicationId())
+                .addDate("created", Date.from(jobEvent.getCreated()));
 
-        for (Map.Entry<String, Object> entry : jobEventDto.getParameters().entrySet()) {
+        for (Map.Entry<String, Object> entry : jobEvent.getParameters().entrySet()) {
             if (entry.getValue() instanceof String) {
                 builder.addString(entry.getKey(), (String) entry.getValue());
             } else if (entry.getValue() instanceof Date) {
@@ -96,7 +95,12 @@ public class JobEventRunner {
     }
 
     @Autowired
-    public void setJobEventService(JobEventService jobEventService) {
-        this.jobEventService = jobEventService;
+    public void setJobEventStore(JobEventStore jobEventStore) {
+        this.jobEventStore = jobEventStore;
+    }
+
+    @Autowired
+    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+        this.transactionTemplate = transactionTemplate;
     }
 }

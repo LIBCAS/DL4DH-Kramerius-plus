@@ -10,6 +10,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingExcep
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius.WebClientDataProvider;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.DownloadKStructureCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.JobEventCreateDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -97,7 +98,9 @@ public class EnrichmentApi {
         EnrichResponseDto responseDto = new EnrichResponseDto();
 
         for (T createDto : jobCreateDto) {
-            responseDto.getEnrichJobs().add(jobEventService.create(createDto));
+            JobEventDto jobEventDto = jobEventService.create(createDto);
+            responseDto.getEnrichJobs().add(jobEventDto);
+            jobEventService.enqueueJob(jobEventDto.getId());
         }
 
         return responseDto;
