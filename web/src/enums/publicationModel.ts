@@ -6,3 +6,4 @@ export type PublicationModel =
 	| 'periodicalitem'
 	| 'page'
 	| 'interlanpart'
+	| 'supplement'

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/job/plan")
-public class JobPlan {
+public class JobPlanApi {
 
 
 }

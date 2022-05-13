@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.Supplement;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.MonographUnit;
@@ -35,6 +36,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusM
         @JsonSubTypes.Type(name = PERIODICAL, value = Periodical.class),
         @JsonSubTypes.Type(name = PERIODICAL_VOLUME, value = PeriodicalVolume.class),
         @JsonSubTypes.Type(name = PERIODICAL_ITEM, value = PeriodicalItem.class),
+        @JsonSubTypes.Type(name = SUPPLEMENT, value = Supplement.class)
 })
 @Document(collection = "publications")
 public abstract class Publication extends DigitalObject {

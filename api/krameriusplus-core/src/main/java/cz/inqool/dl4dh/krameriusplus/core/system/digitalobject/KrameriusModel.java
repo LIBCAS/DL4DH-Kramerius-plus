@@ -15,6 +15,8 @@ public class KrameriusModel {
 
     public static final String PERIODICAL_ITEM = "periodicalitem";
 
+    public static final String SUPPLEMENT = "supplement";
+
     public static final String PAGE = "page";
 
     public static final String INTERNAL_PART = "internalpart";

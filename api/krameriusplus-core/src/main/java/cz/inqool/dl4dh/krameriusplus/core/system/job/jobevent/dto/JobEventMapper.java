@@ -4,7 +4,6 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.mapper.DatedObjectM
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.dto.JobMapper;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventConfigMapper;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventRunDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

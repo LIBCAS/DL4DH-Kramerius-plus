@@ -1,7 +1,6 @@
 import { SingleEvent } from 'components/event/event-detail'
 import { ApiError } from 'models'
 import { JobEventConfigCreateDto } from 'models/job-event-config-create-dto'
-import { JobEventCreateDto } from 'models/job-event-create-dto'
 import { KrameriusJob } from 'models/kramerius-job'
 import fetch from 'utils/fetch'
 

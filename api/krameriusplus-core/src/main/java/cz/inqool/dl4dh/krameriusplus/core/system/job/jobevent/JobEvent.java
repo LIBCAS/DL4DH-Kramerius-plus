@@ -5,7 +5,6 @@ import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.Job
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.batch.core.BatchStatus;
 
 import javax.persistence.*;
 
@@ -25,7 +24,7 @@ public class JobEvent extends DatedObject {
     private Long lastExecutionId;
 
     @Enumerated(EnumType.STRING)
-    private BatchStatus lastExecutionStatus;
+    private JobStatus lastExecutionStatus = JobStatus.CREATED;
 
     @ManyToOne
     private JobEvent parent;

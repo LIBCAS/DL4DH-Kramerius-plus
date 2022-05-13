@@ -8,11 +8,10 @@ import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventMapper;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventRunDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventRunDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.JobPlan;
 import lombok.Getter;
 import lombok.NonNull;
-import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
@@ -59,7 +58,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         JobEvent jobEvent = store.find(jobEventId);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
-        if (BatchStatus.FAILED.equals(jobEvent.getLastExecutionStatus())) {
+        if (JobStatus.FAILED.equals(jobEvent.getLastExecutionStatus())) {
             enqueueJob(jobEvent);
         } else {
             throw new IllegalStateException("Only jobs with lastExecutionStatus='FAILED' can be restarted " +
@@ -83,7 +82,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     @Transactional
-    public void updateJobStatus(String jobEventId, BatchStatus status) {
+    public void updateJobStatus(String jobEventId, JobStatus status) {
         store.updateJobStatus(jobEventId, status);
     }
 
