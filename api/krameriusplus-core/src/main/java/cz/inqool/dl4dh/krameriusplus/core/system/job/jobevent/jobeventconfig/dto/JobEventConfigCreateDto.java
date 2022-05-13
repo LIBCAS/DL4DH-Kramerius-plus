@@ -16,7 +16,7 @@ import java.util.Map;
         @JsonSubTypes.Type(value = EnrichExternalJobConfigDto.class, name = "ENRICH_EXTERNAL"),
         @JsonSubTypes.Type(value = EnrichNdkJobConfigDto.class, name = "ENRICH_NDK"),
         @JsonSubTypes.Type(value = EnrichTeiJobConfigDto.class, name = "ENRICH_TEI"),
-        @JsonSubTypes.Type(value = ExportingJobConfigDto.class, name = "EXPORTING_JOB"),
+        @JsonSubTypes.Type(value = ExportJobConfigDto.class, name = "EXPORT"),
 })
 public abstract class JobEventConfigCreateDto {
 

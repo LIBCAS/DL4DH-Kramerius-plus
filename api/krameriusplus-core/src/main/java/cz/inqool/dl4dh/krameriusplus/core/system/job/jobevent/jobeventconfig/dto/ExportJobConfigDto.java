@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class ExportingJobConfigDto extends JobEventConfigCreateDto {
+public class ExportJobConfigDto extends JobEventConfigCreateDto {
 
     private String publicationTitle;
 

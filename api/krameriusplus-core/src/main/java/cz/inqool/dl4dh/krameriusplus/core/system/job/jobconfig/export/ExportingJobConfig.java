@@ -1,18 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.export;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
-import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.CommonJobConfig;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobListener;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,46 +15,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobStep.EXPORT_STEP;
+
 @Configuration
-public class ExportingJobConfig {
+public class ExportingJobConfig extends CommonJobConfig {
 
-    private JobBuilderFactory jobBuilderFactory;
-
-    private StepBuilderFactory stepBuilderFactory;
-
-    private ExporterService exporterService;
-
-    private ObjectMapper objectMapper;
 
     @Bean
-    public Job exportingJob() {
+    public Job exportingJob(JobListener listener) {
         return jobBuilderFactory.get(KrameriusJob.EXPORT.name())
                 .validator(validator())
                 .incrementer(new RunIdIncrementer())
-                .start(exportingStep())
+                .listener(listener)
+                .start(steps.get(EXPORT_STEP))
                 .build();
-    }
-
-    @Bean
-    public Step exportingStep() {
-        return stepBuilderFactory.get("EXPORTING_STEP")
-                .tasklet(exportingTasklet())
-                .build();
-    }
-
-    @Bean
-    @StepScope
-    public Tasklet exportingTasklet() {
-        return (contribution, chunkContext) -> {
-            JobParameters jobParameters = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters();
-            String publicationId = jobParameters.getString("publicationId");
-            Params params = objectMapper.readValue(jobParameters.getString("params"), Params.class);
-            ExportFormat exportFormat = ExportFormat.fromString(jobParameters.getString("exportFormat"));
-
-            exporterService.export(publicationId, params, exportFormat);
-
-            return RepeatStatus.FINISHED;
-        };
     }
 
     private JobParametersValidator validator() {
@@ -91,25 +60,5 @@ public class ExportingJobConfig {
                 throw new JobParametersInvalidException("Invalid parameters: " + invalidParameters);
             }
         };
-    }
-
-    @Autowired
-    public void setJobBuilderFactory(JobBuilderFactory jobBuilderFactory) {
-        this.jobBuilderFactory = jobBuilderFactory;
-    }
-
-    @Autowired
-    public void setStepBuilderFactory(StepBuilderFactory stepBuilderFactory) {
-        this.stepBuilderFactory = stepBuilderFactory;
-    }
-
-    @Autowired
-    public void setExporterService(ExporterService exporterService) {
-        this.exporterService = exporterService;
-    }
-
-    @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
     }
 }

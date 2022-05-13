@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.export;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.exporter.Exporter;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
@@ -53,7 +54,6 @@ public class ExporterService {
 
     @Scheduled(cron = CRON_EVERY_DAY_AT_MIDNIGHT)
     public void cleanUp() {
-
         List<Export> exports = listToDelete();
 
         exports.forEach(this::delete);
@@ -70,8 +70,8 @@ public class ExporterService {
         exportStore.update(export);
     }
 
-    public List<Export> list() {
-        return exportStore.listAll();
+    public QueryResults<Export> list() {
+        return exportStore.list(new cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Params());
     }
 
     public List<Export> listToDelete() {
