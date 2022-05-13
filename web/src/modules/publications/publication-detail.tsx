@@ -8,7 +8,7 @@ import {
 import { Box } from '@mui/system'
 import { GridRowParams } from '@mui/x-data-grid'
 import { ReadOnlyField } from 'components/read-only-field/read-only-field'
-import { JobEvent, Publication } from 'models'
+import { Publication } from 'models'
 import { JobType } from 'models/job-type'
 import { KrameriusJob } from 'models/kramerius-job'
 import {
@@ -17,9 +17,8 @@ import {
 	enrichNdk,
 	enrichTei,
 } from 'modules/enrichment/enrichment-api'
-import { listJobEvents } from 'modules/jobs/job-api'
 import { JobEventList } from 'modules/jobs/job-event/job-event-list'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import { toast } from 'react-toastify'
 import { DialogContext } from '../../components/dialog/dialog-context'

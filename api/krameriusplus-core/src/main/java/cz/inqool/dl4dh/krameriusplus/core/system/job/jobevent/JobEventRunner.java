@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventRunDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventRunDto;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

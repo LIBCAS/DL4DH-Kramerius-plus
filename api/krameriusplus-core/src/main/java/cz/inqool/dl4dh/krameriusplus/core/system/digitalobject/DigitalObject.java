@@ -30,7 +30,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusM
  */
 @Getter
 @Setter
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "model")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "model", defaultImpl = Supplement.class)
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = Monograph.class, name = MONOGRAPH),
         @JsonSubTypes.Type(value = MonographUnit.class, name = MONOGRAPH_UNIT),

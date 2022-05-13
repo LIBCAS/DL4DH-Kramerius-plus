@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.jms;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventRunner;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventRunDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventRunDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

@@ -6,7 +6,6 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.store.DatedStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.QScheduledJobEvent;
-import org.springframework.batch.core.BatchStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -38,7 +37,7 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
         return result;
     }
 
-    public void updateJobStatus(String jobEventId, BatchStatus status) {
+    public void updateJobStatus(String jobEventId, JobStatus status) {
         entityManager.createQuery("UPDATE JobEvent j SET j.lastExecutionStatus = :exec WHERE j.id=:id")
                 .setParameter("exec", status)
                 .setParameter("id", jobEventId)

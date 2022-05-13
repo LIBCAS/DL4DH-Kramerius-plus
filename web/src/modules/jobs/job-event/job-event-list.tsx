@@ -64,7 +64,7 @@ export const JobEventList = ({
 			}
 		}
 		fetchJobs()
-	}, [page, krameriusJob, publicationId])
+	}, [page, krameriusJob, publicationId, jobType])
 
 	useEffect(() => {
 		setRowCountState(prevRowCountState =>

@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
@@ -73,12 +75,12 @@ public class DownloadPublicationChildren {
     @StepScope
     public ItemProcessor<DigitalObject, Page> downloadPublicationChildrenProcessor(
             @Value("#{jobParameters['jobEventId']}") String jobEventId,
-            JobEventService jobEventService) {
+            JobEventService jobEventService, TransactionTemplate transactionTemplate) {
         return digitalObject -> {
             if (digitalObject instanceof Page) {
                 return (Page) digitalObject;
             } else if (digitalObject instanceof Publication) {
-                createJobForChild(jobEventService, jobEventId, digitalObject.getId());
+                createJobForChild(jobEventService, transactionTemplate, jobEventId, digitalObject.getId());
                 return null;
             } else {
                 return null; // stops processing of item
@@ -86,7 +88,8 @@ public class DownloadPublicationChildren {
         };
     }
 
-    private void createJobForChild(JobEventService jobEventService, String jobEventId, String childId) {
+    private void createJobForChild(JobEventService jobEventService, TransactionTemplate transactionTemplate,
+                                   String jobEventId, String childId) {
         JobEventDto parent = new JobEventDto();
         parent.setId(jobEventId);
 
@@ -94,7 +97,9 @@ public class DownloadPublicationChildren {
         createDto.setConfig(new DownloadKStructureJobConfigDto());
         createDto.setPublicationId(childId);
         createDto.setParent(parent);
-        JobEventDto jobEventDto = jobEventService.create(createDto);
+
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        JobEventDto jobEventDto = transactionTemplate.execute(t -> jobEventService.create(createDto));
         jobEventService.enqueueJob(jobEventDto.getId());
     }
 

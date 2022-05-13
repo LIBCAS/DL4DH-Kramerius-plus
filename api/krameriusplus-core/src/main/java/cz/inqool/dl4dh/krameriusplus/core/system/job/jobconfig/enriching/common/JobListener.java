@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobStatus;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
@@ -42,7 +43,7 @@ public class JobListener implements JobExecutionListener {
         BatchStatus status = jobExecution.getStatus();
         log.debug("Updating jobEvent {} status to: {}", jobEventId, status);
 
-        jobEventService.updateJobStatus(jobEventId, status);
+        jobEventService.updateJobStatus(jobEventId, JobStatus.from(status));
     }
 
     @Autowired
