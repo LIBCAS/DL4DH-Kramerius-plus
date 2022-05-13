@@ -175,8 +175,9 @@ export const PublicationDetail = ({ publication }: Props) => {
 					<Box sx={{ p: 3 }}>
 						<JobEventList
 							key={lastRender}
-							filterOnlyType={selectedJobType}
 							jobType={JobType.Enriching}
+							krameriusJob={selectedJobType}
+							publicationId={publication.id}
 							onRowClick={onRowClick}
 						/>
 					</Box>
