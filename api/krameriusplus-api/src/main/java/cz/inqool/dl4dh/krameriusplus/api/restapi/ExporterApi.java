@@ -12,7 +12,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.ExportingJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.ExportJobConfigDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -66,7 +66,7 @@ public class ExporterApi {
         JobEventCreateDto createDto = new JobEventCreateDto();
         createDto.setPublicationId(publicationId);
 
-        ExportingJobConfigDto config = new ExportingJobConfigDto();
+        ExportJobConfigDto config = new ExportJobConfigDto();
         config.setExportFormat(ExportFormat.TEI);
         config.setParams(params);
         config.setPublicationTitle(publication.getTitle());
@@ -100,7 +100,7 @@ public class ExporterApi {
         JobEventCreateDto createDto = new JobEventCreateDto();
         createDto.setPublicationId(publicationId);
 
-        ExportingJobConfigDto config = new ExportingJobConfigDto();
+        ExportJobConfigDto config = new ExportJobConfigDto();
         config.setExportFormat(exportFormat);
         config.setParams(params);
         config.setPublicationTitle(publication.getTitle());
@@ -115,9 +115,9 @@ public class ExporterApi {
 
     @Operation(summary = "List all exports.")
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping("/list")
+    @GetMapping("/list") //TODO: add paging
     public List<Export> listExports() {
-        return exporterService.list();
+        return exporterService.list().getResults();
     }
 
     @Operation(summary = "Download export.")

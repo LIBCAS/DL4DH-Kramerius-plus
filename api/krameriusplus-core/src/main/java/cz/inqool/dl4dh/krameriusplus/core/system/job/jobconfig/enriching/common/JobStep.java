@@ -27,4 +27,6 @@ public enum JobStep {
     public static final String ENRICH_PAGES_TEI = "EnrichPagesTeiBodyStep";
 
     public static final String CLEAN_UP_PAGES = "CleanUpPagesStep";
+
+    public static final String EXPORT_STEP = "ExportStep";
 }
