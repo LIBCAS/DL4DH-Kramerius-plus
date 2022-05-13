@@ -4,7 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.JobPlanResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.DownloadKStructureRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.EnrichmentRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.ExecutionPlanRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.JobPlanCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingException;
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius.WebClientDataProvider;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
@@ -13,7 +13,6 @@ import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreate
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventConfigCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.JobPlanService;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.dto.JobPlanCreateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +46,7 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
     @Override
     public EnrichResponseDto enrich(EnrichmentRequestDto requestDto) {
         if (requestDto instanceof DownloadKStructureRequestDto) {
-            validate((DownloadKStructureRequestDto) requestDto);
+            validate((DownloadKStructureRequestDto) requestDto); //TODO: delete validation, it's too slow
         }
 
         EnrichResponseDto responseDto = new EnrichResponseDto();
@@ -67,11 +66,11 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
     }
 
     @Override
-    public JobPlanResponseDto enrichWithPlan(ExecutionPlanRequestDto requestDto) {
+    public JobPlanResponseDto enrichWithPlan(JobPlanCreateDto requestDto) {
         JobPlanResponseDto responseDto = new JobPlanResponseDto();
 
         for (String publicationId : requestDto.getPublicationIds()) {
-            JobPlanCreateDto planCreateDto = new JobPlanCreateDto();
+            cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.dto.JobPlanCreateDto planCreateDto = new cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.dto.JobPlanCreateDto();
 
             for (JobEventConfigCreateDto configCreateDto : requestDto.getConfigs()) {
                 JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();

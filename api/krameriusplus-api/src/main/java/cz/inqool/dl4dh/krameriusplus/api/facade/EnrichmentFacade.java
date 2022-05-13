@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.api.facade;
 import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.JobPlanResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.EnrichmentRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.ExecutionPlanRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.JobPlanCreateDto;
 
 public interface EnrichmentFacade {
 
@@ -24,5 +24,5 @@ public interface EnrichmentFacade {
      *
      * @param requestDto
      */
-    JobPlanResponseDto enrichWithPlan(ExecutionPlanRequestDto requestDto);
+    JobPlanResponseDto enrichWithPlan(JobPlanCreateDto requestDto);
 }

@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.dto.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventConfigCreateDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,11 +13,14 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class ExecutionPlanRequestDto {
+@Schema(description = "DTO for creating JobPlans.")
+public class JobPlanCreateDto {
 
+    @Schema(description = "Set of publicationIds")
     @NotEmpty
     private Set<String> publicationIds = new HashSet<>();
 
+    @Schema(description = "List of Configs that should be used for every publication.")
     @NotEmpty
     private List<JobEventConfigCreateDto> configs = new ArrayList<>();
 }
