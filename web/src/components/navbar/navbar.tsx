@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 
 import { useNavbar } from './navbar-hook'
+import { Box } from '@mui/system'
 
 const useStyles = makeStyles(theme => ({
 	toolbar: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 export const Navbar = () => {
 	const classes = useStyles()
 
-	const { instance, url } = useNavbar()
+	const { instance, url, version } = useNavbar()
 
 	return (
 		<AppBar>
@@ -60,9 +61,18 @@ export const Navbar = () => {
 					<Typography className={classes.instanceInfo} component="span">
 						Instance: {instance}
 					</Typography>
-					<Typography className={classes.instanceInfo} component="span">
-						Url: {url}
-					</Typography>
+					<Box
+						display="flex"
+						justifyContent="space-between"
+						sx={{ minWidth: 250 }}
+					>
+						<Typography className={classes.instanceInfo} component="span">
+							Url: {url}
+						</Typography>
+						<Typography className={classes.instanceInfo} component="span">
+							Verze: {version}
+						</Typography>
+					</Box>
 				</div>
 			</Toolbar>
 		</AppBar>

@@ -87,6 +87,7 @@ public class Page extends DigitalObject {
 
     private NameTagParadata nameTagParadata;
 
+    @JsonIgnore
     private String teiBodyFileId;
 
     @JsonProperty("details")
