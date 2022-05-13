@@ -1,8 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.MonographUnit;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.periodical.Periodical;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.periodical.PeriodicalItem;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.periodical.PeriodicalVolume;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCRParadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeParadata;
@@ -14,11 +21,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel.*;
+
 /**
  * @author Norbert Bodnar
  */
 @Getter
 @Setter
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "model")
+@JsonSubTypes({
+        @JsonSubTypes.Type(name = MONOGRAPH, value = Monograph.class),
+        @JsonSubTypes.Type(name = MONOGRAPH_UNIT, value = MonographUnit.class),
+        @JsonSubTypes.Type(name = PERIODICAL, value = Periodical.class),
+        @JsonSubTypes.Type(name = PERIODICAL_VOLUME, value = PeriodicalVolume.class),
+        @JsonSubTypes.Type(name = PERIODICAL_ITEM, value = PeriodicalItem.class),
+})
 @Document(collection = "publications")
 public abstract class Publication extends DigitalObject {
 
@@ -54,4 +71,10 @@ public abstract class Publication extends DigitalObject {
 
     @JsonIgnore
     private String teiHeaderFileId;
+
+    /**
+     * Model is lost when deserializing generic collections, therefore we need to include
+     * model like this
+     */
+    public abstract String getModel();
 }

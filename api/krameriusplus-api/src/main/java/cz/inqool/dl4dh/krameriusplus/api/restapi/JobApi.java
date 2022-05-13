@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
 import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Job", description = "Úlohy")
@@ -27,8 +29,10 @@ public class JobApi {
     public QueryResults<JobEventDto> listEnrichingJobs(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                                        @RequestParam(value = "page", defaultValue = "0") int page,
                                                        @Schema(description = "Optional publicationId parameter. When provided, only enriching jobs for the given publication will be returned.")
-                                                           @RequestParam(value = "publicationId", required = false) String publicationId) {
-        return jobEventService.listEnrichingJobs(publicationId, page, pageSize);
+                                                           @RequestParam(value = "publicationId", required = false) String publicationId,
+                                                       @Schema(description = "Optional krameriusJob value. When provided, only enriching jobs of this type will be returned.")
+                                                           @RequestParam(value = "jobType", required = false) KrameriusJob krameriusJob) {
+        return jobEventService.listEnrichingJobs(publicationId, krameriusJob, page, pageSize);
     }
 
     @Operation(summary = "List exporting jobs.")
@@ -52,7 +56,8 @@ public class JobApi {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Job with given ID could not be restarted.")
     @PostMapping("/{id}/restart")
-    public JobEventDto restartJob(@PathVariable("id") String jobEventId) {
-        return jobEventService.enqueueJob(jobEventId);
+    public ResponseEntity<?> restartJob(@PathVariable("id") String jobEventId) {
+        jobEventService.restart(jobEventId);
+        return ResponseEntity.ok().build();
     }
 }

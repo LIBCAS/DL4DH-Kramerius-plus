@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventRunDto;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -10,7 +11,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.Set;
 @Slf4j
 public class JobEventRunner {
 
-    private JobEventStore jobEventStore;
+    private JobEventService jobEventService;
 
     private JobLauncher jobLauncher;
 
@@ -29,40 +29,32 @@ public class JobEventRunner {
 
     private final Map<String, Job> jobs = new HashMap<>();
 
-    private TransactionTemplate transactionTemplate;
-
-    public JobEvent runJob(JobEvent jobEvent) {
-        Job jobToRun = jobs.get(jobEvent.getConfig().getKrameriusJob().name());
+    public void runJob(JobEventRunDto jobEvent) {
+        Job jobToRun = jobs.get(jobEvent.getKrameriusJob().name());
 
         try {
-            Long newExecutionId;
             if (jobEvent.getLastExecutionId() != null) {
                 log.debug("Restarting jobEvent {}", jobEvent);
-                newExecutionId = jobOperator.restart(jobEvent.getLastExecutionId());
+                jobEvent.setLastExecutionId(jobOperator.restart(jobEvent.getLastExecutionId()));
             } else {
                 log.debug("Starting jobEvent {}", jobEvent);
-                JobExecution jobExecution = jobLauncher.run(jobToRun, toJobParameters(jobEvent));
+                JobExecution jobExecution = jobLauncher.run(jobToRun, toJobParameters(jobEvent.getJobParametersMap())); // runs before job, which updates jobStatus=STARTED
                 jobEvent.setInstanceId(jobExecution.getJobInstance().getInstanceId());
-                newExecutionId = jobExecution.getId();
+                jobEvent.setLastExecutionId(jobExecution.getId());
             }
 
-            jobEvent.setLastExecutionId(newExecutionId);
-
             log.debug("Storing changes to jobEvent {}", jobEvent);
-            return transactionTemplate.execute(t -> jobEventStore.update(jobEvent));
+
+            jobEventService.updateRunningJob(jobEvent); // updates jobStatus = null (and cancel STARTED status)
         } catch (Exception e) {
             throw new IllegalStateException("Failed to run job", e);
         }
     }
 
-    private JobParameters toJobParameters(JobEvent jobEvent) {
-        JobParametersBuilder builder = new JobParametersBuilder()
-                .addString("jobEventId", jobEvent.getId())
-                .addString("jobEventName", jobEvent.getJobName())
-                .addString("publicationId", jobEvent.getPublicationId())
-                .addDate("created", Date.from(jobEvent.getCreated()));
+    private JobParameters toJobParameters(Map<String, Object> jobParametersMap) {
+        JobParametersBuilder builder = new JobParametersBuilder();
 
-        for (Map.Entry<String, Object> entry : jobEvent.getConfig().getParameters().entrySet()) {
+        for (Map.Entry<String, Object> entry : jobParametersMap.entrySet()) {
             if (entry.getValue() instanceof String) {
                 builder.addString(entry.getKey(), (String) entry.getValue());
             } else if (entry.getValue() instanceof Date) {
@@ -95,12 +87,7 @@ public class JobEventRunner {
     }
 
     @Autowired
-    public void setJobEventStore(JobEventStore jobEventStore) {
-        this.jobEventStore = jobEventStore;
-    }
-
-    @Autowired
-    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
-        this.transactionTemplate = transactionTemplate;
+    public void setJobEventService(JobEventService jobEventService) {
+        this.jobEventService = jobEventService;
     }
 }

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.jms;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventRunner;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventRunDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,7 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
         endpoint.setMessageListener(message -> {
             log.debug("Message received {}", message);
             try {
-                JobEvent jobEvent = (JobEvent) messageConverter.fromMessage(message);
+                JobEventRunDto jobEvent = (JobEventRunDto) messageConverter.fromMessage(message);
 
                 log.debug("Message content: {}", jobEvent);
                 jobEventRunner.runJob(jobEvent);

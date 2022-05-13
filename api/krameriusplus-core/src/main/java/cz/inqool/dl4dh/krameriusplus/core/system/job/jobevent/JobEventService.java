@@ -8,6 +8,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventMapper;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventRunDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.JobPlan;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
@@ -40,13 +38,11 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     private JobExplorer jobExplorer;
 
-    public JobEventDto enqueueJob(String jobEventId) {
+    public void enqueueJob(String jobEventId) {
         JobEvent jobEvent = store.find(jobEventId);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
-        jmsProducer.sendMessage(jobEvent);
-
-        return getMapper().toDto(jobEvent);
+        enqueueJob(jobEvent);
     }
 
     public void enqueueNextJobInPlan(String lastExecutedJobEventId) {
@@ -56,6 +52,18 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
             Optional<JobEvent> jobEvent = jobPlan.getNextToExecute();
 
             jobEvent.ifPresent(event -> enqueueJob(event.getId()));
+        }
+    }
+
+    public void restart(String jobEventId) {
+        JobEvent jobEvent = store.find(jobEventId);
+        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
+
+        if (BatchStatus.FAILED.equals(jobEvent.getLastExecutionStatus())) {
+            enqueueJob(jobEvent);
+        } else {
+            throw new IllegalStateException("Only jobs with lastExecutionStatus='FAILED' can be restarted " +
+                    "(JobEvent's lastExecutionStatus is " + jobEvent.getLastExecutionStatus() + ")");
         }
     }
 
@@ -79,8 +87,17 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         store.updateJobStatus(jobEventId, status);
     }
 
-    public QueryResults<JobEventDto> listEnrichingJobs(String publicationId, int page, int pageSize) {
-        QueryResults<JobEvent> result = store.listJobsByType(KrameriusJob.getEnrichingJobs(), publicationId, page, pageSize);
+    @Transactional
+    public void updateRunningJob(JobEventRunDto jobEvent) {
+        store.updateJobRun(jobEvent.getId(), jobEvent.getInstanceId(), jobEvent.getLastExecutionId());
+    }
+
+    public QueryResults<JobEventDto> listEnrichingJobs(String publicationId, KrameriusJob krameriusJob, int page, int pageSize) {
+        QueryResults<JobEvent> result = store.listJobsByType(
+                krameriusJob == null ? KrameriusJob.getEnrichingJobs() : Set.of(krameriusJob),
+                publicationId,
+                page,
+                pageSize);
 
         return new QueryResults<>(mapToDto(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
     }
@@ -89,6 +106,10 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         QueryResults<JobEvent> result = store.listJobsByType(KrameriusJob.getExportingJobs(), publicationId, page, pageSize);
 
         return new QueryResults<>(mapToDto(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
+    }
+
+    private void enqueueJob(JobEvent jobEvent) {
+        jmsProducer.sendMessage(mapper.toRunDto(jobEvent));
     }
 
     private List<JobEventDto> mapToDto(List<JobEvent> jobEvents) {

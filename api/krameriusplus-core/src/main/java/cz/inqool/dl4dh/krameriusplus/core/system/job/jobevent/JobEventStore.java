@@ -45,6 +45,14 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
                 .executeUpdate();
     }
 
+    public void updateJobRun(String jobEventId, Long instanceId, Long lastExecutionId) {
+        entityManager.createQuery("UPDATE JobEvent j SET j.instanceId=:instanceId, j.lastExecutionId=:executionId WHERE j.id=:id")
+                .setParameter("instanceId", instanceId)
+                .setParameter("executionId", lastExecutionId)
+                .setParameter("id", jobEventId)
+                .executeUpdate();
+    }
+
     public JobPlan findExecutionPlanByJobEventId(String jobEventId) {
         QScheduledJobEvent qScheduledJobEvent = QScheduledJobEvent.scheduledJobEvent;
 
