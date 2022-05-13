@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

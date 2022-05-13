@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.jms;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventRunner;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,8 @@ import org.springframework.jms.support.converter.MessageConverter;
 
 import javax.jms.JMSException;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.ENRICHING_QUEUE;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.EXPORTING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventQueue.ENRICHING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventQueue.EXPORTING_QUEUE;
 
 @Slf4j
 @Configuration

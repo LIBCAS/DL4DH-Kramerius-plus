@@ -80,10 +80,10 @@
 
     
     <changeSet id="4" author="bodnar">
-        <createTable tableName="execution_plan">
+        <createTable tableName="job_plan">
             <!-- Domain Object -->
             <column name="id" type="${id}">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="execution_plan_PK"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="job_plan_PK"/>
             </column>
 
             <!-- Dated Object -->
@@ -111,13 +111,12 @@
                              referencedTableName="job_event"
                              referencedColumnNames="id"/>
             </column>
-            <column name="execution_plan_id" type="${id}">
-                <constraints foreignKeyName="scheduled_job_event_execution_plan_FK"
-                             referencedTableName="job_execution_plan"
+            <column name="job_plan_id" type="${id}">
+                <constraints foreignKeyName="scheduled_job_event_job_plan_FK"
+                             referencedTableName="job_plan"
                              referencedColumnNames="id"/>
             </column>
         </createTable>
-
     </changeSet>
 
 </databaseChangeLog>

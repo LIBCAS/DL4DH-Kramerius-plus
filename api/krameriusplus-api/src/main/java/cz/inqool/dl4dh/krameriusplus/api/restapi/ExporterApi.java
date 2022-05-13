@@ -9,9 +9,10 @@ import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.create.ExportingJobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.ExportingJobConfigDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -62,11 +63,15 @@ public class ExporterApi {
             params = new TeiParams();
         }
 
-        ExportingJobEventCreateDto createDto = new ExportingJobEventCreateDto();
+        JobEventCreateDto createDto = new JobEventCreateDto();
         createDto.setPublicationId(publicationId);
-        createDto.setExportFormat(ExportFormat.TEI);
-        createDto.setParams(params);
-        createDto.setPublicationTitle(publication.getTitle());
+
+        ExportingJobConfigDto config = new ExportingJobConfigDto();
+        config.setExportFormat(ExportFormat.TEI);
+        config.setParams(params);
+        config.setPublicationTitle(publication.getTitle());
+
+        createDto.setConfig(config);
 
         JobEventDto jobEvent = jobEventService.create(createDto);
         jobEventService.enqueueJob(jobEvent.getId());
@@ -92,11 +97,15 @@ public class ExporterApi {
             params = new Params();
         }
 
-        ExportingJobEventCreateDto createDto = new ExportingJobEventCreateDto();
+        JobEventCreateDto createDto = new JobEventCreateDto();
         createDto.setPublicationId(publicationId);
-        createDto.setExportFormat(exportFormat);
-        createDto.setParams(params);
-        createDto.setPublicationTitle(publication.getTitle());
+
+        ExportingJobConfigDto config = new ExportingJobConfigDto();
+        config.setExportFormat(exportFormat);
+        config.setParams(params);
+        config.setPublicationTitle(publication.getTitle());
+
+        createDto.setConfig(config);
 
         JobEventDto jobEvent = jobEventService.create(createDto);
         jobEventService.enqueueJob(jobEvent.getId());

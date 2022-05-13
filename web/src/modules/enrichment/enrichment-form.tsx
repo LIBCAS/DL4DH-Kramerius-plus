@@ -147,7 +147,7 @@ export const EnrichmentForm = () => {
 					</Typography>
 				</div>
 				<Grid container justifyContent="space-between" spacing={2}>
-					<Grid item xs={9}>
+					<Grid item xs={8}>
 						{idFields.map(({ id, value }, i) => (
 							<TextField
 								key={id}
@@ -185,14 +185,14 @@ export const EnrichmentForm = () => {
 							Přidat publikaci
 						</Button>
 					</Grid>
-					<Grid className={classes.submitButton} item xs={3}>
+					<Grid className={classes.submitButton} item xs={4}>
 						<Button
 							color="primary"
 							disabled={disabledSubmitButton}
 							type="submit"
 							variant="contained"
 						>
-							Obohatit
+							Vytvořit plán obohacení
 						</Button>
 					</Grid>
 				</Grid>

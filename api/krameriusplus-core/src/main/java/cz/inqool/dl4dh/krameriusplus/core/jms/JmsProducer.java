@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.jms;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ScheduledMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class JmsProducer {
     public void sendMessage(JobEvent jobEvent) {
         try{
             log.debug("Attempting Send message : " + jobEvent.toString());
-            jmsTemplate.convertAndSend(jobEvent.getKrameriusJob().getQueueName(), jobEvent,
+            jmsTemplate.convertAndSend(jobEvent.getConfig().getKrameriusJob().getQueueName(), jobEvent,
                     message -> {
                         message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, 500);
                         return message;
