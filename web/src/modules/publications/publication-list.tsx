@@ -13,7 +13,6 @@ type Props = {
 }
 
 const getModel = (params: GridValueGetterParams) => {
-	console.log(params.row['model'])
 	return params.row['model']
 }
 

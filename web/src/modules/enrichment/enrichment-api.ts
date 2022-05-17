@@ -1,4 +1,3 @@
-import { SingleEvent } from 'components/event/event-detail'
 import { ApiError } from 'models'
 import { JobEventConfigCreateDto } from 'models/job-event-config-create-dto'
 import { KrameriusJob } from 'models/kramerius-job'
@@ -9,7 +8,7 @@ export async function createPlan(
 	configs: JobEventConfigCreateDto[],
 ) {
 	try {
-		await fetch('/api/enrich/plan', {
+		await fetch('/api/enrichment/plan', {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
 			body: JSON.stringify({ publicationIds, configs }),
@@ -33,7 +32,7 @@ export async function downloadKStructure(
 	publicationIds: string[],
 	override: boolean,
 ) {
-	const requestUrl = '/api/enrich/download-k-structure'
+	const requestUrl = '/api/enrichment/download-k-structure'
 	const config = {
 		krameriusJob: KrameriusJob.DOWNLOAD_K_STRUCTURE,
 	}
@@ -60,7 +59,7 @@ export async function downloadKStructure(
 }
 
 export async function enrichExternal(publicationIds: string[]) {
-	const requestUrl = '/api/enrich/enrich-external'
+	const requestUrl = '/api/enrichment/enrich-external'
 	const config = {
 		krameriusJob: KrameriusJob.ENRICH_EXTERNAL,
 	}
@@ -87,7 +86,7 @@ export async function enrichExternal(publicationIds: string[]) {
 }
 
 export async function enrichNdk(publicationIds: string[]) {
-	const requestUrl = '/api/enrich/enrich-ndk'
+	const requestUrl = '/api/enrichment/enrich-ndk'
 	const config = {
 		krameriusJob: KrameriusJob.ENRICH_NDK,
 	}
@@ -114,7 +113,7 @@ export async function enrichNdk(publicationIds: string[]) {
 }
 
 export async function enrichTei(publicationIds: string[]) {
-	const requestUrl = '/api/enrich/enrich-tei'
+	const requestUrl = '/api/enrichment/enrich-tei'
 	const config = {
 		krameriusJob: KrameriusJob.ENRICH_TEI,
 	}
@@ -136,51 +135,6 @@ export async function enrichTei(publicationIds: string[]) {
 		return {
 			ok: false,
 			data: e as ApiError,
-		}
-	}
-}
-
-export async function getRunningTasks(): Promise<SingleEvent[]> {
-	try {
-		const response = await fetch('/api/job/list', {
-			method: 'GET',
-		})
-
-		const json: SingleEvent[] = await response.json()
-
-		return json
-	} catch (e) {
-		return []
-	}
-}
-
-export async function getFinishedTasks(): Promise<SingleEvent[]> {
-	try {
-		const response = await fetch('/api/scheduler/tasks/finished', {
-			method: 'GET',
-		})
-
-		const json: SingleEvent[] = await response.json()
-
-		return json
-	} catch (e) {
-		return []
-	}
-}
-
-export async function cancelTask(id: string) {
-	try {
-		const response = await fetch(`/api/scheduler/tasks/cancel/${id}`, {
-			method: 'POST',
-		})
-		return {
-			ok: response.ok,
-		}
-	} catch (e) {
-		console.error(e)
-
-		return {
-			ok: false,
 		}
 	}
 }

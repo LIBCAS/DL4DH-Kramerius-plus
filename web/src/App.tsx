@@ -4,12 +4,12 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
 import { Navbar } from './components/navbar/navbar'
-import { Export } from './modules/export/export'
 import { Enrichment } from './modules/enrichment/enrichment'
 import { DialogProvider } from './components/dialog/dialog-context-provider'
 import { JobPage } from 'modules/jobs/job-page'
 import { PublicationsPage } from 'modules/publications/publications-page'
 import { JobType } from 'models/job-type'
+import { ExportList } from 'modules/export/export'
 
 function App() {
 	return (
@@ -19,7 +19,7 @@ function App() {
 					<Navbar />
 					<Switch>
 						<Route exact path="/export">
-							<Export />
+							<ExportList />
 						</Route>
 						<Route exact path="/publications/:publicationId?">
 							<PublicationsPage />
