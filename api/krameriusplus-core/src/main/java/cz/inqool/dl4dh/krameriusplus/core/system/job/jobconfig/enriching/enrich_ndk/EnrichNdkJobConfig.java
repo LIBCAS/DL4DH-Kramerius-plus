@@ -5,7 +5,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob.ENRICH_NDK;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob.ENRICHMENT_NDK;
 import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobStep.*;
 
 @Configuration
@@ -13,7 +13,7 @@ public class EnrichNdkJobConfig extends CommonJobConfig {
 
     @Bean
     public Job enrichNdkJob() {
-        return jobBuilderFactory.get(ENRICH_NDK.name())
+        return jobBuilderFactory.get(ENRICHMENT_NDK.name())
                 .listener(jobListener)
                 .start(steps.get(PREPARE_PUBLICATION_NDK))
                 .next(steps.get(ENRICH_PUBLICATION_NDK))

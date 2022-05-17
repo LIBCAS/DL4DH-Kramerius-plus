@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 public class DownloadKStructureJobConfigDto extends JobEventConfigCreateDto {
 
-    private final KrameriusJob krameriusJob = KrameriusJob.DOWNLOAD_K_STRUCTURE;
+    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_KRAMERIUS;
 
     @Override
     public Map<String, Object> getJobParameters() {

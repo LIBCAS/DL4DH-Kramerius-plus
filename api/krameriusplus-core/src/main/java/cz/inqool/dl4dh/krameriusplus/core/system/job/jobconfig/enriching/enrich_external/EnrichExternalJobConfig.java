@@ -14,7 +14,7 @@ public class EnrichExternalJobConfig extends CommonJobConfig {
 
     @Bean
     public Job enrichExternalJob() {
-        return jobBuilderFactory.get(KrameriusJob.ENRICH_EXTERNAL.name())
+        return jobBuilderFactory.get(KrameriusJob.ENRICHMENT_EXTERNAL.name())
                 .listener(jobListener)
                 .start(steps.get(DOWNLOAD_PAGES_ALTO))
                 .next(steps.get(ENRICH_PAGES_UD_PIPE))

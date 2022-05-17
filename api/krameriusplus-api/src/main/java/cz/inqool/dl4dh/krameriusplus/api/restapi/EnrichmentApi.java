@@ -51,7 +51,7 @@ public class EnrichmentApi {
     @ApiResponse(responseCode = "400", description = "Some publications were already enriched and 'override' parameter " +
             "was not set to true",
             content = @Content(schema = @Schema(implementation = RestException.class), mediaType = APPLICATION_JSON_VALUE))
-    @PostMapping(value = "/download-k-structure", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/kramerius", produces = APPLICATION_JSON_VALUE)
     public EnrichResponseDto downloadKStructure(@RequestBody @Valid DownloadKStructureRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
@@ -59,7 +59,7 @@ public class EnrichmentApi {
     @Operation(summary = "Create and start new jobs of type ENRICH_EXTERNAL. Jobs are started asynchronously. " +
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
-    @PostMapping(value = "/enrich-external", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/external", produces = APPLICATION_JSON_VALUE)
     public EnrichResponseDto enrichExternal(@RequestBody @Valid EnrichExternalRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
@@ -67,7 +67,7 @@ public class EnrichmentApi {
     @Operation(summary = "Create and start new jobs of type ENRICH_NDK. Jobs are started asynchronously. " +
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
-    @PostMapping(value = "/enrich-ndk", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/ndk", produces = APPLICATION_JSON_VALUE)
     public EnrichResponseDto enrichNdk(@RequestBody @Valid EnrichNdkRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
@@ -75,7 +75,7 @@ public class EnrichmentApi {
     @Operation(summary = "Create and start new jobs of type ENRICH_TEI. Jobs are started asynchronously. " +
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
-    @PostMapping(value = "/enrich-tei", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/tei", produces = APPLICATION_JSON_VALUE)
     public EnrichResponseDto enrichTei(@RequestBody @Valid EnrichTeiRequestDto requestDto) {
         return facade.enrich(requestDto);
     }

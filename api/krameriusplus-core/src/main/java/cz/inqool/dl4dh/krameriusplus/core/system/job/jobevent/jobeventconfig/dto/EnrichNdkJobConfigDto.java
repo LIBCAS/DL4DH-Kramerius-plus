@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 public class EnrichNdkJobConfigDto extends JobEventConfigCreateDto {
 
-    private final KrameriusJob krameriusJob = KrameriusJob.ENRICH_NDK;
+    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_NDK;
 
     @Override
     public Map<String, Object> getJobParameters() {

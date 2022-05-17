@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 public class EnrichExternalJobConfigDto extends JobEventConfigCreateDto {
 
-    private final KrameriusJob krameriusJob = KrameriusJob.ENRICH_EXTERNAL;
+    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_EXTERNAL;
 
     @Override
     public Map<String, Object> getJobParameters() {

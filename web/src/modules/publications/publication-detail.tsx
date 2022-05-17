@@ -63,13 +63,13 @@ export const PublicationDetail = ({ publication }: Props) => {
 	const createNewJob = async () => {
 		async function createJob() {
 			switch (selectedJobType) {
-				case KrameriusJob.DOWNLOAD_K_STRUCTURE:
+				case KrameriusJob.ENRICHMENT_KRAMERIUS:
 					return downloadKStructure([publication.id], true)
-				case KrameriusJob.ENRICH_EXTERNAL:
+				case KrameriusJob.ENRICHMENT_EXTERNAL:
 					return enrichExternal([publication.id])
-				case KrameriusJob.ENRICH_NDK:
+				case KrameriusJob.ENRICHMENT_NDK:
 					return enrichNdk([publication.id])
-				case KrameriusJob.ENRICH_TEI:
+				case KrameriusJob.ENRICHMENT_TEI:
 					return enrichTei([publication.id])
 			}
 		}
@@ -133,28 +133,28 @@ export const PublicationDetail = ({ publication }: Props) => {
 				>
 					<ButtonGroup className={classes.exportButton} color="primary">
 						<Button
-							variant={getButtonVariant(KrameriusJob.DOWNLOAD_K_STRUCTURE)}
+							variant={getButtonVariant(KrameriusJob.ENRICHMENT_KRAMERIUS)}
 							onClick={() =>
-								setSelectedJobType(KrameriusJob.DOWNLOAD_K_STRUCTURE)
+								setSelectedJobType(KrameriusJob.ENRICHMENT_KRAMERIUS)
 							}
 						>
 							Stahování dat
 						</Button>
 						<Button
-							variant={getButtonVariant(KrameriusJob.ENRICH_EXTERNAL)}
-							onClick={() => setSelectedJobType(KrameriusJob.ENRICH_EXTERNAL)}
+							variant={getButtonVariant(KrameriusJob.ENRICHMENT_EXTERNAL)}
+							onClick={() => setSelectedJobType(KrameriusJob.ENRICHMENT_EXTERNAL)}
 						>
 							Obohacení externími nástroji
 						</Button>
 						<Button
-							variant={getButtonVariant(KrameriusJob.ENRICH_NDK)}
-							onClick={() => setSelectedJobType(KrameriusJob.ENRICH_NDK)}
+							variant={getButtonVariant(KrameriusJob.ENRICHMENT_NDK)}
+							onClick={() => setSelectedJobType(KrameriusJob.ENRICHMENT_NDK)}
 						>
 							Obohacení NDK
 						</Button>
 						<Button
-							variant={getButtonVariant(KrameriusJob.ENRICH_TEI)}
-							onClick={() => setSelectedJobType(KrameriusJob.ENRICH_TEI)}
+							variant={getButtonVariant(KrameriusJob.ENRICHMENT_TEI)}
+							onClick={() => setSelectedJobType(KrameriusJob.ENRICHMENT_TEI)}
 						>
 							Obohacení TEI
 						</Button>

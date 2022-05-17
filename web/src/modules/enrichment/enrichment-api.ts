@@ -32,9 +32,9 @@ export async function downloadKStructure(
 	publicationIds: string[],
 	override: boolean,
 ) {
-	const requestUrl = '/api/enrichment/download-k-structure'
+	const requestUrl = '/api/enrichment/kramerius'
 	const config = {
-		krameriusJob: KrameriusJob.DOWNLOAD_K_STRUCTURE,
+		krameriusJob: KrameriusJob.ENRICHMENT_KRAMERIUS,
 	}
 
 	try {
@@ -59,9 +59,9 @@ export async function downloadKStructure(
 }
 
 export async function enrichExternal(publicationIds: string[]) {
-	const requestUrl = '/api/enrichment/enrich-external'
+	const requestUrl = '/api/enrichment/external'
 	const config = {
-		krameriusJob: KrameriusJob.ENRICH_EXTERNAL,
+		krameriusJob: KrameriusJob.ENRICHMENT_EXTERNAL,
 	}
 
 	try {
@@ -86,9 +86,9 @@ export async function enrichExternal(publicationIds: string[]) {
 }
 
 export async function enrichNdk(publicationIds: string[]) {
-	const requestUrl = '/api/enrichment/enrich-ndk'
+	const requestUrl = '/api/enrichment/ndk'
 	const config = {
-		krameriusJob: KrameriusJob.ENRICH_NDK,
+		krameriusJob: KrameriusJob.ENRICHMENT_NDK,
 	}
 
 	try {
@@ -113,9 +113,9 @@ export async function enrichNdk(publicationIds: string[]) {
 }
 
 export async function enrichTei(publicationIds: string[]) {
-	const requestUrl = '/api/enrichment/enrich-tei'
+	const requestUrl = '/api/enrichment/tei'
 	const config = {
-		krameriusJob: KrameriusJob.ENRICH_TEI,
+		krameriusJob: KrameriusJob.ENRICHMENT_TEI,
 	}
 
 	try {

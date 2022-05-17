@@ -64,7 +64,7 @@ type Fields = {
 
 const initialValue = { id: v4(), value: '' }
 
-const initialJobConfig = { krameriusJob: KrameriusJob.DOWNLOAD_K_STRUCTURE }
+const initialJobConfig = { krameriusJob: KrameriusJob.ENRICHMENT_KRAMERIUS }
 
 export const EnrichmentForm = () => {
 	const classes = useStyles()
@@ -253,7 +253,7 @@ export const EnrichmentForm = () => {
 										startIcon={<AddCircleOutlineIcon />}
 										variant="contained"
 										onClick={() =>
-											addConfigField(KrameriusJob.DOWNLOAD_K_STRUCTURE)
+											addConfigField(KrameriusJob.ENRICHMENT_KRAMERIUS)
 										}
 									>
 										DOWNLOAD_K_STRUCTURE
@@ -263,7 +263,9 @@ export const EnrichmentForm = () => {
 										color="primary"
 										startIcon={<AddCircleOutlineIcon />}
 										variant="contained"
-										onClick={() => addConfigField(KrameriusJob.ENRICH_EXTERNAL)}
+										onClick={() =>
+											addConfigField(KrameriusJob.ENRICHMENT_EXTERNAL)
+										}
 									>
 										ENRICH_EXTERNAL
 									</Button>
@@ -272,7 +274,7 @@ export const EnrichmentForm = () => {
 										color="primary"
 										startIcon={<AddCircleOutlineIcon />}
 										variant="contained"
-										onClick={() => addConfigField(KrameriusJob.ENRICH_NDK)}
+										onClick={() => addConfigField(KrameriusJob.ENRICHMENT_NDK)}
 									>
 										ENRICH_NDK
 									</Button>
@@ -281,7 +283,7 @@ export const EnrichmentForm = () => {
 										color="primary"
 										startIcon={<AddCircleOutlineIcon />}
 										variant="contained"
-										onClick={() => addConfigField(KrameriusJob.ENRICH_TEI)}
+										onClick={() => addConfigField(KrameriusJob.ENRICHMENT_TEI)}
 									>
 										ENRICH_TEI
 									</Button>

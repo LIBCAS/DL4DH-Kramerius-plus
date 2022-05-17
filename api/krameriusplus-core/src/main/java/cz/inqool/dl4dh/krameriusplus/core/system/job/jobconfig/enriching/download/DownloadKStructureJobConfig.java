@@ -17,7 +17,7 @@ public class DownloadKStructureJobConfig extends CommonJobConfig {
     @Bean
     public Job enrichingJob(PublicationJobValidator validator) {
         return jobBuilderFactory
-                .get(KrameriusJob.DOWNLOAD_K_STRUCTURE.name())
+                .get(KrameriusJob.ENRICHMENT_KRAMERIUS.name())
                 .validator(validator)
                 .listener(jobListener)
                 .incrementer(new RunIdIncrementer())
