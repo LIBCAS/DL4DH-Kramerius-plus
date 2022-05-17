@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Job", description = "Úlohy")
 @RestController
-@RequestMapping("/api/job")
+@RequestMapping("/api/jobs")
 public class JobApi {
 
     private final JobEventService jobEventService;

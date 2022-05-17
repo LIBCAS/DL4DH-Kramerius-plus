@@ -70,8 +70,8 @@ public class ExporterService {
         exportStore.update(export);
     }
 
-    public QueryResults<Export> list() {
-        return exportStore.list(new cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Params());
+    public QueryResults<Export> list(String publicationId, int page, int pageSize) {
+        return exportStore.list(publicationId, page, pageSize);
     }
 
     public List<Export> listToDelete() {
