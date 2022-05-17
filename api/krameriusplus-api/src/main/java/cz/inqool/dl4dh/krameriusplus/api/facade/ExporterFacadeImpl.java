@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
 import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
@@ -16,6 +17,8 @@ import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.ExportJobConfigDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException.ErrorCode.INVALID_EXPORT_TYPE;
 
 @Component
 public class ExporterFacadeImpl implements ExporterFacade {
@@ -82,13 +85,17 @@ public class ExporterFacadeImpl implements ExporterFacade {
     }
 
     private ExportFormat getFormatFromString(String exportFormatStr) {
-        ExportFormat exportFormat = ExportFormat.fromString(exportFormatStr);
+        try {
+            ExportFormat exportFormat = ExportFormat.fromString(exportFormatStr);
 
-        if (exportFormat == ExportFormat.TEI) {
-            throw new IllegalArgumentException("For export in TEI format, use endpoint /api/export/{id}/tei, " +
-                    "which can process extended TEI parameters.");
+            if (exportFormat == ExportFormat.TEI) {
+                throw new IllegalArgumentException("For export in TEI format, use endpoint /api/export/{id}/tei, " +
+                        "which can process extended TEI parameters.");
+            }
+
+            return exportFormat;
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException(e.getMessage(), INVALID_EXPORT_TYPE, e);
         }
-
-        return exportFormat;
     }
 }
