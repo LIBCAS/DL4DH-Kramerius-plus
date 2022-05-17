@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao;
 
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.GeneralException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.GeneralException;
 
 public class PersistenceException extends GeneralException {
 

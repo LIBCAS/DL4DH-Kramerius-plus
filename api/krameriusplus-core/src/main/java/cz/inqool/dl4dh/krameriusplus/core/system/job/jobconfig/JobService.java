@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.dto.JobExecutionDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.dto.JobInstanceDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.dto.JobMapper;

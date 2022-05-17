@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.export.exporter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.ExportException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExportException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.tei.TeiConnector;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.ExportException.ErrorCode.TEI_MERGE_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExportException.ErrorCode.TEI_MERGE_ERROR;
 
 @Component
 @Slf4j

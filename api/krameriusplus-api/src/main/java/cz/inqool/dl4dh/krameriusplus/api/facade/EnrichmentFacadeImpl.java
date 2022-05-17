@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.api.dto.JobPlanResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.DownloadKStructureRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.EnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.JobPlanCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SchedulingException;
 import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius.WebClientDataProvider;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingException.ErrorCode.ALREADY_ENRICHED;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.SchedulingException.ErrorCode.ALREADY_ENRICHED;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.isTrue;
 
 @Component

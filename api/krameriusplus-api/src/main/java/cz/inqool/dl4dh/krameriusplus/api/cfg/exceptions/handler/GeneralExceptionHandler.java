@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.cfg.exceptions.handler;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.GeneralException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.GeneralException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 

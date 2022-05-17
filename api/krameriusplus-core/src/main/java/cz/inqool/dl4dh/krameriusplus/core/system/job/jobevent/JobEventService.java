@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;

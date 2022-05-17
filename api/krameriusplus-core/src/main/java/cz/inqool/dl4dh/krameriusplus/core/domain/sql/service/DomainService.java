@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.sql.service;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.Result;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Params;

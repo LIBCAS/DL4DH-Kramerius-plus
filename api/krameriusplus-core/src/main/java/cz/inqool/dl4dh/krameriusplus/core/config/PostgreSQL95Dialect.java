@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.domain.sql.config;
+package cz.inqool.dl4dh.krameriusplus.core.config;
 
 import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.type.LocalDateType;

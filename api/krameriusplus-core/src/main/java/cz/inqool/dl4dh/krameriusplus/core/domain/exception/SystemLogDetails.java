@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception;
+package cz.inqool.dl4dh.krameriusplus.core.domain.exception;
 
 import java.util.Map;
 

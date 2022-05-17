@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.FileException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.object.DatedObject;
 import lombok.Getter;
 import lombok.NonNull;
@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.FileException.ErrorCode.*;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException.ErrorCode.*;
 import static java.nio.file.Files.newInputStream;
 
 /**
