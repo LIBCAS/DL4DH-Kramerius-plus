@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "Publication", description = "Publikace")
 @RestController
-@RequestMapping("/api/publication")
+@RequestMapping("/api/publications")
 public class PublicationApi {
 
     private final PublicationService publicationService;

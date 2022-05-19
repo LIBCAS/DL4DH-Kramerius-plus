@@ -1,18 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.api.restapi;
 
+import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.facade.ExporterFacade;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.ExportJobConfigDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * @author Norbert Bodnar
  */
@@ -35,20 +27,11 @@ import java.util.List;
 @RequestMapping("/api/export")
 public class ExporterApi {
 
-    private final ExporterService exporterService;
-    private final FileService fileService;
-    private final PublicationService publicationService;
-    private final JobEventService jobEventService;
+    private final ExporterFacade exporterFacade;
 
     @Autowired
-    public ExporterApi(ExporterService exporterService,
-                       FileService fileService,
-                       PublicationService publicationService,
-                       JobEventService jobEventService) {
-        this.exporterService = exporterService;
-        this.fileService = fileService;
-        this.publicationService = publicationService;
-        this.jobEventService = jobEventService;
+    public ExporterApi(ExporterFacade exporterFacade) {
+        this.exporterFacade = exporterFacade;
     }
 
     @Operation(summary = "Create and start a new job of type EXPORT for TEI format. Job is started asynchronously. " +
@@ -56,75 +39,36 @@ public class ExporterApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/tei")
     public JobEventDto exportTei(@PathVariable("id") String publicationId,
-                              @RequestBody(required = false) TeiParams params) {
-        Publication publication = publicationService.find(publicationId);
-
-        if (params == null) {
-            params = new TeiParams();
-        }
-
-        JobEventCreateDto createDto = new JobEventCreateDto();
-        createDto.setPublicationId(publicationId);
-
-        ExportJobConfigDto config = new ExportJobConfigDto();
-        config.setExportFormat(ExportFormat.TEI);
-        config.setParams(params);
-        config.setPublicationTitle(publication.getTitle());
-
-        createDto.setConfig(config);
-
-        JobEventDto jobEvent = jobEventService.create(createDto);
-        jobEventService.enqueueJob(jobEvent.getId());
-
-        return jobEvent;
+                                 @RequestBody(required = false) TeiParams params) {
+        return exporterFacade.exportTei(publicationId, params);
     }
 
     @Operation(summary = "Create and start a new job of type EXPORT for formats other then TEI. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/{format}")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                              @Schema(allowableValues = {"json", "csv", "tsv"}) @PathVariable("format") String stringFormat,
+                              @Schema(allowableValues = {"json", "csv", "tsv"})
+                              @PathVariable("format") String stringFormat,
                               @RequestBody(required = false) Params params) {
-        ExportFormat exportFormat = ExportFormat.fromString(stringFormat);
-        if (exportFormat == ExportFormat.TEI) {
-            throw new IllegalArgumentException("For export in TEI format, use endpoint /api/export/{id}/tei, " +
-                    "which can process extended TEI parameters.");
-        }
-
-        Publication publication = publicationService.find(publicationId);
-
-        if (params == null) {
-            params = new Params();
-        }
-
-        JobEventCreateDto createDto = new JobEventCreateDto();
-        createDto.setPublicationId(publicationId);
-
-        ExportJobConfigDto config = new ExportJobConfigDto();
-        config.setExportFormat(exportFormat);
-        config.setParams(params);
-        config.setPublicationTitle(publication.getTitle());
-
-        createDto.setConfig(config);
-
-        JobEventDto jobEvent = jobEventService.create(createDto);
-        jobEventService.enqueueJob(jobEvent.getId());
-
-        return jobEvent;
+        return exporterFacade.export(publicationId, stringFormat, params);
     }
 
-    @Operation(summary = "List all exports.")
+    @Operation(summary = "List exports.")
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping("/list") //TODO: add paging
-    public List<Export> listExports() {
-        return exporterService.list().getResults();
+    @GetMapping("/list")
+    public QueryResults<Export> listExports(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                            @RequestParam(value = "page", defaultValue = "0") int page,
+                                            @Schema(description = "Optional publicationId parameter. When provided, only export " +
+                                            "for the given publication will be returned.")
+                                                @RequestParam(value = "publicationId", required = false) String publicationId) {
+        return exporterFacade.list(publicationId, page, pageSize);
     }
 
     @Operation(summary = "Download export.")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(value = "/download/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> download(@PathVariable("id") String fileRefId) {
-        FileRef file = fileService.find(fileRefId);
+        FileRef file = exporterFacade.getFile(fileRefId);
 
         file.open();
 

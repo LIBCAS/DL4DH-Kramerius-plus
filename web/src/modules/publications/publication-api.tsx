@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 
 export const getPublication = async (publicationId: string) => {
 	try {
-		const response = await fetch(`/api/publication/${publicationId}`, {
+		const response = await fetch(`/api/publications/${publicationId}`, {
 			method: 'GET',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
 		})
@@ -20,7 +20,7 @@ export const getPublication = async (publicationId: string) => {
 export const listPublications = async (page: number, pageSize: number) => {
 	try {
 		const response = await fetch(
-			`/api/publication/list?page=${page}&pageSize=${pageSize}`,
+			`/api/publications/list?page=${page}&pageSize=${pageSize}`,
 			{
 				method: 'GET',
 				headers: new Headers({ 'Content-Type': 'application/json' }),

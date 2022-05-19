@@ -20,9 +20,9 @@ public class RestExceptionHandler {
 
     private RestExceptionHandlerManager restExceptionHandlerManager;
 
-
     @ExceptionHandler({
-            SchedulingException.class
+            SchedulingException.class,
+            IllegalArgumentException.class
     })
     public ResponseEntity<RestException> badRequest(HttpServletRequest request, Exception e) {
         return defaultExceptionHandling(request, e, HttpStatus.BAD_REQUEST);
