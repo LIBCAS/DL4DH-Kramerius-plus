@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dt
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,15 +13,17 @@ import java.util.Map;
 @Setter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "krameriusJob")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DownloadKStructureJobConfigDto.class, name = "DOWNLOAD_K_STRUCTURE"),
-        @JsonSubTypes.Type(value = EnrichExternalJobConfigDto.class, name = "ENRICH_EXTERNAL"),
-        @JsonSubTypes.Type(value = EnrichNdkJobConfigDto.class, name = "ENRICH_NDK"),
-        @JsonSubTypes.Type(value = EnrichTeiJobConfigDto.class, name = "ENRICH_TEI"),
-        @JsonSubTypes.Type(value = ExportJobConfigDto.class, name = "EXPORT"),
+        @JsonSubTypes.Type(value = EnrichmentKrameriusJobConfigDto.class, name = "ENRICHMENT_KRAMERIUS"),
+        @JsonSubTypes.Type(value = EnrichmentExternalJobConfigDto.class, name = "ENRICHMENT_EXTERNAL"),
+        @JsonSubTypes.Type(value = EnrichmentNdkJobConfigDto.class, name = "ENRICHMENT_NDK"),
+        @JsonSubTypes.Type(value = EnrichmentTeiJobConfigDto.class, name = "ENRICHMENT_TEI")
 })
+@Schema(description = "List of Configs that should be used for every publication.", discriminatorProperty = "krameriusJob")
 public abstract class JobEventConfigCreateDto {
 
+    @Schema(hidden = true)
     public abstract KrameriusJob getKrameriusJob();
 
+    @Schema(hidden = true)
     public abstract Map<String, Object> getJobParameters();
 }

@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Paging;
 import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Params;
 import lombok.Getter;

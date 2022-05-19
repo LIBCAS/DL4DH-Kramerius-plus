@@ -3,7 +3,6 @@ import {
 	GridColDef,
 	GridValueGetterParams,
 	GridRenderCellParams,
-	GridApi,
 } from '@mui/x-data-grid'
 import { Export } from 'models'
 import { useEffect, useState } from 'react'

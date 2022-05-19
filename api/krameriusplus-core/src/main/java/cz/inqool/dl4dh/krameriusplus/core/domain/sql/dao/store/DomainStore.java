@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SystemLogDetails.LogLevel.FATAL_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails.LogLevel.FATAL_ERROR;
 import static cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.PersistenceException.PersistenceErrorCode.QUERY_DSL;
 import static java.util.Collections.emptyList;
 

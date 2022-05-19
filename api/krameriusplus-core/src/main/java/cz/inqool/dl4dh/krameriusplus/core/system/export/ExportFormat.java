@@ -31,7 +31,7 @@ public enum ExportFormat {
             }
         }
 
-        throw new IllegalArgumentException("Enum value from value:" + value + " wasn't found");
+        throw new IllegalArgumentException("Enum value from value '" + value + "' wasn't found");
     }
 
     public String getFileName(String publicationId) {

@@ -7,7 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publi
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.DownloadKStructureJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.EnrichmentKrameriusJobConfigDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -24,7 +24,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobStep.DOWNLOAD_PUBLICATION_CHILDREN;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.JobStep.DOWNLOAD_PUBLICATION_CHILDREN;
 
 @Slf4j
 @Configuration
@@ -94,7 +94,7 @@ public class DownloadPublicationChildren {
         parent.setId(jobEventId);
 
         JobEventCreateDto createDto = new JobEventCreateDto();
-        createDto.setConfig(new DownloadKStructureJobConfigDto());
+        createDto.setConfig(new EnrichmentKrameriusJobConfigDto());
         createDto.setPublicationId(childId);
         createDto.setParent(parent);
 

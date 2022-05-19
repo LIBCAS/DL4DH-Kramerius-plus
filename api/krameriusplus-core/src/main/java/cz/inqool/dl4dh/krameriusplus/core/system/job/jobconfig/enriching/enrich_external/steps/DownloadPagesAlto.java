@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobStep.DOWNLOAD_PAGES_ALTO;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.JobStep.DOWNLOAD_PAGES_ALTO;
 
 
 @Configuration

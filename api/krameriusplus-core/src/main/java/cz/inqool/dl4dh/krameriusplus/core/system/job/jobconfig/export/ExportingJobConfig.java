@@ -2,8 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.export;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.CommonJobConfig;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobListener;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.CommonJobConfig;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.JobListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.JobParametersValidator;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobStep.EXPORT_STEP;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.JobStep.EXPORT_STEP;
 
 @Configuration
 public class ExportingJobConfig extends CommonJobConfig {

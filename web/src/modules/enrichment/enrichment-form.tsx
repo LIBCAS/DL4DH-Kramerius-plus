@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext } from 'react'
+import { useState, useMemo, useContext, useEffect } from 'react'
 import { v4 } from 'uuid'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
@@ -22,7 +22,15 @@ import { JobEventConfigCreateDto } from 'models/job-event-config-create-dto'
 import { Box } from '@mui/system'
 import { KrameriusJob } from 'models/kramerius-job'
 import { Stack } from '@mui/material'
-import { Avatar, Chip } from '@material-ui/core'
+import {
+	Avatar,
+	List,
+	ListItem,
+	ListItemSecondaryAction,
+	ListItemText,
+} from '@material-ui/core'
+import { EnrichmentDialog } from './enrichment-dialog'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = makeStyles(() => ({
 	addButton: {
@@ -55,6 +63,13 @@ const useStyles = makeStyles(() => ({
 		justifyContent: 'flex-end',
 		alignItems: 'flex-start',
 	},
+	list: {
+		width: '100%',
+		maxWidth: 360,
+	},
+	avatar: {
+		margin: '10px',
+	},
 }))
 
 type Fields = {
@@ -64,14 +79,21 @@ type Fields = {
 
 const initialValue = { id: v4(), value: '' }
 
-const initialJobConfig = { krameriusJob: KrameriusJob.DOWNLOAD_K_STRUCTURE }
+const initialJobConfig = {
+	krameriusJob: KrameriusJob.ENRICHMENT_KRAMERIUS,
+	override: false,
+}
 
 export const EnrichmentForm = () => {
 	const classes = useStyles()
+	const [showDialog, setShowDialog] = useState<boolean>(false)
+	const [currentConfig, setCurrentConfig] =
+		useState<JobEventConfigCreateDto>(initialJobConfig)
 	const [idFields, setIdFields] = useState<Fields[]>([initialValue])
 	const [jobEventConfigs, setJobEventConfigs] = useState<
 		JobEventConfigCreateDto[]
 	>([initialJobConfig])
+	const [configIndex, setConfigIndex] = useState<number>()
 	const { open } = useContext(DialogContext)
 
 	const disabledSubmitButton = useMemo(() => {
@@ -84,11 +106,23 @@ export const EnrichmentForm = () => {
 	const addField = () =>
 		setIdFields(idFields => [...idFields, { id: v4(), value: '' }])
 
-	const addConfigField = (krameriusJob: KrameriusJob) =>
-		setJobEventConfigs(jobEventConfigs => [
-			...jobEventConfigs,
-			{ krameriusJob },
-		])
+	const addConfigField = (krameriusJob: KrameriusJob, override: boolean) => {
+		if (configIndex) {
+			const editedConfigs = jobEventConfigs.map((obj, i) => {
+				if (i === configIndex) {
+					return { krameriusJob, override }
+				} else {
+					return obj
+				}
+			})
+			setJobEventConfigs(editedConfigs)
+		} else {
+			setJobEventConfigs(jobEventConfigs => [
+				...jobEventConfigs,
+				{ krameriusJob, override },
+			])
+		}
+	}
 
 	const removeConfigField = (index: number) => {
 		const newFields = [...jobEventConfigs]
@@ -165,6 +199,30 @@ export const EnrichmentForm = () => {
 		setIdFields(newFields)
 	}
 
+	const onConfigClick = (krameriusJob: KrameriusJob) => {
+		setCurrentConfig({ krameriusJob, override: false })
+		setShowDialog(true)
+	}
+
+	const onExistingConfigClick = (
+		config: JobEventConfigCreateDto,
+		index: number,
+	) => {
+		setConfigIndex(index)
+		setCurrentConfig(config)
+		setShowDialog(true)
+	}
+
+	const onDialogSubmit = (krameriusJob: KrameriusJob, override: boolean) => {
+		addConfigField(krameriusJob, override)
+		onClose()
+	}
+
+	const onClose = () => {
+		setShowDialog(false)
+		setConfigIndex(undefined)
+	}
+
 	return (
 		<Paper className={classes.paper}>
 			<form onSubmit={handleSubmit}>
@@ -223,23 +281,28 @@ export const EnrichmentForm = () => {
 									Konfigurace:
 								</Typography>
 							</Box>
-							<Stack
-								alignItems="center"
-								display="flex"
-								height="100%"
-								justifyContent="center"
-								spacing={1}
-							>
+							<List>
 								{jobEventConfigs.map((config, i) => (
-									<Chip
+									<ListItem
 										key={i}
-										avatar={<Avatar>{i + 1}.</Avatar>}
-										label={config.krameriusJob}
-										variant="outlined"
-										onDelete={() => removeConfigField(i)}
-									/>
+										button
+										onClick={() => onExistingConfigClick(config, i)}
+									>
+										<Avatar className={classes.avatar}>{i + 1}.</Avatar>
+										<ListItemText
+											primary={config.krameriusJob}
+											secondary={'Přepsat: ' + config.override}
+										/>
+										<ListItemSecondaryAction
+											onClick={() => removeConfigField(i)}
+										>
+											<IconButton aria-label="delete" edge="end">
+												<DeleteIcon />
+											</IconButton>
+										</ListItemSecondaryAction>
+									</ListItem>
 								))}
-							</Stack>
+							</List>
 							<Box sx={{ p: 2 }}>
 								<Box sx={{ pb: 2 }}>
 									<Typography color="primary" variant="body1">
@@ -247,44 +310,18 @@ export const EnrichmentForm = () => {
 									</Typography>
 								</Box>
 								<Stack spacing={1}>
-									<Button
-										className={classes.addButton}
-										color="primary"
-										startIcon={<AddCircleOutlineIcon />}
-										variant="contained"
-										onClick={() =>
-											addConfigField(KrameriusJob.DOWNLOAD_K_STRUCTURE)
-										}
-									>
-										DOWNLOAD_K_STRUCTURE
-									</Button>
-									<Button
-										className={classes.addButton}
-										color="primary"
-										startIcon={<AddCircleOutlineIcon />}
-										variant="contained"
-										onClick={() => addConfigField(KrameriusJob.ENRICH_EXTERNAL)}
-									>
-										ENRICH_EXTERNAL
-									</Button>
-									<Button
-										className={classes.addButton}
-										color="primary"
-										startIcon={<AddCircleOutlineIcon />}
-										variant="contained"
-										onClick={() => addConfigField(KrameriusJob.ENRICH_NDK)}
-									>
-										ENRICH_NDK
-									</Button>
-									<Button
-										className={classes.addButton}
-										color="primary"
-										startIcon={<AddCircleOutlineIcon />}
-										variant="contained"
-										onClick={() => addConfigField(KrameriusJob.ENRICH_TEI)}
-									>
-										ENRICH_TEI
-									</Button>
+									{Object.values(KrameriusJob).map((value, i) => (
+										<Button
+											key={i}
+											className={classes.addButton}
+											color="primary"
+											startIcon={<AddCircleOutlineIcon />}
+											variant="contained"
+											onClick={() => onConfigClick(value)}
+										>
+											{value}
+										</Button>
+									))}
 								</Stack>
 							</Box>
 						</Paper>
@@ -300,6 +337,13 @@ export const EnrichmentForm = () => {
 						</Button>
 					</Grid>
 				</Grid>
+				<EnrichmentDialog
+					config={currentConfig}
+					showDialog={showDialog}
+					text={configIndex !== undefined ? 'Upravit' : 'Přidat'}
+					onClose={onClose}
+					onSubmit={onDialogSubmit}
+				/>
 			</form>
 		</Paper>
 	)

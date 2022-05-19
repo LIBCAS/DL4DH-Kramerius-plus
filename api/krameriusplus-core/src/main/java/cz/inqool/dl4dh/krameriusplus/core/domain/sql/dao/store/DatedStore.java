@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SystemLogDetails.LogLevel.WARNING;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails.LogLevel.WARNING;
 import static cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.PersistenceException.PersistenceErrorCode.DELETED_ENTITY;
 import static java.util.Collections.emptyList;
 

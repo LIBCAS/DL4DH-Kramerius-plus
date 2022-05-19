@@ -6,10 +6,10 @@ import lombok.Getter;
 import java.util.Set;
 
 public enum KrameriusJob {
-    DOWNLOAD_K_STRUCTURE(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
-    ENRICH_EXTERNAL(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
-    ENRICH_NDK(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
-    ENRICH_TEI(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
+    ENRICHMENT_KRAMERIUS(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
+    ENRICHMENT_EXTERNAL(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
+    ENRICHMENT_NDK(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
+    ENRICHMENT_TEI(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
     EXPORT(JobEventQueue.EXPORTING_QUEUE.getQueueName());
 
     @Getter
@@ -20,7 +20,7 @@ public enum KrameriusJob {
     }
 
     public static Set<KrameriusJob> getEnrichingJobs() {
-        return Set.of(DOWNLOAD_K_STRUCTURE, ENRICH_EXTERNAL, ENRICH_NDK, ENRICH_TEI);
+        return Set.of(ENRICHMENT_KRAMERIUS, ENRICHMENT_EXTERNAL, ENRICHMENT_NDK, ENRICHMENT_TEI);
     }
 
     public static Set<KrameriusJob> getExportingJobs() {

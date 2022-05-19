@@ -2,12 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.api.facade;
 
 import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.JobPlanResponseDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.DownloadKStructureRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.EnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.JobPlanCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingException;
-import cz.inqool.dl4dh.krameriusplus.core.system.dataprovider.kramerius.WebClientDataProvider;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
@@ -16,39 +12,21 @@ import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.JobPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static cz.inqool.dl4dh.krameriusplus.core.domain.mongo.exception.SchedulingException.ErrorCode.ALREADY_ENRICHED;
-import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.isTrue;
-
 @Component
 public class EnrichmentFacadeImpl implements EnrichmentFacade {
-
-    private final PublicationService publicationService;
 
     private final JobPlanService jobPlanService;
 
     private final JobEventService jobEventService;
 
-    private final WebClientDataProvider krameriusDataProvider;
-
     @Autowired
-    public EnrichmentFacadeImpl(PublicationService publicationService, JobPlanService jobPlanService,
-                                JobEventService jobEventService, WebClientDataProvider krameriusDataProvider) {
-        this.publicationService = publicationService;
+    public EnrichmentFacadeImpl(JobPlanService jobPlanService, JobEventService jobEventService) {
         this.jobPlanService = jobPlanService;
         this.jobEventService = jobEventService;
-        this.krameriusDataProvider = krameriusDataProvider;
     }
 
     @Override
     public EnrichResponseDto enrich(EnrichmentRequestDto requestDto) {
-        if (requestDto instanceof DownloadKStructureRequestDto) {
-            validate((DownloadKStructureRequestDto) requestDto); //TODO: delete validation, it's too slow
-        }
-
         EnrichResponseDto responseDto = new EnrichResponseDto();
 
         for (String publicationId : requestDto.getPublicationIds()) {
@@ -84,34 +62,5 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
         }
 
         return responseDto;
-    }
-
-    private void validate(DownloadKStructureRequestDto requestDto) {
-        List<String> alreadyEnrichedPublications = collectAlreadyEnriched(requestDto.getPublicationIds());
-
-        isTrue(requestDto.isOverride() || alreadyEnrichedPublications.isEmpty(),
-                () -> new SchedulingException(ALREADY_ENRICHED,
-                        "Publications " + alreadyEnrichedPublications + " are already enriched, to override, repeat request with request parameter" +
-                                " 'override=true'"));
-
-        validateIdentifiers(requestDto.getPublicationIds());
-    }
-
-    private List<String> collectAlreadyEnriched(Set<String> publicationIds) {
-        List<String> alreadyEnrichedPublications = new ArrayList<>();
-
-        publicationIds.forEach(publicationId -> {
-            if (publicationService.exists(publicationId)) {
-                alreadyEnrichedPublications.add(publicationId);
-            }
-        });
-
-        return alreadyEnrichedPublications;
-    }
-
-    private void validateIdentifiers(Set<String> publicationIds) {
-        for (String publicationId : publicationIds) {
-            krameriusDataProvider.getDigitalObject(publicationId);
-        }
     }
 }
