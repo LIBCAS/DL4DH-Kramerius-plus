@@ -142,7 +142,9 @@ export const PublicationDetail = ({ publication }: Props) => {
 						</Button>
 						<Button
 							variant={getButtonVariant(KrameriusJob.ENRICHMENT_EXTERNAL)}
-							onClick={() => setSelectedJobType(KrameriusJob.ENRICHMENT_EXTERNAL)}
+							onClick={() =>
+								setSelectedJobType(KrameriusJob.ENRICHMENT_EXTERNAL)
+							}
 						>
 							Obohacení externími nástroji
 						</Button>

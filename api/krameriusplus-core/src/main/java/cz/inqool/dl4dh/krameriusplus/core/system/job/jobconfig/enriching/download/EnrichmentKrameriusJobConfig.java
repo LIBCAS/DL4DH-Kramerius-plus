@@ -1,5 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.enrich_ndk;
+package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.download;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.EnrichmentJobValidator;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.EnrichmentBaseJobConfig;
 import org.springframework.batch.core.Job;
@@ -7,30 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob.ENRICHMENT_NDK;
 import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.JobStep.*;
 
 @Configuration
-public class EnrichNdkJobConfig extends EnrichmentBaseJobConfig {
+public class EnrichmentKrameriusJobConfig extends EnrichmentBaseJobConfig {
 
     @Autowired
-    public EnrichNdkJobConfig(EnrichmentJobValidator enrichmentJobValidator) {
-        super(enrichmentJobValidator);
+    public EnrichmentKrameriusJobConfig(EnrichmentJobValidator validator) {
+        super(validator);
     }
 
     @Bean
-    public Job enrichNdkJob() {
+    public Job enrichingJob() {
         return super.getJobBuilder()
                 .start(steps.get(ENRICHMENT_VALIDATION))
-                .next(steps.get(PREPARE_PUBLICATION_NDK))
-                .next(steps.get(ENRICH_PUBLICATION_NDK))
-                .next(steps.get(PREPARE_PAGES_NDK))
-                .next(steps.get(ENRICH_PAGES_NDK))
+                .next(steps.get(DOWNLOAD_PUBLICATION))
+                .next(steps.get(DOWNLOAD_PUBLICATION_CHILDREN))
                 .build();
     }
 
     @Override
     public String getJobName() {
-        return ENRICHMENT_NDK.name();
+        return KrameriusJob.ENRICHMENT_KRAMERIUS.name();
     }
 }

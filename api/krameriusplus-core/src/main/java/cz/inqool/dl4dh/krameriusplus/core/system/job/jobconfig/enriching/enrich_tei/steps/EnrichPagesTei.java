@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobStep.ENRICH_PAGES_TEI;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.JobStep.ENRICH_PAGES_TEI;
 
 @Configuration
 @Slf4j

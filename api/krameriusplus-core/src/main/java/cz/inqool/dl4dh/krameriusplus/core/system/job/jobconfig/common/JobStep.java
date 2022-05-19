@@ -1,10 +1,12 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common;
+package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum JobStep {
     ;
+
+    public static final String ENRICHMENT_VALIDATION = "EnrichmentValidationStep";
 
     // DOWNLOAD PHASE
     public static final String DOWNLOAD_PUBLICATION = "DownloadPublicationStep";

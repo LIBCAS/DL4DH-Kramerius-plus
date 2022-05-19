@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common;
+package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

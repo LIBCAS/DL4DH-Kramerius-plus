@@ -40,6 +40,7 @@ public interface JobEventMapper extends DatedObjectMapper<JobEvent, JobEventCrea
         jobParametersMap.put("jobEventName", jobEvent.getJobName());
         jobParametersMap.put("publicationId", jobEvent.getPublicationId());
         jobParametersMap.put("created", Date.from(jobEvent.getCreated()));
+        jobParametersMap.put("krameriusJob", jobEvent.getConfig().getKrameriusJob());
         jobParametersMap.putAll(jobEvent.getConfig().getParameters());
 
         return jobParametersMap;

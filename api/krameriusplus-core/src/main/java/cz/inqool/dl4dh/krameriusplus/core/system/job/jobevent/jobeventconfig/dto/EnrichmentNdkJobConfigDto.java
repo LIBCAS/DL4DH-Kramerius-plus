@@ -4,17 +4,16 @@ import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 @Setter
-public class DownloadKStructureJobConfigDto extends JobEventConfigCreateDto {
+public class EnrichmentNdkJobConfigDto extends EnrichJobConfigDto {
 
-    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_KRAMERIUS;
+    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_NDK;
 
     @Override
     public Map<String, Object> getJobParameters() {
-        return new HashMap<>();
+        return super.createJobParameters();
     }
 }

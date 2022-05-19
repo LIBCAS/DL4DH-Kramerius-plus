@@ -20,7 +20,6 @@ public class JobPlanCreateDto {
     @NotEmpty
     private Set<String> publicationIds = new HashSet<>();
 
-    @Schema(description = "List of Configs that should be used for every publication.")
     @NotEmpty
     private List<JobEventConfigCreateDto> configs = new ArrayList<>();
 }

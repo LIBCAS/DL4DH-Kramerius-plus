@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.enrich_ndk;
+package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.enrich_external;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.EnrichmentJobValidator;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.EnrichmentBaseJobConfig;
@@ -7,30 +7,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob.ENRICHMENT_NDK;
+import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.KrameriusJob.ENRICHMENT_EXTERNAL;
 import static cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.JobStep.*;
 
+
 @Configuration
-public class EnrichNdkJobConfig extends EnrichmentBaseJobConfig {
+public class EnrichmentExternalJobConfig extends EnrichmentBaseJobConfig {
 
     @Autowired
-    public EnrichNdkJobConfig(EnrichmentJobValidator enrichmentJobValidator) {
+    public EnrichmentExternalJobConfig(EnrichmentJobValidator enrichmentJobValidator) {
         super(enrichmentJobValidator);
     }
 
     @Bean
-    public Job enrichNdkJob() {
+    public Job enrichExternalJob() {
         return super.getJobBuilder()
                 .start(steps.get(ENRICHMENT_VALIDATION))
-                .next(steps.get(PREPARE_PUBLICATION_NDK))
-                .next(steps.get(ENRICH_PUBLICATION_NDK))
-                .next(steps.get(PREPARE_PAGES_NDK))
-                .next(steps.get(ENRICH_PAGES_NDK))
+                .next(steps.get(DOWNLOAD_PAGES_ALTO))
+                .next(steps.get(ENRICH_PAGES_UD_PIPE))
+                .next(steps.get(ENRICH_PAGES_NAME_TAG))
+                .next(steps.get(ENRICH_PAGES_ALTO))
+                .next(steps.get(CLEAN_UP_PAGES))
                 .build();
     }
 
     @Override
     public String getJobName() {
-        return ENRICHMENT_NDK.name();
+        return ENRICHMENT_EXTERNAL.name();
     }
 }

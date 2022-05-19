@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common;
+package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobStatus;

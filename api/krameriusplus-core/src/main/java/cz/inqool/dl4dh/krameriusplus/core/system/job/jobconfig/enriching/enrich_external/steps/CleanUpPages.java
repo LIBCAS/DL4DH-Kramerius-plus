@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.enrich_external.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.enriching.common.JobStep;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobconfig.common.JobStep;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;

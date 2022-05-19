@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
+
 @Repository
 public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
 
@@ -50,6 +52,19 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
                 .setParameter("executionId", lastExecutionId)
                 .setParameter("id", jobEventId)
                 .executeUpdate();
+    }
+
+    public boolean existsOtherJobs(String publicationId, String excludeJobEventId, KrameriusJob jobType) {
+        Long count = query().select(qObject.count())
+                .where(qObject.deleted.isNull())
+                .where(qObject.config.krameriusJob.eq(jobType))
+                .where(qObject.publicationId.eq(publicationId))
+                .where(qObject.id.ne(excludeJobEventId))
+                .fetchOne();
+
+        notNull(count, () -> new IllegalStateException("Count query should never return null"));
+
+        return count > 0;
     }
 
     public JobPlan findExecutionPlanByJobEventId(String jobEventId) {

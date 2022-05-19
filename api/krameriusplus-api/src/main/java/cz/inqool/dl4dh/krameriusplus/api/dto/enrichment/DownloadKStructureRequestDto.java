@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.dto.enrichment;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.DownloadKStructureJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.EnrichmentKrameriusJobConfigDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class DownloadKStructureRequestDto implements EnrichmentRequestDto {
     private Set<String> publicationIds = new HashSet<>();
 
     @NotNull
-    private DownloadKStructureJobConfigDto config;
+    private EnrichmentKrameriusJobConfigDto config;
 
     @Schema(description = "If true and publications already exist, they will be overwritten. Defaults to false.")
     private boolean override = false;
