@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class EnrichTeiRequestDto implements EnrichmentRequestDto {
+public class EnrichmentTeiRequestDto implements EnrichmentRequestDto {
 
     @NotEmpty
     private Set<String> publicationIds = new HashSet<>();

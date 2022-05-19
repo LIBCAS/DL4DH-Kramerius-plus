@@ -52,7 +52,7 @@ public class EnrichmentApi {
             "was not set to true",
             content = @Content(schema = @Schema(implementation = RestException.class), mediaType = APPLICATION_JSON_VALUE))
     @PostMapping(value = "/kramerius", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto downloadKStructure(@RequestBody @Valid DownloadKStructureRequestDto requestDto) {
+    public EnrichResponseDto downloadKStructure(@RequestBody @Valid EnrichmentKrameriusRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
 
@@ -60,7 +60,7 @@ public class EnrichmentApi {
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
     @PostMapping(value = "/external", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichExternal(@RequestBody @Valid EnrichExternalRequestDto requestDto) {
+    public EnrichResponseDto enrichExternal(@RequestBody @Valid EnrichmentExternalRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
 
@@ -68,7 +68,7 @@ public class EnrichmentApi {
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
     @PostMapping(value = "/ndk", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichNdk(@RequestBody @Valid EnrichNdkRequestDto requestDto) {
+    public EnrichResponseDto enrichNdk(@RequestBody @Valid EnrichmentNdkRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
 
@@ -76,7 +76,7 @@ public class EnrichmentApi {
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
     @PostMapping(value = "/tei", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichTei(@RequestBody @Valid EnrichTeiRequestDto requestDto) {
+    public EnrichResponseDto enrichTei(@RequestBody @Valid EnrichmentTeiRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
 }

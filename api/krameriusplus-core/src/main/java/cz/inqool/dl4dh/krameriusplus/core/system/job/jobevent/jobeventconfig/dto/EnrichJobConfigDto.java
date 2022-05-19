@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 @Setter
 public abstract class EnrichJobConfigDto extends JobEventConfigCreateDto {
 
+    @Schema(description = "If true and publications already exist, they will be overwritten. Defaults to false.")
     private boolean override = false;
 
     protected Map<String, Object> createJobParameters() {
