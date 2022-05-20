@@ -4,6 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
+import ALink from '@mui/material/Link'
 
 import { useNavbar } from './navbar-hook'
 import { Box } from '@mui/system'
@@ -70,7 +71,12 @@ export const Navbar = () => {
 							Url: {url}
 						</Typography>
 						<Typography className={classes.instanceInfo} component="span">
-							Verze: {version}
+							<ALink
+								color="inherit"
+								href="https://github.com/LIBCAS/DL4DH-Kramerius-plus/wiki/Changelog"
+							>
+								Verze: {version}
+							</ALink>
 						</Typography>
 					</Box>
 				</div>
