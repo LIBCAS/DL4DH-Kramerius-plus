@@ -7,7 +7,8 @@
 		<module>krameriusplus-core</module>
         <module>krameriusplus-api</module>
 		<module>krameriusplus-app</module>
-	</modules>
+        <module>krameriusplus-service</module>
+    </modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
