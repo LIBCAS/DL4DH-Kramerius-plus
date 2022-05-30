@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.export;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportStore;

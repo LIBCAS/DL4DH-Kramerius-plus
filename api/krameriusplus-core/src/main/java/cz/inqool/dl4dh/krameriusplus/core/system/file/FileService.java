@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.params.Paging;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Paging;
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.params.Params;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

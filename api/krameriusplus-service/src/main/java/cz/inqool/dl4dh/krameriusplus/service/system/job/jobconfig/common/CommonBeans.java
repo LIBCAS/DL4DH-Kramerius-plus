@@ -2,8 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobconfig.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.Sorting;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;

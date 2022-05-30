@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.dao.DomainStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.DomainStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

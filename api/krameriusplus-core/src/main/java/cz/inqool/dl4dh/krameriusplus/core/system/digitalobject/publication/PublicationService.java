@@ -1,10 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
 import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.EqFilter;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.EqFilter;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.utils.Utils;

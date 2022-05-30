@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.dao.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.internalpart.InternalPart;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.Monograph;

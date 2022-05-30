@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.export;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.service.DatedService;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportMapper;

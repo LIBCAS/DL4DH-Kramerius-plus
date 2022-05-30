@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.store.DatedStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
 import org.springframework.stereotype.Repository;
 
 @Repository
