@@ -41,7 +41,7 @@ public class EnrichmentApi {
             "the next JobEvent will be run, and so on.")
     @ApiResponse(responseCode = "200", description = "OK")
     @PostMapping(value = "/plan", produces = APPLICATION_JSON_VALUE)
-    public JobPlanResponseDto enrich(@Valid @RequestBody JobPlanCreateDto requestDto) {
+    public JobPlanResponseDto enrich(@Valid @RequestBody JobPlanRequestDto requestDto) {
         return facade.enrichWithPlan(requestDto);
     }
 

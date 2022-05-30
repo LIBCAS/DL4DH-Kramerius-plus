@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.dto;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.dto.JobPlanDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import lombok.Getter;
 import lombok.Setter;
 

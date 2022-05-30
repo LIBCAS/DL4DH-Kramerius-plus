@@ -6,7 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
