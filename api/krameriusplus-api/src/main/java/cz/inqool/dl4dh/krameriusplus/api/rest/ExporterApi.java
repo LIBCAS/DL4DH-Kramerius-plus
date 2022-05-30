@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.api.restapi;
+package cz.inqool.dl4dh.krameriusplus.api.rest;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExporterFacade;
