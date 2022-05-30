@@ -7,7 +7,8 @@
 		<module>krameriusplus-core</module>
         <module>krameriusplus-api</module>
 		<module>krameriusplus-app</module>
-	</modules>
+        <module>krameriusplus-service</module>
+    </modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -38,12 +39,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<artifactId>krameriusplus</artifactId>
-				<groupId>cz.inqool.dl4dh</groupId>
-				<version>${revision}</version>
-			</dependency>
-
-			<dependency>
 				<artifactId>krameriusplus-api</artifactId>
 				<groupId>cz.inqool.dl4dh</groupId>
 				<version>${revision}</version>
@@ -57,6 +52,12 @@
 
 			<dependency>
 				<artifactId>krameriusplus-app</artifactId>
+				<groupId>cz.inqool.dl4dh</groupId>
+				<version>${revision}</version>
+			</dependency>
+
+			<dependency>
+				<artifactId>krameriusplus-service</artifactId>
 				<groupId>cz.inqool.dl4dh</groupId>
 				<version>${revision}</version>
 			</dependency>

@@ -3,12 +3,13 @@ package cz.inqool.dl4dh.krameriusplus.api.facade;
 import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.JobPlanResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.EnrichmentRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.JobPlanCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.JobEventConfigCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.JobPlanService;
+import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.JobPlanRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.JobEventConfigCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanCreateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,11 +45,11 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
     }
 
     @Override
-    public JobPlanResponseDto enrichWithPlan(JobPlanCreateDto requestDto) {
+    public JobPlanResponseDto enrichWithPlan(JobPlanRequestDto requestDto) {
         JobPlanResponseDto responseDto = new JobPlanResponseDto();
 
         for (String publicationId : requestDto.getPublicationIds()) {
-            cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.dto.JobPlanCreateDto planCreateDto = new cz.inqool.dl4dh.krameriusplus.core.system.job.jobplan.dto.JobPlanCreateDto();
+            JobPlanCreateDto planCreateDto = new JobPlanCreateDto();
 
             for (JobEventConfigCreateDto configCreateDto : requestDto.getConfigs()) {
                 JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();

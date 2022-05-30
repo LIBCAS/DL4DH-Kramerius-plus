@@ -8,13 +8,13 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publi
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.ExporterService;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.job.jobevent.jobeventconfig.dto.ExportJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.export.ExporterMediator;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.ExportJobConfigDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,15 +27,15 @@ public class ExporterFacadeImpl implements ExporterFacade {
 
     private final JobEventService jobEventService;
 
-    private final ExporterService exporterService;
+    private final ExporterMediator exporterMediator;
 
     private final FileService fileService;
 
     @Autowired
-    public ExporterFacadeImpl(PublicationService publicationService, JobEventService jobEventService, ExporterService exporterService, FileService fileService) {
+    public ExporterFacadeImpl(PublicationService publicationService, JobEventService jobEventService, ExporterMediator exporterMediator, FileService fileService) {
         this.publicationService = publicationService;
         this.jobEventService = jobEventService;
-        this.exporterService = exporterService;
+        this.exporterMediator = exporterMediator;
         this.fileService = fileService;
     }
 
@@ -53,7 +53,7 @@ public class ExporterFacadeImpl implements ExporterFacade {
 
     @Override
     public QueryResults<Export> list(String publicationId, int page, int pageSize) {
-        return exporterService.list(publicationId, page, pageSize);
+        return exporterMediator.list(publicationId, page, pageSize);
     }
 
     @Override
