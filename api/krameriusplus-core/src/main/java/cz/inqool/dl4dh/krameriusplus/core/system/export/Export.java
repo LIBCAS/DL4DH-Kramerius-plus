@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.export;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.object.DatedObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import lombok.Getter;
 import lombok.Setter;

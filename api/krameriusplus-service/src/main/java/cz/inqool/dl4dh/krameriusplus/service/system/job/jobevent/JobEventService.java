@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 
 import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;

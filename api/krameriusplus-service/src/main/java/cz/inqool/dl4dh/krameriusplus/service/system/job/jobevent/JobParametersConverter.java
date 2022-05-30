@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 
 import com.fasterxml.jackson.databind.JavaType;
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.JsonConverter;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.JsonConverter;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 
 import javax.persistence.Converter;

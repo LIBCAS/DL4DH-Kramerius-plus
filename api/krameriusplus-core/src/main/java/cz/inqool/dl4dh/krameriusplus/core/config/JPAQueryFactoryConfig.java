@@ -10,7 +10,7 @@ import javax.persistence.EntityManager;
 public class JPAQueryFactoryConfig {
 
     /**
-     * Produces QueryDSL {@link JPAQueryFactory} used in {@link cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.store.DomainStore}.
+     * Produces QueryDSL {@link JPAQueryFactory} used in {@link cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DomainStore}.
      *
      * @param entityManager Provided JPA {@link EntityManager}
      * @return produced {@link JPAQueryFactory}

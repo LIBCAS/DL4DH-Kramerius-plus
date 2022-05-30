@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.object.DatedObject;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

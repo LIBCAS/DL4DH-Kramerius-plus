@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.export;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
-import cz.inqool.dl4dh.krameriusplus.core.domain.sql.dao.store.DatedStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
