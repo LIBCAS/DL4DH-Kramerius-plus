@@ -2,10 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page;
 
 import lombok.Getter;
 
-@Getter
 /**
  * Metadata for words from ALTO format.
  */
+@Getter
 public class AltoTokenMetadata {
 
     private final Float height;
