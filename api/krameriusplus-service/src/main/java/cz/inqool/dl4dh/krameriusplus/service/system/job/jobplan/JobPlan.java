@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Entity
 public class JobPlan extends DatedObject {
 
+    private String name;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "jobPlan")
     private Set<ScheduledJobEvent> scheduledJobEvents = new HashSet<>();
 

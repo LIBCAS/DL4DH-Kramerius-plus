@@ -35,13 +35,13 @@ public class JobPlanService {
     }
 
     @Transactional
-    public JobPlanDto create(JobPlanCreateDto createDto) {
+    public JobPlanDto create(JobPlanCreateDto planCreateDto) {
         JobPlan jobPlan = new JobPlan();
 
         Set<ScheduledJobEvent> scheduledJobEvents = new HashSet<>();
 
         int order = 0;
-        for (JobEventCreateDto jobEventCreateDto : createDto.getJobs()) {
+        for (JobEventCreateDto jobEventCreateDto : planCreateDto.getJobs()) {
             JobEvent jobEvent = jobEventMapper.fromDto(jobEventService.create(jobEventCreateDto));
 
             ScheduledJobEvent scheduledJobEvent = new ScheduledJobEvent();

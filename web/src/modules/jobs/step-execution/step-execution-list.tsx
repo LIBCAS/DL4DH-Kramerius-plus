@@ -22,24 +22,24 @@ const stepColumns: GridColDef[] = [
 	{
 		field: 'stepName',
 		headerName: 'Krok',
-		width: 300,
+		width: 200,
 	},
 	{
 		field: 'status',
 		headerName: 'Stav',
-		width: 150,
+		width: 120,
 	},
 	{
 		field: 'startTime',
 		headerName: 'Čas spustenia',
-		width: 200,
+		width: 170,
 		type: 'datetime',
 		valueFormatter: dateTimeFormatter,
 	},
 	{
 		field: 'endTime',
 		headerName: 'Čas ukončenia',
-		width: 200,
+		width: 170,
 		valueFormatter: dateTimeFormatter,
 	},
 	{

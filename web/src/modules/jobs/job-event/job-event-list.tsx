@@ -18,7 +18,13 @@ const columns = [
 	{
 		field: 'id',
 		headerName: 'ID',
-		width: 300,
+		width: 200,
+		type: 'string',
+	},
+	{
+		field: 'jobName',
+		headerName: 'Název',
+		width: 200,
 		type: 'string',
 	},
 	{

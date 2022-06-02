@@ -6,12 +6,13 @@ import fetch from 'utils/fetch'
 export async function createPlan(
 	publicationIds: string[],
 	configs: JobEventConfigCreateDto[],
+	name?: string,
 ) {
 	try {
 		await fetch('/api/enrichment/plan', {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publicationIds, configs }),
+			body: JSON.stringify({ publicationIds, name, configs }),
 		})
 
 		return {

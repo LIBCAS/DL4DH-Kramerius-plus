@@ -13,6 +13,8 @@ import java.util.List;
 @Setter
 public class JobPlanCreateDto extends DatedObjectCreateDto {
 
+    private String name;
+
     @NotEmpty
     private List<JobEventCreateDto> jobs = new ArrayList<>();
 }

@@ -94,6 +94,7 @@ export const EnrichmentForm = () => {
 		JobEventConfigCreateDto[]
 	>([initialJobConfig])
 	const [configIndex, setConfigIndex] = useState<number>()
+	const [planName, setPlanName] = useState<string>()
 	const { open } = useContext(DialogContext)
 
 	const disabledSubmitButton = useMemo(() => {
@@ -106,8 +107,12 @@ export const EnrichmentForm = () => {
 	const addField = () =>
 		setIdFields(idFields => [...idFields, { id: v4(), value: '' }])
 
-	const addConfigField = (krameriusJob: KrameriusJob, override: boolean) => {
-		if (configIndex) {
+	const addConfigField = (
+		krameriusJob: KrameriusJob,
+		override: boolean,
+		configIndex?: number,
+	) => {
+		if (configIndex !== undefined) {
 			const editedConfigs = jobEventConfigs.map((obj, i) => {
 				if (i === configIndex) {
 					return { krameriusJob, override }
@@ -141,7 +146,7 @@ export const EnrichmentForm = () => {
 
 		const publications = idFields.map(f => f.value.trim())
 
-		const response = await createPlan(publications, jobEventConfigs)
+		const response = await createPlan(publications, jobEventConfigs, planName)
 
 		if (response.ok) {
 			toast('Operace proběhla úspěšně', {
@@ -199,6 +204,10 @@ export const EnrichmentForm = () => {
 		setIdFields(newFields)
 	}
 
+	const handlePlanNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPlanName(e.target.value)
+	}
+
 	const onConfigClick = (krameriusJob: KrameriusJob) => {
 		setCurrentConfig({ krameriusJob, override: false })
 		setShowDialog(true)
@@ -213,8 +222,12 @@ export const EnrichmentForm = () => {
 		setShowDialog(true)
 	}
 
-	const onDialogSubmit = (krameriusJob: KrameriusJob, override: boolean) => {
-		addConfigField(krameriusJob, override)
+	const onDialogSubmit = (
+		krameriusJob: KrameriusJob,
+		override: boolean,
+		configIndex?: number,
+	) => {
+		addConfigField(krameriusJob, override, configIndex)
 		onClose()
 	}
 
@@ -276,6 +289,28 @@ export const EnrichmentForm = () => {
 					</Grid>
 					<Grid item xs={4}>
 						<Paper className={classes.paper}>
+							<Box sx={{ pb: 2 }}>
+								<Typography color="primary" variant="h5">
+									Plán obohacení
+								</Typography>
+							</Box>
+							<Box sx={{ pb: 2 }}>
+								<Box>
+									<Typography color="primary" variant="h6">
+										Název:
+									</Typography>
+								</Box>
+								<Box>
+									<TextField
+										classes={{ root: classes.input }}
+										fullWidth
+										placeholder="Vložte název plánu"
+										value={planName}
+										variant="outlined"
+										onChange={handlePlanNameChange}
+									/>
+								</Box>
+							</Box>
 							<Box sx={{ pb: 2 }}>
 								<Typography color="primary" variant="h6">
 									Konfigurace:
@@ -339,6 +374,7 @@ export const EnrichmentForm = () => {
 				</Grid>
 				<EnrichmentDialog
 					config={currentConfig}
+					configIndex={configIndex}
 					showDialog={showDialog}
 					text={configIndex !== undefined ? 'Upravit' : 'Přidat'}
 					onClose={onClose}

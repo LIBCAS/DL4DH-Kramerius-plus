@@ -7,9 +7,9 @@ import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.JobPlanRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.JobEventConfigCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +20,13 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
 
     private final JobEventService jobEventService;
 
+    private final JobPlanMapper jobPlanMapper;
+
     @Autowired
-    public EnrichmentFacadeImpl(JobPlanService jobPlanService, JobEventService jobEventService) {
+    public EnrichmentFacadeImpl(JobPlanService jobPlanService, JobEventService jobEventService, JobPlanMapper jobPlanMapper) {
         this.jobPlanService = jobPlanService;
         this.jobEventService = jobEventService;
+        this.jobPlanMapper = jobPlanMapper;
     }
 
     @Override
@@ -48,19 +51,10 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
     public JobPlanResponseDto enrichWithPlan(JobPlanRequestDto requestDto) {
         JobPlanResponseDto responseDto = new JobPlanResponseDto();
 
-        for (String publicationId : requestDto.getPublicationIds()) {
-            JobPlanCreateDto planCreateDto = new JobPlanCreateDto();
-
-            for (JobEventConfigCreateDto configCreateDto : requestDto.getConfigs()) {
-                JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();
-                jobEventCreateDto.setPublicationId(publicationId);
-                jobEventCreateDto.setConfig(configCreateDto);
-
-                planCreateDto.getJobs().add(jobEventCreateDto);
-            }
-
+        requestDto.getPublicationIds().forEach(publicationId -> {
+            JobPlanCreateDto planCreateDto = jobPlanMapper.toCreateDto(publicationId, requestDto.getName(), requestDto.getConfigs());
             responseDto.getJobPlans().add(jobPlanService.create(planCreateDto));
-        }
+        });
 
         return responseDto;
     }
