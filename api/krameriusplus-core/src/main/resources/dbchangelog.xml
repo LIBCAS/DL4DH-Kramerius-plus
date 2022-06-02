@@ -119,4 +119,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="5" author="bodnar">
+        <addColumn tableName="job_plan">
+            <column name="name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

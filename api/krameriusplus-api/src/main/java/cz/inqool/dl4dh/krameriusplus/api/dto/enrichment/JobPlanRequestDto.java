@@ -16,6 +16,10 @@ import java.util.Set;
 @Schema(description = "DTO for creating JobPlans.")
 public class JobPlanRequestDto {
 
+    @Schema(description = "Optional name. The name will be used as the name of the created JobPlan, " +
+            "as well as the name of all the created JobEvents.")
+    private String name;
+
     @Schema(description = "Set of publicationIds")
     @NotEmpty
     private Set<String> publicationIds = new HashSet<>();
