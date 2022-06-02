@@ -28,11 +28,11 @@ export const JobPage = ({ jobType }: Props) => {
 
 	return (
 		<Grid container spacing={2}>
-			<Grid item xs={4}>
+			<Grid item xs={5}>
 				<JobEventList jobType={jobType} onRowClick={onRowClickCallback} />
 			</Grid>
 			{selectedJob && (
-				<Grid item xs={8}>
+				<Grid item xs={7}>
 					<JobEventDetail jobEventId={selectedJob} />
 				</Grid>
 			)}

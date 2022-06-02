@@ -22,6 +22,7 @@ type Props = {
 	) => void
 	config: JobEventConfigCreateDto
 	text: string
+	configIndex?: number
 }
 
 const useStyles = makeStyles(() => ({
@@ -38,6 +39,7 @@ export const EnrichmentDialog = ({
 	onSubmit,
 	config,
 	text,
+	configIndex,
 }: Props) => {
 	const [override, setOverride] = useState<boolean>(config.override)
 
@@ -48,7 +50,7 @@ export const EnrichmentDialog = ({
 	}
 
 	const onButtonClick = () => {
-		onSubmit(config.krameriusJob, override)
+		onSubmit(config.krameriusJob, override, configIndex)
 	}
 
 	useEffect(() => {
