@@ -5,7 +5,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobStep.ENRICHMENT_VALIDATION;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICHMENT_VALIDATION;
 
 @Component
 public class EnrichmentValidationStep extends AbstractStepFactory {

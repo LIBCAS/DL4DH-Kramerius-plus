@@ -7,7 +7,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobStep.ENRICH_PAGES_UD_PIPE;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_UD_PIPE;
 
 @Component
 public class EnrichPagesUDPipe extends PageMongoPersistentStepFactory {

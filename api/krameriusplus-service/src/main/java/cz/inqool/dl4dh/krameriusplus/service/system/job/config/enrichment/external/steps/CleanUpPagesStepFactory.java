@@ -7,7 +7,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobStep.CLEAN_UP_PAGES;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.CLEAN_UP_PAGES;
 
 @Component
 public class CleanUpPagesStepFactory extends PageMongoPersistentStepFactory {

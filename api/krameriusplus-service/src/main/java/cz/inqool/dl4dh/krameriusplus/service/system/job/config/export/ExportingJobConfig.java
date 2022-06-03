@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobStep.EXPORT_STEP;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_STEP;
 
 @Configuration
 public class ExportingJobConfig extends CommonJobConfig {

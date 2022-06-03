@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob.ENRICHMENT_TEI;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobStep.*;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.*;
 
 @Configuration
 public class EnrichTeiJobConfig extends EnrichmentBaseJobConfig {

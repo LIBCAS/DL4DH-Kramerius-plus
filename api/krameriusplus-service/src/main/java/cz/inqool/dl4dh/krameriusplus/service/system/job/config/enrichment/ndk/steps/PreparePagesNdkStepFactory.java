@@ -7,7 +7,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobStep.PREPARE_PAGES_NDK;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.PREPARE_PAGES_NDK;
 
 @Component
 public class PreparePagesNdkStepFactory extends PageMongoPersistentStepFactory {
