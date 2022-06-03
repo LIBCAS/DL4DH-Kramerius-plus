@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common;
 
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepContainer;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
