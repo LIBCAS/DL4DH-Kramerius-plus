@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobconfig.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.QScheduledJobEvent;
 import org.springframework.stereotype.Repository;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.internalpart.InternalPart;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.Monograph;
@@ -38,10 +38,11 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusM
         @JsonSubTypes.Type(value = PeriodicalVolume.class, name = PERIODICAL_VOLUME),
         @JsonSubTypes.Type(value = PeriodicalItem.class, name = PERIODICAL_ITEM),
         @JsonSubTypes.Type(value = Page.class, name = PAGE),
-        @JsonSubTypes.Type(value = InternalPart.class, name = INTERNAL_PART)
+        @JsonSubTypes.Type(value = InternalPart.class, name = INTERNAL_PART),
+        @JsonSubTypes.Type(value = Supplement.class, name = SUPPLEMENT)
 })
 @EqualsAndHashCode(callSuper = true)
-public abstract class DigitalObject extends DomainObject {
+public abstract class DigitalObject extends DatedObject {
 
     @JsonIgnore
     private String parentId;

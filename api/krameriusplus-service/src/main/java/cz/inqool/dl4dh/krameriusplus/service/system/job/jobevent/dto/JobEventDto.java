@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.dto.DatedObjectDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobconfig.dto.JobExecutionDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.dto.JobExecutionDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobStatus;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.JobEventConfig;

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @Tag(name = "Export", description = "Exportování")
 @RestController
-@RequestMapping("/api/export")
+@RequestMapping("/api/exports")
 public class ExporterApi {
 
     private final ExporterFacade exporterFacade;

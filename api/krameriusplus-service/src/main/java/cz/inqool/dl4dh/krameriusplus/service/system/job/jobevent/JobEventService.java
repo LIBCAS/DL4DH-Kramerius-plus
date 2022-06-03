@@ -4,7 +4,7 @@ import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobconfig.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
