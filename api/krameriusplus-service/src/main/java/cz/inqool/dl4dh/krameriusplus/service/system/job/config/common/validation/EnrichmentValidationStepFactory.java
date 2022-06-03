@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICHMENT_VALIDATION;
 
 @Component
-public class EnrichmentValidationStep extends AbstractStepFactory {
+public class EnrichmentValidationStepFactory extends AbstractStepFactory {
 
     private final EnrichmentValidationTasklet tasklet;
 
     @Autowired
-    public EnrichmentValidationStep(EnrichmentValidationTasklet tasklet) {
+    public EnrichmentValidationStepFactory(EnrichmentValidationTasklet tasklet) {
         this.tasklet = tasklet;
     }
 

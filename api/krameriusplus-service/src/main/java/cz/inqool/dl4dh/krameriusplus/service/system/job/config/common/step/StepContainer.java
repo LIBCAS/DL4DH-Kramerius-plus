@@ -1,6 +1,5 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,9 +14,7 @@ public class StepContainer {
     private final Map<String, Step> steps = new HashMap<>();
 
     @Autowired
-    public StepContainer(List<StepFactory> stepConfigurations, List<Step> steps) {
-        steps.forEach(step -> this.steps.put(step.getName(), step));
-
+    public StepContainer(List<StepFactory> stepConfigurations) {
         registerStepBeans(stepConfigurations);
     }
 
