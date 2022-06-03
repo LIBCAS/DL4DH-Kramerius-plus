@@ -20,7 +20,6 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ste
 @Configuration
 public class ExportingJobConfig extends CommonJobConfig {
 
-
     @Bean
     public Job exportingJob(JobListener listener) {
         return jobBuilderFactory.get(KrameriusJob.EXPORT.name())
