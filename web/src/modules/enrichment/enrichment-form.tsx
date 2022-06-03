@@ -295,7 +295,7 @@ export const EnrichmentForm = () => {
 								</Typography>
 							</Box>
 							<Box sx={{ pb: 2 }}>
-								<Box>
+								<Box sx={{ pb: 1 }}>
 									<Typography color="primary" variant="h6">
 										Název:
 									</Typography>
@@ -311,7 +311,7 @@ export const EnrichmentForm = () => {
 									/>
 								</Box>
 							</Box>
-							<Box sx={{ pb: 2 }}>
+							<Box sx={{ pb: 1 }}>
 								<Typography color="primary" variant="h6">
 									Konfigurace:
 								</Typography>

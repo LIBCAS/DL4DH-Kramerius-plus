@@ -24,7 +24,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Validated
 @Tag(name = "Enrichment", description = "Obohacení")
 @RestController
-@RequestMapping("/api/enrichment/")
+@RequestMapping("/api/enrichment")
 public class EnrichmentApi {
 
     private final EnrichmentFacadeImpl facade;

@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
-import java.time.Instant;
-
 /**
  * @author Norbert Bodnar
  */
@@ -19,6 +17,4 @@ public abstract class DomainObject {
     @Id
     @JsonAlias({ "pid" })
     protected String id;
-
-    protected Instant created = Instant.now();
 }

@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobconfig.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
 import lombok.Getter;
 import lombok.Setter;
 

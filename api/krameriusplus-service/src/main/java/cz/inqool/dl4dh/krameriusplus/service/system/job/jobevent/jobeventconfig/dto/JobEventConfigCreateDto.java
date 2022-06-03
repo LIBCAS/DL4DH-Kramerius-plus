@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobconfig.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
