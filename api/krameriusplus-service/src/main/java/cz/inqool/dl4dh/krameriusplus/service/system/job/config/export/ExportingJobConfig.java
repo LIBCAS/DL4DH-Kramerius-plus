@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.CommonJobConfig;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobConfigBase;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -18,7 +18,7 @@ import java.util.Map;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_STEP;
 
 @Configuration
-public class ExportingJobConfig extends CommonJobConfig {
+public class ExportingJobConfig extends JobConfigBase {
 
     @Bean
     public Job exportingJob(JobListener listener) {

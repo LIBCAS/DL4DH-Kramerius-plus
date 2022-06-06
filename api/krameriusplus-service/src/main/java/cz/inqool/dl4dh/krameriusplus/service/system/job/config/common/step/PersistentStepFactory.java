@@ -32,6 +32,9 @@ public abstract class PersistentStepFactory<IN extends DomainObject, OUT extends
                 .build();
     }
 
+    /**
+     * Returns the name of the step, which can be then used to obtain the given step.
+     */
     protected abstract String getStepName();
 
     protected int getChunkSize() {
