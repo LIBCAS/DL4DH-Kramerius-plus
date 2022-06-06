@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.krame
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.PersistentStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PersistentStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.PageMongoWriter;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadPublicationChildrenProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.KrameriusPublicationChildrenReader;

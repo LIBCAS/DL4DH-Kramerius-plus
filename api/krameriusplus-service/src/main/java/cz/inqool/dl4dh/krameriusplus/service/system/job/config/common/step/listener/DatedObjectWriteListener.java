@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DatedObjectFieldGenerator;

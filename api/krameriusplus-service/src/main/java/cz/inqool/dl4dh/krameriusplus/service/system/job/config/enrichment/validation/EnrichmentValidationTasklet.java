@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation;
 
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventStore;

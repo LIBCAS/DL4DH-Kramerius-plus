@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.tei.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.PageMongoPersistentStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoPersistentStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.tei.components.EnrichPagesTeiProcessor;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;

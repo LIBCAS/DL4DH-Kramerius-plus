@@ -1,7 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.DatedObjectWriteListener;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.DatedObjectWriteListener;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemProcessor;

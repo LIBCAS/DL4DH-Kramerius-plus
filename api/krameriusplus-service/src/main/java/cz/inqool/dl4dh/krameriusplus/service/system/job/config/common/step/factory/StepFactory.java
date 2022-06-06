@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory;
 
 import org.springframework.batch.core.Step;
 

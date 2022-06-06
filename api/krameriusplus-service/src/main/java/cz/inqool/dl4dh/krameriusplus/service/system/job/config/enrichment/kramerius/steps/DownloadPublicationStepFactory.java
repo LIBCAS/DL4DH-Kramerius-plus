@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.PersistentStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PersistentStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.PublicationMongoWriter;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.KrameriusPublicationReader;
 import lombok.extern.slf4j.Slf4j;
