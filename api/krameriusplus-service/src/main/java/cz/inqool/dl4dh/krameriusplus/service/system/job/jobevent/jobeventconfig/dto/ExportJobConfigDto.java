@@ -20,7 +20,7 @@ public class ExportJobConfigDto extends JobEventConfigCreateDto {
 
     private ExportFormat exportFormat;
 
-    private final KrameriusJob krameriusJob = KrameriusJob.EXPORT;
+    private final KrameriusJob krameriusJob = KrameriusJob.BATCH_EXPORT;
 
     @Override
     public Map<String, Object> getJobParameters() {

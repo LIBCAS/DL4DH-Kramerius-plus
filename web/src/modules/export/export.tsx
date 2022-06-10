@@ -71,7 +71,7 @@ const columns: GridColDef[] = [
 			const onClick = () => {
 				window.open(
 					process.env.PUBLIC_URL +
-						`/api/export/download/${params.row['fileRef']?.id}`,
+						`/api/exports/download/${params.row['fileRef']?.id}`,
 					'_blank',
 				)
 			}

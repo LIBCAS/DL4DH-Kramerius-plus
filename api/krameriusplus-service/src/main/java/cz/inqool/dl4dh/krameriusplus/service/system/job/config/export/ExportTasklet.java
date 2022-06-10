@@ -13,6 +13,8 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.*;
+
 @Component
 @StepScope
 public class ExportTasklet implements Tasklet {
@@ -30,9 +32,9 @@ public class ExportTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         JobParameters jobParameters = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters();
-        String publicationId = jobParameters.getString("publicationId");
-        Params params = objectMapper.readValue(jobParameters.getString("params"), Params.class);
-        ExportFormat exportFormat = ExportFormat.fromString(jobParameters.getString("exportFormat"));
+        String publicationId = jobParameters.getString(PUBLICATION_ID);
+        Params params = objectMapper.readValue(jobParameters.getString(PARAMS), Params.class);
+        ExportFormat exportFormat = ExportFormat.fromString(jobParameters.getString(EXPORT_FORMAT));
 
         exporterMediator.export(publicationId, params, exportFormat);
 

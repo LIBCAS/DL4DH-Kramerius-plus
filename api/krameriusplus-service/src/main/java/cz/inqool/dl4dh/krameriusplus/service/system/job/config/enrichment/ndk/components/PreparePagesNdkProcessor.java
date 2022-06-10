@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -43,7 +44,7 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
 
     @Autowired
     public PreparePagesNdkProcessor(MetsFileFinder metsFileFinder,
-                                    @Value("#{jobParameters['publicationId']}") String publicationId,
+                                    @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId,
                                     MongoOperations mongoOperations) {
         this.metsFileFinder = metsFileFinder;
         this.mongoOperations = mongoOperations;

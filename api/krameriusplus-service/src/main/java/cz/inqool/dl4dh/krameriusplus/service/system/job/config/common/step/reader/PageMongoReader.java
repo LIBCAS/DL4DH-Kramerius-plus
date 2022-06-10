@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PARAMS;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Component
@@ -26,8 +28,8 @@ public class PageMongoReader extends MongoItemReader<Page> {
     @Autowired
     public PageMongoReader(ObjectMapper objectMapper,
                            MongoOperations mongoOperations,
-                           @Value("#{jobParameters['publicationId']}") String publicationId,
-                           @Value("#{jobParameters['params']}") String paramsString) throws JsonProcessingException {
+                           @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId,
+                           @Value("#{jobParameters['" + PARAMS + "']}") String paramsString) throws JsonProcessingException {
         Query query = new Query();
         query.addCriteria(where("parentId").is(publicationId));
 

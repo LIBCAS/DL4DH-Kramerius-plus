@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusM
 @Getter
 @Setter
 @TypeAlias(SUPPLEMENT)
-@JsonTypeName(SUPPLEMENT)
 @Document(collection = "publications")
 public class Supplement extends Publication {
 

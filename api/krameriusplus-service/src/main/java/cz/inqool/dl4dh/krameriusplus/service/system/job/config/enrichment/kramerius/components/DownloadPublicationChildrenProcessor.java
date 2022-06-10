@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.JOB_EVENT_ID;
+
 @Component
 @StepScope
 public class DownloadPublicationChildrenProcessor implements ItemProcessor<DigitalObject, Page> {
@@ -29,7 +31,7 @@ public class DownloadPublicationChildrenProcessor implements ItemProcessor<Digit
     @Autowired
     public DownloadPublicationChildrenProcessor(JobEventService jobEventService,
                                                 TransactionTemplate transactionTemplate,
-                                                @Value("#{jobParameters['publicationId']}") String jobEventId) {
+                                                @Value("#{jobParameters['" + JOB_EVENT_ID + "']}") String jobEventId) {
         this.jobEventService = jobEventService;
         this.transactionTemplate = transactionTemplate;
         this.jobEventId = jobEventId;

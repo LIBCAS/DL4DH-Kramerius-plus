@@ -3,7 +3,6 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
@@ -21,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel.PAGE;
+
 /**
  * Object representing a page.
  *
@@ -29,7 +30,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Document(collection = "pages")
-@TypeAlias(KrameriusModel.PAGE)
+@TypeAlias(PAGE)
 public class Page extends DigitalObject {
 
     private String rootId;
@@ -94,5 +95,10 @@ public class Page extends DigitalObject {
     public void unpackDetails(Map<String, Object> details) {
         pageType = (String) details.get("type");
         pageNumber = ((String) details.get("pagenumber")).strip();
+    }
+
+    @Override
+    public String getModel() {
+        return PAGE;
     }
 }

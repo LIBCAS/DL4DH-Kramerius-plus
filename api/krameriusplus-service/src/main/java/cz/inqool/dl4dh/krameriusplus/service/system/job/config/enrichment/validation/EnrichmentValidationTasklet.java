@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.*;
+
 @Component
 @StepScope
 public class EnrichmentValidationTasklet implements Tasklet {
@@ -27,11 +29,11 @@ public class EnrichmentValidationTasklet implements Tasklet {
     public RepeatStatus execute(@NonNull StepContribution contribution, ChunkContext chunkContext) {
         JobParameters jobParameters = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters();
 
-        String publicationId = jobParameters.getString("publicationId");
-        String thisJobEventId = jobParameters.getString("jobEventId");
-        KrameriusJob krameriusJob = KrameriusJob.valueOf(jobParameters.getString("krameriusJob"));
+        String publicationId = jobParameters.getString(PUBLICATION_ID);
+        String thisJobEventId = jobParameters.getString(JOB_EVENT_ID);
+        KrameriusJob krameriusJob = KrameriusJob.valueOf(jobParameters.getString(KRAMERIUS_JOB));
 
-        boolean override = Boolean.parseBoolean(jobParameters.getString("override"));
+        boolean override = Boolean.parseBoolean(jobParameters.getString(OVERRIDE));
         if (!override && jobEventStore.existsOtherJobs(publicationId, thisJobEventId, krameriusJob)) {
             throw new IllegalStateException("Job of type '" + krameriusJob + "' for publication '" + publicationId + "' already exists and 'override' is set to false.");
         }

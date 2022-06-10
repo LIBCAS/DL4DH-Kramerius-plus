@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_STEP;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT;
 
 @Configuration
 public class ExportingJobConfig extends JobConfigBase {
@@ -26,7 +26,7 @@ public class ExportingJobConfig extends JobConfigBase {
                 .validator(validator())
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
-                .start(stepContainer.getStep(EXPORT_STEP))
+                .start(stepContainer.getStep(EXPORT))
                 .build();
     }
 

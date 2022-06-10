@@ -5,7 +5,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_STEP;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT;
 
 @Component
 public class ExportStepFactory extends AbstractStepFactory {
@@ -19,7 +19,7 @@ public class ExportStepFactory extends AbstractStepFactory {
 
     @Override
     public Step build() {
-        return stepBuilderFactory.get(EXPORT_STEP)
+        return stepBuilderFactory.get(EXPORT)
                 .tasklet(tasklet)
                 .build();
     }

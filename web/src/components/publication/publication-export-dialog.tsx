@@ -30,7 +30,7 @@ const exportPublication = async (
 	}
 
 	try {
-		const response = await fetch(`/api/export/${id}/${format}`, {
+		const response = await fetch(`/api/exports/${id}/${format}`, {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
 			body: JSON.stringify(processedParams),

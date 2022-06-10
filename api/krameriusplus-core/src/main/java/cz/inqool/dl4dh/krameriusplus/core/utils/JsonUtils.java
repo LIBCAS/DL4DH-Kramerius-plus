@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -33,13 +32,8 @@ public class JsonUtils {
     }
 
     public static String toJsonString(Object o) {
-        return toJsonString(o, false);
-    }
-
-    public static String toJsonString(Object o, boolean prettyPrint) {
         ensureObjectMapperInitialized();
 
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, prettyPrint);
         try {
             return objectMapper.writeValueAsString(o);
         } catch (Exception e) {

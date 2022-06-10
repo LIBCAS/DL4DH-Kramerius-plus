@@ -30,5 +30,14 @@ public enum JobStep {
 
     public static final String CLEAN_UP_PAGES = "CleanUpPagesStep";
 
-    public static final String EXPORT_STEP = "ExportStep";
+    public static final String EXPORT = "ExportStep";
+
+    // EXPORT
+    public static final String PREPARE_EXPORT_DIRECTORY = "PrepareExportDirectoryStep";
+    public static final String EXPORT_PUBLICATION = "ExportPublicationStep";
+    public static final String EXPORT_PAGES = "ExportPageStep";
+    public static final String ZIP_EXPORT = "ZipExportStep";
+    public static final String CREATE_EXPORT = "CreateExportStep";
+    public static final String CLEAN_UP_EXPORT = "CleanUpExportStep";
+
 }

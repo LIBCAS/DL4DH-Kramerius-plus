@@ -10,7 +10,8 @@ public enum KrameriusJob {
     ENRICHMENT_EXTERNAL(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
     ENRICHMENT_NDK(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
     ENRICHMENT_TEI(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
-    EXPORT(JobEventQueue.EXPORTING_QUEUE.getQueueName());
+    EXPORT(JobEventQueue.EXPORTING_QUEUE.getQueueName()),
+    BATCH_EXPORT(JobEventQueue.EXPORTING_QUEUE.getQueueName());
 
     @Getter
     private final String queueName;

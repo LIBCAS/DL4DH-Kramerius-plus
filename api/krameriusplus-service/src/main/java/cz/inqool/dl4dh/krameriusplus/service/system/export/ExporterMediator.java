@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
+
 /**
  * @author Norbert Bodnar
  */
@@ -51,7 +53,10 @@ public class ExporterMediator {
 
     @Transactional
     public void export(String publicationId, Params params, ExportFormat format) {
-        Export export = exporters.get(format).export(publicationId, params);
+        Exporter exporter = exporters.get(format);
+        notNull(exporter, () -> new IllegalArgumentException("Format '" + format + "' not recognized."));
+
+        Export export = exporter.export(publicationId, params);
         exportStore.create(export);
     }
 

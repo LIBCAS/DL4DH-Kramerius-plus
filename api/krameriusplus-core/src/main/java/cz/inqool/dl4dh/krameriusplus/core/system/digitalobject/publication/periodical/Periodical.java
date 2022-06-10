@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.periodical;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import lombok.Getter;
@@ -16,7 +15,6 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusM
 @Getter
 @Setter
 @TypeAlias(KrameriusModel.PERIODICAL)
-@JsonTypeName(PERIODICAL)
 @Document(collection = "publications")
 public class Periodical extends Publication {
 

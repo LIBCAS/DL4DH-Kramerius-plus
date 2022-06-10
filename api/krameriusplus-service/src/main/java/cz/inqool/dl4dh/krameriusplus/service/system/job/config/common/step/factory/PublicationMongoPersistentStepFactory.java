@@ -7,6 +7,9 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * Abstract base class for step factories, which read and write publications from MongoDB.
+ */
 public abstract class PublicationMongoPersistentStepFactory extends PersistentStepFactory<Publication, Publication> {
 
     protected PublicationMongoReader reader;

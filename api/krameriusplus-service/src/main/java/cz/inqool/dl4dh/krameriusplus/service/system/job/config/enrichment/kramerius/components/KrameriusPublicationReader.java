@@ -12,6 +12,8 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
+
 @Component
 @StepScope
 @Slf4j
@@ -48,6 +50,6 @@ public class KrameriusPublicationReader implements ItemReader<Publication> {
 
     @BeforeStep
     public void setPublicationId(StepExecution stepExecution) {
-        this.publicationId = stepExecution.getJobExecution().getJobParameters().getString("publicationId");
+        this.publicationId = stepExecution.getJobExecution().getJobParameters().getString(PUBLICATION_ID);
     }
 }

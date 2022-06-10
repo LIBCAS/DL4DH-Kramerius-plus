@@ -10,6 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.util.TimeZone;
 
@@ -33,6 +34,7 @@ public class ObjectMapperConfig {
      * @return Produced {@link ObjectMapper}
      */
     @Bean
+    @Primary
     public ObjectMapper objectMapper(@Value("${system.json.prettyPrint:true}") Boolean prettyPrint,
                                      @Value("${system.json.serializeNulls:false}") Boolean serializeNulls,
                                      @Value("${system.json.serializeEmptyArrays:false}") Boolean serializeEmptyArrays,

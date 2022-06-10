@@ -18,7 +18,7 @@ function App() {
 				<BrowserRouter>
 					<Navbar />
 					<Switch>
-						<Route exact path="/export">
+						<Route exact path="/exports">
 							<ExportList />
 						</Route>
 						<Route exact path="/publications/:publicationId?">
