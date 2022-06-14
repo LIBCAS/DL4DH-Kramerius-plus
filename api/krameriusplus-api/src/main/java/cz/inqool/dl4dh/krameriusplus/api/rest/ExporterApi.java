@@ -1,12 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
 import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.CsvExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.JsonExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExporterFacade;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.CsvExportJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.JsonExportJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.TeiExportJobConfigDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @author Norbert Bodnar
@@ -34,23 +40,31 @@ public class ExporterApi {
         this.exporterFacade = exporterFacade;
     }
 
-    @Operation(summary = "Create and start a new job of type EXPORT for TEI format. Job is started asynchronously. " +
-            "TEI format has it's own endpoint because it has it's own type of parameters.")
+    @Operation(summary = "Creates and starts a new job of type EXPORT_TEI, which generates an Export in TEI format. " +
+            "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/tei")
     public JobEventDto exportTei(@PathVariable("id") String publicationId,
-                                 @RequestBody(required = false) TeiParams params) {
-        return exporterFacade.exportTei(publicationId, params);
+                                 @RequestBody @Valid TeiExportJobConfigDto config) {
+        return exporterFacade.export(new TeiExportRequestDto(publicationId, config));
     }
 
-    @Operation(summary = "Create and start a new job of type EXPORT for formats other then TEI. Job is started asynchronously. ")
+    @Operation(summary = "Creates and starts a new job of type EXPORT_JSON, which generates an Export in JSON format. " +
+            "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
-    @PostMapping("/{id}/{format}")
+    @PostMapping("/{id}/json")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                              @Schema(allowableValues = {"json", "csv", "tsv"})
-                              @PathVariable("format") String stringFormat,
-                              @RequestBody(required = false) Params params) {
-        return exporterFacade.export(publicationId, stringFormat, params);
+                              @RequestBody @Valid JsonExportJobConfigDto config) {
+        return exporterFacade.export(new JsonExportRequestDto(publicationId, config));
+    }
+
+    @Operation(summary = "Creates and starts a new job of type EXPORT_CSV, which generates an Export in CSV format. " +
+            "Allows to specify 'delimiter', which should be used. Job is started asynchronously. ")
+    @ApiResponse(responseCode = "200", description = "Job successfully created")
+    @PostMapping("/{id}/csv")
+    public JobEventDto export(@PathVariable("id") String publicationId,
+                              @RequestBody @Valid CsvExportJobConfigDto config) {
+        return exporterFacade.export(new CsvExportRequestDto(publicationId, config));
     }
 
     @Operation(summary = "List exports.")

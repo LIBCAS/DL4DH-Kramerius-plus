@@ -28,4 +28,12 @@ public class PublicationStore extends DomainStore<Publication> {
 
         return new QueryResults<>(mongoOperations.find(query.with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
     }
+
+    public Publication listWithTei(String publicationId) {
+        Query query = Query.query(where("_id").is(publicationId));
+
+        query.fields().include("_class", "_id", "teiHeaderFileId");
+
+        return mongoOperations.findOne(query, type);
+    }
 }

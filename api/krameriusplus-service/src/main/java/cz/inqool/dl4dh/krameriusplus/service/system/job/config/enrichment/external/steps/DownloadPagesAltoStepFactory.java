@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoPersistentStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoFlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.DownloadPagesAltoProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
@@ -12,7 +12,7 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ste
 
 @Component
 @Slf4j
-public class DownloadPagesAltoStepFactory extends PageMongoPersistentStepFactory {
+public class DownloadPagesAltoStepFactory extends PageMongoFlowStepFactory {
 
     private final DownloadPagesAltoProcessor processor;
 

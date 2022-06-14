@@ -16,4 +16,5 @@ public class JobParameterKey {
     public static final String OVERRIDE = "override";
     public static final String DIRECTORY = "directory";
     public static final String ZIPPED_FILE = "zippedFile";
+    public static final String DELIMITER = "delimiter";
 }

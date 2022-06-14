@@ -1,59 +1,41 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportService;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
-import cz.inqool.dl4dh.krameriusplus.service.system.export.ExporterMediator;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.ExportJobConfigDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException.ErrorCode.INVALID_EXPORT_TYPE;
 
 @Component
 public class ExporterFacadeImpl implements ExporterFacade {
 
-    private final PublicationService publicationService;
-
     private final JobEventService jobEventService;
 
-    private final ExporterMediator exporterMediator;
+    private final ExportService exportService;
 
     private final FileService fileService;
 
     @Autowired
-    public ExporterFacadeImpl(PublicationService publicationService, JobEventService jobEventService, ExporterMediator exporterMediator, FileService fileService) {
-        this.publicationService = publicationService;
+    public ExporterFacadeImpl(JobEventService jobEventService, ExportService exportService, FileService fileService) {
         this.jobEventService = jobEventService;
-        this.exporterMediator = exporterMediator;
+        this.exportService = exportService;
         this.fileService = fileService;
     }
 
     @Override
-    public JobEventDto exportTei(String publicationId, TeiParams params) {
-        return createJob(publicationId, ExportFormat.TEI, params);
-    }
-
-    @Override
-    public JobEventDto export(String publicationId, String exportFormatStr, Params params) {
-        ExportFormat exportFormat = getFormatFromString(exportFormatStr);
-
-        return createJob(publicationId, exportFormat, params);
+    public JobEventDto export(ExportRequestDto requestDto) {
+        return createJob(requestDto);
     }
 
     @Override
     public QueryResults<Export> list(String publicationId, int page, int pageSize) {
-        return exporterMediator.list(publicationId, page, pageSize);
+        return exportService.list(publicationId, page, pageSize);
     }
 
     @Override
@@ -61,41 +43,14 @@ public class ExporterFacadeImpl implements ExporterFacade {
         return fileService.find(fileRefId);
     }
 
-    private JobEventDto createJob(String publicationId, ExportFormat exportFormat, Params params) {
-        Publication publication = publicationService.find(publicationId);
-
-        if (params == null) {
-            params = new TeiParams();
-        }
-
+    private JobEventDto createJob(ExportRequestDto requestDto) {
         JobEventCreateDto createDto = new JobEventCreateDto();
-        createDto.setPublicationId(publicationId);
-
-        ExportJobConfigDto config = new ExportJobConfigDto();
-        config.setExportFormat(exportFormat);
-        config.setParams(params);
-        config.setPublicationTitle(publication.getTitle());
-
-        createDto.setConfig(config);
+        createDto.setPublicationId(requestDto.getPublicationId());
+        createDto.setConfig(requestDto.getConfig());
 
         JobEventDto jobEvent = jobEventService.create(createDto);
         jobEventService.enqueueJob(jobEvent.getId());
 
         return jobEvent;
-    }
-
-    private ExportFormat getFormatFromString(String exportFormatStr) {
-        try {
-            ExportFormat exportFormat = ExportFormat.fromString(exportFormatStr);
-
-            if (exportFormat == ExportFormat.TEI) {
-                throw new IllegalArgumentException("For export in TEI format, use endpoint /api/export/{id}/tei, " +
-                        "which can process extended TEI parameters.");
-            }
-
-            return exportFormat;
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException(e.getMessage(), INVALID_EXPORT_TYPE, e);
-        }
     }
 }

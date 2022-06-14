@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.List;
 
 @Service
@@ -33,6 +34,15 @@ public class DummyTeiConnector implements TeiConnector {
     public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params) {
         File file = File.createTempFile("download", "tmp");
         StreamUtils.copy("Test TEI full".getBytes(StandardCharsets.UTF_8), new FileOutputStream(file));
+
+        return file;
+    }
+
+    @SneakyThrows
+    @Override
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params, Path outputFile) {
+        File file = File.createTempFile("download", "tmp");
+        StreamUtils.copy("Test TEI full".getBytes(StandardCharsets.UTF_8), new FileOutputStream(outputFile.toFile()));
 
         return file;
     }

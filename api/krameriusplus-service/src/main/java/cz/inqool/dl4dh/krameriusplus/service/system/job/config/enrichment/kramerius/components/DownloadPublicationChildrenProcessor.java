@@ -6,7 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publi
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.EnrichmentKrameriusJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.enrichment.EnrichmentKrameriusJobConfigDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
