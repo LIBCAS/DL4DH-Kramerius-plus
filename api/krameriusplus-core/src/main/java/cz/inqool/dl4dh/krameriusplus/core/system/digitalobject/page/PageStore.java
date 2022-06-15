@@ -26,6 +26,7 @@ public class PageStore extends DomainStore<Page> {
 
         Query query = Query.query(where("parentId").is(publicationId));
         query.fields().exclude("tokens");
+        query.fields().exclude("nameTagMetadata");
 
         long total = mongoOperations.count(query, type);
 
