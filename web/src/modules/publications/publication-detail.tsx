@@ -23,6 +23,7 @@ import { useHistory } from 'react-router'
 import { toast } from 'react-toastify'
 import { DialogContext } from '../../components/dialog/dialog-context'
 import { PublicationExportDialog } from '../../components/publication/publication-export-dialog'
+import { publish, unpublish } from './publication-api'
 
 type Props = {
 	publication: Publication
@@ -46,6 +47,9 @@ export const PublicationDetail = ({ publication }: Props) => {
 		useState<EnrichmentKrameriusJob>()
 	const { replace } = useHistory()
 	const [lastRender, setLastRender] = useState<number>(Date.now())
+	const [isPublished, setIsPublished] = useState<boolean>(
+		publication.publishInfo.isPublished,
+	)
 
 	const handleOpenExportDialog = () => {
 		open({
@@ -55,6 +59,20 @@ export const PublicationDetail = ({ publication }: Props) => {
 			Content: PublicationExportDialog,
 			size: 'md',
 		})
+	}
+
+	const handlePublishButton = async () => {
+		if (isPublished) {
+			const response = await unpublish(publication.id)
+			if (response.ok) {
+				setIsPublished(false)
+			}
+		} else {
+			const response = await publish(publication.id)
+			if (response.ok) {
+				setIsPublished(true)
+			}
+		}
 	}
 
 	const onRowClick = (params: GridRowParams) => {
@@ -97,7 +115,7 @@ export const PublicationDetail = ({ publication }: Props) => {
 	return (
 		<Paper>
 			<Box display="flex" flexDirection="row">
-				<Box sx={{ p: 2 }} width="90%">
+				<Box sx={{ p: 2 }} width="70%">
 					<ReadOnlyField label="UUID" value={publication.id} />
 					<ReadOnlyField label="Název" value={publication.title} />
 					<ReadOnlyField
@@ -111,14 +129,26 @@ export const PublicationDetail = ({ publication }: Props) => {
 					/>
 				</Box>
 				<Box sx={{ p: 4 }}>
-					<Button
-						className={classes.exportButton}
-						color="primary"
-						variant="contained"
-						onClick={handleOpenExportDialog}
-					>
-						Exportovat
-					</Button>
+					<Box sx={{ p: 1 }}>
+						<Button
+							className={classes.exportButton}
+							color="primary"
+							variant="contained"
+							onClick={handleOpenExportDialog}
+						>
+							Exportovat
+						</Button>
+					</Box>
+					<Box sx={{ p: 1 }}>
+						<Button
+							className={classes.exportButton}
+							color="primary"
+							variant="contained"
+							onClick={handlePublishButton}
+						>
+							{isPublished ? 'Zrušit publikování' : 'Publikovat'}
+						</Button>
+					</Box>
 				</Box>
 			</Box>
 			<Box>

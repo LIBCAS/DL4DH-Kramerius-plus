@@ -1,5 +1,6 @@
 import { ModsMetadata } from '.'
 import { PublicationModel } from '../enums/publicationModel'
+import { PublishInfo } from './publish-info'
 
 export interface Publication {
 	context: any
@@ -17,4 +18,5 @@ export interface Publication {
 	periodicalVolumes?: string[]
 	issueNumber?: string
 	partNumber?: string
+	publishInfo: PublishInfo
 }

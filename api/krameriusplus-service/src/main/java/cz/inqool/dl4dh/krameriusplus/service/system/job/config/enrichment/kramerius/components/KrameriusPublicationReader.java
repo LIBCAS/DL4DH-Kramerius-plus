@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.krame
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublishInfo;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.DataProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -45,7 +46,10 @@ public class KrameriusPublicationReader implements ItemReader<Publication> {
             throw new JobParametersInvalidException("Received DigitalObject which is not a publication");
         }
 
-        return (Publication) digitalObject;
+        Publication publication = (Publication) digitalObject;
+        publication.setPublishInfo(new PublishInfo());
+
+        return publication;
     }
 
     @BeforeStep

@@ -2,17 +2,14 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.EqFilter;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.utils.Utils;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,13 +24,6 @@ public class PublicationService {
 
     private PageStore pageStore;
 
-    public Publication save(@NonNull Publication publication) {
-        publication = publicationStore.save(publication);
-        pageStore.save(publication.getPages());
-
-        return publication;
-    }
-
     /**
      * Returns the given publication with only teiHeader and teiBody fields
      * @param publicationId
@@ -45,6 +35,24 @@ public class PublicationService {
         result.setPages(pageStore.listWithTei(publicationId));
 
         return result;
+    }
+
+    @Transactional
+    public void publish(String publicationId) {
+        Publication publication = publicationStore.find(publicationId);
+
+        publication.getPublishInfo().publish();
+
+        publicationStore.save(publication);
+    }
+
+    @Transactional
+    public void unPublish(String publicationId) {
+        Publication publication = publicationStore.find(publicationId);
+
+        publication.getPublishInfo().unPublish();
+
+        publicationStore.save(publication);
     }
 
     /**
@@ -63,27 +71,6 @@ public class PublicationService {
 
     public QueryResults<Page> listPages(String publicationId, int page, int pageSize) {
         return pageStore.list(publicationId, page, pageSize);
-    }
-
-    public boolean exists(String publicationId) {
-        return publicationStore.exists(publicationId);
-    }
-
-    /**
-     * Returns a publication with given ID, including its pages depending on the given {@param param}
-     */
-    public Publication findWithPages(String publicationId, Params pageParams) {
-        Publication publication = find(publicationId);
-
-        pageParams.addFilters(new EqFilter("parentId", publicationId));
-
-        if (pageParams.getSorting().isEmpty()) {
-            pageParams.getSorting().add(new Sorting("index", Sort.Direction.ASC));
-        }
-
-        publication.setPages(pageStore.listAll(pageParams));
-
-        return publication;
     }
 
     public QueryResults<Publication> list(int page, int pageSize) {
