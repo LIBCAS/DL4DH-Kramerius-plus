@@ -34,3 +34,39 @@ export const listPublications = async (page: number, pageSize: number) => {
 		toast(e as string)
 	}
 }
+
+export const publish = async (publicationId: string) => {
+	try {
+		await fetch(`/api/publications/${publicationId}/publish`, {
+			method: 'POST',
+			headers: new Headers({ 'Contenty-Type': 'application/json' }),
+		})
+
+		return {
+			ok: true,
+		}
+	} catch (e) {
+		toast(e as string)
+		return {
+			ok: false,
+		}
+	}
+}
+
+export const unpublish = async (publicationId: string) => {
+	try {
+		await fetch(`/api/publications/${publicationId}/unpublish`, {
+			method: 'POST',
+			headers: new Headers({ 'Contenty-Type': 'application/json' }),
+		})
+
+		return {
+			ok: true,
+		}
+	} catch (e) {
+		toast(e as string)
+		return {
+			ok: false,
+		}
+	}
+}

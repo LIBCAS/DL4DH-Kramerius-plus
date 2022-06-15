@@ -57,4 +57,20 @@ public class PublicationApi {
                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return publicationService.listPages(publicationId, page, pageSize);
     }
+
+    @Operation(summary = "Mark publication as published.")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "Publication not found")
+    @PostMapping("/{id}/publish")
+    public void publish(@PathVariable("id") String publicationId) {
+        publicationService.publish(publicationId);
+    }
+
+    @Operation(summary = "Mark publication as unpublished.")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "Publication not found")
+    @PostMapping("/{id}/unpublish")
+    public void unpublish(@PathVariable("id") String publicationId) {
+        publicationService.unPublish(publicationId);
+    }
 }

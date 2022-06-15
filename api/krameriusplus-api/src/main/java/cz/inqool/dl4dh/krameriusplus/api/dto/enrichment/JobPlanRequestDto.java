@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.dto.enrichment;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.JobEventConfigCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.enrichment.EnrichmentJobConfigDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,5 +25,5 @@ public class JobPlanRequestDto {
     private Set<String> publicationIds = new HashSet<>();
 
     @NotEmpty
-    private List<JobEventConfigCreateDto> configs = new ArrayList<>();
+    private List<EnrichmentJobConfigDto> configs = new ArrayList<>();
 }

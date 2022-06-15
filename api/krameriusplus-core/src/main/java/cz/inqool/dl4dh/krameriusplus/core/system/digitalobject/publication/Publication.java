@@ -35,6 +35,8 @@ public abstract class Publication extends DigitalObject {
     @Transient
     private List<Page> pages = new ArrayList<>();
 
+    private PublishInfo publishInfo;
+
     private String title;
 
     private List<String> collections;
