@@ -15,7 +15,7 @@ public class CsvExportJobConfig extends ExportJobConfigBase {
     public Job exportCsvJob() {
         return getJobBuilder()
                 .start(stepContainer.getStep(PREPARE_EXPORT_DIRECTORY))
-//                .next(stepContainer.getStep(EXPORT_PUBLICATION_CSV)) //TODO: Should be part of CSV Export?
+                .next(stepContainer.getStep(EXPORT_PUBLICATION_CSV))
                 .next(stepContainer.getStep(EXPORT_PAGES_CSV))
                 .next(stepContainer.getStep(ZIP_EXPORT))
                 .next(stepContainer.getStep(CREATE_EXPORT))

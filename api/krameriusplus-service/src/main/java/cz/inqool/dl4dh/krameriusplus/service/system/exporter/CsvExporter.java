@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.exporter;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -16,10 +17,15 @@ import java.util.List;
 
 public class CsvExporter {
 
-    private final char DELIMITER;
+    private final CSVFormat format;
 
     public CsvExporter(char delimiter) {
-        DELIMITER = delimiter;
+        format = CSVFormat.Builder
+                    .create(CSVFormat.DEFAULT)
+                    .setDelimiter(delimiter)
+                    .setEscape('"')
+                    .setQuoteMode(QuoteMode.NONE)
+                    .build();
     }
 
     private final List<String> PAGES_HEADER = List.of(
@@ -27,15 +33,12 @@ public class CsvExporter {
             "position", "lemma", "uPosTag", "xPosTag", "feats", "misc",
             "nameTag");
 
-//    private final List<String> PUBLICATION_HEADER = List.of(
-//            "id", "title",
-//            "mods.name.type", "mods.name.identifier", "mods.name.part",
-//            "mods.genre", ""
-//    )
+    private final List<String> PUBLICATION_HEADER = List.of(
+            "id", "title", "policy",
+            "mods.name.type", "mods.name.identifier", "mods.name.part",
+            "mods.genre", "mods.originInfo.publisher", "mods.physicalDescription.extent");
 
     public void export(Page page, OutputStream outputStream) {
-        CSVFormat format = CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(DELIMITER).setQuoteMode(QuoteMode.NONE).build();
-
         try (OutputStreamWriter writer = new OutputStreamWriter(outputStream);
              CSVPrinter printer = new CSVPrinter(writer, format)) {
             printer.printRecord(PAGES_HEADER);
@@ -44,12 +47,54 @@ public class CsvExporter {
                 printer.printRecord(prepareLine(token));
             }
         } catch (IOException e) {
-            throw new UncheckedIOException("Error writing page", e);
+            throw new UncheckedIOException("Error writing page to CSV file", e);
         }
     }
 
     public void export(Publication publication, OutputStream outputStream) {
-        throw new UnsupportedOperationException("Not sure if object of type 'Publication' should be part of the CSV export.");
+        try (OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+             CSVPrinter printer = new CSVPrinter(writer, format)) {
+            printer.printRecord(PUBLICATION_HEADER);
+
+            printer.printRecord(preparePublicationLine(publication));
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error writing publication to CSV file", e);
+        }
+    }
+
+    private List<String> preparePublicationLine(Publication publication) {
+        List<String> line = new ArrayList<>();
+        line.add(publication.getId());
+        line.add(publication.getTitle());
+        line.add(publication.getPolicy());
+
+        if (publication.getModsMetadata() != null) {
+            ModsMetadata mods = publication.getModsMetadata();
+            if (mods.getName() != null) {
+                line.add(mods.getName().getType());
+                line.add(mods.getName().getNameIdentifier());
+                line.add(mods.getName().getNamePart());
+            } else {
+                addEmptyValues(line, 3);
+            }
+            line.add(mods.getGenre());
+
+            if (mods.getOriginInfo() != null) {
+                line.add(mods.getOriginInfo().getPublisher());
+            } else {
+                addEmptyValues(line, 1);
+            }
+
+            if (mods.getPhysicalDescription() != null) {
+                line.add(mods.getPhysicalDescription().getExtent());
+            } else {
+                addEmptyValues(line, 1);
+            }
+        } else {
+            addEmptyValues(line, 6);
+        }
+
+        return line;
     }
 
     private List<String> prepareLine(Token token) {
@@ -67,9 +112,7 @@ public class CsvExporter {
             line.add(toStringValue(token.getLinguisticMetadata().getFeats()));
             line.add(toStringValue(token.getLinguisticMetadata().getMisc()));
         } else {
-            for (int i = 0; i < 6; i++) {
-                line.add("");
-            }
+            addEmptyValues(line, 6);
         }
 
         line.add(toStringValue(token.getNameTagMetadata()));
@@ -91,5 +134,11 @@ public class CsvExporter {
         }
 
         return fieldValue;
+    }
+
+    private void addEmptyValues(List<String> line, int amount) {
+        for (int i = 0; i < amount; i++) {
+            line.add(null);
+        }
     }
 }

@@ -52,9 +52,4 @@ public class PageMongoReader extends MongoItemReader<Page> {
         params.setFields(query);
         params.setSort(query);
     }
-
-    @Override
-    public Page read() throws Exception {
-        return super.read();
-    }
 }
