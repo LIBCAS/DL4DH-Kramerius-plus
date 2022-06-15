@@ -59,13 +59,21 @@ public class PublicationApi {
         return publicationService.listPublishedModified(publishedModifiedAfter);
     }
 
-    @Operation(summary = "List pages for given publication.")
+    @Operation(summary = "List pages for given publication. Pages do not contain tokens and nameTagMetadata.")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping("/{id}/pages")
     public QueryResults<Page> listPages(@PathVariable("id") String publicationId,
                                         @RequestParam(value = "page", defaultValue = "0") int page,
                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return publicationService.listPages(publicationId, page, pageSize);
+    }
+
+    @Operation(summary = "Find page for given publication by id. Page contains all metadata.")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @GetMapping("/{id}/pages/{pageId}")
+    public Page findPage(@PathVariable("id") String publicationId,
+                         @PathVariable("pageId") String pageId) {
+        return publicationService.findPage(publicationId, pageId);
     }
 
     @Operation(summary = "Mark publication as published.")

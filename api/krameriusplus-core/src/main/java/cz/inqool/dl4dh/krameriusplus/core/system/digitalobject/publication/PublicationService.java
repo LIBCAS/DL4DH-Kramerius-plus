@@ -6,7 +6,6 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectExceptio
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
-import cz.inqool.dl4dh.krameriusplus.core.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.eq;
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 /**
  * @author Norbert Bodnar
@@ -78,9 +80,17 @@ public class PublicationService {
      */
     public Publication find(String publicationId) {
         Publication publication = publicationStore.find(publicationId);
-        Utils.notNull(publication, () -> new MissingObjectException(Publication.class, publicationId));
+        notNull(publication, () -> new MissingObjectException(Publication.class, publicationId));
 
         return publication;
+    }
+
+    public Page findPage(String publicationId, String pageId) {
+        Page page = pageStore.find(pageId);
+        notNull(page, () -> new MissingObjectException(Page.class, pageId));
+        eq(page.getParentId(), publicationId, () -> new MissingObjectException(Page.class, pageId));
+
+        return page;
     }
 
     public QueryResults<Publication> listChildren(String publicationId, int page, int pageSize) {
