@@ -32,6 +32,12 @@ public class WebClientDataProvider implements DataProvider, StreamProvider {
     }
 
     @Override
+    public String getAltoString(String pageId) {
+        return callInternal(String.format("/%s/streams/%s", pageId, StreamType.ALTO.streamId),
+                new ParameterizedTypeReference<>() {});
+    }
+
+    @Override
     public String getOCR(String pageId) {
         return getNormalizedTextOcr(pageId);
     }

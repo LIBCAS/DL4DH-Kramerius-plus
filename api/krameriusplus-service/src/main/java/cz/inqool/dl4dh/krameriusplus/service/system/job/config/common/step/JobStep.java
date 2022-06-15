@@ -42,4 +42,7 @@ public class JobStep {
 
     // EXPORT TEI
     public static final String EXPORT_TEI = "ExportTeiStep";
+
+    // EXPORT ALTO
+    public static final String EXPORT_PAGES_ALTO = "ExportPagesAltoStep";
 }

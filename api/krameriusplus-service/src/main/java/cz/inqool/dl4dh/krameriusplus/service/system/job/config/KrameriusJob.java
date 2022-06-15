@@ -13,7 +13,8 @@ public enum KrameriusJob {
 
     EXPORT_JSON(JobEventQueue.EXPORTING_QUEUE.getQueueName()),
     EXPORT_CSV(JobEventQueue.EXPORTING_QUEUE.getQueueName()),
-    EXPORT_TEI(JobEventQueue.EXPORTING_QUEUE.getQueueName());
+    EXPORT_TEI(JobEventQueue.EXPORTING_QUEUE.getQueueName()),
+    EXPORT_ALTO(JobEventQueue.EXPORTING_QUEUE.getQueueName());
 
     @Getter
     private final String queueName;
@@ -27,6 +28,6 @@ public enum KrameriusJob {
     }
 
     public static Set<KrameriusJob> getExportingJobs() {
-        return Set.of(EXPORT_JSON, EXPORT_CSV, EXPORT_TEI);
+        return Set.of(EXPORT_JSON, EXPORT_CSV, EXPORT_TEI, EXPORT_ALTO);
     }
 }

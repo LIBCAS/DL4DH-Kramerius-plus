@@ -13,6 +13,13 @@ public interface StreamProvider {
     Alto getAlto(String pageId);
 
     /**
+     * Retrieve ALTO stream for given page as String
+     * @param pageId id of page
+     * @return ALTO as String
+     */
+    String getAltoString(String pageId);
+
+    /**
      * Retrieve OCR stream for given page
      * @param pageId id of page
      * @return page content as String
