@@ -10,6 +10,9 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.util.List;
+
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -48,5 +51,11 @@ public class PublicationStore extends DomainStore<Publication> {
         notNull(publication, () -> new MissingObjectException(Publication.class, publicationId));
 
         return publication.getTitle();
+    }
+
+    public List<Publication> listPublishedModified(Instant publishedModifiedAfter) {
+        Query query = Query.query(where("publishInfo.publishedLastModified").gte(publishedModifiedAfter));
+
+        return mongoOperations.find(query, type);
     }
 }

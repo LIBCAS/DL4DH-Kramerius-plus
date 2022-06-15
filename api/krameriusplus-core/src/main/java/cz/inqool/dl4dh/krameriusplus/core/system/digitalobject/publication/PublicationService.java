@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.utils.Utils;
@@ -11,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -24,6 +29,8 @@ public class PublicationService {
 
     private PageStore pageStore;
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault());
+
     /**
      * Returns the given publication with only teiHeader and teiBody fields
      * @param publicationId
@@ -35,6 +42,17 @@ public class PublicationService {
         result.setPages(pageStore.listWithTei(publicationId));
 
         return result;
+    }
+
+    public List<Publication> listPublishedModified(String publishedModifiedAfter) {
+        try {
+            Instant instant = Instant.from(formatter.parse(publishedModifiedAfter));
+
+            return publicationStore.listPublishedModified(instant);
+        } catch (DateTimeException e) {
+            throw new ValidationException("Failed to parse given dateTime", ValidationException.ErrorCode.INVALID_PARAMETERS, e);
+        }
+
     }
 
     @Transactional

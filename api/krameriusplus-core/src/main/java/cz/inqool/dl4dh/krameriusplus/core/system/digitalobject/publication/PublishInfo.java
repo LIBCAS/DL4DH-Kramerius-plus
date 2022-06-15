@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -12,6 +13,7 @@ public class PublishInfo {
      * set this flag for external systems, so they know that the enriched publication
      * is ready to be shared/indexed.
      */
+    @Getter(AccessLevel.NONE)
     private boolean isPublished = false;
 
     /**

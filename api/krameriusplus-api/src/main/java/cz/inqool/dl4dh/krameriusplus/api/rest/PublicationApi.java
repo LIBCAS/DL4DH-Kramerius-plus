@@ -5,10 +5,13 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Norbert Bodnar
@@ -47,6 +50,13 @@ public class PublicationApi {
     public QueryResults<Publication> list(@RequestParam(value = "page", defaultValue = "0") int page,
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return publicationService.list(page, pageSize);
+    }
+
+    @Operation(summary = "List publications, which has changed its published status after the given date.")
+    @GetMapping("/list/published")
+    public List<Publication> listPublishedModified(@RequestParam("modifiedAfter")
+                                                       @Schema(description = "DateTime in ISO format") String publishedModifiedAfter) {
+        return publicationService.listPublishedModified(publishedModifiedAfter);
     }
 
     @Operation(summary = "List pages for given publication.")
