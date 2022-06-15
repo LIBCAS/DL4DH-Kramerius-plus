@@ -54,7 +54,7 @@ export const Navbar = () => {
 					<Button color="inherit" component={Link} to="/publications">
 						Publikace
 					</Button>
-					<Button color="inherit" component={Link} to="/export">
+					<Button color="inherit" component={Link} to="/exports">
 						Exporty
 					</Button>
 				</div>

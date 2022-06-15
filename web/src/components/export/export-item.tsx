@@ -39,7 +39,7 @@ export const ExportItem = ({ exportedPublication }: Props) => {
 
 	const handleDownloadExport = () => {
 		window.open(
-			process.env.PUBLIC_URL + `/api/export/download/${fileRef?.id}`,
+			process.env.PUBLIC_URL + `/api/exports/download/${fileRef?.id}`,
 			'_blank',
 		)
 	}

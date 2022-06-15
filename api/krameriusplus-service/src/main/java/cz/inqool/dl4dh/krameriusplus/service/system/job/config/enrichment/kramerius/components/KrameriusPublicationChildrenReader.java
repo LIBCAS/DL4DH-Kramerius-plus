@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
+
 @Component
 @StepScope
 @Slf4j
@@ -26,7 +28,7 @@ public class KrameriusPublicationChildrenReader implements ItemReader<DigitalObj
 
     @Autowired
     public KrameriusPublicationChildrenReader(DataProvider dataProvider,
-                                              @Value("#{jobParameters['publicationId']}") String publicationId) {
+                                              @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId) {
         this.dataProvider = dataProvider;
         this.publicationId = publicationId;
     }

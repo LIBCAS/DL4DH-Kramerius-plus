@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
@@ -28,5 +30,13 @@ public class PageStore extends DomainStore<Page> {
         long total = mongoOperations.count(query, type);
 
         return new QueryResults<>(mongoOperations.find(query.with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
+    }
+
+    public List<Page> listWithTei(String publicationId) {
+        Query query = Query.query(where("parentId").is(publicationId));
+
+        query.fields().include("_class", "_id", "teiBodyFileId");
+
+        return mongoOperations.find(query, type);
     }
 }

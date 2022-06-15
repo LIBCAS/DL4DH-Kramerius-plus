@@ -21,7 +21,7 @@ abstract public class JsonConverter<X> implements AttributeConverter<X, String> 
             return null;
         }
 
-        return toJsonString(attribute, false);
+        return toJsonString(attribute);
     }
 
     /**

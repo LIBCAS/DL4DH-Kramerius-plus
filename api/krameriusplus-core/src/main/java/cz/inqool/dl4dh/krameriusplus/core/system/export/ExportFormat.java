@@ -12,6 +12,7 @@ public enum ExportFormat {
     CSV("zip", ContentType.create("application/zip")),
     TSV("zip", ContentType.create("application/zip"));
 
+    @Getter
     private final String suffix;
 
     @Getter
@@ -38,5 +39,11 @@ public enum ExportFormat {
         String idWithoutPrefix = publicationId.substring(publicationId.indexOf(':') + 1);
 
         return String.format("uuid_%s_%s.%s", idWithoutPrefix, dateTimeFormatter.format(LocalDate.now()), suffix);
+    }
+
+    public String getFileName(String prefix, String publicationId) {
+        String idWithoutPrefix = publicationId.substring(publicationId.indexOf(':') + 1);
+
+        return String.format("%s_%s.%s", prefix, idWithoutPrefix, suffix);
     }
 }

@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { TeiParams } from '../../models'
 import { SelectField } from '../select-field/select-field'
-import { AltoParam, PipeParam, TagParam } from '../../models/tei-params'
+import { AltoParam, UDPipeParam, NameTagParam } from '../../models/tei-params'
 import {
 	altoParamsOptions,
 	nameTagParamsOptions,
@@ -56,7 +56,7 @@ export const TEIParams = ({ setParams, params }: Props) => {
 				</Grid>
 
 				<Grid item xs={12}>
-					<SelectField<TagParam>
+					<SelectField<NameTagParam>
 						items={nameTagParamsOptions}
 						label="nameTagParams"
 						labelMapper={o => (o === '?' ? 'jiný znak' : o)}
@@ -67,14 +67,14 @@ export const TEIParams = ({ setParams, params }: Props) => {
 						onChange={v =>
 							setParams(p => ({
 								...p,
-								nameTagParams: v as TagParam[],
+								nameTagParams: v as NameTagParam[],
 							}))
 						}
 					/>
 				</Grid>
 
 				<Grid item xs={12}>
-					<SelectField<PipeParam>
+					<SelectField<UDPipeParam>
 						items={udPipeParamsOptions}
 						label="udPipeParams"
 						labelMapper={o => (o === '?' ? 'jiný znak' : o)}
@@ -85,7 +85,7 @@ export const TEIParams = ({ setParams, params }: Props) => {
 						onChange={v =>
 							setParams(p => ({
 								...p,
-								udPipeParams: v as PipeParam[],
+								udPipeParams: v as UDPipeParam[],
 							}))
 						}
 					/>

@@ -1,5 +1,5 @@
 import { Sort } from '../../models'
-import { AltoParam, PipeParam, TagParam } from '../../models/tei-params'
+import { AltoParam, UDPipeParam, NameTagParam } from '../../models/tei-params'
 
 export const fieldOptions = [
 	{
@@ -59,7 +59,7 @@ export const sortOptions: Sort[] = [
 	},
 ]
 
-export const udPipeParamsOptions: PipeParam[] = [
+export const udPipeParamsOptions: UDPipeParam[] = [
 	'n',
 	'lemma',
 	'pos',
@@ -68,7 +68,7 @@ export const udPipeParamsOptions: PipeParam[] = [
 	'?',
 ]
 
-export const nameTagParamsOptions: TagParam[] = [
+export const nameTagParamsOptions: NameTagParam[] = [
 	'a',
 	'g',
 	'i',

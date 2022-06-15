@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import lombok.Getter;
@@ -21,7 +20,6 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusM
 @Getter
 @Setter
 @TypeAlias(KrameriusModel.MONOGRAPH_UNIT)
-@JsonTypeName(MONOGRAPH_UNIT)
 @Document(collection = "publications")
 public class MonographUnit extends Publication {
 

@@ -8,7 +8,7 @@ export const listExports = async (
 	publicationId?: string,
 ) => {
 	try {
-		let url = `/api/export/list?page=${page}&pageSize=${pageSize}`
+		let url = `/api/exports/list?page=${page}&pageSize=${pageSize}`
 
 		url = publicationId ? `${url}&publicationId=${publicationId}` : url
 

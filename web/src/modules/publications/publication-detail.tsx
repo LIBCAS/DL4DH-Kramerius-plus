@@ -10,7 +10,7 @@ import { GridRowParams } from '@mui/x-data-grid'
 import { ReadOnlyField } from 'components/read-only-field/read-only-field'
 import { Publication } from 'models'
 import { JobType } from 'models/job-type'
-import { KrameriusJob } from 'models/kramerius-job'
+import { EnrichmentKrameriusJob } from 'models/job/enrichment-kramerius-job'
 import {
 	downloadKStructure,
 	enrichExternal,
@@ -42,7 +42,8 @@ const useStyles = makeStyles(() => ({
 export const PublicationDetail = ({ publication }: Props) => {
 	const classes = useStyles()
 	const { open } = useContext(DialogContext)
-	const [selectedJobType, setSelectedJobType] = useState<KrameriusJob>()
+	const [selectedJobType, setSelectedJobType] =
+		useState<EnrichmentKrameriusJob>()
 	const { replace } = useHistory()
 	const [lastRender, setLastRender] = useState<number>(Date.now())
 
@@ -63,13 +64,13 @@ export const PublicationDetail = ({ publication }: Props) => {
 	const createNewJob = async () => {
 		async function createJob() {
 			switch (selectedJobType) {
-				case KrameriusJob.ENRICHMENT_KRAMERIUS:
+				case EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS:
 					return downloadKStructure([publication.id], true)
-				case KrameriusJob.ENRICHMENT_EXTERNAL:
+				case EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL:
 					return enrichExternal([publication.id])
-				case KrameriusJob.ENRICHMENT_NDK:
+				case EnrichmentKrameriusJob.ENRICHMENT_NDK:
 					return enrichNdk([publication.id])
-				case KrameriusJob.ENRICHMENT_TEI:
+				case EnrichmentKrameriusJob.ENRICHMENT_TEI:
 					return enrichTei([publication.id])
 			}
 		}
@@ -88,7 +89,7 @@ export const PublicationDetail = ({ publication }: Props) => {
 	}
 
 	function getButtonVariant(
-		selectedOnType: KrameriusJob,
+		selectedOnType: EnrichmentKrameriusJob,
 	): 'contained' | 'outlined' {
 		return selectedJobType == selectedOnType ? 'contained' : 'outlined'
 	}
@@ -133,30 +134,38 @@ export const PublicationDetail = ({ publication }: Props) => {
 				>
 					<ButtonGroup className={classes.exportButton} color="primary">
 						<Button
-							variant={getButtonVariant(KrameriusJob.ENRICHMENT_KRAMERIUS)}
+							variant={getButtonVariant(
+								EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS,
+							)}
 							onClick={() =>
-								setSelectedJobType(KrameriusJob.ENRICHMENT_KRAMERIUS)
+								setSelectedJobType(EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS)
 							}
 						>
 							Stahování dat
 						</Button>
 						<Button
-							variant={getButtonVariant(KrameriusJob.ENRICHMENT_EXTERNAL)}
+							variant={getButtonVariant(
+								EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL,
+							)}
 							onClick={() =>
-								setSelectedJobType(KrameriusJob.ENRICHMENT_EXTERNAL)
+								setSelectedJobType(EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL)
 							}
 						>
 							Obohacení externími nástroji
 						</Button>
 						<Button
-							variant={getButtonVariant(KrameriusJob.ENRICHMENT_NDK)}
-							onClick={() => setSelectedJobType(KrameriusJob.ENRICHMENT_NDK)}
+							variant={getButtonVariant(EnrichmentKrameriusJob.ENRICHMENT_NDK)}
+							onClick={() =>
+								setSelectedJobType(EnrichmentKrameriusJob.ENRICHMENT_NDK)
+							}
 						>
 							Obohacení NDK
 						</Button>
 						<Button
-							variant={getButtonVariant(KrameriusJob.ENRICHMENT_TEI)}
-							onClick={() => setSelectedJobType(KrameriusJob.ENRICHMENT_TEI)}
+							variant={getButtonVariant(EnrichmentKrameriusJob.ENRICHMENT_TEI)}
+							onClick={() =>
+								setSelectedJobType(EnrichmentKrameriusJob.ENRICHMENT_TEI)
+							}
 						>
 							Obohacení TEI
 						</Button>

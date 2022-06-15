@@ -17,9 +17,9 @@ public class ExportStore extends DatedStore<Export, QExport> {
         super(Export.class, QExport.class);
     }
 
-    public List<Export> listDeletedOlderThan(Instant createdBefore) {
+    public List<String> listOlderThan(Instant createdBefore) {
         return query()
-                .select(qObject)
+                .select(qObject.id)
                 .where(qObject.deleted.isNull())
                 .where(qObject.created.before(createdBefore))
                 .fetch();
@@ -28,6 +28,7 @@ public class ExportStore extends DatedStore<Export, QExport> {
     public QueryResults<Export> list(String publicationId, int page, int pageSize) {
         JPAQuery<Export> exportQuery = query()
                 .select(qObject)
+                .orderBy(qObject.created.desc())
                 .where(qObject.deleted.isNull());
 
         if (publicationId != null) {

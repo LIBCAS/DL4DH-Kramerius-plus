@@ -10,7 +10,10 @@ public enum KrameriusJob {
     ENRICHMENT_EXTERNAL(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
     ENRICHMENT_NDK(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
     ENRICHMENT_TEI(JobEventQueue.ENRICHING_QUEUE.getQueueName()),
-    EXPORT(JobEventQueue.EXPORTING_QUEUE.getQueueName());
+
+    EXPORT_JSON(JobEventQueue.EXPORTING_QUEUE.getQueueName()),
+    EXPORT_CSV(JobEventQueue.EXPORTING_QUEUE.getQueueName()),
+    EXPORT_TEI(JobEventQueue.EXPORTING_QUEUE.getQueueName());
 
     @Getter
     private final String queueName;
@@ -24,6 +27,6 @@ public enum KrameriusJob {
     }
 
     public static Set<KrameriusJob> getExportingJobs() {
-        return Set.of(EXPORT);
+        return Set.of(EXPORT_JSON, EXPORT_CSV, EXPORT_TEI);
     }
 }

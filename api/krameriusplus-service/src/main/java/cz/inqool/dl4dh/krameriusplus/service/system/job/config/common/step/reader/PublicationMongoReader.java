@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
@@ -19,7 +20,7 @@ public class PublicationMongoReader extends MongoItemReader<Publication> {
 
     @Autowired
     public PublicationMongoReader(MongoOperations mongoOperations,
-                                  @Value("#{jobParameters['publicationId']}") String publicationId) {
+                                  @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId) {
         setName("currentPublication");
         setTemplate(mongoOperations);
         setCollection("publications");

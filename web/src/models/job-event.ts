@@ -1,5 +1,5 @@
 import { JobExecution } from 'models'
-import { JobEventConfig } from './job-event-config'
+import { JobEventConfig } from './job/config/job-event-config'
 
 export interface JobEvent {
 	id: string

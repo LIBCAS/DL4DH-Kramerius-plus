@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.DomainStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
@@ -27,5 +29,24 @@ public class PublicationStore extends DomainStore<Publication> {
         long total = mongoOperations.count(query, type);
 
         return new QueryResults<>(mongoOperations.find(query.with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
+    }
+
+    public Publication listWithTei(String publicationId) {
+        Query query = Query.query(where("_id").is(publicationId));
+
+        query.fields().include("_class", "_id", "teiHeaderFileId");
+
+        return mongoOperations.findOne(query, type);
+    }
+
+    public String getTitle(String publicationId) {
+        Query query = Query.query(where("_id").is(publicationId));
+
+        query.fields().include("_class", "title");
+
+        Publication publication = mongoOperations.findOne(query, type);
+        notNull(publication, () -> new MissingObjectException(Publication.class, publicationId));
+
+        return publication.getTitle();
     }
 }

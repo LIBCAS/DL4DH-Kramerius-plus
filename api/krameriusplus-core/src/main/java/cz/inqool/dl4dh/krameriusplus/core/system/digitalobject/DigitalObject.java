@@ -30,7 +30,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusM
  */
 @Getter
 @Setter
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "model", defaultImpl = Supplement.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "model", include = JsonTypeInfo.As.EXISTING_PROPERTY)
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = Monograph.class, name = MONOGRAPH),
         @JsonSubTypes.Type(value = MonographUnit.class, name = MONOGRAPH_UNIT),
@@ -64,4 +64,6 @@ public abstract class DigitalObject extends DatedObject {
 
         this.context = new ArrayList<>(context.get(0));
     }
+
+    public abstract String getModel();
 }

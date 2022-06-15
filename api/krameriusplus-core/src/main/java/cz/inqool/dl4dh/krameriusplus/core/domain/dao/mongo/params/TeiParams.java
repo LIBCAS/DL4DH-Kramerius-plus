@@ -1,11 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,22 +28,4 @@ public class TeiParams extends Params {
             "If no parameters are specified, every metadata tag will be included.",
             allowableValues = {"height", "width", "vpos", "hpos"})
     private List<String> altoParams = new ArrayList<>();
-
-    public TeiParams(Params params) {
-        paging = params.getPaging();
-        sorting = params.getSorting();
-        filters = params.getFilters();
-        includeFields = params.getIncludeFields();
-        excludeFields = params.getExcludeFields();
-    }
-
-    public Params cleanForTei() {
-        sorting = new ArrayList<>();
-        sorting.add(new Sorting("index", Sort.Direction.ASC));
-
-        includeFields = new ArrayList<>();
-        includeFields("id", "teiBodyFileId");
-
-        return this;
-    }
 }

@@ -2,7 +2,7 @@ import { Paper } from '@material-ui/core'
 import { DataGrid, GridRowParams } from '@mui/x-data-grid'
 import { JobEvent } from 'models/job-event'
 import { JobType } from 'models/job-type'
-import { KrameriusJob } from 'models/kramerius-job'
+import { EnrichmentKrameriusJob } from 'models/job/enrichment-kramerius-job'
 import { useEffect, useState } from 'react'
 import { dateTimeFormatter } from 'utils/formatters'
 import { listJobEvents } from '../job-api'
@@ -10,7 +10,7 @@ import { listJobEvents } from '../job-api'
 type Props = {
 	jobType: JobType
 	onRowClick: (params: GridRowParams) => void
-	krameriusJob?: KrameriusJob
+	krameriusJob?: EnrichmentKrameriusJob
 	publicationId?: string
 }
 

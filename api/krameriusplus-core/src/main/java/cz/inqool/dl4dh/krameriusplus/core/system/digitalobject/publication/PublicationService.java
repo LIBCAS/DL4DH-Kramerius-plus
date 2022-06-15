@@ -35,6 +35,19 @@ public class PublicationService {
     }
 
     /**
+     * Returns the given publication with only teiHeader and teiBody fields
+     * @param publicationId
+     * @return
+     */
+    public Publication listTei(String publicationId) {
+        Publication result = publicationStore.listWithTei(publicationId);
+
+        result.setPages(pageStore.listWithTei(publicationId));
+
+        return result;
+    }
+
+    /**
      * Returns the publication with given ID with all its fields
      */
     public Publication find(String publicationId) {
@@ -79,6 +92,10 @@ public class PublicationService {
 
     public List<Publication> list(Params params) {
         return publicationStore.listAll(params);
+    }
+
+    public String getTitle(String publicationId) {
+        return publicationStore.getTitle(publicationId);
     }
 
     @Autowired

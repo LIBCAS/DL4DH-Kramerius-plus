@@ -2,8 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.api.cfg.exceptions;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.GeneralException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
-import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.lang.NonNull;
 
 import java.time.Instant;
@@ -12,6 +12,7 @@ import java.time.Instant;
  * Abstract class serving as a base for exception handling objects.
  */
 @Getter
+@ToString
 public abstract class ExceptionDTO {
 
     protected String timestamp;
@@ -19,7 +20,6 @@ public abstract class ExceptionDTO {
     protected Class<?> exception;
     protected String message;
     protected String cause;
-
 
     protected ExceptionDTO(@NonNull Throwable exception) {
         this(exception, exception.getMessage());
@@ -52,10 +52,5 @@ public abstract class ExceptionDTO {
         }
 
         return cause;
-    }
-
-    @Override
-    public String toString() {
-        return JsonUtils.toJsonString(this, true);
     }
 }
