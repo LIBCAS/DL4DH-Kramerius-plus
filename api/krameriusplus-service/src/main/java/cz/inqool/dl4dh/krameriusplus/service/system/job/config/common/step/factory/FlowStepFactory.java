@@ -9,8 +9,7 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class FlowStepFactory<IN extends DomainObject, OUT extends DomainObject>
-        extends AbstractStepFactory {
+public abstract class FlowStepFactory<IN, OUT> extends AbstractStepFactory {
 
     protected ItemWriteListener<DomainObject> writeListener;
 

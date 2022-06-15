@@ -4,9 +4,8 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.exporter.CsvExporter;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FileWriter;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.BeforeStep;
-import org.springframework.batch.item.ItemWriter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,11 +15,8 @@ import java.nio.file.Path;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.eq;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.DELIMITER;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.DIRECTORY;
 
-public abstract class CsvFileWriter<T extends DigitalObject> implements ItemWriter<T> {
-
-    protected Path exportDirectory;
+public abstract class CsvFileWriter<T extends DigitalObject> extends FileWriter<T> {
 
     protected CsvExporter exporter;
 
@@ -28,7 +24,8 @@ public abstract class CsvFileWriter<T extends DigitalObject> implements ItemWrit
         return Files.newOutputStream(exportDirectory.resolve(Path.of(getItemFileName(item))));
     }
 
-    private String getItemFileName(DigitalObject item) {
+    @Override
+    protected String getItemFileName(DigitalObject item) {
         if (item instanceof Publication) {
             return "metadata.csv";
         } else if (item instanceof Page) {
@@ -38,11 +35,8 @@ public abstract class CsvFileWriter<T extends DigitalObject> implements ItemWrit
         throw new IllegalStateException("Invalid type of item in CSV export: '" + item.getClass().getSimpleName() + "'.");
     }
 
-    @BeforeStep
-    public void injectExecutionContext(StepExecution stepExecution) {
-        String path = stepExecution.getJobExecution().getExecutionContext().getString(DIRECTORY);
-        exportDirectory = Path.of(path);
-
+    @Override
+    public void doBeforeStep(StepExecution stepExecution) {
         String delimiter = stepExecution.getJobExecution().getJobParameters().getString(DELIMITER);
         notNull(delimiter, () -> new IllegalArgumentException("Delimiter cannot be null."));
         eq(delimiter.length(), 1, () -> new IllegalArgumentException("Delimiter cannot be a multichar string."));

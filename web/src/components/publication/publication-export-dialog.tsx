@@ -16,8 +16,10 @@ import { TeiExportJobEventConfigCreateDto } from 'models/job/config/dto/export/t
 import { Typography } from '@material-ui/core'
 import { Box } from '@mui/system'
 import { ExportKrameriusJob } from 'models/job/export-kramerius-job'
+import { AltoExportJobEventConfigCreateDto } from 'models/job/config/dto/export/alto-export-job-event-config-create-dto'
+import { TextExportJobEventConfigCreateDto } from 'models/job/config/dto/export/text-export-job-event-config-create-dto'
 
-type ExportFormat = 'json' | 'tei' | 'csv'
+type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
 
 type Delimiter = '\t' | ','
 
@@ -76,9 +78,17 @@ export const PublicationExportDialog = ({
 	const [delimiter, setDelimiter] = useState<Delimiter>(',')
 	const [params, setParams] = useState<Params>(defaultParams)
 	const [teiParams, setTeiParams] = useState<TeiParams>(defaultTeiParams)
+	const [disabledParams, setDisabledParams] = useState<boolean>(false)
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setFormat((event.target as HTMLInputElement).value as ExportFormat)
+		const format = (event.target as HTMLInputElement).value as ExportFormat
+		setFormat(format)
+
+		if (format === 'alto' || format === 'text') {
+			setDisabledParams(true)
+		} else {
+			setDisabledParams(false)
+		}
 	}
 
 	const handleDelimiterChange = (
@@ -86,11 +96,6 @@ export const PublicationExportDialog = ({
 	) => {
 		setDelimiter((event.target as HTMLInputElement).value as Delimiter)
 	}
-
-	const requestParams = useMemo(
-		() => (format === 'tei' ? teiParams : params),
-		[format, params, teiParams],
-	)
 
 	const handleSubmitExport = async () => {
 		let config: ExportJobEventConfigCreateDto
@@ -105,11 +110,21 @@ export const PublicationExportDialog = ({
 				krameriusJob: ExportKrameriusJob.EXPORT_JSON,
 				params: params,
 			} as JsonExportJobEventConfigCreateDto
-		} else {
+		} else if (format === 'tei') {
 			config = {
 				krameriusJob: ExportKrameriusJob.EXPORT_TEI,
 				params: teiParams,
 			} as TeiExportJobEventConfigCreateDto
+		} else if (format === 'alto') {
+			config = {
+				krameriusJob: ExportKrameriusJob.EXPORT_ALTO,
+				params: params,
+			} as AltoExportJobEventConfigCreateDto
+		} else {
+			config = {
+				krameriusJob: ExportKrameriusJob.EXPORT_TEXT,
+				params: params,
+			} as TextExportJobEventConfigCreateDto
 		}
 
 		const response = await exportPublication(initialValues!.id, config, format)
@@ -155,6 +170,16 @@ export const PublicationExportDialog = ({
 					label="TEI"
 					value="tei"
 				/>
+				<FormControlLabel
+					control={<Radio color="primary" />}
+					label="ALTO"
+					value="alto"
+				/>
+				<FormControlLabel
+					control={<Radio color="primary" />}
+					label="TEXT"
+					value="text"
+				/>
 			</RadioGroup>
 
 			{format === 'csv' && (
@@ -183,7 +208,11 @@ export const PublicationExportDialog = ({
 			{format === 'tei' ? (
 				<TEIParams params={teiParams} setParams={setTeiParams} />
 			) : (
-				<JSONParams params={params} setParams={setParams} />
+				<JSONParams
+					disabled={disabledParams}
+					params={params}
+					setParams={setParams}
+				/>
 			)}
 		</DefaultDialog>
 	)

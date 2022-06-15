@@ -10,6 +10,7 @@ import { fieldOptions } from './publication-items'
 type Props = {
 	params: Params
 	setParams: React.Dispatch<React.SetStateAction<Params>>
+	disabled: boolean
 }
 
 const useStyles = makeStyles(() => ({
@@ -23,7 +24,7 @@ const useStyles = makeStyles(() => ({
 	},
 }))
 
-export const JSONParams = ({ setParams, params }: Props) => {
+export const JSONParams = ({ setParams, params, disabled }: Props) => {
 	const classes = useStyles()
 	const { includeFields = [], excludeFields = [] } = params
 
@@ -34,7 +35,7 @@ export const JSONParams = ({ setParams, params }: Props) => {
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<SelectField<{ id: string; label: string }>
-						disabled={excludeFields.length > 0}
+						disabled={disabled || excludeFields.length > 0}
 						items={fieldOptions}
 						label="Zahrnout pole"
 						multiple
@@ -52,7 +53,7 @@ export const JSONParams = ({ setParams, params }: Props) => {
 
 				<Grid item xs={12}>
 					<SelectField<{ id: string; label: string }>
-						disabled={includeFields.length > 0}
+						disabled={disabled || includeFields.length > 0}
 						items={fieldOptions}
 						label="Nezahrnout pole"
 						multiple
