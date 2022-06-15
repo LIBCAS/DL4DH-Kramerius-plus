@@ -17,7 +17,7 @@ public class CsvExportJobConfigDto extends ExportJobConfigDto {
     @Schema(description = "Delimiter used to generate export.", defaultValue = ",")
     private String delimiter = ",";
 
-    private Params params;
+    private Params params = new Params();
 
     @Override
     public KrameriusJob getKrameriusJob() {

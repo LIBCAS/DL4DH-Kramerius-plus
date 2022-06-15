@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
@@ -17,7 +18,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.*;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.ZIPPED_FILE;
 
 @Component
 @StepScope
@@ -27,10 +29,13 @@ public class CreateExportTasklet implements Tasklet {
 
     private final ExportService exportService;
 
+    private final PublicationService publicationService;
+
     @Autowired
-    public CreateExportTasklet(FileService fileService, ExportService exportService) {
+    public CreateExportTasklet(FileService fileService, ExportService exportService, PublicationService publicationService) {
         this.fileService = fileService;
         this.exportService = exportService;
+        this.publicationService = publicationService;
     }
 
     @Override
@@ -39,7 +44,7 @@ public class CreateExportTasklet implements Tasklet {
         Path zippedFile = Path.of(path);
 
         String publicationId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(PUBLICATION_ID);
-        String publicationTitle = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(PUBLICATION_TITLE);
+        String publicationTitle = publicationService.getTitle(publicationId);
 
         FileRef fileRef;
 

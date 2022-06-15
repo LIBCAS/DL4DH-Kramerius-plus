@@ -42,7 +42,7 @@ public class TeiExporter {
         try (InputStream teiHeaderIs = teiHeader.open()) {
             for (Page page : publication.getPages()) {
                 FileRef teiBody = fileService.find(page.getTeiBodyFileId());
-                teiBodies.add(teiBody.getStream());
+                teiBodies.add(teiBody.open());
             }
 
             teiConnector.merge(teiHeaderIs, teiBodies, teiParams, teiFile);

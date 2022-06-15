@@ -28,6 +28,7 @@ public class ExportStore extends DatedStore<Export, QExport> {
     public QueryResults<Export> list(String publicationId, int page, int pageSize) {
         JPAQuery<Export> exportQuery = query()
                 .select(qObject)
+                .orderBy(qObject.created.desc())
                 .where(qObject.deleted.isNull());
 
         if (publicationId != null) {

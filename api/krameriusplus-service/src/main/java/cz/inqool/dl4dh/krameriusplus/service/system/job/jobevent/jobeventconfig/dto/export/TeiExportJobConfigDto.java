@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 public class TeiExportJobConfigDto extends ExportJobConfigDto {
 
-    private TeiParams params;
+    private TeiParams params = new TeiParams();
 
     @Override
     public KrameriusJob getKrameriusJob() {

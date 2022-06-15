@@ -94,6 +94,10 @@ public class PublicationService {
         return publicationStore.listAll(params);
     }
 
+    public String getTitle(String publicationId) {
+        return publicationStore.getTitle(publicationId);
+    }
+
     @Autowired
     public void setPublicationStore(PublicationStore publicationStore) {
         this.publicationStore = publicationStore;

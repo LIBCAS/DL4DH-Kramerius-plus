@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpip
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.QuoteMode;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,9 +16,9 @@ import java.util.List;
 
 public class CsvExporter {
 
-    private final String DELIMITER;
+    private final char DELIMITER;
 
-    public CsvExporter(String delimiter) {
+    public CsvExporter(char delimiter) {
         DELIMITER = delimiter;
     }
 
@@ -33,7 +34,7 @@ public class CsvExporter {
 //    )
 
     public void export(Page page, OutputStream outputStream) {
-        CSVFormat format = CSVFormat.Builder.create().setDelimiter(DELIMITER).build();
+        CSVFormat format = CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(DELIMITER).setQuoteMode(QuoteMode.NONE).build();
 
         try (OutputStreamWriter writer = new OutputStreamWriter(outputStream);
              CSVPrinter printer = new CSVPrinter(writer, format)) {
@@ -53,20 +54,42 @@ public class CsvExporter {
 
     private List<String> prepareLine(Token token) {
         List<String> line = new ArrayList<>();
-        line.add(token.getTokenIndex().toString());
-        line.add(token.getContent());
-        line.add(token.getStartOffset().toString());
-        line.add(token.getEndOffset().toString());
+        line.add(toStringValue(token.getTokenIndex()));
+        line.add(toStringValue(token.getContent()));
+        line.add(toStringValue(token.getStartOffset()));
+        line.add(toStringValue(token.getEndOffset()));
 
-        line.add(token.getLinguisticMetadata().getPosition().toString());
-        line.add(token.getLinguisticMetadata().getLemma());
-        line.add(token.getLinguisticMetadata().getUPosTag());
-        line.add(token.getLinguisticMetadata().getXPosTag());
-        line.add(token.getLinguisticMetadata().getFeats());
-        line.add(token.getLinguisticMetadata().getMisc());
+        if (token.getLinguisticMetadata() != null) {
+            line.add(toStringValue(token.getLinguisticMetadata().getPosition()));
+            line.add(toStringValue(token.getLinguisticMetadata().getLemma()));
+            line.add(toStringValue(token.getLinguisticMetadata().getUPosTag()));
+            line.add(toStringValue(token.getLinguisticMetadata().getXPosTag()));
+            line.add(toStringValue(token.getLinguisticMetadata().getFeats()));
+            line.add(toStringValue(token.getLinguisticMetadata().getMisc()));
+        } else {
+            for (int i = 0; i < 6; i++) {
+                line.add("");
+            }
+        }
 
-        line.add(token.getNameTagMetadata());
+        line.add(toStringValue(token.getNameTagMetadata()));
 
         return line;
+    }
+
+    private String toStringValue(Integer fieldValue) {
+        if (fieldValue == null) {
+            return "";
+        }
+
+        return String.valueOf(fieldValue);
+    }
+
+    private String toStringValue(String fieldValue) {
+        if (fieldValue == null) {
+            return "";
+        }
+
+        return fieldValue;
     }
 }

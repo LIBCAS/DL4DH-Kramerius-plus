@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 public class JsonExportJobConfigDto extends ExportJobConfigDto {
 
-    private Params params;
+    private Params params = new Params();
 
     @Override
     public KrameriusJob getKrameriusJob() {

@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components;
 
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -30,9 +31,9 @@ public class PrepareExportDirectoryTasklet implements Tasklet {
         JobParameters jobParameters = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters();
 
         String publicationId = jobParameters.getString(PUBLICATION_ID);
-        String exportFormat = jobParameters.getString(EXPORT_FORMAT);
+        KrameriusJob krameriusJob = KrameriusJob.valueOf(jobParameters.getString(KRAMERIUS_JOB));
 
-        Path directoryPath = Path.of(TMP_PATH + buildDirectoryName(publicationId, exportFormat));
+        Path directoryPath = Path.of(TMP_PATH + buildDirectoryName(publicationId, krameriusJob));
 
         Files.createDirectories(directoryPath);
 
@@ -41,9 +42,9 @@ public class PrepareExportDirectoryTasklet implements Tasklet {
         return RepeatStatus.FINISHED;
     }
 
-    private String buildDirectoryName(String publicationId, String exportFormat) {
+    private String buildDirectoryName(String publicationId, KrameriusJob krameriusJob) {
         String publicationGuid = publicationId.substring(5);
 
-        return publicationGuid + "_" + exportFormat + "_" + formatter.format(LocalDateTime.now());
+        return krameriusJob.name() + "_" + publicationGuid + "_" + formatter.format(LocalDateTime.now());
     }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.csv.CsvExportJobConfig;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.JobEventConfigCreateDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,7 @@ import java.util.Map;
 @Setter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "krameriusJob", include = JsonTypeInfo.As.EXISTING_PROPERTY)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = CsvExportJobConfig.class, name = "EXPORT_TEI"),
+        @JsonSubTypes.Type(value = CsvExportJobConfigDto.class, name = "EXPORT_CSV"),
         @JsonSubTypes.Type(value = JsonExportJobConfigDto.class, name = "EXPORT_JSON"),
         @JsonSubTypes.Type(value = TeiExportJobConfigDto.class, name = "EXPORT_TEI")
 })

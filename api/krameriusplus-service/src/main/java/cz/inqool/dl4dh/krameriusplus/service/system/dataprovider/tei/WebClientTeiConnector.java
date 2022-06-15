@@ -24,9 +24,7 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -131,12 +129,16 @@ public class WebClientTeiConnector implements TeiConnector {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        return restTemplate.execute("/merge", HttpMethod.POST,
-                restTemplate.httpEntityCallback(requestEntity),
-                clientHttpResponse -> {
-                    StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(outputFile.toString()));
-                    return outputFile.toFile();
-                });
+        try (OutputStream out = new FileOutputStream(outputFile.toString())) {
+                    return restTemplate.execute("/merge", HttpMethod.POST,
+                    restTemplate.httpEntityCallback(requestEntity),
+            clientHttpResponse -> {
+                StreamUtils.copy(clientHttpResponse.getBody(), out);
+                return outputFile.toFile();
+            });
+        } catch (IOException exception) {
+            throw new UncheckedIOException("Failed to write merged TEI file", exception);
+        }
     }
 
     @Resource(name = "teiWebClient")

@@ -6,11 +6,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.isTrue;
@@ -62,13 +63,21 @@ public class Params {
     }
 
     public Query toQuery() {
-        isTrue(includeFields.isEmpty() || excludeFields.isEmpty(),
-                () -> new IllegalArgumentException("Cannot set both inclusion and exclusion parameters"));
-
         Query query = new Query();
         for (Filter filter : filters) {
             query.addCriteria(filter.toCriteria());
         }
+
+        this.setFields(query);
+        this.setSort(query);
+
+        return query;
+    }
+
+    public void setFields(Query query) {
+        isTrue(includeFields.isEmpty() || excludeFields.isEmpty(),
+                () -> new IllegalArgumentException("Cannot set both inclusion and exclusion parameters"));
+
 
         if (!includeFields.isEmpty()) {
             query.fields().include("_class"); // always include _class field, so MongoDB can deserialize document to POJO
@@ -81,13 +90,9 @@ public class Params {
         for (String field : excludeFields) {
             query.fields().exclude(field);
         }
-
-        query.with(toPageRequest());
-
-        return query;
     }
 
-    private Pageable toPageRequest() {
+    public void setSort(Query query) {
         Sort sort;
         if (sorting.isEmpty()) {
             sort = Sort.by(Sort.Direction.DESC, "created");
@@ -98,17 +103,8 @@ public class Params {
                     .collect(Collectors.toList()));
         }
 
-        return paging == null ?
+        query.with(paging == null ?
                 PageRequest.of(0, Integer.MAX_VALUE, sort) :
-                PageRequest.of(paging.getPage(), paging.getPageSize(), sort);
-    }
-
-    public Map<String, Integer> toFieldsMap() {
-        Map<String, Integer> result = new HashMap<>();
-
-        includeFields.forEach(includeField -> result.put(includeField, 1));
-        excludeFields.forEach(excludeField -> result.put(excludeField, 0));
-
-        return result;
+                PageRequest.of(paging.getPage(), paging.getPageSize(), sort));
     }
 }
