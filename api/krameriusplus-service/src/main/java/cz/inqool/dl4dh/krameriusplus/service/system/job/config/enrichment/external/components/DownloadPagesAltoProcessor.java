@@ -38,7 +38,7 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
         }
 
         AltoDto altoDto = altoMapper.toAltoDto(alto);
-        new AltoContentExtractor(item).enrichPage(altoDto);
+        new AltoContentExtractor().enrichPage(item, altoDto);
 
         return item;
     }

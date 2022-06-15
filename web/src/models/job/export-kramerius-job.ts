@@ -3,4 +3,5 @@ export enum ExportKrameriusJob {
 	EXPORT_TEI = 'EXPORT_TEI',
 	EXPORT_CSV = 'EXPORT_CSV',
 	EXPORT_ALTO = 'EXPORT_ALTO',
+	EXPORT_TEXT = 'EXPORT_TEXT',
 }

@@ -18,7 +18,8 @@ import java.util.Map;
         @JsonSubTypes.Type(value = CsvExportJobConfigDto.class, name = "EXPORT_CSV"),
         @JsonSubTypes.Type(value = JsonExportJobConfigDto.class, name = "EXPORT_JSON"),
         @JsonSubTypes.Type(value = TeiExportJobConfigDto.class, name = "EXPORT_TEI"),
-        @JsonSubTypes.Type(value = AltoExportJobConfigDto.class, name = "EXPORT_ALTO")
+        @JsonSubTypes.Type(value = AltoExportJobConfigDto.class, name = "EXPORT_ALTO"),
+        @JsonSubTypes.Type(value = TextExportJobConfigDto.class, name = "EXPORT_TEXT")
 })
 public abstract class ExportJobConfigDto extends JobEventConfigCreateDto {
 

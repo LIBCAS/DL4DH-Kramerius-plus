@@ -23,13 +23,7 @@ public class AltoContentExtractor {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    private final Page page;
-
-    public AltoContentExtractor(@NonNull Page page) {
-        this.page = page;
-    }
-
-    public void enrichPage(@NonNull AltoDto alto) {
+    public String extractText(@NonNull AltoDto alto) {
         pageContent = new StringBuilder();
 
         var pageElements = Optional.ofNullable(alto.getLayout())
@@ -44,9 +38,15 @@ public class AltoContentExtractor {
             removeLastSpace();
         }
 
+        return pageContent.toString();
+    }
+
+    public void enrichPage(@NonNull Page page, @NonNull AltoDto alto) {
+        String content = extractText(alto);
+
         page.setAltoLayout(alto.getLayout());
-        page.setOcrParadata(extractOcrParadata(alto));
-        page.setContent(pageContent.toString());
+        page.setOcrParadata(extractOcrParadata(alto, page.getId()));
+        page.setContent(content);
     }
 
     private void processPageElement(AltoDto.LayoutDto.PageDto pageElement) {
@@ -61,7 +61,7 @@ public class AltoContentExtractor {
         pageContent.setLength(pageContent.length() - 1);
     }
 
-    private OCRParadata extractOcrParadata(AltoDto alto) {
+    private OCRParadata extractOcrParadata(AltoDto alto, String pageId) {
         try {
             LocalDate ocrPerformedDate = null;
             try {
@@ -88,7 +88,7 @@ public class AltoContentExtractor {
 
             return ocrParadata;
         } catch (IndexOutOfBoundsException exception) {
-            log.error("No OCR metadata for page {}", page.getId());
+            log.error("No OCR metadata for page {}", pageId);
             return null;
         } catch (Exception exception) {
             log.error("Error extracting paradata from OCR", exception);

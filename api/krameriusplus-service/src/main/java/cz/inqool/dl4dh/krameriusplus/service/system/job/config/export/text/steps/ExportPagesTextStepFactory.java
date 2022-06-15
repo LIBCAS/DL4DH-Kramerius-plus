@@ -1,32 +1,32 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.steps;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.FlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.PageMongoReader;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components.ExportPagesAltoWriter;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components.ExportPagesTextWriter;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_PAGES_ALTO;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_PAGES_TEXT;
 
 @Component
-public class ExportPagesAltoStepFactory extends FlowStepFactory<Page, Page> {
+public class ExportPagesTextStepFactory extends FlowStepFactory<Page, Page> {
 
     private final PageMongoReader reader;
 
-    private final ExportPagesAltoWriter writer;
+    private final ExportPagesTextWriter writer;
 
     @Autowired
-    public ExportPagesAltoStepFactory(PageMongoReader reader, ExportPagesAltoWriter writer) {
+    public ExportPagesTextStepFactory(PageMongoReader reader, ExportPagesTextWriter writer) {
         this.reader = reader;
         this.writer = writer;
     }
 
     @Override
     protected String getStepName() {
-        return EXPORT_PAGES_ALTO;
+        return EXPORT_PAGES_TEXT;
     }
 
     @Override

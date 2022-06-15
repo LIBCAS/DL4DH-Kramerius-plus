@@ -45,4 +45,7 @@ public class JobStep {
 
     // EXPORT ALTO
     public static final String EXPORT_PAGES_ALTO = "ExportPagesAltoStep";
+
+    // EXPORT TEXT
+    public static final String EXPORT_PAGES_TEXT = "ExportPagesTextStep";
 }

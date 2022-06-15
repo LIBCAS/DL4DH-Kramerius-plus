@@ -1,18 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.AltoExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.CsvExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.JsonExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.*;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExporterFacade;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.AltoExportJobConfigDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.CsvExportJobConfigDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.JsonExportJobConfigDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.TeiExportJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -76,6 +70,15 @@ public class ExporterApi {
     public JobEventDto export(@PathVariable("id") String publicationId,
                               @RequestBody @Valid AltoExportJobConfigDto config) {
         return exporterFacade.export(new AltoExportRequestDto(publicationId, config));
+    }
+
+    @Operation(summary = "Creates and starts a new job of type EXPORT_TEXT, which generates an Export in TEXT format. " +
+            "Text is extracted from ALTO format. Job is started asynchronously. ")
+    @ApiResponse(responseCode = "200", description = "Job successfully created")
+    @PostMapping("/{id}/text")
+    public JobEventDto export(@PathVariable("id") String publicationId,
+                              @RequestBody @Valid TextExportJobConfigDto config) {
+        return exporterFacade.export(new TextExportRequestDto(publicationId, config));
     }
 
     @Operation(summary = "List exports.")

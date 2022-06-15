@@ -14,12 +14,12 @@ import java.util.List;
 
 @Component
 @StepScope
-public class PageAltoWriter extends FileWriter<Page> {
+public class ExportPagesAltoWriter extends FileWriter<Page> {
 
     private final StreamProvider streamProvider;
 
     @Autowired
-    public PageAltoWriter(StreamProvider streamProvider) {
+    public ExportPagesAltoWriter(StreamProvider streamProvider) {
         this.streamProvider = streamProvider;
     }
 

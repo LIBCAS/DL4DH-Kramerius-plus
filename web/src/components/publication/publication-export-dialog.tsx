@@ -17,8 +17,9 @@ import { Typography } from '@material-ui/core'
 import { Box } from '@mui/system'
 import { ExportKrameriusJob } from 'models/job/export-kramerius-job'
 import { AltoExportJobEventConfigCreateDto } from 'models/job/config/dto/export/alto-export-job-event-config-create-dto'
+import { TextExportJobEventConfigCreateDto } from 'models/job/config/dto/export/text-export-job-event-config-create-dto'
 
-type ExportFormat = 'json' | 'tei' | 'csv' | 'alto'
+type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
 
 type Delimiter = '\t' | ','
 
@@ -83,7 +84,7 @@ export const PublicationExportDialog = ({
 		const format = (event.target as HTMLInputElement).value as ExportFormat
 		setFormat(format)
 
-		if (format === 'alto') {
+		if (format === 'alto' || format === 'text') {
 			setDisabledParams(true)
 		} else {
 			setDisabledParams(false)
@@ -114,11 +115,16 @@ export const PublicationExportDialog = ({
 				krameriusJob: ExportKrameriusJob.EXPORT_TEI,
 				params: teiParams,
 			} as TeiExportJobEventConfigCreateDto
-		} else {
+		} else if (format === 'alto') {
 			config = {
 				krameriusJob: ExportKrameriusJob.EXPORT_ALTO,
 				params: params,
 			} as AltoExportJobEventConfigCreateDto
+		} else {
+			config = {
+				krameriusJob: ExportKrameriusJob.EXPORT_TEXT,
+				params: params,
+			} as TextExportJobEventConfigCreateDto
 		}
 
 		const response = await exportPublication(initialValues!.id, config, format)
@@ -168,6 +174,11 @@ export const PublicationExportDialog = ({
 					control={<Radio color="primary" />}
 					label="ALTO"
 					value="alto"
+				/>
+				<FormControlLabel
+					control={<Radio color="primary" />}
+					label="TEXT"
+					value="text"
 				/>
 			</RadioGroup>
 
