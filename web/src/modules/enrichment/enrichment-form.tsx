@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext, useEffect } from 'react'
+import { useState, useMemo, useContext } from 'react'
 import { v4 } from 'uuid'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
@@ -18,9 +18,8 @@ import { DialogContext } from 'components/dialog/dialog-context'
 
 import { createPlan, downloadKStructure } from './enrichment-api'
 import { DefaultDialog } from 'components/dialog/knav-dialog/knav-default-dialog'
-import { JobEventConfigCreateDto } from 'models/job-event-config-create-dto'
 import { Box } from '@mui/system'
-import { KrameriusJob } from 'models/kramerius-job'
+import { EnrichmentKrameriusJob } from 'models/job/enrichment-kramerius-job'
 import { Stack } from '@mui/material'
 import {
 	Avatar,
@@ -31,6 +30,7 @@ import {
 } from '@material-ui/core'
 import { EnrichmentDialog } from './enrichment-dialog'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { EnrichmentJobEventConfigCreateDto } from 'models/job/config/dto/enrichment-job-event-config-create-dto'
 
 const useStyles = makeStyles(() => ({
 	addButton: {
@@ -80,7 +80,7 @@ type Fields = {
 const initialValue = { id: v4(), value: '' }
 
 const initialJobConfig = {
-	krameriusJob: KrameriusJob.ENRICHMENT_KRAMERIUS,
+	krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS,
 	override: false,
 }
 
@@ -88,10 +88,10 @@ export const EnrichmentForm = () => {
 	const classes = useStyles()
 	const [showDialog, setShowDialog] = useState<boolean>(false)
 	const [currentConfig, setCurrentConfig] =
-		useState<JobEventConfigCreateDto>(initialJobConfig)
+		useState<EnrichmentJobEventConfigCreateDto>(initialJobConfig)
 	const [idFields, setIdFields] = useState<Fields[]>([initialValue])
 	const [jobEventConfigs, setJobEventConfigs] = useState<
-		JobEventConfigCreateDto[]
+		EnrichmentJobEventConfigCreateDto[]
 	>([initialJobConfig])
 	const [configIndex, setConfigIndex] = useState<number>()
 	const [planName, setPlanName] = useState<string>()
@@ -108,7 +108,7 @@ export const EnrichmentForm = () => {
 		setIdFields(idFields => [...idFields, { id: v4(), value: '' }])
 
 	const addConfigField = (
-		krameriusJob: KrameriusJob,
+		krameriusJob: EnrichmentKrameriusJob,
 		override: boolean,
 		configIndex?: number,
 	) => {
@@ -208,13 +208,13 @@ export const EnrichmentForm = () => {
 		setPlanName(e.target.value)
 	}
 
-	const onConfigClick = (krameriusJob: KrameriusJob) => {
+	const onConfigClick = (krameriusJob: EnrichmentKrameriusJob) => {
 		setCurrentConfig({ krameriusJob, override: false })
 		setShowDialog(true)
 	}
 
 	const onExistingConfigClick = (
-		config: JobEventConfigCreateDto,
+		config: EnrichmentJobEventConfigCreateDto,
 		index: number,
 	) => {
 		setConfigIndex(index)
@@ -223,7 +223,7 @@ export const EnrichmentForm = () => {
 	}
 
 	const onDialogSubmit = (
-		krameriusJob: KrameriusJob,
+		krameriusJob: EnrichmentKrameriusJob,
 		override: boolean,
 		configIndex?: number,
 	) => {
@@ -345,7 +345,7 @@ export const EnrichmentForm = () => {
 									</Typography>
 								</Box>
 								<Stack spacing={1}>
-									{Object.values(KrameriusJob).map((value, i) => (
+									{Object.values(EnrichmentKrameriusJob).map((value, i) => (
 										<Button
 											key={i}
 											className={classes.addButton}

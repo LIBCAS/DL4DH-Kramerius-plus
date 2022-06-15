@@ -23,10 +23,6 @@ const getSize = (params: GridValueGetterParams) => {
 	return `${((size ?? 0) / 1048576).toFixed(2)} MB`
 }
 
-const getId = (params: GridValueGetterParams) => {
-	return params.row['fileRef'].id
-}
-
 const columns: GridColDef[] = [
 	{
 		field: 'id',
@@ -40,10 +36,9 @@ const columns: GridColDef[] = [
 		valueGetter: getDate,
 	},
 	{
-		field: 'fileRefId',
+		field: 'publicationId',
 		headerName: 'ID Publikace',
 		width: 300,
-		valueGetter: getId,
 	},
 	{
 		field: 'publicationTitle',

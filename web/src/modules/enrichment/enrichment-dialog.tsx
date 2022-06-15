@@ -8,19 +8,19 @@ import {
 	ListItemText,
 	makeStyles,
 } from '@material-ui/core'
-import { JobEventConfigCreateDto } from 'models/job-event-config-create-dto'
-import { KrameriusJob } from 'models/kramerius-job'
+import { EnrichmentJobEventConfigCreateDto } from 'models/job/config/dto/enrichment-job-event-config-create-dto'
+import { EnrichmentKrameriusJob } from 'models/job/enrichment-kramerius-job'
 import { useEffect, useState } from 'react'
 
 type Props = {
 	showDialog: boolean
 	onClose: () => void
 	onSubmit: (
-		krameriusJob: KrameriusJob,
+		krameriusJob: EnrichmentKrameriusJob,
 		override: boolean,
 		configIndex?: number,
 	) => void
-	config: JobEventConfigCreateDto
+	config: EnrichmentJobEventConfigCreateDto
 	text: string
 	configIndex?: number
 }

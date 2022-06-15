@@ -1,11 +1,11 @@
 import { ApiError } from 'models'
-import { JobEventConfigCreateDto } from 'models/job-event-config-create-dto'
-import { KrameriusJob } from 'models/kramerius-job'
+import { EnrichmentJobEventConfigCreateDto } from 'models/job/config/dto/enrichment-job-event-config-create-dto'
+import { EnrichmentKrameriusJob } from 'models/job/enrichment-kramerius-job'
 import fetch from 'utils/fetch'
 
 export async function createPlan(
 	publicationIds: string[],
-	configs: JobEventConfigCreateDto[],
+	configs: EnrichmentJobEventConfigCreateDto[],
 	name?: string,
 ) {
 	try {
@@ -35,7 +35,7 @@ export async function downloadKStructure(
 ) {
 	const requestUrl = '/api/enrichment/kramerius'
 	const config = {
-		krameriusJob: KrameriusJob.ENRICHMENT_KRAMERIUS,
+		krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS,
 	}
 
 	try {
@@ -62,7 +62,7 @@ export async function downloadKStructure(
 export async function enrichExternal(publicationIds: string[]) {
 	const requestUrl = '/api/enrichment/external'
 	const config = {
-		krameriusJob: KrameriusJob.ENRICHMENT_EXTERNAL,
+		krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL,
 	}
 
 	try {
@@ -89,7 +89,7 @@ export async function enrichExternal(publicationIds: string[]) {
 export async function enrichNdk(publicationIds: string[]) {
 	const requestUrl = '/api/enrichment/ndk'
 	const config = {
-		krameriusJob: KrameriusJob.ENRICHMENT_NDK,
+		krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_NDK,
 	}
 
 	try {
@@ -116,7 +116,7 @@ export async function enrichNdk(publicationIds: string[]) {
 export async function enrichTei(publicationIds: string[]) {
 	const requestUrl = '/api/enrichment/tei'
 	const config = {
-		krameriusJob: KrameriusJob.ENRICHMENT_TEI,
+		krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_TEI,
 	}
 
 	try {
