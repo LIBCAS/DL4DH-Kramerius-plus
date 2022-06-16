@@ -24,6 +24,9 @@ public class Export extends DatedObject {
     @OneToOne
     private FileRef fileRef;
 
+    /**
+     * JobEvent, from which this export was created.
+     */
     @OneToOne
     private JobEvent jobEvent;
 }
