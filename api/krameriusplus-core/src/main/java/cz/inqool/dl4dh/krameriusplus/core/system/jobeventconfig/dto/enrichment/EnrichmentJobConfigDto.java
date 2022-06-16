@@ -1,8 +1,8 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.enrichment;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.JobEventConfigCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.JobEventConfigCreateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;

@@ -3,10 +3,10 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.krame
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment.EnrichmentKrameriusJobConfigDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.enrichment.EnrichmentKrameriusJobConfigDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.JOB_EVENT_ID;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 
 @Component
 @StepScope

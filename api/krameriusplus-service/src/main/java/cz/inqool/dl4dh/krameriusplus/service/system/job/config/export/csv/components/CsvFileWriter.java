@@ -12,9 +12,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.DELIMITER;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.eq;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.DELIMITER;
 
 public abstract class CsvFileWriter<T extends DigitalObject> extends FileWriter<T> {
 

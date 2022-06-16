@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.export;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportMapper;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Service
 public class ExportService implements DatedService<Export, ExportCreateDto, ExportDto> {
@@ -49,5 +52,12 @@ public class ExportService implements DatedService<Export, ExportCreateDto, Expo
 
     private List<String> listToDelete() {
         return store.listOlderThan(Instant.now().minus(DELETE_AFTER_HOURS, ChronoUnit.HOURS));
+    }
+
+    public ExportDto findByJobEvent(String jobEventId) {
+        Export export = store.findByJobEvent(jobEventId);
+        notNull(export, () -> new MissingObjectException(Export.class, "No Export for jobEventId:" + jobEventId));
+
+        return mapper.toDto(export);
     }
 }

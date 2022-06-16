@@ -1,21 +1,14 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.dto.DatedObjectDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventConfig;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.dto.JobExecutionDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobEventConfig;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
-@ToString
 public class JobEventDto extends DatedObjectDto {
 
     private String jobName;
@@ -30,9 +23,7 @@ public class JobEventDto extends DatedObjectDto {
 
     private JobStatus lastExecutionStatus;
 
-    private JobEvent parent;
+    private JobEventDto parent;
 
     private JobEventConfig config;
-
-    private List<JobExecutionDto> executions = new ArrayList<>();
 }

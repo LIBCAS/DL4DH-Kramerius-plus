@@ -2,11 +2,12 @@ package cz.inqool.dl4dh.krameriusplus.api.rest;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.*;
-import cz.inqool.dl4dh.krameriusplus.api.facade.ExporterFacade;
+import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export.*;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,13 +28,13 @@ import javax.validation.Valid;
 @Tag(name = "Export", description = "Exportování")
 @RestController
 @RequestMapping("/api/exports")
-public class ExporterApi {
+public class ExportApi {
 
-    private final ExporterFacade exporterFacade;
+    private final ExportFacade exportFacade;
 
     @Autowired
-    public ExporterApi(ExporterFacade exporterFacade) {
-        this.exporterFacade = exporterFacade;
+    public ExportApi(ExportFacade exportFacade) {
+        this.exportFacade = exportFacade;
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_TEI, which generates an Export in TEI format. " +
@@ -42,7 +43,7 @@ public class ExporterApi {
     @PostMapping("/{id}/tei")
     public JobEventDto exportTei(@PathVariable("id") String publicationId,
                                  @RequestBody @Valid TeiExportJobConfigDto config) {
-        return exporterFacade.export(new TeiExportRequestDto(publicationId, config));
+        return exportFacade.export(new TeiExportRequestDto(publicationId, config));
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_JSON, which generates an Export in JSON format. " +
@@ -50,8 +51,8 @@ public class ExporterApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/json")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid JsonExportJobConfigDto config) {
-        return exporterFacade.export(new JsonExportRequestDto(publicationId, config));
+                                    @RequestBody @Valid JsonExportJobConfigDto config) {
+        return exportFacade.export(new JsonExportRequestDto(publicationId, config));
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_CSV, which generates an Export in CSV format. " +
@@ -59,8 +60,8 @@ public class ExporterApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/csv")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid CsvExportJobConfigDto config) {
-        return exporterFacade.export(new CsvExportRequestDto(publicationId, config));
+                                    @RequestBody @Valid CsvExportJobConfigDto config) {
+        return exportFacade.export(new CsvExportRequestDto(publicationId, config));
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_ALTO, which generates an Export in ALTO format. " +
@@ -68,8 +69,8 @@ public class ExporterApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/alto")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid AltoExportJobConfigDto config) {
-        return exporterFacade.export(new AltoExportRequestDto(publicationId, config));
+                                    @RequestBody @Valid AltoExportJobConfigDto config) {
+        return exportFacade.export(new AltoExportRequestDto(publicationId, config));
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_TEXT, which generates an Export in TEXT format. " +
@@ -77,8 +78,8 @@ public class ExporterApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/text")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid TextExportJobConfigDto config) {
-        return exporterFacade.export(new TextExportRequestDto(publicationId, config));
+                                    @RequestBody @Valid TextExportJobConfigDto config) {
+        return exportFacade.export(new TextExportRequestDto(publicationId, config));
     }
 
     @Operation(summary = "List exports.")
@@ -89,14 +90,21 @@ public class ExporterApi {
                                             @Schema(description = "Optional publicationId parameter. When provided, only export " +
                                             "for the given publication will be returned.")
                                                 @RequestParam(value = "publicationId", required = false) String publicationId) {
-        return exporterFacade.list(publicationId, page, pageSize);
+        return exportFacade.list(publicationId, page, pageSize);
+    }
+
+    @Operation(summary = "Find export by JobEventId")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @GetMapping
+    public ExportDto findByJobEvent(@RequestParam(value = "jobEventId") String jobEventId) {
+        return exportFacade.findByJobEvent(jobEventId);
     }
 
     @Operation(summary = "Download export.")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(value = "/download/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> download(@PathVariable("id") String fileRefId) {
-        FileRef file = exporterFacade.getFile(fileRefId);
+        FileRef file = exportFacade.getFile(fileRefId);
 
         file.open();
 

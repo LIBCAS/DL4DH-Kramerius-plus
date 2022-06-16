@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import io.swagger.v3.oas.annotations.media.Schema;

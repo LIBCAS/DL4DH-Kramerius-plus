@@ -1,10 +1,8 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common;
-
-import org.springframework.batch.core.JobParameters;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig;
 
 /**
  * Helper class with defined constants, which can be used
- * in jobs to retrieve values from {@link JobParameters}
+ * in jobs to retrieve values from spring JobParameters
  */
 public class JobParameterKey {
     public static final String PUBLICATION_ID = "publicationId";

@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.enrichment;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import lombok.Getter;
@@ -8,9 +8,9 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class EnrichmentNdkJobConfigDto extends EnrichmentJobConfigDto {
+public class EnrichmentTeiJobConfigDto extends EnrichmentJobConfigDto {
 
-    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_NDK;
+    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_TEI;
 
     @Override
     public Map<String, Object> getJobParameters() {

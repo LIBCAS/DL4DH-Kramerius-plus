@@ -125,4 +125,14 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="6" author="bodnar">
+        <addColumn tableName="export">
+            <column name="job_event_id" type="${id}">
+                <constraints foreignKeyName="export_job_event_id_FK"
+                             referencedTableName="job_event"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

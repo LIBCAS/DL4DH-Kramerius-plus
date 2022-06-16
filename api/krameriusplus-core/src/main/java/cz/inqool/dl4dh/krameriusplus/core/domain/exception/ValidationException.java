@@ -9,6 +9,10 @@ public class ValidationException extends GeneralException {
         super(message, errorCode, LogLevel.ERROR, throwable);
     }
 
+    public ValidationException(String message, ErrorCode errorCode) {
+        super(message, errorCode, LogLevel.ERROR);
+    }
+
     public enum ErrorCode implements LogCode {
         INVALID_EXPORT_TYPE,
         INVALID_PARAMETERS

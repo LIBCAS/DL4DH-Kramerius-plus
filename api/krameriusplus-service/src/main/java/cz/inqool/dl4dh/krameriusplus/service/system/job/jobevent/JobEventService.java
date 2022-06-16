@@ -7,9 +7,10 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDetailDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventRunDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
@@ -72,8 +72,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         }
     }
 
-    @Override
-    public JobEventDto find(@NonNull String id) {
+    public JobEventDetailDto findDetailed(@NonNull String id) {
         JobEvent jobEvent = store.find(id);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, id));
 
@@ -84,7 +83,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
             executions = jobExplorer.getJobExecutions(Objects.requireNonNull(instance));
         }
 
-        return mapper.toDto(jobEvent, executions);
+        return mapper.toDetailDto(jobEvent, executions);
     }
 
     @Transactional
@@ -104,23 +103,17 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
                 page,
                 pageSize);
 
-        return new QueryResults<>(mapToDto(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
+        return new QueryResults<>(mapper.toDtoList(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
     }
 
     public QueryResults<JobEventDto> listExportingJobs(String publicationId, int page, int pageSize) {
         QueryResults<JobEvent> result = store.listJobsByType(KrameriusJob.getExportingJobs(), publicationId, page, pageSize);
 
-        return new QueryResults<>(mapToDto(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
+        return new QueryResults<>(mapper.toDtoList(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
     }
 
     private void enqueueJob(JobEvent jobEvent) {
         jmsProducer.sendMessage(mapper.toRunDto(jobEvent));
-    }
-
-    private List<JobEventDto> mapToDto(List<JobEvent> jobEvents) {
-        return jobEvents.stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
     }
 
     @Autowired

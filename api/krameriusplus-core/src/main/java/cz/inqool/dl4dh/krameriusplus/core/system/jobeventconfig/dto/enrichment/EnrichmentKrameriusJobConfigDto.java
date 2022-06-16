@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.enrichment;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,10 +9,10 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class EnrichmentExternalJobConfigDto extends EnrichmentJobConfigDto {
+public class EnrichmentKrameriusJobConfigDto extends EnrichmentJobConfigDto {
 
-    @Schema(allowableValues = {"ENRICHMENT_EXTERNAL"})
-    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_EXTERNAL;
+    @Schema(allowableValues = {"ENRICHMENT_KRAMERIUS"})
+    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_KRAMERIUS;
 
     @Override
     public Map<String, Object> getJobParameters() {
