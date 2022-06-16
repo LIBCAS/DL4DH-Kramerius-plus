@@ -1,16 +1,19 @@
 package cz.inqool.dl4dh.krameriusplus.service.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.config.BodyLoggingResponseErrorHandler;
 import cz.inqool.dl4dh.krameriusplus.core.config.KrameriusInfo;
 import cz.inqool.dl4dh.krameriusplus.core.config.LoggingRequestInterceptor;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.resolver.DefaultAddressResolverGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -46,7 +49,9 @@ public class WebClientConfig {
                 .trustManager(InsecureTrustManagerFactory.INSTANCE)
                 .build();
 
-        HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
+        HttpClient httpClient = HttpClient.create()
+                .resolver(DefaultAddressResolverGroup.INSTANCE)
+                .secure(t -> t.sslContext(sslContext));
 
         return WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(httpClient)) // TODO: UNSAFE!! enable ssl
@@ -62,24 +67,28 @@ public class WebClientConfig {
     }
 
     @Bean
-    public KrameriusInfo krameriusInfo(@Value("${system.kramerius.code}") String krameriusCode) {
+    public KrameriusInfo krameriusInfo(ObjectMapper objectMapper,
+                                       @Value("${system.kramerius.code}") String krameriusCode) throws SSLException, JsonProcessingException {
         String uri = UriComponentsBuilder
                 .fromHttpUrl("https://registr.digitalniknihovna.cz/libraries/")
                 .path(krameriusCode + ".json")
                 .build()
                 .toUriString();
 
-        WebClient webClient = WebClient.builder().build();
-        Map<String, Object> krameriusInfos = webClient
+        WebClient webClient = getWebClient(uri);
+
+        String krameriusInfoString = webClient
                 .get()
                 .uri(uri)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .bodyToMono(String.class)
                 .block();
 
-        notNull(krameriusInfos, () -> new IllegalStateException("GET to '" + uri +"' did not return any results"));
+        Map<String, Object> krameriusInfo = objectMapper.readValue(krameriusInfoString, new TypeReference<>() {});
 
-        return new KrameriusInfo(krameriusInfos);
+        notNull(krameriusInfo, () -> new IllegalStateException("GET to '" + uri +"' did not return any results"));
+
+        return new KrameriusInfo(krameriusInfo);
     }
 
     @Bean(name = "krameriusWebClient")

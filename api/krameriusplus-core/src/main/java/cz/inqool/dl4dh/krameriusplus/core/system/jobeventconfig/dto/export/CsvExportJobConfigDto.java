@@ -1,14 +1,14 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.export;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Map;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.DELIMITER;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.DELIMITER;
 
 @Getter
 @Setter

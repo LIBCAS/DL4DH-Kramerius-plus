@@ -1,6 +1,5 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventQueue;
 import lombok.Getter;
 
 import java.util.Set;

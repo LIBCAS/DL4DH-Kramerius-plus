@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.DIRECTORY;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.ZIPPED_FILE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.DIRECTORY;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.ZIPPED_FILE;
 
 @Component
 @StepScope

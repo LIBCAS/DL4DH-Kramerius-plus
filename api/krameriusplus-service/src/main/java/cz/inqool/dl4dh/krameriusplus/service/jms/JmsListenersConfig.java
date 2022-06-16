@@ -13,8 +13,8 @@ import org.springframework.jms.support.converter.MessageConverter;
 
 import javax.jms.JMSException;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventQueue.ENRICHING_QUEUE;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventQueue.EXPORTING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.ENRICHING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.EXPORTING_QUEUE;
 
 @Slf4j
 @Configuration

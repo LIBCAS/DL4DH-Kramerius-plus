@@ -12,8 +12,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PARAMS;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PARAMS;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Component

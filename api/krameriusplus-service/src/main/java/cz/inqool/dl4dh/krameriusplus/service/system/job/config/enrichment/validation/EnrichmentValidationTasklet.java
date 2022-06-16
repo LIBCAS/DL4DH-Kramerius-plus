@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.*;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.*;
 
 @Component
 @StepScope

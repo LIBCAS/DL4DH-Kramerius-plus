@@ -1,11 +1,8 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.QScheduledJobEvent;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -65,14 +62,5 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
         notNull(count, () -> new IllegalStateException("Count query should never return null"));
 
         return count > 0;
-    }
-
-    public JobPlan findExecutionPlanByJobEventId(String jobEventId) {
-        QScheduledJobEvent qScheduledJobEvent = QScheduledJobEvent.scheduledJobEvent;
-
-        return queryFactory.from(qScheduledJobEvent)
-                .select(qScheduledJobEvent.jobPlan)
-                .where(qScheduledJobEvent.jobEvent.id.eq(jobEventId))
-                .fetchOne();
     }
 }

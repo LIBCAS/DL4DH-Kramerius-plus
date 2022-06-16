@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.json;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.ExportJobConfigBase;
 import org.springframework.batch.core.Job;
 import org.springframework.context.annotation.Bean;

@@ -3,19 +3,23 @@ package cz.inqool.dl4dh.krameriusplus.api.facade;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportService;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
+
 @Component
-public class ExporterFacadeImpl implements ExporterFacade {
+public class ExportFacadeImpl implements ExportFacade {
 
     private final JobEventService jobEventService;
 
@@ -24,7 +28,7 @@ public class ExporterFacadeImpl implements ExporterFacade {
     private final FileService fileService;
 
     @Autowired
-    public ExporterFacadeImpl(JobEventService jobEventService, ExportService exportService, FileService fileService) {
+    public ExportFacadeImpl(JobEventService jobEventService, ExportService exportService, FileService fileService) {
         this.jobEventService = jobEventService;
         this.exportService = exportService;
         this.fileService = fileService;
@@ -43,6 +47,13 @@ public class ExporterFacadeImpl implements ExporterFacade {
     @Override
     public FileRef getFile(String fileRefId) {
         return fileService.find(fileRefId);
+    }
+
+    @Override
+    public ExportDto findByJobEvent(String jobEventId) {
+        notNull(jobEventId, () -> new ValidationException("Parameter jobEventId cannot be null", ValidationException.ErrorCode.INVALID_PARAMETERS));
+
+        return exportService.findByJobEvent(jobEventId);
     }
 
     private JobEventDto createJob(ExportRequestDto requestDto) {

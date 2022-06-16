@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 
 @Component
 @StepScope

@@ -1,6 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.JobEventConfig;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobEventConfig;
 import org.mapstruct.Mapper;
 
 @Mapper

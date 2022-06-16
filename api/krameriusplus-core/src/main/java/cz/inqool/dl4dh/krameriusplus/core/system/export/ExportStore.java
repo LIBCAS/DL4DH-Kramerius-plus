@@ -40,4 +40,15 @@ public class ExportStore extends DatedStore<Export, QExport> {
                 .limit(pageSize)
                 .fetchResults();
     }
+
+    public Export findByJobEvent(String jobEventId) {
+        Export export = query().select(qObject)
+                .where(qObject.jobEvent.id.eq(jobEventId))
+                .where(qObject.deleted.isNull())
+                .fetchOne();
+
+        detach(export);
+
+        return export;
+    }
 }

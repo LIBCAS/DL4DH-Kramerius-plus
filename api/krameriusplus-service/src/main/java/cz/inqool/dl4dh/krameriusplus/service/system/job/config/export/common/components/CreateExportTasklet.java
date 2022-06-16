@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -18,8 +19,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.PUBLICATION_ID;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParameterKey.ZIPPED_FILE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.*;
 
 @Component
 @StepScope
@@ -43,6 +43,7 @@ public class CreateExportTasklet implements Tasklet {
         String path = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(ZIPPED_FILE);
         Path zippedFile = Path.of(path);
 
+        String jobEventId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(JOB_EVENT_ID);
         String publicationId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(PUBLICATION_ID);
         String publicationTitle = publicationService.getTitle(publicationId);
 
@@ -55,10 +56,14 @@ public class CreateExportTasklet implements Tasklet {
                     "application/zip");
         }
 
+        JobEventDto jobEventDto = new JobEventDto();
+        jobEventDto.setId(jobEventId);
+
         ExportCreateDto exportCreateDto = new ExportCreateDto();
         exportCreateDto.setPublicationId(publicationId);
         exportCreateDto.setPublicationTitle(publicationTitle);
         exportCreateDto.setFileRef(fileRef);
+        exportCreateDto.setJobEvent(jobEventDto);
 
         exportService.create(exportCreateDto);
 
