@@ -101,28 +101,23 @@ export const PublicationExportDialog = ({
 		let config: ExportJobEventConfigCreateDto
 		if (format === 'csv') {
 			config = {
-				krameriusJob: ExportKrameriusJob.EXPORT_CSV,
 				params: params,
 				delimiter: delimiter,
 			} as CsvExportJobEventConfigCreateDto
 		} else if (format === 'json') {
 			config = {
-				krameriusJob: ExportKrameriusJob.EXPORT_JSON,
 				params: params,
 			} as JsonExportJobEventConfigCreateDto
 		} else if (format === 'tei') {
 			config = {
-				krameriusJob: ExportKrameriusJob.EXPORT_TEI,
 				params: teiParams,
 			} as TeiExportJobEventConfigCreateDto
 		} else if (format === 'alto') {
 			config = {
-				krameriusJob: ExportKrameriusJob.EXPORT_ALTO,
 				params: params,
 			} as AltoExportJobEventConfigCreateDto
 		} else {
 			config = {
-				krameriusJob: ExportKrameriusJob.EXPORT_TEXT,
 				params: params,
 			} as TextExportJobEventConfigCreateDto
 		}
