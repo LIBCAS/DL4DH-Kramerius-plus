@@ -3,13 +3,17 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventRunDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanStore;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.batch.core.JobExecution;
@@ -30,6 +34,8 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Getter
     private JobEventStore store;
 
+    private JobPlanStore jobPlanStore;
+
     @Getter
     private JobEventMapper mapper;
 
@@ -45,7 +51,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     public void enqueueNextJobInPlan(String lastExecutedJobEventId) {
-        JobPlan jobPlan = store.findExecutionPlanByJobEventId(lastExecutedJobEventId);
+        JobPlan jobPlan = jobPlanStore.findByJobEvent(lastExecutedJobEventId);
 
         if (jobPlan != null) {
             Optional<JobEvent> jobEvent = jobPlan.getNextToExecute();
@@ -135,5 +141,10 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Autowired
     public void setJobExplorer(JobExplorer jobExplorer) {
         this.jobExplorer = jobExplorer;
+    }
+
+    @Autowired
+    public void setJobPlanStore(JobPlanStore jobPlanStore) {
+        this.jobPlanStore = jobPlanStore;
     }
 }

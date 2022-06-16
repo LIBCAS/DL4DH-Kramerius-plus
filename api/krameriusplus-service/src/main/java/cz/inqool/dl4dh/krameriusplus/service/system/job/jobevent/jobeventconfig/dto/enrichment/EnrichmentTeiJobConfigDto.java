@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.jobeventconfig.dto.enrichment;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import lombok.Getter;
 import lombok.Setter;
 

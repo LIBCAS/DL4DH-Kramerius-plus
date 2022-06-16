@@ -9,4 +9,13 @@ public class JobPlanStore extends DatedStore<JobPlan, QJobPlan> {
     public JobPlanStore() {
         super(JobPlan.class, QJobPlan.class);
     }
+
+    public JobPlan findByJobEvent(String jobEventId) {
+        QScheduledJobEvent qScheduledJobEvent = QScheduledJobEvent.scheduledJobEvent;
+
+        return queryFactory.from(qScheduledJobEvent)
+                .select(qScheduledJobEvent.jobPlan)
+                .where(qScheduledJobEvent.jobEvent.id.eq(jobEventId))
+                .fetchOne();
+    }
 }
