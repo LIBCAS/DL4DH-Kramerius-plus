@@ -6,12 +6,11 @@ import fetch from 'utils/fetch'
 
 export const useNavbar = () => {
 	const [data, setData] = useState<InstanceInfo>()
-	const [versionInfo, setVersionInfo] = useState<MapType>()
 
 	useEffect(() => {
 		const getKrameriusInstanceInfo = async () => {
 			try {
-				const response = await fetch('/api/info/kramerius')
+				const response = await fetch('/api/info')
 
 				const json: InstanceInfo = await response.json()
 
@@ -21,25 +20,12 @@ export const useNavbar = () => {
 			}
 		}
 
-		const getKrameriusPlusInfo = async () => {
-			try {
-				const response = await fetch('/api/info/version')
-
-				const json: MapType = await response.json()
-
-				setVersionInfo(json)
-			} catch (e) {
-				console.log(e)
-			}
-		}
-
 		getKrameriusInstanceInfo()
-		getKrameriusPlusInfo()
 	}, [])
 
 	return {
-		instance: data?.info.name,
-		url: data?.info.url,
-		version: versionInfo?.version,
+		instance: data?.kramerius.name,
+		url: data?.kramerius.url,
+		version: data?.krameriusPlus?.version,
 	}
 }

@@ -32,18 +32,22 @@ public class InfoApi {
         this.krameriusInstance = krameriusInstance;
     }
 
-    @Operation(summary = "Get information about current instance of Kramerius, to which Kramerius+ is connected. " +
-            "Information is downloaded from https://registr.digitalniknihovna.cz/libraries on application startup.")
-    @GetMapping("/kramerius")
-    public ResponseEntity<KrameriusInfo> getCurrentInstance() {
-        return ResponseEntity.ok(krameriusInstance);
-    }
+    @Operation(summary = "Get information about current version, last build time of Kramerius+ and about current " +
+            "instance of Kramerius, to which Kramerius+ is connected. Information is obtained from " +
+            "https://registr.digitalniknihovna.cz/libraries on application startup.")
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getCurrentVersion() {
+        Map<String, String> krameriusPlusInfo = Map.of(
+                "version", buildProperties.getVersion(),
+                "timeOfLastBuild", formatter.format(LocalDateTime.ofInstant(buildProperties.getTime(), ZoneId.systemDefault()))
+                );
 
-    @Operation(summary = "Get information about current version and last build time of Kramerius+.")
-    @GetMapping("/version")
-    public Map<String, String> getCurrentVersion() {
-        return Map.of("version", buildProperties.getVersion(),
-                "time", formatter.format(LocalDateTime.ofInstant(buildProperties.getTime(), ZoneId.systemDefault())));
+        Map<String, Object> responseBody = Map.of(
+                "krameriusPlus", krameriusPlusInfo,
+                "kramerius", krameriusInstance.getInfo()
+        );
+
+        return ResponseEntity.ok(responseBody);
     }
 
 }
