@@ -18,7 +18,7 @@ import {
 	enrichTei,
 } from 'modules/enrichment/enrichment-api'
 import { JobEventList } from 'modules/jobs/job-event/job-event-list'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { toast } from 'react-toastify'
 import { DialogContext } from '../../components/dialog/dialog-context'
@@ -50,6 +50,10 @@ export const PublicationDetail = ({ publication }: Props) => {
 	const [isPublished, setIsPublished] = useState<boolean>(
 		publication.publishInfo.isPublished,
 	)
+
+	useEffect(() => {
+		setIsPublished(publication.publishInfo.isPublished)
+	}, [publication])
 
 	const handleOpenExportDialog = () => {
 		open({
