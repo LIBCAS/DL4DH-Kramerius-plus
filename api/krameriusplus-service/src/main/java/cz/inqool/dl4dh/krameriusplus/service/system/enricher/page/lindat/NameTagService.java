@@ -16,7 +16,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class NameTagService {
         }
 
         NameTagEnrichmentParadata nameTagParadata = new NameTagEnrichmentParadata();
-        nameTagParadata.setRequestSent(Instant.now());
+//        nameTagParadata.setRequestSent(Instant.now());
 
         String pageContent = tokens
                 .stream()
@@ -53,13 +52,13 @@ public class NameTagService {
         fillParadataFromResponse(nameTagParadata, response);
 
         page.setNameTagMetadata(processResponse(response, tokens));
-        nameTagParadata.setFinishedProcessing(Instant.now());
+//        nameTagParadata.setFinishedProcessing(Instant.now());
 
         page.setNameTagParadata(nameTagParadata);
     }
 
     private void fillParadataFromResponse(NameTagEnrichmentParadata nameTagParadata, LindatServiceResponse response) {
-        nameTagParadata.setResponseReceived(Instant.now());
+//        nameTagParadata.setResponseReceived(Instant.now());
         nameTagParadata.setModel(response.getModel());
         nameTagParadata.setAcknowledgements(response.getAcknowledgements());
     }

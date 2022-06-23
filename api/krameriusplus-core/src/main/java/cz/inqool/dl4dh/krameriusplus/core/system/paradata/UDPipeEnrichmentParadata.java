@@ -1,12 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.paradata;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
 public class UDPipeEnrichmentParadata extends EnrichmentParadata {
 
     private String model;
@@ -17,5 +15,8 @@ public class UDPipeEnrichmentParadata extends EnrichmentParadata {
 
     private String licence;
 
-    private final ExternalSystem externalSystem = ExternalSystem.UD_PIPE;
+    @Override
+    public ExternalSystem getExternalSystem() {
+        return ExternalSystem.UD_PIPE;
+    }
 }

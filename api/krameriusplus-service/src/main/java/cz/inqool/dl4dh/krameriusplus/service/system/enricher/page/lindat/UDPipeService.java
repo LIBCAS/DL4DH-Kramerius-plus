@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class UDPipeService {
      */
     public void tokenize(Page page) {
         UDPipeEnrichmentParadata udPipeParadata = new UDPipeEnrichmentParadata();
-        udPipeParadata.setRequestSent(Instant.now());
+//        udPipeParadata.setRequestSent(Instant.now());
 
         String pageContent = page.getContent();
 
@@ -49,7 +48,7 @@ public class UDPipeService {
 
         page.setTokens(parseResponseToTokens(response));
 
-        udPipeParadata.setFinishedProcessing(Instant.now());
+//        udPipeParadata.setFinishedProcessing(Instant.now());
         page.setUdPipeParadata(udPipeParadata);
     }
 
@@ -81,7 +80,7 @@ public class UDPipeService {
     }
 
     private void fillParadataFromResponse(UDPipeEnrichmentParadata udPipeParadata, LindatServiceResponse response) {
-        udPipeParadata.setResponseReceived(Instant.now());
+//        udPipeParadata.setResponseReceived(Instant.now());
         udPipeParadata.setModel(response.getModel());
         udPipeParadata.setGenerator(getGenerator(response.getResultLines()));
         udPipeParadata.setLicence(getLicence(response.getResultLines()));

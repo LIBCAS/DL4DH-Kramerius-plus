@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.api.facade;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.ExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
@@ -57,12 +58,7 @@ public class ExportFacadeImpl implements ExportFacade {
     }
 
     private JobEventDto createJob(ExportRequestDto requestDto) {
-        // Include index field, because it is used for naming export files;
-        requestDto.getConfig().getParams().includeFields("index");
-
-        if (requestDto.getConfig().getParams().getSorting().isEmpty()) {
-            requestDto.getConfig().getParams().getSorting().add(new Sorting("index", Sort.Direction.ASC));
-        }
+        validateParams(requestDto.getConfig().getParams());
 
         JobEventCreateDto createDto = new JobEventCreateDto();
         createDto.setPublicationId(requestDto.getPublicationId());
@@ -72,5 +68,16 @@ public class ExportFacadeImpl implements ExportFacade {
         jobEventService.enqueueJob(jobEvent.getId());
 
         return jobEvent;
+    }
+
+    private void validateParams(Params params) {
+        if (!params.getIncludeFields().isEmpty()) {
+            // Include index field, because it is used for naming export files;
+            params.includeFields("index");
+        }
+
+        if (params.getSorting().isEmpty()) {
+            params.getSorting().add(new Sorting("index", Sort.Direction.ASC));
+        }
     }
 }

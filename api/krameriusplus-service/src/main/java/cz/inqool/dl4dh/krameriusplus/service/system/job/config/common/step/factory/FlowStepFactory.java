@@ -4,6 +4,8 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.DatedObjectWriteListener;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -24,6 +26,7 @@ public abstract class FlowStepFactory<IN, OUT> extends AbstractStepFactory {
                 .reader(getItemReader())
                 .processor(getItemProcessor())
                 .writer(getItemWriter())
+                .listener(getStepExecutionListener())
                 .listener(writeListener)
                 .build();
     }
@@ -43,6 +46,10 @@ public abstract class FlowStepFactory<IN, OUT> extends AbstractStepFactory {
 
     protected ItemProcessor<IN, OUT> getItemProcessor() {
         return null; // defaults to no processor
+    }
+
+    protected StepExecutionListener getStepExecutionListener() {
+        return new StepExecutionListenerSupport(); // defaults to no-op listener
     }
 
     @Autowired

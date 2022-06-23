@@ -7,21 +7,17 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCREnrichmentParadata;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Component
 public class AltoOcrExtractor {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     public OCREnrichmentParadata extractOcrParadata(AltoDto alto) {
-        OCREnrichmentParadata ocrParadata = new OCREnrichmentParadata();
-
         ProcessingStepType processingStep = getProcessingStep(alto);
         if (processingStep != null) {
-            ocrParadata.setOcrPerformedDate(parseOcrPerformedDate(processingStep.getProcessingDateTime()));
+            OCREnrichmentParadata ocrParadata = new OCREnrichmentParadata();
+
+            ocrParadata.setOcrPerformedDate(processingStep.getProcessingDateTime());
 
             ProcessingSoftwareType software = processingStep.getProcessingSoftware();
             if (software != null) {
@@ -29,9 +25,11 @@ public class AltoOcrExtractor {
                 ocrParadata.setSoftwareName(software.getSoftwareName());
                 ocrParadata.setVersion(software.getSoftwareVersion());
             }
+
+            return ocrParadata;
         }
 
-        return ocrParadata;
+        return null;
     }
 
     private ProcessingStepType getProcessingStep(AltoDto alto) {
@@ -42,10 +40,5 @@ public class AltoOcrExtractor {
                 .map(list -> list.get(0))
                 .map(Alto.Description.OCRProcessing::getOcrProcessingStep)
                 .orElse(null);
-    }
-
-    private LocalDate parseOcrPerformedDate(String ocrPerformedDateString) {
-        return ocrPerformedDateString != null ?
-                LocalDate.parse(ocrPerformedDateString, formatter) : null;
     }
 }
