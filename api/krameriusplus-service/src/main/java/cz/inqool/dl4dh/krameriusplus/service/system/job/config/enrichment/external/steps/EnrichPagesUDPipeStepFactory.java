@@ -2,7 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.exter
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoFlowStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.ParadataStepListener;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.EnrichPagesUDPipeProcessor;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,9 +16,12 @@ public class EnrichPagesUDPipeStepFactory extends PageMongoFlowStepFactory {
 
     private final EnrichPagesUDPipeProcessor processor;
 
+    private final ParadataStepListener stepListener;
+
     @Autowired
-    public EnrichPagesUDPipeStepFactory(EnrichPagesUDPipeProcessor processor) {
+    public EnrichPagesUDPipeStepFactory(EnrichPagesUDPipeProcessor processor, ParadataStepListener stepListener) {
         this.processor = processor;
+        this.stepListener = stepListener;
     }
 
     @Override
@@ -27,5 +32,10 @@ public class EnrichPagesUDPipeStepFactory extends PageMongoFlowStepFactory {
     @Override
     protected ItemProcessor<Page, Page> getItemProcessor() {
         return processor;
+    }
+
+    @Override
+    protected StepExecutionListener getStepExecutionListener() {
+        return stepListener;
     }
 }

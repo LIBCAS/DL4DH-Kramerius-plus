@@ -2,12 +2,12 @@ package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.LindatServiceResponse;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagEnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.LindatServiceResponseDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.NameTagProcessDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,50 +32,47 @@ public class NameTagService {
 
     private WebClient webClient;
 
-    public void processTokens(Page page) {
-        List<Token> tokens = page.getTokens();
-
+    public NameTagProcessDto processPage(List<Token> tokens) {
+        NameTagProcessDto result = new NameTagProcessDto();
         if (tokens.isEmpty()) {
-            return;
+            return result;
         }
-
-        NameTagParadata nameTagParadata = new NameTagParadata();
-        nameTagParadata.setRequestSent(Instant.now());
 
         String pageContent = tokens
                 .stream()
                 .map(Token::getContent)
                 .collect(Collectors.joining(System.lineSeparator()));
 
-        LindatServiceResponse response = makeApiCall(pageContent);
+        LindatServiceResponseDto response = makeApiCall(pageContent);
 
-        fillParadataFromResponse(nameTagParadata, response);
+        result.setParadata(extractParadata(response));
+        result.setMetadata(processResponse(response, tokens));
 
-        page.setNameTagMetadata(processResponse(response, tokens));
-        nameTagParadata.setFinishedProcessing(Instant.now());
-
-        page.setNameTagParadata(nameTagParadata);
+        return result;
     }
 
-    private void fillParadataFromResponse(NameTagParadata nameTagParadata, LindatServiceResponse response) {
-        nameTagParadata.setResponseReceived(Instant.now());
+    private NameTagEnrichmentParadata extractParadata(LindatServiceResponseDto response) {
+        NameTagEnrichmentParadata nameTagParadata = new NameTagEnrichmentParadata();
+
         nameTagParadata.setModel(response.getModel());
         nameTagParadata.setAcknowledgements(response.getAcknowledgements());
+
+        return nameTagParadata;
     }
 
-    private LindatServiceResponse makeApiCall(String body) {
+    private LindatServiceResponseDto makeApiCall(String body) {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("data", body);
 
         try {
-            LindatServiceResponse response = webClient.post().uri(uriBuilder -> uriBuilder
+            LindatServiceResponseDto response = webClient.post().uri(uriBuilder -> uriBuilder
                     .queryParam("output", "conll")
                     .queryParam("input", "vertical")
                     .build())
                     .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
                     .acceptCharset(StandardCharsets.UTF_8)
                     .retrieve()
-                    .bodyToMono(LindatServiceResponse.class)
+                    .bodyToMono(LindatServiceResponseDto.class)
                     .block();
 
             notNull(response, () -> new ExternalServiceException("NameTag did not return results", ExternalServiceException.ErrorCode.NAME_TAG_ERROR, SystemLogDetails.LogLevel.ERROR));
@@ -91,7 +87,7 @@ public class NameTagService {
         }
     }
 
-    private NameTagMetadata processResponse(LindatServiceResponse response, List<Token> tokens) {
+    private NameTagMetadata processResponse(LindatServiceResponseDto response, List<Token> tokens) {
         List<String[]> linesOfColumns = Arrays.stream(response.getResult().split("\n")).map(line -> line.split("\t")).collect(Collectors.toList());
         int tokenCounter = 0;
 

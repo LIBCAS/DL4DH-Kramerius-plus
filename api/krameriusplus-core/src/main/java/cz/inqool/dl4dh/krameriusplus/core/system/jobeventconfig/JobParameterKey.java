@@ -12,7 +12,5 @@ public class JobParameterKey {
     public static final String JOB_EVENT_ID = "jobEventId";
     public static final String KRAMERIUS_JOB = "krameriusJob";
     public static final String OVERRIDE = "override";
-    public static final String DIRECTORY = "directory";
-    public static final String ZIPPED_FILE = "zippedFile";
     public static final String DELIMITER = "delimiter";
 }

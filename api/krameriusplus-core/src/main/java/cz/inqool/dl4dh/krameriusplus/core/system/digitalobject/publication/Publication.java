@@ -3,16 +3,17 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCRParadata;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.EnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.ExternalSystem;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Norbert Bodnar
@@ -45,11 +46,7 @@ public abstract class Publication extends DigitalObject {
 
     private ModsMetadata modsMetadata;
 
-    private OCRParadata ocrParadata;
-
-    private UDPipeParadata udPipeParadata;
-
-    private NameTagParadata nameTagParadata;
+    private Map<ExternalSystem, EnrichmentParadata> paradata = new HashMap<>();
 
     @JsonIgnore
     private String ndkDirPath;

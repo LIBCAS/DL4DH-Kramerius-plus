@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectExceptio
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,12 @@ public class PublicationService {
     private PageStore pageStore;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault());
+
+
+    @Transactional
+    public void save(@NonNull Publication publication) {
+        publicationStore.save(publication);
+    }
 
     /**
      * Returns the given publication with only teiHeader and teiBody fields

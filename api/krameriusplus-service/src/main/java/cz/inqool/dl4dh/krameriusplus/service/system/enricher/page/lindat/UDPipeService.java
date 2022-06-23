@@ -5,8 +5,9 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeParadata;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.LindatServiceResponse;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeEnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.LindatServiceResponseDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.UDPipeProcessDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,39 +33,35 @@ public class UDPipeService {
     /**
      * Processes the input text content and sets tokens attribute on page.
      */
-    public void tokenize(Page page) {
-        UDPipeParadata udPipeParadata = new UDPipeParadata();
-        udPipeParadata.setRequestSent(Instant.now());
+    public UDPipeProcessDto processPage(Page page) {
+        UDPipeProcessDto result = new UDPipeProcessDto();
 
         String pageContent = page.getContent();
-
         if (pageContent == null || pageContent.isEmpty()) {
-            return;
+            return result;
         }
 
-        LindatServiceResponse response = makeApiCall(pageContent);
+        LindatServiceResponseDto response = makeApiCall(pageContent);
 
-        fillParadataFromResponse(udPipeParadata, response);
+        result.setTokens(parseResponseToTokens(response));
+        result.setParadata(extractParadata(response));
 
-        page.setTokens(parseResponseToTokens(response));
-
-        udPipeParadata.setFinishedProcessing(Instant.now());
-        page.setUdPipeParadata(udPipeParadata);
+        return result;
     }
 
-    private LindatServiceResponse makeApiCall(String body) {
+    private LindatServiceResponseDto makeApiCall(String body) {
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder.part("data", body);
 
         try {
-            LindatServiceResponse response = webClient.post().uri(uriBuilder -> uriBuilder
+            LindatServiceResponseDto response = webClient.post().uri(uriBuilder -> uriBuilder
                     .queryParam("tokenizer", "ranges")
                     .queryParam("tagger")
                     .queryParam("parser")
                     .build()).body(BodyInserters.fromMultipartData("data", body))
                     .acceptCharset(StandardCharsets.UTF_8)
                     .retrieve()
-                    .bodyToMono(LindatServiceResponse.class)
+                    .bodyToMono(LindatServiceResponseDto.class)
                     .block();
 
             notNull(response, () -> new ExternalServiceException("UDPipe did not return results", ExternalServiceException.ErrorCode.UD_PIPE_ERROR, SystemLogDetails.LogLevel.ERROR));
@@ -76,16 +72,18 @@ public class UDPipeService {
 
             return response;
         } catch (Exception e) {
-            throw new ExternalServiceException(ExternalServiceException.ErrorCode.NAME_TAG_ERROR, e);
+            throw new ExternalServiceException(ExternalServiceException.ErrorCode.UD_PIPE_ERROR, e);
         }
     }
 
-    private void fillParadataFromResponse(UDPipeParadata udPipeParadata, LindatServiceResponse response) {
-        udPipeParadata.setResponseReceived(Instant.now());
-        udPipeParadata.setModel(response.getModel());
-        udPipeParadata.setGenerator(getGenerator(response.getResultLines()));
-        udPipeParadata.setLicence(getLicence(response.getResultLines()));
-        udPipeParadata.setAcknowledgements(response.getAcknowledgements());
+    private UDPipeEnrichmentParadata extractParadata(LindatServiceResponseDto response) {
+        UDPipeEnrichmentParadata paradata = new UDPipeEnrichmentParadata();
+        paradata.setModel(response.getModel());
+        paradata.setGenerator(getGenerator(response.getResultLines()));
+        paradata.setAcknowledgements(response.getAcknowledgements());
+        paradata.setLicence(getLicence(response.getResultLines()));
+
+        return paradata;
     }
 
     private String getLicence(String[] resultLines) {
@@ -106,7 +104,7 @@ public class UDPipeService {
         return null;
     }
 
-    private List<Token> parseResponseToTokens(LindatServiceResponse response) {
+    private List<Token> parseResponseToTokens(LindatServiceResponseDto response) {
         String[] lines = response.getResultLines();
 
         int tokenIndex = 0;

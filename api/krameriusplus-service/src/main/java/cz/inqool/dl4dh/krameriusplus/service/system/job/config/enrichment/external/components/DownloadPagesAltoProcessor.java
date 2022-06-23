@@ -4,14 +4,20 @@ import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoMapper;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCREnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoContentExtractor;
+import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.PARADATA;
 
 @Component
 @StepScope
@@ -22,10 +28,18 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     private final AltoMapper altoMapper;
 
+    private final AltoMetadataExtractor altoMetadataExtractor;
+
+    private ExecutionContext executionContext;
+
+    private boolean isParadataExtracted = false;
+
     @Autowired
-    public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper) {
+    public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper,
+                                      AltoMetadataExtractor altoMetadataExtractor) {
         this.streamProvider = streamProvider;
         this.altoMapper = altoMapper;
+        this.altoMetadataExtractor = altoMetadataExtractor;
     }
 
     @Override
@@ -38,8 +52,24 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
         }
 
         AltoDto altoDto = altoMapper.toAltoDto(alto);
-        new AltoContentExtractor().enrichPage(item, altoDto);
+
+        item.setContent(altoMetadataExtractor.extractText(altoDto));
+        item.setAltoLayout(altoDto.getLayout());
+
+        if (!isParadataExtracted) {
+            OCREnrichmentParadata paradata = altoMetadataExtractor.extractOcrParadata(altoDto);
+
+            if (paradata != null) {
+                executionContext.put(PARADATA, paradata);
+                isParadataExtracted = true;
+            }
+        }
 
         return item;
+    }
+
+    @BeforeStep
+    public void beforeStep(StepExecution stepExecution) {
+        this.executionContext = stepExecution.getExecutionContext();
     }
 }
