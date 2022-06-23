@@ -3,7 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.*;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.EnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.ExternalSystem;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
@@ -44,12 +45,6 @@ public abstract class Publication extends DigitalObject {
     private String policy;
 
     private ModsMetadata modsMetadata;
-
-    private OCREnrichmentParadata ocrParadata;
-
-    private UDPipeEnrichmentParadata udPipeParadata;
-
-    private NameTagEnrichmentParadata nameTagParadata;
 
     private Map<ExternalSystem, EnrichmentParadata> paradata = new HashMap<>();
 
