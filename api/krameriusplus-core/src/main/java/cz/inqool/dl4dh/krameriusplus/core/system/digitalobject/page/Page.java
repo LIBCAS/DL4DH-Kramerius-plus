@@ -7,9 +7,9 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.MetsMetadata;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCRParadata;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagEnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCREnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeEnrichmentParadata;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
@@ -82,11 +82,11 @@ public class Page extends DigitalObject {
     @JsonIgnore
     private String ndkFilePath;
 
-    private OCRParadata ocrParadata;
+    private OCREnrichmentParadata ocrParadata;
 
-    private UDPipeParadata udPipeParadata;
+    private UDPipeEnrichmentParadata udPipeParadata;
 
-    private NameTagParadata nameTagParadata;
+    private NameTagEnrichmentParadata nameTagParadata;
 
     @JsonIgnore
     private String teiBodyFileId;

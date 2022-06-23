@@ -2,9 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.service.system.enricher;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCRParadata;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagEnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCREnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeEnrichmentParadata;
 
 public class ParadataFiller {
 
@@ -15,9 +15,9 @@ public class ParadataFiller {
     }
 
     public void fill() {
-        OCRParadata ocrParadata = null;
-        UDPipeParadata udPipeParadata = null;
-        NameTagParadata nameTagParadata = null;
+        OCREnrichmentParadata ocrParadata = null;
+        UDPipeEnrichmentParadata udPipeParadata = null;
+        NameTagEnrichmentParadata nameTagParadata = null;
 
         for (Page page : publication.getPages()) {
             if (ocrParadata == null || (page.getOcrParadata() != null && !ocrParadata.equals(page.getOcrParadata()))) {

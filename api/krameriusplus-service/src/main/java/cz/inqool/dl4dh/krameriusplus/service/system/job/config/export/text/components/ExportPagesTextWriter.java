@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoContentExtractor;
+import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FileWriter;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +23,14 @@ public class ExportPagesTextWriter extends FileWriter<Page> {
 
     private final AltoMapper altoMapper;
 
+    private final AltoMetadataExtractor altoMetadataExtractor;
+
     @Autowired
-    public ExportPagesTextWriter(StreamProvider streamProvider, AltoMapper altoMapper) {
+    public ExportPagesTextWriter(StreamProvider streamProvider, AltoMapper altoMapper,
+                                 AltoMetadataExtractor altoMetadataExtractor) {
         this.streamProvider = streamProvider;
         this.altoMapper = altoMapper;
+        this.altoMetadataExtractor = altoMetadataExtractor;
     }
 
     @Override
@@ -35,7 +39,7 @@ public class ExportPagesTextWriter extends FileWriter<Page> {
             AltoDto alto = altoMapper.toAltoDto(streamProvider.getAlto(item.getId()));
 
             try (OutputStream out = getItemOutputStream(item)) {
-                String pageContent = new AltoContentExtractor().extractText(alto);
+                String pageContent = altoMetadataExtractor.extractText(alto);
                 out.write(pageContent.getBytes(StandardCharsets.UTF_8));
             }
         }

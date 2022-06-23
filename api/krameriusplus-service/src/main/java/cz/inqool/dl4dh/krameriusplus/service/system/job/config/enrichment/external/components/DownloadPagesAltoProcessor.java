@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoContentExtractor;
+import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
@@ -22,10 +22,16 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     private final AltoMapper altoMapper;
 
+    private final AltoMetadataExtractor altoMetadataExtractor;
+
+    private boolean isFirstItem = true;
+
     @Autowired
-    public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper) {
+    public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper,
+                                      AltoMetadataExtractor altoMetadataExtractor) {
         this.streamProvider = streamProvider;
         this.altoMapper = altoMapper;
+        this.altoMetadataExtractor = altoMetadataExtractor;
     }
 
     @Override
@@ -38,7 +44,14 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
         }
 
         AltoDto altoDto = altoMapper.toAltoDto(alto);
-        new AltoContentExtractor().enrichPage(item, altoDto);
+
+        item.setContent(altoMetadataExtractor.extractText(altoDto));
+        item.setAltoLayout(altoDto.getLayout());
+
+        if (isFirstItem) {
+            item.setOcrParadata(altoMetadataExtractor.extractOcrParadata(altoDto));
+            isFirstItem = false;
+        }
 
         return item;
     }

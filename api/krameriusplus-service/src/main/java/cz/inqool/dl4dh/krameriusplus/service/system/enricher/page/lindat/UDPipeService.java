@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeEnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.LindatServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -34,7 +34,7 @@ public class UDPipeService {
      * Processes the input text content and sets tokens attribute on page.
      */
     public void tokenize(Page page) {
-        UDPipeParadata udPipeParadata = new UDPipeParadata();
+        UDPipeEnrichmentParadata udPipeParadata = new UDPipeEnrichmentParadata();
         udPipeParadata.setRequestSent(Instant.now());
 
         String pageContent = page.getContent();
@@ -80,7 +80,7 @@ public class UDPipeService {
         }
     }
 
-    private void fillParadataFromResponse(UDPipeParadata udPipeParadata, LindatServiceResponse response) {
+    private void fillParadataFromResponse(UDPipeEnrichmentParadata udPipeParadata, LindatServiceResponse response) {
         udPipeParadata.setResponseReceived(Instant.now());
         udPipeParadata.setModel(response.getModel());
         udPipeParadata.setGenerator(getGenerator(response.getResultLines()));

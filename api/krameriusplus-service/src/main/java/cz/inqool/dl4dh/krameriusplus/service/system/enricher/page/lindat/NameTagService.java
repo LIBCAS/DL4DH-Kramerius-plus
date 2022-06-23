@@ -6,7 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
-import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagParadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.paradata.NameTagEnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.LindatServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -40,7 +40,7 @@ public class NameTagService {
             return;
         }
 
-        NameTagParadata nameTagParadata = new NameTagParadata();
+        NameTagEnrichmentParadata nameTagParadata = new NameTagEnrichmentParadata();
         nameTagParadata.setRequestSent(Instant.now());
 
         String pageContent = tokens
@@ -58,7 +58,7 @@ public class NameTagService {
         page.setNameTagParadata(nameTagParadata);
     }
 
-    private void fillParadataFromResponse(NameTagParadata nameTagParadata, LindatServiceResponse response) {
+    private void fillParadataFromResponse(NameTagEnrichmentParadata nameTagParadata, LindatServiceResponse response) {
         nameTagParadata.setResponseReceived(Instant.now());
         nameTagParadata.setModel(response.getModel());
         nameTagParadata.setAcknowledgements(response.getAcknowledgements());

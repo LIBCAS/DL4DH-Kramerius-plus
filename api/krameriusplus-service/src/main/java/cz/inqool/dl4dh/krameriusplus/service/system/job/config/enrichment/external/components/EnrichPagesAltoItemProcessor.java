@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @StepScope
-public class EnrichPagesItemProcessor implements ItemProcessor<Page, Page> {
+public class EnrichPagesAltoItemProcessor implements ItemProcessor<Page, Page> {
 
     @Override
     public Page process(@NonNull Page item) {
