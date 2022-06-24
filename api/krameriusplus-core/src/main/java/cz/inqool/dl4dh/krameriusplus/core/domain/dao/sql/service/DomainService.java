@@ -40,6 +40,21 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
     }
 
     /**
+     * Find {@link T} in database by id and return it, without mapping it to a DTO
+     *
+     * @param id non null, nonempty string in form of UUID
+     * @return T object specified by id
+     * @throws MissingObjectException if specified T object was not found
+     */
+    @Transactional // only because of loadLazyCollections
+    default T findEntity(@NonNull String id) {
+        T entity = getStore().find(id);
+        Utils.notNull(entity, () -> new MissingObjectException(getStore().getType(), id));
+
+        return entity;
+    }
+
+    /**
      * Lists all instances of T object based on Params
      *
      * @param params operation parameters

@@ -7,6 +7,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -34,5 +37,17 @@ public class JobEvent extends DatedObject {
 
     public boolean wasExecuted() {
         return lastExecutionId != null;
+    }
+
+    public Map<String, Object> toJobParametersMap() {
+        Map<String, Object> jobParametersMap = new HashMap<>();
+        jobParametersMap.put("jobEventId", id);
+        jobParametersMap.put("jobEventName", jobName);
+        jobParametersMap.put("publicationId", publicationId);
+        jobParametersMap.put("created", Date.from(created));
+        jobParametersMap.put("krameriusJob", config.getKrameriusJob().name());
+        jobParametersMap.putAll(config.getParameters());
+
+        return jobParametersMap;
     }
 }

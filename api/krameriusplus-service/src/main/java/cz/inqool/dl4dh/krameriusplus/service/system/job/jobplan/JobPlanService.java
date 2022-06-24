@@ -54,20 +54,17 @@ public class JobPlanService {
 
         jobPlan.setScheduledJobEvents(scheduledJobEvents);
 
-        jobPlan = store.create(jobPlan);
-
-        startExecution(jobPlan);
-
-        return mapper.toDto(jobPlan);
+        return mapper.toDto(store.create(jobPlan));
     }
 
-    private void startExecution(JobPlan jobPlan) {
+    public void startExecution(JobPlanDto jobPlanDto) {
+        JobPlan jobPlan = mapper.fromDto(jobPlanDto);
         Optional<JobEvent> jobEventToRun = jobPlan.getNextToExecute();
 
         if (jobEventToRun.isEmpty()) {
             throw new IllegalStateException("ExecutionPlan must have at least one JobEvent to execute");
         }
 
-        jobEventService.enqueueJob(jobEventToRun.get().getId());
+        jobEventService.enqueueJob(jobEventToRun.get());
     }
 }

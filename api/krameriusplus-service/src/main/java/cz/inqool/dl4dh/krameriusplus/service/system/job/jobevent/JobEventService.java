@@ -12,7 +12,6 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDetailDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventRunDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanStore;
 import lombok.Getter;
@@ -22,7 +21,9 @@ import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
 
@@ -43,11 +44,15 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     private JobExplorer jobExplorer;
 
-    public void enqueueJob(String jobEventId) {
-        JobEvent jobEvent = store.find(jobEventId);
-        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
+    private TransactionTemplate transactionTemplate;
+
+    public JobEventDto createAndEnqueue(JobEventCreateDto createDto) {
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        JobEvent jobEvent = transactionTemplate.execute(t -> store.create(getMapper().fromCreateDto(createDto)));
 
         enqueueJob(jobEvent);
+
+        return mapper.toDto(jobEvent);
     }
 
     public void enqueueNextJobInPlan(String lastExecutedJobEventId) {
@@ -56,7 +61,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         if (jobPlan != null) {
             Optional<JobEvent> jobEvent = jobPlan.getNextToExecute();
 
-            jobEvent.ifPresent(event -> enqueueJob(event.getId()));
+            jobEvent.ifPresent(this::enqueueJob);
         }
     }
 
@@ -92,8 +97,8 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     @Transactional
-    public void updateRunningJob(JobEventRunDto jobEvent) {
-        store.updateJobRun(jobEvent.getId(), jobEvent.getInstanceId(), jobEvent.getLastExecutionId());
+    public void updateRunningJob(String jobEventId, Long jobInstanceId, Long jobExecutionId) {
+        store.updateJobRun(jobEventId, jobInstanceId, jobExecutionId);
     }
 
     public QueryResults<JobEventDto> listEnrichingJobs(String publicationId, KrameriusJob krameriusJob, int page, int pageSize) {
@@ -112,8 +117,8 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         return new QueryResults<>(mapper.toDtoList(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
     }
 
-    private void enqueueJob(JobEvent jobEvent) {
-        jmsProducer.sendMessage(mapper.toRunDto(jobEvent));
+    public void enqueueJob(JobEvent jobEvent) {
+        jmsProducer.sendMessage(jobEvent.getConfig().getKrameriusJob().getQueueName(), mapper.toRunDto(jobEvent));
     }
 
     @Autowired
@@ -139,5 +144,10 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Autowired
     public void setJobPlanStore(JobPlanStore jobPlanStore) {
         this.jobPlanStore = jobPlanStore;
+    }
+
+    @Autowired
+    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+        this.transactionTemplate = transactionTemplate;
     }
 }
