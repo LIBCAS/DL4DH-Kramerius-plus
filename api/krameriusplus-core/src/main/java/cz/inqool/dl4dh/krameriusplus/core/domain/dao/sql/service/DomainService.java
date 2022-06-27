@@ -107,6 +107,18 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
     }
 
     /**
+     * Create new {@link T} by dto
+     *
+     * @param dto non null, all attributes must be in valid form
+     * @return created T object
+     */
+//    @PreAuthorize("hasAnyAuthority(this.provide('WRITE'))")
+    @Transactional
+    default T create(@NonNull @Valid T dto) {
+        return getStore().create(dto);
+    }
+
+    /**
      * Update {@link T} by dto
      *
      * @param dto non null, all attributes must be in valid form

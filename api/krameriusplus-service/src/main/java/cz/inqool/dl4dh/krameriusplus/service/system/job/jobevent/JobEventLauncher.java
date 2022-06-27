@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.metrics.BatchMetrics;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
@@ -23,7 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Custom job launcher, which saves a JobEvent before running the job synchronously
+ * Custom job launcher implementation (heavily inspired by spring's {@link SimpleJobLauncher}), which updates
+ * a JobEvent before running the job synchronously
  */
 @Slf4j
 @Component
@@ -37,7 +39,7 @@ public class JobEventLauncher {
 
     private final Map<String, Job> jobs = new HashMap<>();
 
-    public JobExecution run(JobEvent jobEvent) throws
+    public void run(JobEvent jobEvent) throws
             JobExecutionAlreadyRunningException,
             JobRestartException,
             JobInstanceAlreadyCompleteException,
@@ -133,8 +135,6 @@ public class JobEventLauncher {
             }
             jobRepository.update(jobExecution);
         }
-
-        return jobExecution;
     }
 
     private JobParameters toJobParameters(Map<String, Object> jobParametersMap) {

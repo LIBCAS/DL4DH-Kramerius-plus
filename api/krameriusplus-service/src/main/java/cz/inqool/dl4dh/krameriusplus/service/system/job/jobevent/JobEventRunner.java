@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Component for running jobs
+ */
 @Component
 @Slf4j
 public class JobEventRunner {
@@ -14,6 +17,10 @@ public class JobEventRunner {
 
     private JobEventLauncher jobEventLauncher;
 
+    /**
+     * Runs a given job asynchronously.
+     * @param jobEventRunDto DTO with ID of the job to run
+     */
     public void runJob(JobEventRunDto jobEventRunDto) {
         JobEvent jobEvent = jobEventService.findEntity(jobEventRunDto.getJobEventId());
         try {

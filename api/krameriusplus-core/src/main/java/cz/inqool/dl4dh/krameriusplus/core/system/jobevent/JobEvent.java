@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Custom entity representing an abstraction over spring's JobInstance fitted for Kramerius+
+ */
 @Getter
 @Setter
 @Entity

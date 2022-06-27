@@ -13,8 +13,8 @@ import org.springframework.jms.support.converter.MessageConverter;
 
 import javax.jms.JMSException;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.ENRICHING_QUEUE;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.EXPORTING_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.ENRICHMENT_QUEUE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.EXPORT_QUEUE;
 
 @Slf4j
 @Configuration
@@ -26,8 +26,8 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
 
     @Override
     public void configureJmsListeners(JmsListenerEndpointRegistrar registrar) {
-        registrar.registerEndpoint(createListener(ENRICHING_QUEUE.getQueueName()));
-        registrar.registerEndpoint(createListener(EXPORTING_QUEUE.getQueueName()));
+        registrar.registerEndpoint(createListener(ENRICHMENT_QUEUE.getQueueName()));
+        registrar.registerEndpoint(createListener(EXPORT_QUEUE.getQueueName()));
     }
 
     private JmsListenerEndpoint createListener(String destination) {
