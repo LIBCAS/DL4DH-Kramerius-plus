@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -12,8 +13,10 @@ import java.util.Map;
 public abstract class JobEventConfigCreateDto {
 
     @Schema(hidden = true)
-    public abstract KrameriusJob getKrameriusJob();
+    protected Map<String, Object> jobParameters = new HashMap<>();
 
     @Schema(hidden = true)
-    public abstract Map<String, Object> getJobParameters();
+    public abstract KrameriusJob getKrameriusJob();
+
+    protected abstract void populateJobParameters();
 }

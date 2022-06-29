@@ -5,8 +5,6 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-
 @Getter
 @Setter
 public class TeiExportJobConfigDto extends ExportJobConfigDto {
@@ -16,10 +14,5 @@ public class TeiExportJobConfigDto extends ExportJobConfigDto {
     @Override
     public KrameriusJob getKrameriusJob() {
         return KrameriusJob.EXPORT_TEI;
-    }
-
-    @Override
-    public Map<String, Object> getJobParameters() {
-        return createJobParameters();
     }
 }
