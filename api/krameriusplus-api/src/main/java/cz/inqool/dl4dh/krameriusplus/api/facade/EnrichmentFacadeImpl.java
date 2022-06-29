@@ -9,6 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,10 +39,9 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
             createDto.setPublicationId(publicationId);
             createDto.setConfig(requestDto.getConfig());
 
-            JobEventDto jobEventDetailDto = jobEventService.create(createDto);
-            jobEventService.enqueueJob(jobEventDetailDto.getId());
+            JobEventDto jobEventDto = jobEventService.createAndEnqueue(createDto);
 
-            responseDto.getEnrichJobs().add(jobEventDetailDto);
+            responseDto.getEnrichJobs().add(jobEventDto);
         }
 
         return responseDto;
@@ -53,7 +53,9 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
 
         requestDto.getPublicationIds().forEach(publicationId -> {
             JobPlanCreateDto planCreateDto = jobPlanMapper.toCreateDto(publicationId, requestDto.getName(), requestDto.getConfigs());
-            responseDto.getJobPlans().add(jobPlanService.create(planCreateDto));
+            JobPlanDto createdPlan = jobPlanService.create(planCreateDto);
+            jobPlanService.startExecution(createdPlan);
+            responseDto.getJobPlans().add(createdPlan);
         });
 
         return responseDto;

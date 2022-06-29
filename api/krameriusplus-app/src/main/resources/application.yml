@@ -88,3 +88,5 @@ system:
 active-mq:
   messaging:
     auto-consume: true
+    min-listeners: 5
+    max-listeners: 10

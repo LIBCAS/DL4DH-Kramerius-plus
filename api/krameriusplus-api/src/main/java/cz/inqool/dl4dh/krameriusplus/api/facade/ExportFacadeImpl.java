@@ -64,10 +64,7 @@ public class ExportFacadeImpl implements ExportFacade {
         createDto.setPublicationId(requestDto.getPublicationId());
         createDto.setConfig(requestDto.getConfig());
 
-        JobEventDto jobEvent = jobEventService.create(createDto);
-        jobEventService.enqueueJob(jobEvent.getId());
-
-        return jobEvent;
+        return jobEventService.createAndEnqueue(createDto);
     }
 
     private void validateParams(Params params) {
