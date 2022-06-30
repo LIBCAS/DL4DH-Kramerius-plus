@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.MissingAltoStrategy;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.MissingAltoOption;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,11 +13,11 @@ public class EnrichmentExternalJobConfigDto extends EnrichmentJobConfigDto {
 
     private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_EXTERNAL;
 
-    private MissingAltoStrategy missingAltoStrategy = MissingAltoStrategy.FAIL_IF_ALL_MISS;
+    private MissingAltoOption missingAltoOption = MissingAltoOption.FAIL_IF_ALL_MISS;
 
     @Override
     protected void populateJobParameters() {
         super.populateJobParameters();
-        jobParameters.put(MISSING_ALTO_STRATEGY, missingAltoStrategy);
+        jobParameters.put(MISSING_ALTO_STRATEGY, missingAltoOption);
     }
 }
