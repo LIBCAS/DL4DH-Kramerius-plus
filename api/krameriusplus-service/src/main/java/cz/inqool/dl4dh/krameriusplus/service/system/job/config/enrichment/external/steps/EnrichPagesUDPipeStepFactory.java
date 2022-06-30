@@ -9,6 +9,8 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_UD_PIPE;
 
 @Component
@@ -35,7 +37,7 @@ public class EnrichPagesUDPipeStepFactory extends PageMongoFlowStepFactory {
     }
 
     @Override
-    protected StepExecutionListener getStepExecutionListener() {
-        return stepListener;
+    protected List<StepExecutionListener> getStepExecutionListeners() {
+        return List.of(stepListener);
     }
 }

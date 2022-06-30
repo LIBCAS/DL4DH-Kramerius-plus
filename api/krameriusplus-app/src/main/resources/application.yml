@@ -70,6 +70,7 @@ springdoc:
 system:
   kramerius:
     code: nkp
+    default-url: https://www.ndk.cz
   enrichment:
   #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
   #  and ALTO processing does not make manual corrections (while OCR processing does)

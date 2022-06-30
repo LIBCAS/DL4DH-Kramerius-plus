@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.EnrichmentParadata;
@@ -20,13 +19,10 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 @StepScope
 public class ParadataStepListener implements StepExecutionListener {
 
-    private final ObjectMapper objectMapper;
-
     private final PublicationService publicationService;
 
     @Autowired
-    public ParadataStepListener(ObjectMapper objectMapper, PublicationService publicationService) {
-        this.objectMapper = objectMapper;
+    public ParadataStepListener(PublicationService publicationService) {
         this.publicationService = publicationService;
     }
 

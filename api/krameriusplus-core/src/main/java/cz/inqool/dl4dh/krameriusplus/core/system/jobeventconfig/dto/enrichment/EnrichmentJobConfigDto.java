@@ -7,8 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.OVERRIDE;
 
 @Getter
 @Setter
@@ -24,10 +23,8 @@ public abstract class EnrichmentJobConfigDto extends JobEventConfigCreateDto {
     @Schema(description = "If true and publications already exist, they will be overwritten. Defaults to false.")
     private boolean override = false;
 
-    protected Map<String, Object> createJobParameters() {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("override", override);
-
-        return parameters;
+    @Override
+    protected void populateJobParameters() {
+        jobParameters.put(OVERRIDE, override);
     }
 }

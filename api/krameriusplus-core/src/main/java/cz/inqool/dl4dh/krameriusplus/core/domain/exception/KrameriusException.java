@@ -16,6 +16,10 @@ public class KrameriusException extends GeneralException {
         super(message, errorCode, LogLevel.ERROR);
     }
 
+    public KrameriusException(ErrorCode errorCode, Throwable throwable, String message) {
+        super(message, errorCode, LogLevel.ERROR, throwable);
+    }
+
     public enum ErrorCode implements LogCode {
         NOT_FOUND,
         MISSING_CHILDREN,

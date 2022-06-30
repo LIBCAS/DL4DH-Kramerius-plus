@@ -6,7 +6,7 @@ import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 public interface StreamProvider {
 
     /**
-     * Retrieve ALTO stream for given page
+     * Retrieve ALTO stream for given page. If it returns 404, try 'alto' stream as well.
      * @param pageId id of page
      * @return ALTO object
      */

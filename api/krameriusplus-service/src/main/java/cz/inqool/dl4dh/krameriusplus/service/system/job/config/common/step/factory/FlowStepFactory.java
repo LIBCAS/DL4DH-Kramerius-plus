@@ -6,10 +6,13 @@ import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;
+import org.springframework.batch.core.step.builder.SimpleStepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public abstract class FlowStepFactory<IN, OUT> extends AbstractStepFactory {
 
@@ -21,14 +24,17 @@ public abstract class FlowStepFactory<IN, OUT> extends AbstractStepFactory {
      * we need a different way to register beans for every subclass of this class
      */
     public Step build() {
-        return stepBuilderFactory.get(getStepName())
+        SimpleStepBuilder<IN, OUT> builder = stepBuilderFactory.get(getStepName())
                 .<IN, OUT>chunk(getChunkSize())
                 .reader(getItemReader())
                 .processor(getItemProcessor())
-                .writer(getItemWriter())
-                .listener(getStepExecutionListener())
-                .listener(writeListener)
-                .build();
+                .writer(getItemWriter());
+
+        for (StepExecutionListener listener : getStepExecutionListeners()) {
+            builder.listener(listener);
+        }
+
+        return builder.listener(writeListener).build();
     }
 
     /**
@@ -48,8 +54,8 @@ public abstract class FlowStepFactory<IN, OUT> extends AbstractStepFactory {
         return null; // defaults to no processor
     }
 
-    protected StepExecutionListener getStepExecutionListener() {
-        return new StepExecutionListenerSupport(); // defaults to no-op listener
+    protected List<StepExecutionListener> getStepExecutionListeners() {
+        return List.of(new StepExecutionListenerSupport()); // defaults to no-op listener
     }
 
     @Autowired
