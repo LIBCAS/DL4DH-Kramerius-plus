@@ -1,4 +1,4 @@
-import { Grid, Paper, Button, makeStyles } from '@material-ui/core'
+import { Grid, Paper, Button, makeStyles, Typography } from '@material-ui/core'
 import { Box } from '@mui/system'
 import { GridRowParams } from '@mui/x-data-grid'
 import { ReadOnlyField } from 'components/read-only-field/read-only-field'
@@ -96,11 +96,16 @@ export const JobEventDetail = ({ jobEventId }: Props) => {
 									label="Parametre"
 									value={Object.entries(job.config.parameters).map(
 										([key, value]) => (
-											<ReadOnlyField
-												key={key}
-												label={key}
-												value={JSON.stringify(value)}
-											/>
+											<Grid key={key} container>
+												<Grid item xs={4}>
+													<Typography variant="body2">{key}</Typography>
+												</Grid>
+												<Grid item xs={8}>
+													<Typography color="primary" variant="body2">
+														{JSON.stringify(value)}
+													</Typography>
+												</Grid>
+											</Grid>
 										),
 									)}
 								/>
