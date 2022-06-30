@@ -13,10 +13,17 @@ import java.util.Map;
 public abstract class JobEventConfigCreateDto {
 
     @Schema(hidden = true)
-    protected Map<String, Object> jobParameters = new HashMap<>();
+    protected Map<String, Object> jobParameters;
 
     @Schema(hidden = true)
     public abstract KrameriusJob getKrameriusJob();
 
     protected abstract void populateJobParameters();
+
+    public Map<String, Object> getJobParameters() {
+        jobParameters = new HashMap<>();
+        populateJobParameters();
+
+        return jobParameters;
+    }
 }

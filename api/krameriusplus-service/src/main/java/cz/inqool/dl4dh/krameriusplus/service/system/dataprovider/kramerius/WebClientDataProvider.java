@@ -27,14 +27,26 @@ public class WebClientDataProvider implements DataProvider, StreamProvider {
 
     @Override
     public Alto getAlto(String pageId) {
-        return callInternal(String.format("/%s/streams/%s", pageId, StreamType.ALTO.streamId),
-                new ParameterizedTypeReference<>() {});
+        try {
+            return callInternal(String.format("/%s/streams/%s", pageId, StreamType.ALTO.streamId),
+                    new ParameterizedTypeReference<>() {
+                    });
+        } catch (KrameriusException exception) {
+            if (KrameriusException.ErrorCode.NOT_FOUND.equals(exception.getErrorCode())) {
+                return callInternal(String.format("/%s/streams/%s", pageId, StreamType.ALTO.streamId.toLowerCase()),
+                        new ParameterizedTypeReference<>() {
+                        });
+            } else {
+                throw exception;
+            }
+        }
     }
 
     @Override
     public String getAltoString(String pageId) {
         return callInternal(String.format("/%s/streams/%s", pageId, StreamType.ALTO.streamId),
-                new ParameterizedTypeReference<>() {});
+                new ParameterizedTypeReference<>() {
+                });
     }
 
     @Override
@@ -45,17 +57,20 @@ public class WebClientDataProvider implements DataProvider, StreamProvider {
     @Override
     public ModsCollectionDefinition getMods(String publicationId) {
         return callInternal(String.format("/%s/streams/%s", publicationId, StreamType.MODS.streamId),
-                new ParameterizedTypeReference<>() {});
+                new ParameterizedTypeReference<>() {
+                });
     }
 
     @Override
     public DigitalObject getDigitalObject(String objectId) {
-        return callInternal(String.format("/%s", objectId), new ParameterizedTypeReference<>() {});
+        return callInternal(String.format("/%s", objectId), new ParameterizedTypeReference<>() {
+        });
     }
 
     @Override
     public List<DigitalObject> getDigitalObjectsForParent(String parentId) {
-        List<DigitalObject> result = callInternal(String.format("/%s/children", parentId), new ParameterizedTypeReference<>() {});
+        List<DigitalObject> result = callInternal(String.format("/%s/children", parentId), new ParameterizedTypeReference<>() {
+        });
 
         setChildrenIndicesAndParentId(parentId, result);
 
@@ -95,7 +110,8 @@ public class WebClientDataProvider implements DataProvider, StreamProvider {
 
     public String getNormalizedTextOcr(String pageId) {
         String textOcr = callInternal(String.format("/%s/streams/%s", pageId, StreamType.TEXT_OCR.streamId),
-                new ParameterizedTypeReference<>() {});
+                new ParameterizedTypeReference<>() {
+                });
 
         if (textOcr != null) {
             textOcr = normalizeText(textOcr);

@@ -32,6 +32,7 @@ import reactor.netty.http.client.HttpClient;
 
 import javax.net.ssl.SSLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,8 @@ public class WebClientConfig {
 
     @Bean
     public KrameriusInfo krameriusInfo(ObjectMapper objectMapper,
-                                       @Value("${system.kramerius.code}") String krameriusCode) throws SSLException, JsonProcessingException {
+                                       @Value("${system.kramerius.code}") String krameriusCode,
+                                       @Value("${system.kramerius.default-url}") String krameriusUrl) throws SSLException, JsonProcessingException {
         String uri = UriComponentsBuilder
                 .fromHttpUrl("https://registr.digitalniknihovna.cz/libraries/")
                 .path(krameriusCode + ".json")
@@ -77,16 +79,30 @@ public class WebClientConfig {
 
         WebClient webClient = getWebClient(uri);
 
-        String krameriusInfoString = webClient
-                .get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        Map<String, Object> krameriusInfo = new HashMap<>();
+        try {
+            String krameriusInfoString = webClient
+                    .get()
+                    .uri(uri)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
 
-        Map<String, Object> krameriusInfo = objectMapper.readValue(krameriusInfoString, new TypeReference<>() {});
+            krameriusInfo = objectMapper.readValue(krameriusInfoString, new TypeReference<>() {
+            });
 
-        notNull(krameriusInfo, () -> new IllegalStateException("GET to '" + uri +"' did not return any results"));
+            notNull(krameriusInfo, () -> new IllegalStateException("GET to '" + uri + "' did not return any results"));
+
+        } catch (Exception e) {
+            if (krameriusUrl == null) {
+                throw new IllegalStateException("Failed to connect to https://registr.digitalniknihovna.cz and" +
+                        " no default URL of Kramerius is set.");
+            } else {
+                krameriusInfo.put("url", krameriusUrl);
+                log.warn("Failed to connect to https://registr.digitalniknihovna.cz and retrieve information about Kramerius instance. " +
+                        "Default URL of Kramerius is set to {}", krameriusUrl);
+            }
+        }
 
         return new KrameriusInfo(krameriusInfo);
     }

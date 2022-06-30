@@ -24,6 +24,10 @@ public class AltoMetadataEnricher {
         this.page = page;
     }
 
+    /**
+     * Processes ALTO stored in given Page and extracts metadata about token positions from it.
+     * If ALTO is {@code null}, returns.
+     */
     public void enrichPage() {
         var pageElements = Optional.ofNullable(page.getAltoLayout())
                 .map(AltoDto.LayoutDto::getPage)

@@ -13,4 +13,5 @@ public class JobParameterKey {
     public static final String KRAMERIUS_JOB = "krameriusJob";
     public static final String OVERRIDE = "override";
     public static final String DELIMITER = "delimiter";
+    public static final String MISSING_ALTO_STRATEGY = "missingAltoStrategy";
 }
