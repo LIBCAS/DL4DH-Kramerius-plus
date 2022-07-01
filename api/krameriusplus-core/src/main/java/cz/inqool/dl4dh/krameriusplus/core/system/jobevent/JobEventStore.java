@@ -5,8 +5,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
-
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Repository
@@ -16,18 +14,29 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
         super(JobEvent.class, QJobEvent.class);
     }
 
-    public QueryResults<JobEvent> listJobsByType(Set<KrameriusJob> jobTypes, String publicationId, int page, int pageSize) {
+    public QueryResults<JobEvent> listJobs(JobEventFilter filter, int page, int pageSize) {
         JPAQuery<JobEvent> query = query()
-                .select(qObject)
-                .where(qObject.config.krameriusJob.in(jobTypes))
-                .where(qObject.deleted.isNull())
-                .orderBy(qObject.created.desc())
+                .select(qObject);
+
+        if (filter.getLastExecutionStatus() != null) {
+            query.where(qObject.lastExecutionStatus.eq(filter.getLastExecutionStatus()));
+        }
+
+        if (filter.getKrameriusJobs() != null && !filter.getKrameriusJobs().isEmpty()) {
+            query.where(qObject.config.krameriusJob.in(filter.getKrameriusJobs()));
+        }
+
+        if (filter.getPublicationId() != null) {
+            query.where(qObject.publicationId.eq(filter.getPublicationId()));
+        }
+
+        if (!filter.isIncludeDeleted()) {
+            query.where(qObject.deleted.isNull());
+        }
+
+        query.orderBy(qObject.created.desc())
                 .limit(pageSize)
                 .offset((long) page * pageSize);
-
-        if (publicationId != null) {
-            query.where(qObject.publicationId.eq(publicationId));
-        }
 
         QueryResults<JobEvent> result = query.fetchResults();
 

@@ -3,10 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.*;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
@@ -16,6 +13,7 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanStore;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
@@ -25,11 +23,15 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Service
+@Slf4j
 public class JobEventService implements DatedService<JobEvent, JobEventCreateDto, JobEventDto> {
 
     @Getter
@@ -78,14 +80,21 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     public JobEventDetailDto findDetailed(@NonNull String id) {
+        log.info("Calling query to JobEvent table");
         JobEvent jobEvent = store.find(id);
+        log.info("Returned from query");
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, id));
 
         List<JobExecution> executions = new ArrayList<>();
 
         if (jobEvent.getInstanceId() != null) {
+            log.info("Calling query to JobInstance table");
             JobInstance instance = jobExplorer.getJobInstance(jobEvent.getInstanceId());
+            log.info("Returned from query");
+
+            log.info("Calling query to JobExecutions table");
             executions = jobExplorer.getJobExecutions(Objects.requireNonNull(instance));
+            log.info("Returned from query");
         }
 
         return mapper.toDetailDto(jobEvent, executions);
@@ -101,18 +110,22 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         store.updateJobRun(jobEventId, jobInstanceId, jobExecutionId);
     }
 
-    public QueryResults<JobEventDto> listEnrichingJobs(String publicationId, KrameriusJob krameriusJob, int page, int pageSize) {
-        QueryResults<JobEvent> result = store.listJobsByType(
-                krameriusJob == null ? KrameriusJob.getEnrichingJobs() : Set.of(krameriusJob),
-                publicationId,
-                page,
-                pageSize);
+    public QueryResults<JobEventDto> listEnrichingJobs(JobEventFilter jobEventFilter, int page, int pageSize) {
+        if (jobEventFilter.getKrameriusJobs() == null || jobEventFilter.getKrameriusJobs().isEmpty()) {
+            jobEventFilter.setKrameriusJobs(KrameriusJob.getEnrichingJobs());
+        }
+
+        QueryResults<JobEvent> result = store.listJobs(jobEventFilter, page, pageSize);
 
         return new QueryResults<>(mapper.toDtoList(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
     }
 
-    public QueryResults<JobEventDto> listExportingJobs(String publicationId, int page, int pageSize) {
-        QueryResults<JobEvent> result = store.listJobsByType(KrameriusJob.getExportingJobs(), publicationId, page, pageSize);
+    public QueryResults<JobEventDto> listExportingJobs(JobEventFilter jobEventFilter, int page, int pageSize) {
+        if (jobEventFilter.getKrameriusJobs() == null || jobEventFilter.getKrameriusJobs().isEmpty()) {
+            jobEventFilter.setKrameriusJobs(KrameriusJob.getExportingJobs());
+        }
+
+        QueryResults<JobEvent> result = store.listJobs(jobEventFilter, page, pageSize);
 
         return new QueryResults<>(mapper.toDtoList(result.getResults()), result.getLimit(), result.getOffset(), result.getTotal());
     }

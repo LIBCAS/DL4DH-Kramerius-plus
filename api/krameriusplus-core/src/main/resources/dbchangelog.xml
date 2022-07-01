@@ -134,5 +134,20 @@
             </column>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="7" author="bodnar">
+        <createIndex tableName="job_event" indexName="job_event_publication_FK">
+            <column name="publication_id"/>
+        </createIndex>
+        <createIndex tableName="job_event" indexName="job_event_kramerius_job_FK">
+            <column name="kramerius_job"/>
+        </createIndex>
+        <createIndex tableName="job_event" indexName="job_event_last_execution_status_FK">
+            <column name="last_execution_status"/>
+        </createIndex>
+        <createIndex tableName="job_event" indexName="job_event_deleted_FK">
+            <column name="deleted"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>

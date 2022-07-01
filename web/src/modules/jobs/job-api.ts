@@ -1,21 +1,24 @@
 import { JobEvent } from 'models/job-event'
 import { toast } from 'react-toastify'
-import { JobType } from 'models/job-type'
 import { QueryResults } from 'models/query-results'
-import { EnrichmentKrameriusJob } from 'models/job/enrichment-kramerius-job'
+import { JobEventFilterDto } from './job-event/job-event-filter-dto'
+import { JobType } from 'enums/job-type'
 
 export const listJobEvents = async (
 	jobType: JobType,
 	page: number,
 	pageSize: number,
-	publicationId?: string,
-	krameriusJob?: EnrichmentKrameriusJob,
+	filter?: JobEventFilterDto,
 ) => {
 	try {
-		const jobTypeString = JobType[jobType].toLowerCase()
-		let url = `/api/jobs/list/${jobTypeString}?page=${page}&pageSize=${pageSize}`
-		url = publicationId ? url + `&publicationId=${publicationId}` : url
-		url = krameriusJob ? url + `&jobType=${krameriusJob}` : url
+		let url = `/api/jobs/list/${jobType}?page=${page}&pageSize=${pageSize}`
+		url = filter?.publicationId
+			? url + `&publicationId=${filter.publicationId}`
+			: url
+		url = filter?.jobType ? url + `&jobType=${filter.jobType}` : url
+		url = filter?.lastExecutionStatus
+			? url + `&lastExecutionStatus=${filter.lastExecutionStatus}`
+			: url
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
