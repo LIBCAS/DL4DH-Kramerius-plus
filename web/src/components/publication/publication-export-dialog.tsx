@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import Radio from '@material-ui/core/Radio'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -15,7 +15,6 @@ import { CsvExportJobEventConfigCreateDto } from 'models/job/config/dto/export/c
 import { TeiExportJobEventConfigCreateDto } from 'models/job/config/dto/export/tei-export-job-event-config-create-dto'
 import { Typography } from '@material-ui/core'
 import { Box } from '@mui/system'
-import { ExportKrameriusJob } from 'models/job/export-kramerius-job'
 import { AltoExportJobEventConfigCreateDto } from 'models/job/config/dto/export/alto-export-job-event-config-create-dto'
 import { TextExportJobEventConfigCreateDto } from 'models/job/config/dto/export/text-export-job-event-config-create-dto'
 

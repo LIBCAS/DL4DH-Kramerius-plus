@@ -1,4 +1,4 @@
-import { KrameriusJob } from 'models/job/kramerius-job'
+import { KrameriusJob } from 'enums/kramerius-job'
 
 export interface JobEventConfigCreateDto {
 	krameriusJob: KrameriusJob

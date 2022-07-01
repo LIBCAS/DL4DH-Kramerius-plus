@@ -1,6 +1,6 @@
+import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
 import { ApiError } from 'models'
 import { EnrichmentJobEventConfigCreateDto } from 'models/job/config/dto/enrichment-job-event-config-create-dto'
-import { EnrichmentKrameriusJob } from 'models/job/enrichment-kramerius-job'
 import fetch from 'utils/fetch'
 
 export async function createPlan(
