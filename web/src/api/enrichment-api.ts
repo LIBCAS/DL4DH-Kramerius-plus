@@ -1,11 +1,11 @@
 import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
 import { ApiError } from 'models'
-import { EnrichmentJobEventConfigCreateDto } from 'models/job/config/dto/enrichment-job-event-config-create-dto'
+import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
 import fetch from 'utils/fetch'
 
 export async function createPlan(
 	publicationIds: string[],
-	configs: EnrichmentJobEventConfigCreateDto[],
+	configs: EnrichmentJobEventConfig[],
 	name?: string,
 ) {
 	try {

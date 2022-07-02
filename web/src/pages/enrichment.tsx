@@ -1,19 +1,14 @@
-import { Paper } from '@mui/material'
-import { makeStyles } from '@material-ui/core/styles'
-import { EnrichmentForm } from '../modules/enrichment/enrichment-form'
-
-const useStyles = makeStyles(() => ({
-	paper: {
-		padding: '10px 24px',
-		minHeight: 140,
-	},
-}))
+import { Paper, Grid } from '@mui/material'
+import { EnrichmentForm } from 'components/enrichment/enrichment-form'
 
 export const Enrichment = () => {
-	const classes = useStyles()
 	return (
-		<Paper className={classes.paper}>
-			<EnrichmentForm />
-		</Paper>
+		<Grid container justifyContent="center">
+			<Grid item lg={7} md={8} sm={10} xl={6} xs={12}>
+				<Paper>
+					<EnrichmentForm />
+				</Paper>
+			</Grid>
+		</Grid>
 	)
 }

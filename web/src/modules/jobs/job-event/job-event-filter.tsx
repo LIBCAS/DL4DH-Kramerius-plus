@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core'
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import { KrameriusJobMapping } from 'components/labels/kramerius-job-mapping'
+import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { JobStatus } from 'enums/job-status'
 import { ChangeEvent, useState } from 'react'
 import { JobEventFilterDto } from './job-event-filter-dto'

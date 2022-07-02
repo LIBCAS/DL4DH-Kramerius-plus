@@ -6,7 +6,7 @@ import {
 	GridRowParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
-import { JobExecution } from 'models'
+import { JobExecution } from 'models/job/job-execution'
 import { dateTimeFormatter, durationFormatter } from 'utils/formatters'
 
 type Props = {

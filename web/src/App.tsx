@@ -4,13 +4,13 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
 import { Navbar } from './components/navbar/navbar'
-import { Enrichment } from './pages/enrichment'
 import { DialogProvider } from './components/dialog/dialog-context-provider'
 import { JobPage } from 'pages/job-event'
 import { PublicationsPage } from 'pages/publication'
 import { ExportList } from 'modules/export/export'
 import { JobEventDetail } from 'modules/jobs/job-event/job-event-detail'
 import { JobType } from 'enums/job-type'
+import { Enrichment } from 'pages/enrichment'
 
 function App() {
 	return (

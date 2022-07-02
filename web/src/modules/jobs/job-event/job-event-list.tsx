@@ -5,7 +5,7 @@ import {
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { JobType } from 'enums/job-type'
-import { JobEvent } from 'models/job-event'
+import { JobEvent } from 'models/job/job-event'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { dateTimeFormatter } from 'utils/formatters'

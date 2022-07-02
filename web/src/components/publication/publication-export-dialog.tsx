@@ -9,14 +9,14 @@ import { DialogContentProps } from '../dialog/types'
 import { Params, TeiParams } from '../../models'
 import { JSONParams } from './publication-export-json'
 import { TEIParams } from './publication-export-tei'
-import { ExportJobEventConfigCreateDto } from 'models/job/config/dto/export/export-job-event-config-create-dto'
-import { JsonExportJobEventConfigCreateDto } from 'models/job/config/dto/export/json-export-job-event-config-create-dto'
-import { CsvExportJobEventConfigCreateDto } from 'models/job/config/dto/export/csv-export-job-event-config-create-dto'
-import { TeiExportJobEventConfigCreateDto } from 'models/job/config/dto/export/tei-export-job-event-config-create-dto'
 import { Typography } from '@material-ui/core'
 import { Box } from '@mui/system'
-import { AltoExportJobEventConfigCreateDto } from 'models/job/config/dto/export/alto-export-job-event-config-create-dto'
-import { TextExportJobEventConfigCreateDto } from 'models/job/config/dto/export/text-export-job-event-config-create-dto'
+import { CsvExportJobEventConfig } from 'models/job/config/export/csv-export-job-event-config'
+import { AltoExportJobEventConfig } from 'models/job/config/export/alto-export-job-event-config'
+import { ExportJobEventConfig } from 'models/job/config/export/export-job-event-config'
+import { JsonExportJobEventConfig } from 'models/job/config/export/json-export-job-event-config'
+import { TeiExportJobEventConfig } from 'models/job/config/export/tei-export-job-event-config'
+import { TextExportJobEventConfig } from 'models/job/config/export/text-export-job-event-config'
 
 type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
 
@@ -24,7 +24,7 @@ type Delimiter = '\t' | ','
 
 const exportPublication = async (
 	id: string,
-	config: ExportJobEventConfigCreateDto,
+	config: ExportJobEventConfig,
 	format: ExportFormat,
 ) => {
 	// const filters = (params.filters ?? []).map(f => ({
@@ -97,28 +97,28 @@ export const PublicationExportDialog = ({
 	}
 
 	const handleSubmitExport = async () => {
-		let config: ExportJobEventConfigCreateDto
+		let config: ExportJobEventConfig
 		if (format === 'csv') {
 			config = {
 				params: params,
 				delimiter: delimiter,
-			} as CsvExportJobEventConfigCreateDto
+			} as CsvExportJobEventConfig
 		} else if (format === 'json') {
 			config = {
 				params: params,
-			} as JsonExportJobEventConfigCreateDto
+			} as JsonExportJobEventConfig
 		} else if (format === 'tei') {
 			config = {
 				params: teiParams,
-			} as TeiExportJobEventConfigCreateDto
+			} as TeiExportJobEventConfig
 		} else if (format === 'alto') {
 			config = {
 				params: params,
-			} as AltoExportJobEventConfigCreateDto
+			} as AltoExportJobEventConfig
 		} else {
 			config = {
 				params: params,
-			} as TextExportJobEventConfigCreateDto
+			} as TextExportJobEventConfig
 		}
 
 		const response = await exportPublication(initialValues!.id, config, format)

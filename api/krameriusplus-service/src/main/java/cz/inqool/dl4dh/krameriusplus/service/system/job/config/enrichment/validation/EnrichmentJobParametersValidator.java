@@ -16,7 +16,7 @@ public class EnrichmentJobParametersValidator implements JobParametersValidator 
         if (jobParameters == null) {
             throw new JobParametersInvalidException("JobParameters are null.");
         }
-        if (jobParameters.getString(PUBLICATION_ID) == null) {
+        if (jobParameters.getString(PUBLICATION_ID) == null || jobParameters.getString(PUBLICATION_ID).isBlank()) {
             throw new JobParametersInvalidException("Parameter '" + PUBLICATION_ID + "' is missing.");
         }
         if (jobParameters.getString(JOB_EVENT_ID) == null) {

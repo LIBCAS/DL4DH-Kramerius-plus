@@ -2,13 +2,14 @@ import { Grid, Paper, Button, makeStyles, Typography } from '@material-ui/core'
 import { Box } from '@mui/system'
 import { GridRowParams } from '@mui/x-data-grid'
 import { ReadOnlyField } from 'components/read-only-field/read-only-field'
-import { JobExecution, JobEvent } from 'models'
 import { useEffect, useState } from 'react'
 import { getJobEvent, restartJobExecution } from '../job-api'
 import { JobExecutionList } from '../job-execution/job-execution-list'
 import { JobExecutionDetail } from '../job-execution/job-execution-detail'
 import { toast } from 'react-toastify'
 import { useHistory, useParams } from 'react-router'
+import { JobEvent } from 'models/job/job-event'
+import { JobExecution } from 'models/job/job-execution'
 
 const useStyles = makeStyles(() => ({
 	paper: {

@@ -15,7 +15,7 @@ import {
 	enrichExternal,
 	enrichNdk,
 	enrichTei,
-} from 'modules/enrichment/enrichment-api'
+} from 'api/enrichment-api'
 import { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { DialogContext } from '../../components/dialog/dialog-context'
