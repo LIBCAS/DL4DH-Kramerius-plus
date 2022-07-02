@@ -2,17 +2,14 @@ import { Grid, Paper, Button, makeStyles, Typography } from '@material-ui/core'
 import { Box } from '@mui/system'
 import { GridRowParams } from '@mui/x-data-grid'
 import { ReadOnlyField } from 'components/read-only-field/read-only-field'
-import { JobExecution, JobEvent } from 'models'
 import { useEffect, useState } from 'react'
 import { getJobEvent, restartJobExecution } from '../job-api'
 import { JobExecutionList } from '../job-execution/job-execution-list'
 import { JobExecutionDetail } from '../job-execution/job-execution-detail'
 import { toast } from 'react-toastify'
-import { useHistory } from 'react-router'
-
-type Props = {
-	jobEventId: string
-}
+import { useHistory, useParams } from 'react-router'
+import { JobEvent } from 'models/job/job-event'
+import { JobExecution } from 'models/job/job-execution'
 
 const useStyles = makeStyles(() => ({
 	paper: {
@@ -24,22 +21,23 @@ const useStyles = makeStyles(() => ({
 	},
 }))
 
-export const JobEventDetail = ({ jobEventId }: Props) => {
+export const JobEventDetail = () => {
 	const classes = useStyles()
 	const { replace } = useHistory()
 	const [job, setJob] = useState<JobEvent>()
 	const [lastRender, setLastRender] = useState<number>(Date.now())
 	const [selectedExecution, setSelectedExecution] = useState<JobExecution>()
+	const { jobId } = useParams<{ jobId: string }>()
 
 	useEffect(() => {
-		async function fetchJobDetail(jobId: string) {
+		async function fetchJobDetail() {
 			const jobEvent = await getJobEvent(jobId)
 			setJob(jobEvent)
 		}
 
-		fetchJobDetail(jobEventId)
+		fetchJobDetail()
 		setSelectedExecution(undefined)
-	}, [jobEventId, lastRender])
+	}, [jobId, lastRender])
 
 	const handleExecutionClick = (params: GridRowParams) => {
 		if (job) {

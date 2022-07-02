@@ -1,5 +1,4 @@
 import { InstanceInfo } from 'models'
-import { MapType } from 'models/map-type'
 import { useEffect, useState } from 'react'
 
 import fetch from 'utils/fetch'

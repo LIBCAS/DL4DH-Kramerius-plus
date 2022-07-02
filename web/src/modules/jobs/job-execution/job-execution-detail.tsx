@@ -1,10 +1,11 @@
 import { Grid } from '@material-ui/core'
 import { Box } from '@mui/system'
 import { GridRowParams } from '@mui/x-data-grid'
-import { JobExecution, StepExecution } from 'models'
 import { useState } from 'react'
 import { StepExecutionList } from '../step-execution/step-execution-list'
 import { StepExecutionDetail } from '../step-execution/step-execution-detail'
+import { StepExecution } from 'models'
+import { JobExecution } from 'models/job/job-execution'
 
 type Props = {
 	jobExecution: JobExecution

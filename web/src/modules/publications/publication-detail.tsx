@@ -6,20 +6,17 @@ import {
 	Typography,
 } from '@material-ui/core'
 import { Box } from '@mui/system'
-import { GridRowParams } from '@mui/x-data-grid'
+import { PublicationJobEventList } from 'components/publication/publication-job-event-list'
 import { ReadOnlyField } from 'components/read-only-field/read-only-field'
+import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
 import { Publication } from 'models'
-import { JobType } from 'models/job-type'
-import { EnrichmentKrameriusJob } from 'models/job/enrichment-kramerius-job'
 import {
 	downloadKStructure,
 	enrichExternal,
 	enrichNdk,
 	enrichTei,
-} from 'modules/enrichment/enrichment-api'
-import { JobEventList } from 'modules/jobs/job-event/job-event-list'
+} from 'api/enrichment-api'
 import { useContext, useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
 import { toast } from 'react-toastify'
 import { DialogContext } from '../../components/dialog/dialog-context'
 import { PublicationExportDialog } from '../../components/publication/publication-export-dialog'
@@ -45,7 +42,6 @@ export const PublicationDetail = ({ publication }: Props) => {
 	const { open } = useContext(DialogContext)
 	const [selectedJobType, setSelectedJobType] =
 		useState<EnrichmentKrameriusJob>()
-	const { replace } = useHistory()
 	const [lastRender, setLastRender] = useState<number>(Date.now())
 	const [isPublished, setIsPublished] = useState<boolean>(
 		publication.publishInfo.isPublished,
@@ -77,10 +73,6 @@ export const PublicationDetail = ({ publication }: Props) => {
 				setIsPublished(true)
 			}
 		}
-	}
-
-	const onRowClick = (params: GridRowParams) => {
-		replace(`/jobs/enriching/${params.row['id']}`)
 	}
 
 	const createNewJob = async () => {
@@ -217,12 +209,10 @@ export const PublicationDetail = ({ publication }: Props) => {
 				</Box>
 				{selectedJobType !== undefined && (
 					<Box sx={{ p: 3 }}>
-						<JobEventList
+						<PublicationJobEventList
 							key={lastRender}
-							jobType={JobType.Enriching}
 							krameriusJob={selectedJobType}
 							publicationId={publication.id}
-							onRowClick={onRowClick}
 						/>
 					</Box>
 				)}

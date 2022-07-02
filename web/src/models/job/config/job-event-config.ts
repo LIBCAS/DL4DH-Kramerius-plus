@@ -1,7 +1,5 @@
-import { KrameriusJob } from '../kramerius-job'
-import { MapType } from '../../map-type'
+import { KrameriusJob } from 'enums/kramerius-job'
 
 export interface JobEventConfig {
-	parameters: MapType
 	krameriusJob: KrameriusJob
 }
