@@ -24,6 +24,7 @@ export type CurrentConfig = {
 const initialPlan = {
 	publicationIds: [''],
 	configs: [],
+	name: '',
 }
 
 export const EnrichmentForm = () => {
@@ -185,13 +186,16 @@ export const EnrichmentForm = () => {
 							onConfigRemove,
 							onNewConfigClick,
 						}}
+						nameProps={{
+							fieldValue: plan.name,
+							onFieldChange: onNameChange,
+						}}
 						uuidProps={{
 							removeUuidField,
 							changeUuidField,
 							addUuidField,
 							fields: plan.publicationIds,
 						}}
-						onNameChange={onNameChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>

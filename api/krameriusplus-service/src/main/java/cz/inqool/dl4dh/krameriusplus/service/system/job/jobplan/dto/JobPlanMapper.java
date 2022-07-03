@@ -3,10 +3,14 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.mapper.DatedObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment.EnrichmentJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestSimplifiedCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import org.mapstruct.Mapper;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface JobPlanMapper extends DatedObjectMapper<JobPlan, JobPlanCreateDto, JobPlanDto> {
@@ -24,5 +28,14 @@ public interface JobPlanMapper extends DatedObjectMapper<JobPlan, JobPlanCreateD
         });
 
         return planCreateDto;
+    }
+
+    default Set<JobPlanCreateDto> fromEnrichmentRequestCreateDto(EnrichmentRequestSimplifiedCreateDto dto) {
+        Set<JobPlanCreateDto> result = new HashSet<>();
+        dto.getPublicationIds().forEach(publicationId -> {
+            result.add(toCreateDto(publicationId, dto.getName(), dto.getConfigs()));
+        });
+
+        return result;
     }
 }

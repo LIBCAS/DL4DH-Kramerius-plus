@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class EnrichmentKrameriusRequestDto implements EnrichmentRequestDto {
+public class SingleJobEnrichmentKrameriusRequestDto implements SingleJobEnrichmentRequestDto {
 
     @NotEmpty
     private Set<String> publicationIds = new HashSet<>();

@@ -22,16 +22,21 @@ export type ConfigAccordionProps = {
 	onNewConfigClick: (krameriusJob: EnrichmentKrameriusJob) => void
 }
 
+export type NameAccordionProps = {
+	fieldValue?: string
+	onFieldChange: (value: string) => void
+}
+
 type Props = {
 	uuidProps: UuidAccordionProps
 	configProps: ConfigAccordionProps
-	onNameChange: (value: string) => void
+	nameProps: NameAccordionProps
 }
 
 export const EnrichmentAccordion = ({
 	uuidProps,
 	configProps,
-	onNameChange,
+	nameProps,
 }: Props) => {
 	const [expanded, setExpanded] = useState<PanelOpened>('none')
 
@@ -55,8 +60,8 @@ export const EnrichmentAccordion = ({
 			/>
 			<NameAccordion
 				isExpanded={expanded === 'name'}
+				nameProps={nameProps}
 				onChange={handleChange}
-				onNameChange={onNameChange}
 			/>
 		</Box>
 	)

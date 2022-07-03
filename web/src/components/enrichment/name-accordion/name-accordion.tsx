@@ -3,10 +3,12 @@ import {
 	AccordionSummary,
 	Typography,
 	AccordionDetails,
-	TextField,
+	FormControl,
+	InputLabel,
+	OutlinedInput,
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { PanelOpened } from '../enrichment-accordion'
+import { NameAccordionProps, PanelOpened } from '../enrichment-accordion'
 import { ChangeEvent } from 'react'
 
 type Props = {
@@ -14,16 +16,12 @@ type Props = {
 	onChange: (
 		panel: PanelOpened,
 	) => (_1: React.SyntheticEvent, _2: boolean) => void
-	onNameChange: (value: string) => void
+	nameProps: NameAccordionProps
 }
 
-export const NameAccordion = ({
-	isExpanded,
-	onChange,
-	onNameChange,
-}: Props) => {
+export const NameAccordion = ({ isExpanded, onChange, nameProps }: Props) => {
 	const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-		onNameChange(event.target.value)
+		nameProps.onFieldChange(event.target.value)
 	}
 
 	return (
@@ -35,7 +33,15 @@ export const NameAccordion = ({
 				</Typography>
 			</AccordionSummary>
 			<AccordionDetails>
-				<TextField fullWidth label="Název plánu" onChange={handleNameChange} />
+				<FormControl fullWidth size="small" variant="outlined">
+					<InputLabel>Název úloh</InputLabel>
+					<OutlinedInput
+						label="Název úloh"
+						type="text"
+						value={nameProps.fieldValue}
+						onChange={handleNameChange}
+					/>
+				</FormControl>
 			</AccordionDetails>
 		</Accordion>
 	)

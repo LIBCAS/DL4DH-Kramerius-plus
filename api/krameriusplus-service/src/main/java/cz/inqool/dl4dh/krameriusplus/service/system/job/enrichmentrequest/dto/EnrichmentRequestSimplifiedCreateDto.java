@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.api.dto.enrichment;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment.EnrichmentJobConfigDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,8 +13,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Schema(description = "DTO for creating JobPlans.")
-public class JobPlanRequestDto {
+public class EnrichmentRequestSimplifiedCreateDto {
 
     @Schema(description = "Optional name. The name will be used as the name of the created JobPlan, " +
             "as well as the name of all the created JobEvents.")

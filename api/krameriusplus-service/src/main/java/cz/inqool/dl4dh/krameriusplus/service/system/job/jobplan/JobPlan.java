@@ -2,13 +2,11 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.EnrichmentRequest;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,6 +14,9 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 public class JobPlan extends DatedObject {
+
+    @ManyToOne
+    private EnrichmentRequest enrichmentRequest;
 
     private String name;
 
