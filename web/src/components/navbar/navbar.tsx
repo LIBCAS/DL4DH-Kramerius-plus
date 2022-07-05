@@ -1,46 +1,23 @@
 import { Link } from 'react-router-dom'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
+import { Box, AppBar, Toolbar, Typography, Button } from '@mui/material'
 import ALink from '@mui/material/Link'
 
 import { useNavbar } from './navbar-hook'
-import { Box } from '@mui/system'
-
-const useStyles = makeStyles(theme => ({
-	toolbar: {
-		display: 'flex',
-		justifyContent: 'space-between',
-	},
-	menuButton: {
-		marginRight: theme.spacing(2),
-	},
-	title: {
-		marginRight: 40,
-	},
-	instanceInfo: {
-		fontSize: 14,
-	},
-}))
 
 export const Navbar = () => {
-	const classes = useStyles()
-
 	const { instance, url, version } = useNavbar()
 
 	return (
 		<AppBar>
-			<Toolbar className={classes.toolbar}>
-				<div style={{ display: 'flex' }}>
-					<Typography className={classes.title} variant="h6">
+			<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Box sx={{ display: 'flex' }}>
+					<Typography sx={{ marginRight: '40px' }} variant="h6">
 						Kramerius+ Client
 					</Typography>
 					<Button
-						className={classes.menuButton}
 						color="inherit"
 						component={Link}
+						sx={{ marginRight: 2 }}
 						to="/"
 					>
 						Obohacení
@@ -57,9 +34,9 @@ export const Navbar = () => {
 					<Button color="inherit" component={Link} to="/exports">
 						Exporty
 					</Button>
-				</div>
-				<div style={{ display: 'flex', flexDirection: 'column' }}>
-					<Typography className={classes.instanceInfo} component="span">
+				</Box>
+				<Box sx={{ display: 'flex', flexDirection: 'column' }}>
+					<Typography component="span" sx={{ fontSize: 14 }}>
 						Instance: {instance}
 					</Typography>
 					<Box
@@ -67,10 +44,10 @@ export const Navbar = () => {
 						justifyContent="space-between"
 						sx={{ minWidth: 250 }}
 					>
-						<Typography className={classes.instanceInfo} component="span">
+						<Typography component="span" sx={{ fontSize: 14 }}>
 							Url: {url}
 						</Typography>
-						<Typography className={classes.instanceInfo} component="span">
+						<Typography component="span" sx={{ fontSize: 14 }}>
 							<ALink
 								color="inherit"
 								href="https://github.com/LIBCAS/DL4DH-Kramerius-plus/wiki/Changelog"
@@ -79,7 +56,7 @@ export const Navbar = () => {
 							</ALink>
 						</Typography>
 					</Box>
-				</div>
+				</Box>
 			</Toolbar>
 		</AppBar>
 	)

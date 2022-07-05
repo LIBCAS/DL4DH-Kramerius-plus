@@ -80,21 +80,15 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     public JobEventDetailDto findDetailed(@NonNull String id) {
-        log.info("Calling query to JobEvent table");
         JobEvent jobEvent = store.find(id);
-        log.info("Returned from query");
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, id));
 
         List<JobExecution> executions = new ArrayList<>();
 
         if (jobEvent.getInstanceId() != null) {
-            log.info("Calling query to JobInstance table");
             JobInstance instance = jobExplorer.getJobInstance(jobEvent.getInstanceId());
-            log.info("Returned from query");
 
-            log.info("Calling query to JobExecutions table");
             executions = jobExplorer.getJobExecutions(Objects.requireNonNull(instance));
-            log.info("Returned from query");
         }
 
         return mapper.toDetailDto(jobEvent, executions);

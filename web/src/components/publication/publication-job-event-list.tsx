@@ -1,6 +1,5 @@
 import { Paper } from '@mui/material'
 import { DataGrid, GridRowParams } from '@mui/x-data-grid'
-import { JobType } from 'enums/job-type'
 import { KrameriusJob } from 'enums/kramerius-job'
 import { JobEvent } from 'models/job/job-event'
 import { listJobEvents } from 'modules/jobs/job-api'
@@ -48,7 +47,7 @@ export const PublicationJobEventList = ({
 
 	useEffect(() => {
 		async function fetchJobs() {
-			const response = await listJobEvents(JobType.Enriching, page, 10, {
+			const response = await listJobEvents('enriching', page, 10, {
 				publicationId: publicationId,
 				jobType: krameriusJob,
 			})
@@ -70,7 +69,7 @@ export const PublicationJobEventList = ({
 	const onPageChange = (page: number) => setPage(page)
 
 	const onRowClick = (params: GridRowParams) => {
-		history.push(`/jobs/${JobType.Enriching}/${params.row['id']}`)
+		history.push(`/jobs/enriching/${params.row['id']}`)
 	}
 
 	return (

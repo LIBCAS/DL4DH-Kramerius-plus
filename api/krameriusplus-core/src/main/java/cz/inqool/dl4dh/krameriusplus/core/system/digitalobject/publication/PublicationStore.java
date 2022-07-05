@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.DomainStore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,6 +29,44 @@ public class PublicationStore extends DomainStore<Publication> {
         PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "index"));
 
         Query query = Query.query(where("parentId").is(publicationId));
+
+        long total = mongoOperations.count(query, type);
+
+        return new QueryResults<>(mongoOperations.find(query.with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
+    }
+
+    public QueryResults<Publication> list(PublicationListFilterDto filter, int page, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "created"));
+
+        Query query = new Query();
+
+        if (filter.getTitle() != null) {
+            query.addCriteria(where("title").regex(filter.getTitle()));
+        }
+
+        if (filter.getParentId() != null) {
+            query.addCriteria(where("parentId").is(filter.getParentId()));
+        }
+
+        if (filter.getCreatedBefore() != null) {
+            query.addCriteria(where("created").lte(filter.getCreatedBefore()));
+        }
+
+        if (filter.getCreatedAfter() != null) {
+            query.addCriteria(where("created").gte(filter.getCreatedAfter()));
+        }
+
+        if (filter.getIsPublished() != null) {
+            query.addCriteria(where("publishInfo.isPublished").is(filter.getIsPublished()));
+        }
+
+        if (filter.getPublishedBefore() != null) {
+            query.addCriteria(where("publishInfo.publishedLastModified").lte(filter.getPublishedBefore()));
+        }
+
+        if (filter.getPublishedAfter() != null) {
+            query.addCriteria(where("publishInfo.publishedLastModified").gte(filter.getPublishedAfter()));
+        }
 
         long total = mongoOperations.count(query, type);
 

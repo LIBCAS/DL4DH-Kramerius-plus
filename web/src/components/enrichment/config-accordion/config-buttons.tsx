@@ -1,5 +1,5 @@
 import { Grid, Button } from '@mui/material'
-import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
+import { KrameriusJobMapping } from '../../../components/mappings/kramerius-job-mapping'
 import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
 
 type Props = {

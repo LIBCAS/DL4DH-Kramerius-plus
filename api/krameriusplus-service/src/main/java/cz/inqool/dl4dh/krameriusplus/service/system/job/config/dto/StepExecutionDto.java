@@ -12,6 +12,8 @@ import java.util.List;
 @Setter
 public class StepExecutionDto {
 
+    private Long id;
+
     private String stepName;
 
     private BatchStatus status;

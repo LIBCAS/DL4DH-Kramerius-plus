@@ -2,16 +2,16 @@ import { Box } from '@mui/system'
 import { Grid, Typography, Button } from '@mui/material'
 import { EnrichmentAccordion } from './enrichment-accordion'
 import { FormEvent, useState } from 'react'
-import { JobPlanCreate } from 'models/job/job-plan-create'
-import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
-import { ExternalEnrichmentJobEventConfig } from 'models/job/config/enrichment/external-enrichment-job-event-config'
-import { MissingAltoStrategy } from 'enums/missing-alto-strategy'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
+import { JobPlanCreate } from '../../models/job/job-plan-create'
+import { EnrichmentKrameriusJob } from '../../enums/enrichment-kramerius-job'
+import { ExternalEnrichmentJobEventConfig } from '../../models/job/config/enrichment/external-enrichment-job-event-config'
+import { MissingAltoStrategy } from '../../enums/missing-alto-strategy'
+import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment/enrichment-job-event-config'
 import { ConfigDialog } from './config-accordion/config-dialog'
 import { toast } from 'react-toastify'
-import { createPlan } from 'api/enrichment-api'
+import { createPlan } from '../../api/enrichment-api'
 
-const initialCurrentConfig = {
+const initialCurrentConfig: EnrichmentJobEventConfig = {
 	override: true,
 	krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS,
 }
@@ -115,7 +115,7 @@ export const EnrichmentForm = () => {
 	}
 
 	const onNewConfigClick = (krameriusJob: EnrichmentKrameriusJob) => {
-		if (krameriusJob === EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL) {
+		if (krameriusJob === 'ENRICHMENT_EXTERNAL') {
 			setCurrentConfig({
 				config: {
 					krameriusJob: krameriusJob,

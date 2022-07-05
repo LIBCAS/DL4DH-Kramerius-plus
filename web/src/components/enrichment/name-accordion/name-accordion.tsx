@@ -3,9 +3,7 @@ import {
 	AccordionSummary,
 	Typography,
 	AccordionDetails,
-	FormControl,
-	InputLabel,
-	OutlinedInput,
+	TextField,
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { NameAccordionProps, PanelOpened } from '../enrichment-accordion'
@@ -33,15 +31,15 @@ export const NameAccordion = ({ isExpanded, onChange, nameProps }: Props) => {
 				</Typography>
 			</AccordionSummary>
 			<AccordionDetails>
-				<FormControl fullWidth size="small" variant="outlined">
-					<InputLabel>Název úloh</InputLabel>
-					<OutlinedInput
-						label="Název úloh"
-						type="text"
-						value={nameProps.fieldValue}
-						onChange={handleNameChange}
-					/>
-				</FormControl>
+				<TextField
+					fullWidth
+					label="Název úloh"
+					size="small"
+					type="text"
+					value={nameProps.fieldValue}
+					variant="outlined"
+					onChange={handleNameChange}
+				/>
 			</AccordionDetails>
 		</Accordion>
 	)

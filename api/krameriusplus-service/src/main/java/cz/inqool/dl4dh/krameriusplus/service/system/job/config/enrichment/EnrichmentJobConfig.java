@@ -19,7 +19,6 @@ public abstract class EnrichmentJobConfig extends JobConfigBase {
         return jobBuilderFactory.get(getJobName())
                 .validator(enrichmentJobParametersValidator)
                 .listener(jobListener)
-                .listener(datedObjectWriteListener)
                 .incrementer(new RunIdIncrementer());
     }
 

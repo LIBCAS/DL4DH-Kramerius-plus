@@ -1,4 +1,1 @@
-export enum JobType {
-	Enriching = 'enriching',
-	Exporting = 'exporting',
-}
+export type JobType = 'enriching' | 'exporting'

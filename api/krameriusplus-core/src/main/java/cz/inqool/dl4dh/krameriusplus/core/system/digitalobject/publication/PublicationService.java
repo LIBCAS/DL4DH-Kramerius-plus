@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectExceptio
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,6 @@ public class PublicationService {
 
     private PageStore pageStore;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault());
-
-
     @Transactional
     public void save(@NonNull Publication publication) {
         publicationStore.save(publication);
@@ -53,15 +51,8 @@ public class PublicationService {
         return result;
     }
 
-    public List<Publication> listPublishedModified(String publishedModifiedAfter) {
-        try {
-            Instant instant = Instant.from(formatter.parse(publishedModifiedAfter));
-
-            return publicationStore.listPublishedModified(instant);
-        } catch (DateTimeException e) {
-            throw new ValidationException("Failed to parse given dateTime", ValidationException.ErrorCode.INVALID_PARAMETERS, e);
-        }
-
+    public List<Publication> listPublishedModified(Instant publishedModifiedAfter) {
+        return publicationStore.listPublishedModified(publishedModifiedAfter);
     }
 
     @Transactional
@@ -108,8 +99,8 @@ public class PublicationService {
         return pageStore.list(publicationId, page, pageSize);
     }
 
-    public QueryResults<Publication> list(int page, int pageSize) {
-        return publicationStore.list(page, pageSize);
+    public QueryResults<Publication> list(PublicationListFilterDto filter, int page, int pageSize) {
+        return publicationStore.list(filter, page, pageSize);
     }
 
     public List<Publication> list(Params params) {
