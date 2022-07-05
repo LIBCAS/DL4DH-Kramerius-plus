@@ -1,4 +1,4 @@
-import { Paper, Button } from '@material-ui/core'
+import { Paper, Button } from '@mui/material'
 import {
 	DataGrid,
 	GridRenderCellParams,
@@ -37,37 +37,37 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 		{
 			field: 'id',
 			headerName: 'ID',
-			width: 320,
+			width: 300,
 			type: 'string',
 		},
 		{
 			field: 'publicationId',
 			headerName: 'UUID publikace',
-			width: 360,
+			width: 340,
 			type: 'string',
 		},
 		{
 			field: 'created',
 			headerName: 'Vytvořeno',
-			width: 210,
+			width: 180,
 			type: 'datetime',
 			valueFormatter: dateTimeFormatter,
 		},
 		{
 			field: 'krameriusJob',
 			headerName: 'Typ úlohy',
-			width: 240,
+			width: 200,
 			valueGetter: krameriusJobGetter,
 		},
 		{
 			field: 'lastExecutionStatus',
 			headerName: 'Poslední stav',
-			width: 150,
+			width: 120,
 		},
 		{
 			field: 'jobName',
 			headerName: 'Název',
-			width: 200,
+			width: 150,
 			type: 'string',
 			valueGetter: nameGetter,
 		},

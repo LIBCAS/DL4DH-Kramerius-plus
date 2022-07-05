@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core'
+import { Grid } from '@mui/material'
 import { ExportKrameriusJob } from '../enums/export-kramerius-job'
 import { FC, useState } from 'react'
 import { JobEventFilter } from '../modules/jobs/job-event/job-event-filter'

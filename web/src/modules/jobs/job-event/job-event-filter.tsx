@@ -1,12 +1,12 @@
 import {
+	Paper,
+	Box,
 	Button,
 	Grid,
 	MenuItem,
 	TextField,
 	Typography,
-} from '@material-ui/core'
-import { Paper } from '@mui/material'
-import { Box } from '@mui/system'
+} from '@mui/material'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { JobStatus } from 'enums/job-status'
 import { ChangeEvent, useState } from 'react'
