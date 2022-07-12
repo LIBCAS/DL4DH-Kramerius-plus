@@ -54,10 +54,7 @@ export const JobEventDataDisplay: FC<Props> = ({
 					label="Úloha vytvořená"
 					value={formatDateTime(jobEvent.created.toString())}
 				/>
-				<JobEventDataRow
-					label="Název úlohy"
-					value={jobEvent.jobName || '{Bez názvu}'}
-				/>
+				<JobEventDataRow label="Název úlohy" value={jobEvent.jobName || ''} />
 				<JobEventDataRow
 					label="UUID Publikace"
 					value={jobEvent.publicationId}

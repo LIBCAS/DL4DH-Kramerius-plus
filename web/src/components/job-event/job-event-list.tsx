@@ -4,6 +4,7 @@ import {
 	GridRenderCellParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
+import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { JobType } from 'enums/job-type'
 import { JobEvent } from 'models/job/job-event'
 import { useEffect, useState } from 'react'
@@ -18,11 +19,11 @@ type Props = {
 }
 
 const krameriusJobGetter = (params: GridValueGetterParams) => {
-	return params.row['config']['krameriusJob']
+	return KrameriusJobMapping[params.row['config']['krameriusJob']]
 }
 
 const nameGetter = (params: GridValueGetterParams) => {
-	return params.row['jobName'] ?? '{Bez názvu}'
+	return params.row['jobName'] ?? ''
 }
 
 export const JobEventList = ({ jobType, filter }: Props) => {
