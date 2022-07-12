@@ -11,10 +11,10 @@ import {
 	ListItemText,
 	SelectChangeEvent,
 } from '@mui/material'
-import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
-import { MissingAltoStrategy } from 'enums/missing-alto-strategy'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
-import { ExternalEnrichmentJobEventConfig } from 'models/job/config/enrichment/external-enrichment-job-event-config'
+import { KrameriusJobMapping } from '../../../components/mappings/kramerius-job-mapping'
+import { MissingAltoStrategy } from '../../../enums/missing-alto-strategy'
+import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment/enrichment-job-event-config'
+import { ExternalEnrichmentJobEventConfig } from '../../../models/job/config/enrichment/external-enrichment-job-event-config'
 import { CurrentConfig } from '../enrichment-form'
 import { MissingAltoStrategySelect } from './missing-alto-strategy-select'
 

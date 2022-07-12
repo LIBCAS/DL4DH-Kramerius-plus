@@ -5,6 +5,8 @@ import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.JobPlanResponseDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.*;
 import cz.inqool.dl4dh.krameriusplus.api.facade.EnrichmentFacadeImpl;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestSimplifiedCreateDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,8 +43,8 @@ public class EnrichmentApi {
             "the next JobEvent will be run, and so on.")
     @ApiResponse(responseCode = "200", description = "OK")
     @PostMapping(value = "/plan", produces = APPLICATION_JSON_VALUE)
-    public JobPlanResponseDto enrich(@Valid @RequestBody JobPlanRequestDto requestDto) {
-        return facade.enrichWithPlan(requestDto);
+    public EnrichmentRequestDto enrich(@Valid @RequestBody EnrichmentRequestSimplifiedCreateDto requestDto) {
+        return facade.enrich(requestDto);
     }
 
     @Operation(summary = "Create and start new jobs of type DOWNLOAD_K_STRUCTURE. Jobs are started asynchronously. " +
@@ -52,7 +54,7 @@ public class EnrichmentApi {
             "was not set to true",
             content = @Content(schema = @Schema(implementation = RestException.class), mediaType = APPLICATION_JSON_VALUE))
     @PostMapping(value = "/kramerius", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto downloadKStructure(@RequestBody @Valid EnrichmentKrameriusRequestDto requestDto) {
+    public EnrichResponseDto downloadKStructure(@RequestBody @Valid SingleJobEnrichmentKrameriusRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
 
@@ -60,7 +62,7 @@ public class EnrichmentApi {
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
     @PostMapping(value = "/external", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichExternal(@RequestBody @Valid EnrichmentExternalRequestDto requestDto) {
+    public EnrichResponseDto enrichExternal(@RequestBody @Valid SingleJobEnrichmentExternalRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
 
@@ -68,7 +70,7 @@ public class EnrichmentApi {
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
     @PostMapping(value = "/ndk", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichNdk(@RequestBody @Valid EnrichmentNdkRequestDto requestDto) {
+    public EnrichResponseDto enrichNdk(@RequestBody @Valid SingleJobEnrichmentNdkRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
 
@@ -76,7 +78,7 @@ public class EnrichmentApi {
             "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
     @ApiResponse(responseCode = "200", description = "Jobs successfully created")
     @PostMapping(value = "/tei", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichTei(@RequestBody @Valid EnrichmentTeiRequestDto requestDto) {
+    public EnrichResponseDto enrichTei(@RequestBody @Valid SingleJobEnrichmentTeiRequestDto requestDto) {
         return facade.enrich(requestDto);
     }
 }

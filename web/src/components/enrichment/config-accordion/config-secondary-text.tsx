@@ -1,8 +1,8 @@
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment/enrichment-job-event-config'
 import { Fragment } from 'react'
 import { Typography } from '@mui/material'
-import { MissingAltoStrategyMapping } from 'components/mappings/missing-alto-strategy-mapping'
-import { ExternalEnrichmentJobEventConfig } from 'models/job/config/enrichment/external-enrichment-job-event-config'
+import { MissingAltoStrategyMapping } from '../../../components/mappings/missing-alto-strategy-mapping'
+import { ExternalEnrichmentJobEventConfig } from '../../../models/job/config/enrichment/external-enrichment-job-event-config'
 
 type Props = {
 	config: EnrichmentJobEventConfig

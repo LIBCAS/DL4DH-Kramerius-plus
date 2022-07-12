@@ -1,17 +1,28 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
 import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException.ErrorCode.INVALID_PARAMETERS;
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
 /**
  * @author Norbert Bodnar
@@ -22,6 +33,8 @@ import java.util.List;
 public class PublicationApi {
 
     private final PublicationService publicationService;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault());
 
     @Autowired
     public PublicationApi(PublicationService publicationService) {
@@ -48,15 +61,35 @@ public class PublicationApi {
     @Operation(summary = "List publications.")
     @GetMapping("/list")
     public QueryResults<Publication> list(@RequestParam(value = "page", defaultValue = "0") int page,
-                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-        return publicationService.list(page, pageSize);
+                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                          @RequestParam(value = "title", required = false) String title,
+                                          @RequestParam(value = "parentId", required = false) String parentId,
+                                          @RequestParam(value = "createdBefore", required = false)
+                                          @DateTimeFormat(iso = DATE_TIME) Instant createdBefore,
+                                          @RequestParam(value = "createdAfter", required = false)
+                                          @DateTimeFormat(iso = DATE_TIME) Instant createdAfter,
+                                          @RequestParam(value = "isPublished", required = false) Boolean isPublished,
+                                          @RequestParam(value = "publishedBefore", required = false)
+                                          @DateTimeFormat(iso = DATE_TIME) Instant publishedBefore,
+                                          @RequestParam(value = "publishedAfter", required = false)
+                                          @DateTimeFormat(iso = DATE_TIME) Instant publishedAfter) {
+        return publicationService.list(new PublicationListFilterDto(
+                        title, parentId, createdBefore, createdAfter,
+                        isPublished, publishedBefore, publishedAfter),
+                page, pageSize);
     }
 
     @Operation(summary = "List publications, which has changed its published status after the given date.")
     @GetMapping("/list/published")
     public List<Publication> listPublishedModified(@RequestParam("modifiedAfter")
-                                                       @Schema(description = "DateTime in ISO format") String publishedModifiedAfter) {
-        return publicationService.listPublishedModified(publishedModifiedAfter);
+                                                   @Schema(description = "DateTime in ISO format") String publishedModifiedAfter) {
+        try {
+            Instant instant = Instant.from(formatter.parse(publishedModifiedAfter));
+
+            return publicationService.listPublishedModified(instant);
+        } catch (DateTimeException e) {
+            throw new ValidationException("Failed to parse given dateTime", INVALID_PARAMETERS, e);
+        }
     }
 
     @Operation(summary = "List pages for given publication. Pages do not contain tokens and nameTagMetadata.")

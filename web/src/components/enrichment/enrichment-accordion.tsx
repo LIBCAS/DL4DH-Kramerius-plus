@@ -1,7 +1,7 @@
 import { Box } from '@mui/system'
 import { useState } from 'react'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
-import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
+import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentKrameriusJob } from '../../enums/enrichment-kramerius-job'
 import { UuidAccordion } from './uuid-accordion/uuid-accordion'
 import { ConfigAccordion } from './config-accordion/config-accordion'
 import { NameAccordion } from './name-accordion/name-accordion'
@@ -22,16 +22,21 @@ export type ConfigAccordionProps = {
 	onNewConfigClick: (krameriusJob: EnrichmentKrameriusJob) => void
 }
 
+export type NameAccordionProps = {
+	fieldValue?: string
+	onFieldChange: (value: string) => void
+}
+
 type Props = {
 	uuidProps: UuidAccordionProps
 	configProps: ConfigAccordionProps
-	onNameChange: (value: string) => void
+	nameProps: NameAccordionProps
 }
 
 export const EnrichmentAccordion = ({
 	uuidProps,
 	configProps,
-	onNameChange,
+	nameProps,
 }: Props) => {
 	const [expanded, setExpanded] = useState<PanelOpened>('none')
 
@@ -55,8 +60,8 @@ export const EnrichmentAccordion = ({
 			/>
 			<NameAccordion
 				isExpanded={expanded === 'name'}
+				nameProps={nameProps}
 				onChange={handleChange}
-				onNameChange={onNameChange}
 			/>
 		</Box>
 	)

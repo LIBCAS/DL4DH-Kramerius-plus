@@ -7,7 +7,7 @@ import {
 import { Export } from 'models'
 import { useEffect, useState } from 'react'
 import { listExports } from './export-api'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 
 const getType = (params: GridValueGetterParams) => {
 	return params.row['fileRef'].contentType
@@ -43,18 +43,18 @@ const columns: GridColDef[] = [
 	{
 		field: 'publicationTitle',
 		headerName: 'Název publikace',
-		width: 400,
+		width: 200,
 	},
 	{
 		field: 'fileRefType',
 		headerName: 'Typ',
-		width: 200,
+		width: 150,
 		valueGetter: getType,
 	},
 	{
 		field: 'fileRefSize',
 		headerName: 'Velikost',
-		width: 200,
+		width: 100,
 		valueGetter: getSize,
 	},
 	{
@@ -111,6 +111,7 @@ export const ExportList = () => {
 		<DataGrid
 			autoHeight={true}
 			columns={columns}
+			density="compact"
 			pageSize={10}
 			paginationMode="server"
 			rowCount={rowCountState}

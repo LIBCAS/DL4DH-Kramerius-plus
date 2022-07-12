@@ -11,8 +11,6 @@ public abstract class JobConfigBase {
 
     protected JobListener jobListener;
 
-    protected DatedObjectWriteListener datedObjectWriteListener;
-
     protected JobBuilderFactory jobBuilderFactory;
 
     @Autowired
@@ -23,11 +21,6 @@ public abstract class JobConfigBase {
     @Autowired
     public void setJobListener(JobListener jobListener) {
         this.jobListener = jobListener;
-    }
-
-    @Autowired
-    public void setDatedObjectWriteListener(DatedObjectWriteListener datedObjectWriteListener) {
-        this.datedObjectWriteListener = datedObjectWriteListener;
     }
 
     @Autowired

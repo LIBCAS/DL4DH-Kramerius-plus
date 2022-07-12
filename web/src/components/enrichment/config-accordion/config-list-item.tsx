@@ -5,7 +5,7 @@ import {
 	ListItemAvatar,
 	ListItemSecondaryAction,
 } from '@mui/material'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment/enrichment-job-event-config'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Avatar } from '@material-ui/core'
 import { ConfigPrimaryText } from './config-primary-text'

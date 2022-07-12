@@ -4,6 +4,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.data.domain.PageRequest;
@@ -147,9 +148,11 @@ public abstract class DomainStore<T extends DomainObject> implements Store<T> {
     public QueryResults<T> list(int page, int pageSize) {
         PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "created"));
 
-        long total = mongoOperations.count(new Query(), type);
+        Query query = new Query();
 
-        return new QueryResults<>(mongoOperations.find(new Query().with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
+        long total = mongoOperations.count(query, type);
+
+        return new QueryResults<>(mongoOperations.find(query.with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
     }
 
     @Override

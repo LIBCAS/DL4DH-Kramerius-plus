@@ -5,8 +5,8 @@ import {
 	MenuItem,
 	SelectChangeEvent,
 } from '@mui/material'
-import { MissingAltoStrategy } from 'enums/missing-alto-strategy'
-import { MissingAltoStrategyMapping } from 'components/mappings/missing-alto-strategy-mapping'
+import { MissingAltoStrategy } from '../../../enums/missing-alto-strategy'
+import { MissingAltoStrategyMapping } from '../../../components/mappings/missing-alto-strategy-mapping'
 
 type Props = {
 	defaultValue: MissingAltoStrategy

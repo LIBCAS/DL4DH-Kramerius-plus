@@ -14,9 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public abstract class FlowStepFactory<IN, OUT> extends AbstractStepFactory {
+public abstract class FlowStepFactory<IN extends DomainObject, OUT extends DomainObject>
+        extends AbstractStepFactory {
 
-    protected ItemWriteListener<DomainObject> writeListener;
+    protected DatedObjectWriteListener writeListener;
 
     /**
      * There's a bug in Spring, which causes that not all subclass of this abstract

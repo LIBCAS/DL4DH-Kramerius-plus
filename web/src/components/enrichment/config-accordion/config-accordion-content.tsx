@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
-import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentKrameriusJob } from '../../../enums/enrichment-kramerius-job'
+import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment/enrichment-job-event-config'
 import { ConfigButtons } from './config-buttons'
 import { ConfigList } from './config-list'
 

@@ -1,8 +1,8 @@
 import { toast } from 'react-toastify'
 import { QueryResults } from 'models/query-results'
+import { JobEvent } from 'models/job/job-event'
 import { JobEventFilterDto } from './job-event/job-event-filter-dto'
 import { JobType } from 'enums/job-type'
-import { JobEvent } from 'models/job/job-event'
 
 export const listJobEvents = async (
 	jobType: JobType,

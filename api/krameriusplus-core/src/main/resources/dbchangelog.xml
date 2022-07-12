@@ -150,4 +150,28 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="8" author="bodnar">
+        <createTable tableName="enrichment_request">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="enrichment_request_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="name" type="nvarchar(1023)"/>
+        </createTable>
+
+        <addColumn tableName="job_plan">
+            <column name="enrichment_request_id" type="${id}">
+                <constraints foreignKeyName="job_plan_enrichment_request_FK"
+                             referencedTableName="enrichment_request"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

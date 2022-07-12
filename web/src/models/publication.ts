@@ -5,6 +5,7 @@ import { PublishInfo } from './publish-info'
 export interface Publication {
 	context: any
 	id: string
+	created: Date
 	title?: string
 	collections?: string[]
 	policy?: string

@@ -1,21 +1,22 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
 import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.JobPlanResponseDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.EnrichmentRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.JobPlanRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.EnrichmentRequestService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestSimplifiedCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EnrichmentFacadeImpl implements EnrichmentFacade {
+
+    private final EnrichmentRequestService enrichmentRequestService;
 
     private final JobPlanService jobPlanService;
 
@@ -24,14 +25,16 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
     private final JobPlanMapper jobPlanMapper;
 
     @Autowired
-    public EnrichmentFacadeImpl(JobPlanService jobPlanService, JobEventService jobEventService, JobPlanMapper jobPlanMapper) {
+    public EnrichmentFacadeImpl(EnrichmentRequestService enrichmentRequestService, JobPlanService jobPlanService,
+                                JobEventService jobEventService, JobPlanMapper jobPlanMapper) {
+        this.enrichmentRequestService = enrichmentRequestService;
         this.jobPlanService = jobPlanService;
         this.jobEventService = jobEventService;
         this.jobPlanMapper = jobPlanMapper;
     }
 
     @Override
-    public EnrichResponseDto enrich(EnrichmentRequestDto requestDto) {
+    public EnrichResponseDto enrich(SingleJobEnrichmentRequestDto requestDto) {
         EnrichResponseDto responseDto = new EnrichResponseDto();
 
         for (String publicationId : requestDto.getPublicationIds()) {
@@ -48,16 +51,11 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
     }
 
     @Override
-    public JobPlanResponseDto enrichWithPlan(JobPlanRequestDto requestDto) {
-        JobPlanResponseDto responseDto = new JobPlanResponseDto();
+    public EnrichmentRequestDto enrich(EnrichmentRequestSimplifiedCreateDto createDto) {
+        EnrichmentRequestDto resultDto = enrichmentRequestService.create(createDto);
 
-        requestDto.getPublicationIds().forEach(publicationId -> {
-            JobPlanCreateDto planCreateDto = jobPlanMapper.toCreateDto(publicationId, requestDto.getName(), requestDto.getConfigs());
-            JobPlanDto createdPlan = jobPlanService.create(planCreateDto);
-            jobPlanService.startExecution(createdPlan);
-            responseDto.getJobPlans().add(createdPlan);
-        });
+        enrichmentRequestService.startExecution(resultDto);
 
-        return responseDto;
+        return resultDto;
     }
 }

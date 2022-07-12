@@ -5,7 +5,12 @@ export const dateTimeFormatter = (params: GridValueFormatterParams) => {
 		return undefined
 	}
 	const date = new Date(params.value as string)
-	return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}:${date.getMilliseconds()}`
+	return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}.${date.getMilliseconds()}`
+}
+
+export function formatDateTime(dateString: string) {
+	const date = new Date(dateString)
+	return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
 }
 
 export const durationFormatter = (params: GridValueFormatterParams) => {

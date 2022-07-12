@@ -5,12 +5,11 @@ import { ToastContainer } from 'react-toastify'
 
 import { Navbar } from './components/navbar/navbar'
 import { DialogProvider } from './components/dialog/dialog-context-provider'
-import { JobPage } from 'pages/job-event'
-import { PublicationsPage } from 'pages/publication'
+import { PublicationsPage } from 'pages/publication-list-page'
+import { EnrichmentPage } from 'pages/enrichment-page'
 import { ExportList } from 'modules/export/export'
-import { JobEventDetail } from 'modules/jobs/job-event/job-event-detail'
-import { JobType } from 'enums/job-type'
-import { Enrichment } from 'pages/enrichment'
+import { JobEventListPage } from 'pages/job-event-list-page'
+import { JobEventDetailPage } from 'pages/job-event-detail-page'
 
 function App() {
 	return (
@@ -19,24 +18,19 @@ function App() {
 				<BrowserRouter>
 					<Navbar />
 					<Switch>
-						<Route exact path="/exports">
-							<ExportList />
-						</Route>
-						<Route exact path="/publications/:publicationId?">
-							<PublicationsPage />
-						</Route>
-						<Route exact path="/jobs/enriching">
-							<JobPage jobType={JobType.Enriching} />
-						</Route>
-						<Route exact path="/jobs/enriching/:jobId?">
-							<JobEventDetail />
-						</Route>
-						<Route exact path="/jobs/exporting/:jobId?">
-							<JobPage jobType={JobType.Exporting} />
-						</Route>
-						<Route exact path="/">
-							<Enrichment />
-						</Route>
+						<Route component={ExportList} exact path="/exports" />
+						<Route
+							component={PublicationsPage}
+							exact
+							path="/publications/:publicationId?"
+						/>
+						<Route component={JobEventListPage} exact path="/jobs/:jobType" />
+						<Route
+							component={JobEventDetailPage}
+							exact
+							path="/jobs/:jobType/:jobEventId"
+						/>
+						<Route component={EnrichmentPage} exact path="/" />
 						<Route render={() => 'Not found'} />
 					</Switch>
 				</BrowserRouter>

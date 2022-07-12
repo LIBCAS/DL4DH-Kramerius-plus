@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
@@ -39,7 +39,7 @@ public class JobPlanService {
     }
 
     @Transactional
-    public JobPlanDto create(JobPlanCreateDto planCreateDto) {
+    public JobPlan create(JobPlanCreateDto planCreateDto) {
         JobPlan jobPlan = new JobPlan();
 
         int order = 0;
@@ -54,7 +54,7 @@ public class JobPlanService {
             jobPlan.getScheduledJobEvents().add(scheduledJobEvent);
         }
 
-        return mapper.toDto(store.create(jobPlan));
+        return store.create(jobPlan);
     }
 
     public void startExecution(JobPlanDto jobPlanDto) {

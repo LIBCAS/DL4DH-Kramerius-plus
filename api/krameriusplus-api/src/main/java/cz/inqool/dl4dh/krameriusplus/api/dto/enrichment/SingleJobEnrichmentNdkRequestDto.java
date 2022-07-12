@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.dto.enrichment;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment.EnrichmentExternalJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment.EnrichmentNdkJobConfigDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +11,11 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class EnrichmentExternalRequestDto implements EnrichmentRequestDto {
+public class SingleJobEnrichmentNdkRequestDto implements SingleJobEnrichmentRequestDto {
 
     @NotEmpty
     private Set<String> publicationIds = new HashSet<>();
 
     @NotNull
-    private EnrichmentExternalJobConfigDto config;
+    private EnrichmentNdkJobConfigDto config;
 }

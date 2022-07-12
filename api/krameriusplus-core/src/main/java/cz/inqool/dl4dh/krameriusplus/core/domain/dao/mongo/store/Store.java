@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import lombok.NonNull;
 
 import java.util.Collection;
