@@ -42,6 +42,9 @@
         <destinationPolicy>
             <policyMap>
               <policyEntries>
+                <policyEntry queue=">" prioritizedMessages="true" useCache="false" expireMessagesPeriod="0" queuePrefetch="1">
+                    
+                </policyEntry>
                 <policyEntry topic=">" >
                     <!-- The constantPendingMessageLimitStrategy is used to prevent
                          slow topic consumers to block producers and affect other consumers
