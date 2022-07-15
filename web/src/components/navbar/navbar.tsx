@@ -48,11 +48,11 @@ export const Navbar = () => {
 					<Button color="inherit" component={Link} to="/jobs/enriching">
 						Úlohy obohacení
 					</Button>
-					<Button color="inherit" component={Link} to="/jobs/exporting">
-						Úlohy exportování
-					</Button>
 					<Button color="inherit" component={Link} to="/publications">
 						Publikace
+					</Button>
+					<Button color="inherit" component={Link} to="/jobs/exporting">
+						Úlohy exportování
 					</Button>
 					<Button color="inherit" component={Link} to="/exports">
 						Exporty

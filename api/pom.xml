@@ -26,7 +26,7 @@
       and to store them in a database for further use</description>
 
     <properties>
-		<revision>0.7.0</revision>
+		<revision>0.8.0</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<log4j2.version>2.16.0</log4j2.version>
