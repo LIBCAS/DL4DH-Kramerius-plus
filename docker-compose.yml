@@ -1,0 +1,71 @@
+version: '3.7'
+services:
+  web:
+    image: cz.inqool.kramerius/web:latest
+    build:
+      context: ./web/
+    ports:
+      - 80:80
+    environment:
+      API_HOST: "api"
+      TEI_HOST: "localhost"
+      MONGODB_HOST: "mongodb"
+      MONGODB_EXPRESS_HOST: "mongodb-express"
+  api:
+    image: cz.inqool.kramerius/api:latest
+    build:
+      context: ./api/
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://root:root@mongodb:27017/?gssapiServiceName=mongodb&connectTimeoutMS=30000"
+      SYSTEM_ENRICHMENT_TEI_API: "http://localhost:5000/tei"
+      SYSTEM_ENRICHMENT_NDK_PATH: "/usr/src/ndk"
+      SPRING_ACTIVEMQ_BROKER-URL: "tcp://activemq:61616"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresql:5432/kramerius_plus_db"
+      SPRING_DATASOURCE_USERNAME: "kramerius"
+      SPRING_DATASOURCE_PASSWORD: "changeit"
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: "org.postgresql.Driver"
+      SPRING_JPA_DATABASE-PLATFORM: "org.hibernate.dialect.PostgreSQLDialect"
+    volumes:
+      - api:/usr/src/data
+      - ndk:/usr/src/ndk
+  mongodb:
+    image: mongo:5.0.2
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "root"
+      MONGO_INITDB_DATABASE: "KrameriusPlus"
+    expose:
+      - 27017
+    volumes:
+      - mongodb:/data/db
+  mongodb-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: "root"
+      ME_CONFIG_MONGODB_ADMINPASSWORD: "root"
+      ME_CONFIG_MONGODB_SERVER: "mongodb"
+  postgresql:
+    image: postgres:14.2-alpine
+    expose:
+      - 5432
+    environment:
+      POSTGRES_PASSWORD: "changeit"
+      POSTGRES_USER: "kramerius"
+      POSTGRES_DB: "kramerius_plus_db"
+    volumes:
+      - pgdb:/var/lib/postgresql/data
+  activemq:
+    image: cz.inqool.kramerius/activemq:latest
+    build:
+      context: ./activemq/
+    ports:
+      - 61616:61616
+volumes:
+  pgdb:
+  mongodb:
+  api:
+  ndk:
