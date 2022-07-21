@@ -1,6 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import lombok.Getter;
@@ -8,6 +10,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
 import java.util.Map;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.KrameriusModel.MONOGRAPH_UNIT;
@@ -27,7 +30,9 @@ public class MonographUnit extends Publication {
 
     private String partTitle;
 
-    private String donator;
+    @JsonProperty("donator")
+    @JsonUnwrapped
+    private Donators donator;
 
     @JsonProperty("root_pid")
     private String rootPid;
@@ -37,7 +42,10 @@ public class MonographUnit extends Publication {
         partNumber = (String) details.get("partNumber");
         partTitle = ((String) details.get("title"));
     }
-
+    @JsonGetter("donator")
+    public List<String> getDonator() {
+        return donator.getDonators();
+    }
     @Override
     public String getModel() {
         return MONOGRAPH_UNIT;
