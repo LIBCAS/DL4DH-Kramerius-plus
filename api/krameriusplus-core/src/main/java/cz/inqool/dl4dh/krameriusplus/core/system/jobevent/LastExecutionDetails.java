@@ -15,7 +15,7 @@ import javax.persistence.Enumerated;
 public class LastExecutionDetails {
     private Long lastExecutionId;
 
-    private Throwable lastExecutionError;
+    private String lastExecutionFailure;
 
     @Enumerated(EnumType.STRING)
     private JobStatus lastExecutionStatus = JobStatus.CREATED;
