@@ -3,7 +3,14 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.*;
+import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.metrics.BatchMetrics;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -137,8 +144,6 @@ public class JobEventLauncher {
             jobRepository.update(jobExecution);
         }
 
-        List<Throwable> failures = jobExecution.getFailureExceptions();
-        jobEvent.setLastExecutionFailure(failures.isEmpty() ? null : failures.get(failures.size() - 1));
     }
 
     private JobParameters toJobParameters(Map<String, Object> jobParametersMap) {
