@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.fact
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.DatedObjectWriteListener;
-import org.springframework.batch.core.ItemWriteListener;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.StepFailureListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;
@@ -56,7 +56,7 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
     }
 
     protected List<StepExecutionListener> getStepExecutionListeners() {
-        return List.of(new StepExecutionListenerSupport()); // defaults to no-op listener
+        return List.of(new StepExecutionListenerSupport(), new StepFailureListener()); // defaults to no-op listener
     }
 
     @Autowired
