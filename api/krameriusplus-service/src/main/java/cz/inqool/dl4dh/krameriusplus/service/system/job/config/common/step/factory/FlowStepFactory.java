@@ -19,6 +19,8 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
 
     protected DatedObjectWriteListener writeListener;
 
+    protected StepFailureListener stepFailureListener;
+
     /**
      * There's a bug in Spring, which causes that not all subclass of this abstract
      * superclass creates a bean, when this method is annotated with @Bean. Therefore,
@@ -35,7 +37,7 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
             builder.listener(listener);
         }
 
-        return builder.listener(writeListener).build();
+        return builder.listener(stepFailureListener).listener(writeListener).build();
     }
 
     /**
@@ -55,8 +57,13 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
         return null; // defaults to no processor
     }
 
+    /**
+     * Method used to define listeners for inheritors of this class
+     *
+     * @return a List of listeners to be used
+     */
     protected List<StepExecutionListener> getStepExecutionListeners() {
-        return List.of(new StepExecutionListenerSupport(), new StepFailureListener()); // defaults to no-op listener
+        return List.of(new StepExecutionListenerSupport()); // defaults to no-op listener
     }
 
     @Autowired
