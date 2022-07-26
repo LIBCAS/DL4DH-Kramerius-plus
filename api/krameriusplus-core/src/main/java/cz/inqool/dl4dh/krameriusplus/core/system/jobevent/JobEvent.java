@@ -35,6 +35,7 @@ public class JobEvent extends DatedObject {
     @ManyToOne
     private JobEvent parent;
 
+    private Throwable lastExecutionFailure;
     @Embedded
     private JobEventConfig config;
 

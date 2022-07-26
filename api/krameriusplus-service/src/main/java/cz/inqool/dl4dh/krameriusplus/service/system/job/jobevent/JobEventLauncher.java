@@ -138,7 +138,7 @@ public class JobEventLauncher {
         }
 
         List<Throwable> failures = jobExecution.getFailureExceptions();
-        jobEvent.getDetails().setLastExecutionError(failures.isEmpty() ? null : failures.get(failures.size() - 1));
+        jobEvent.setLastExecutionFailure(failures.isEmpty() ? null : failures.get(failures.size() - 1));
     }
 
     private JobParameters toJobParameters(Map<String, Object> jobParametersMap) {
