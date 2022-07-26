@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -135,6 +136,9 @@ public class JobEventLauncher {
             }
             jobRepository.update(jobExecution);
         }
+
+        List<Throwable> failures = jobExecution.getFailureExceptions();
+        jobEvent.getDetails().setLastExecutionError(failures.isEmpty() ? null : failures.get(failures.size() - 1));
     }
 
     private JobParameters toJobParameters(Map<String, Object> jobParametersMap) {
