@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,20 +30,15 @@ public class JobEvent extends DatedObject {
     @Column(unique = true)
     private Long instanceId;
 
-    private Long lastExecutionId;
-
-    @Enumerated(EnumType.STRING)
-    private JobStatus lastExecutionStatus = JobStatus.CREATED;
-
     @ManyToOne
     private JobEvent parent;
-
-    private Throwable lastExecutionFailure;
+    @Embedded
+    private LastExecutionDetails details;
     @Embedded
     private JobEventConfig config;
 
     public boolean wasExecuted() {
-        return lastExecutionId != null;
+        return details.getLastExecutionId() != null;
     }
 
     public Map<String, Object> toJobParametersMap() {
