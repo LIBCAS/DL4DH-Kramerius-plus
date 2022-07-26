@@ -19,7 +19,7 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
                 .select(qObject);
 
         if (filter.getLastExecutionStatus() != null) {
-            query.where(qObject.lastExecutionStatus.eq(filter.getLastExecutionStatus()));
+            query.where(qObject.details.lastExecutionStatus.eq(filter.getLastExecutionStatus()));
         }
 
         if (filter.getKrameriusJobs() != null && !filter.getKrameriusJobs().isEmpty()) {
