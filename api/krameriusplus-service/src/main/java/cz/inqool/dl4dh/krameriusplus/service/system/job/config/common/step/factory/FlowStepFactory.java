@@ -70,4 +70,9 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
     public void setWriteListener(DatedObjectWriteListener writeListener) {
         this.writeListener = writeListener;
     }
+
+    @Autowired
+    public void setStepFailureListener(StepFailureListener stepFailureListener) {
+        this.stepFailureListener = stepFailureListener;
+    }
 }
