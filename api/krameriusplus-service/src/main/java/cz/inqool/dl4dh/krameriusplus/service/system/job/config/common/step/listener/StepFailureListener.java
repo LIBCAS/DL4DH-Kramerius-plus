@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import lombok.NonNull;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * StepExecutionListener who saves failure into JobExecution for later use
+ * StepExecutionListener saves failure into JobExecution for later use
  *
  * @author Filip Kollar
  */
@@ -34,13 +35,14 @@ public class StepFailureListener implements StepExecutionListener {
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         List<Throwable> failures = stepExecution.getFailureExceptions();
-        if (failures.isEmpty()) {
-            return ExitStatus.COMPLETED;
+        if (!failures.isEmpty()) {
+            stepExecution.getJobExecution().addFailureException(failures.get(0));
+            JobEvent jobEvent = jobEventService.getStore()
+                    .find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
+            jobEvent.getDetails().setLastExecutionFailure(failures.get(0).getMessage());
+            jobEventService.getStore().update(jobEvent);
+
         }
-        stepExecution.getJobExecution().addFailureException(failures.get(0));
-        jobEventService.findEntity(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID))
-                .getDetails()
-                .setLastExecutionFailure(failures.get(0).getMessage());
         return null;
     }
 }
