@@ -100,8 +100,8 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     @Transactional
-    public void updateRunningJob(String jobEventId, Long jobInstanceId, Long jobExecutionId) {
-        store.updateJobRun(jobEventId, jobInstanceId, jobExecutionId);
+    public void updateRunningJob(String jobEventId, Long jobInstanceId, Long jobExecutionId, String failure) {
+        store.updateJobRun(jobEventId, jobInstanceId, jobExecutionId, failure);
     }
 
     public QueryResults<JobEventDto> listEnrichingJobs(JobEventFilter jobEventFilter, int page, int pageSize) {

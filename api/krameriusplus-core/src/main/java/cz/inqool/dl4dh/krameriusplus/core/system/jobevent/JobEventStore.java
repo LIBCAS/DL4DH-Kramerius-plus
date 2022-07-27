@@ -46,17 +46,18 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
     }
 
     public void updateJobStatus(String jobEventId, JobStatus status) {
-        entityManager.createQuery("UPDATE JobEvent j SET j.lastExecutionStatus = :exec WHERE j.id=:id")
+        entityManager.createQuery("UPDATE JobEvent j SET j.details.lastExecutionStatus = :exec WHERE j.id=:id")
                 .setParameter("exec", status)
                 .setParameter("id", jobEventId)
                 .executeUpdate();
     }
 
-    public void updateJobRun(String jobEventId, Long instanceId, Long lastExecutionId) {
-        entityManager.createQuery("UPDATE JobEvent j SET j.instanceId=:instanceId, j.lastExecutionId=:executionId WHERE j.id=:id")
+    public void updateJobRun(String jobEventId, Long instanceId, Long lastExecutionId, String failure) {
+        entityManager.createQuery("UPDATE JobEvent j SET j.instanceId=:instanceId, j.details.lastExecutionId=:executionId, j.details.lastExecutionFailure=:failure WHERE j.id=:id")
                 .setParameter("instanceId", instanceId)
                 .setParameter("executionId", lastExecutionId)
                 .setParameter("id", jobEventId)
+                .setParameter("failure", failure)
                 .executeUpdate();
     }
 

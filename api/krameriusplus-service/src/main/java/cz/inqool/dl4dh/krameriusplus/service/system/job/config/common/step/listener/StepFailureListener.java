@@ -40,7 +40,7 @@ public class StepFailureListener implements StepExecutionListener {
             JobEvent jobEvent = jobEventService.getStore()
                     .find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
             jobEvent.getDetails().setLastExecutionFailure(failures.get(0).getMessage());
-            jobEventService.getStore().update(jobEvent);
+            jobEventService.updateRunningJob(jobEvent.getId(), jobEvent.getInstanceId(), stepExecution.getJobExecutionId(), failures.get(0).getMessage());
 
         }
         return null;
