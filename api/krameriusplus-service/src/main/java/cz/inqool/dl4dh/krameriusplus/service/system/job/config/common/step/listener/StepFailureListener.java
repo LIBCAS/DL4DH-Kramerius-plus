@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import lombok.NonNull;
@@ -37,10 +37,9 @@ public class StepFailureListener implements StepExecutionListener {
         List<Throwable> failures = stepExecution.getFailureExceptions();
         if (!failures.isEmpty()) {
             stepExecution.getJobExecution().addFailureException(failures.get(0));
-            JobEvent jobEvent = jobEventService.getStore()
-                    .find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
+            JobEventDto jobEvent = jobEventService.find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
             jobEvent.getDetails().setLastExecutionFailure(failures.get(0).getMessage());
-            jobEventService.updateRunningJob(jobEvent.getId(), jobEvent.getInstanceId(), stepExecution.getJobExecutionId(), failures.get(0).getMessage());
+            jobEventService.update(jobEvent);
 
         }
         return null;
