@@ -38,7 +38,7 @@ public class JobEvent extends DatedObject {
     private JobEventConfig config;
 
     public boolean wasExecuted() {
-        return details.getLastExecutionId() != null;
+        return details != null && details.getLastExecutionId() != null;
     }
 
     public Map<String, Object> toJobParametersMap() {
