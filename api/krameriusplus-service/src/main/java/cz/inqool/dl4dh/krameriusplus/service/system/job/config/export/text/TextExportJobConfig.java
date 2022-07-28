@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.ExportJobConfigBase;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.ExportJobConfig;
 import org.springframework.batch.core.Job;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob.EX
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.*;
 
 @Configuration
-public class TextExportJobConfig extends ExportJobConfigBase {
+public class TextExportJobConfig extends ExportJobConfig {
 
     @Bean
     public Job exportTextJob() {
