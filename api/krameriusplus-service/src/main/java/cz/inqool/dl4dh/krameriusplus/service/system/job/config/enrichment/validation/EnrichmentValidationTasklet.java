@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import org.springframework.batch.core.JobParameters;
@@ -35,7 +36,8 @@ public class EnrichmentValidationTasklet implements Tasklet {
 
         boolean override = Boolean.parseBoolean(jobParameters.getString(OVERRIDE));
         if (!override && jobEventStore.existsOtherJobs(publicationId, thisJobEventId, krameriusJob)) {
-            throw new IllegalStateException("Job of type '" + krameriusJob + "' for publication '" + publicationId + "' already exists and 'override' is set to false.");
+            throw new ValidationException("Job of type '" + krameriusJob + "' for publication '" + publicationId + "' already exists and 'override' is set to false.",
+                    ValidationException.ErrorCode.INVALID_PARAMETERS);
         }
         // if exists jobEvent in state COMPLETED with same KrameriusJob and PublicationId, throw error
 
