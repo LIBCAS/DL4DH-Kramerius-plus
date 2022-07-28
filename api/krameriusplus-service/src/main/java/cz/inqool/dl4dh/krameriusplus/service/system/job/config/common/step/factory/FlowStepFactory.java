@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.fact
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.DatedObjectWriteListener;
-import org.springframework.batch.core.ItemWriteListener;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.StepFailureListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;
@@ -18,6 +18,8 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
         extends AbstractStepFactory {
 
     protected DatedObjectWriteListener writeListener;
+
+    protected StepFailureListener stepFailureListener;
 
     /**
      * There's a bug in Spring, which causes that not all subclass of this abstract
@@ -35,7 +37,7 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
             builder.listener(listener);
         }
 
-        return builder.listener(writeListener).build();
+        return builder.listener(stepFailureListener).listener(writeListener).build();
     }
 
     /**
@@ -55,6 +57,11 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
         return null; // defaults to no processor
     }
 
+    /**
+     * Method used to define listeners for inheritors of this class
+     *
+     * @return a List of listeners to be used
+     */
     protected List<StepExecutionListener> getStepExecutionListeners() {
         return List.of(new StepExecutionListenerSupport()); // defaults to no-op listener
     }
@@ -62,5 +69,10 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
     @Autowired
     public void setWriteListener(DatedObjectWriteListener writeListener) {
         this.writeListener = writeListener;
+    }
+
+    @Autowired
+    public void setStepFailureListener(StepFailureListener stepFailureListener) {
+        this.stepFailureListener = stepFailureListener;
     }
 }
