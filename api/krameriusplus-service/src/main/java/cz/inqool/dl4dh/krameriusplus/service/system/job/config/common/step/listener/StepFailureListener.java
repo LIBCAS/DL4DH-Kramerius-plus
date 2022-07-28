@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.GeneralException;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
@@ -35,12 +36,18 @@ public class StepFailureListener implements StepExecutionListener {
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         List<Throwable> failures = stepExecution.getFailureExceptions();
-        if (!failures.isEmpty()) {
-            JobEventDto jobEvent = jobEventService.find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
-            jobEvent.getDetails().setLastExecutionFailure(failures.get(0).getMessage());
-            jobEventService.update(jobEvent);
+        String message = "";
 
+        if (!failures.isEmpty()) {
+            message = failures.get(0) instanceof GeneralException ?
+                    ((GeneralException) failures.get(0)).getErrorCode().toString() : "UNKNOWN_EXCEPTION_OCCURED";
+
+            JobEventDto jobEvent = jobEventService.find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
+            jobEvent.getDetails().setLastExecutionFailure(message);
+            jobEventService.update(jobEvent);
         }
-        return null;
+
+        return message.equals("") ? null : new ExitStatus(message);
     }
+
 }
