@@ -4,8 +4,8 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.FlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.PublicationMongoWriter;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.KrameriusDigitalObjectProcessor;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.KrameriusPublicationReader;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadPublicationProcessor;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadPublicationReader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
@@ -19,14 +19,14 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ste
 @Slf4j
 public class DownloadPublicationStepFactory extends FlowStepFactory<DigitalObject, Publication> {
 
-    private final KrameriusPublicationReader reader;
+    private final DownloadPublicationReader reader;
 
     private final PublicationMongoWriter writer;
 
-    private final KrameriusDigitalObjectProcessor processor;
+    private final DownloadPublicationProcessor processor;
 
     @Autowired
-    public DownloadPublicationStepFactory(KrameriusPublicationReader reader, PublicationMongoWriter writer, KrameriusDigitalObjectProcessor processor) {
+    public DownloadPublicationStepFactory(DownloadPublicationReader reader, PublicationMongoWriter writer, DownloadPublicationProcessor processor) {
         this.reader = reader;
         this.processor = processor;
         this.writer = writer;
