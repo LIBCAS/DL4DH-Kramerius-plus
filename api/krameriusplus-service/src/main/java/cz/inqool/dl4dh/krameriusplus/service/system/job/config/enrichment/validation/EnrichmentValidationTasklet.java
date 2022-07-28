@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException.ErrorCode.ALREADY_EXISTS;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.*;
 
 @Component
@@ -35,11 +36,12 @@ public class EnrichmentValidationTasklet implements Tasklet {
         KrameriusJob krameriusJob = KrameriusJob.valueOf(jobParameters.getString(KRAMERIUS_JOB));
 
         boolean override = Boolean.parseBoolean(jobParameters.getString(OVERRIDE));
+
         if (!override && jobEventStore.existsOtherJobs(publicationId, thisJobEventId, krameriusJob)) {
-            throw new ValidationException("Job of type '" + krameriusJob + "' for publication '" + publicationId + "' already exists and 'override' is set to false.",
-                    ValidationException.ErrorCode.INVALID_PARAMETERS);
+            throw new ValidationException(
+                    String.format("Job of type %s for publication %s already exists and 'override' is set to false.",
+                            krameriusJob, publicationId), ALREADY_EXISTS);
         }
-        // if exists jobEvent in state COMPLETED with same KrameriusJob and PublicationId, throw error
 
         return RepeatStatus.FINISHED;
     }

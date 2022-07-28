@@ -22,6 +22,9 @@ import java.util.List;
 @StepScope
 @Component
 public class StepFailureListener implements StepExecutionListener {
+
+    private static final String UNEXPECTED_EXCEPTION_CODE = "UNEXPECTED_ERROR_OCCURRED";
+
     private final JobEventService jobEventService;
 
     @Autowired
@@ -31,23 +34,27 @@ public class StepFailureListener implements StepExecutionListener {
 
     @Override
     public void beforeStep(@NonNull StepExecution stepExecution) {
+        // no-op
     }
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         List<Throwable> failures = stepExecution.getFailureExceptions();
-        String message = "";
 
         if (!failures.isEmpty()) {
-            message = failures.get(0) instanceof GeneralException ?
-                    ((GeneralException) failures.get(0)).getErrorCode().toString() : "UNKNOWN_EXCEPTION_OCCURED";
+            Throwable exception = failures.get(0);
+            String errorCode = exception instanceof GeneralException ?
+                    ((GeneralException) exception).getErrorCode().name() : UNEXPECTED_EXCEPTION_CODE;
 
             JobEventDto jobEvent = jobEventService.find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
-            jobEvent.getDetails().setLastExecutionFailure(message);
+            jobEvent.getDetails().setLastExecutionExitCode(errorCode);
+            jobEvent.getDetails().setLastExecutionExitDescription(exception.toString());
             jobEventService.update(jobEvent);
+
+            return new ExitStatus(errorCode);
         }
 
-        return message.equals("") ? null : new ExitStatus(message);
+        return null;
     }
 
 }

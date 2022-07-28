@@ -73,7 +73,6 @@ public class JobApi {
     @ApiResponse(responseCode = "404", description = "Job with given ID not found.")
     @GetMapping("/{id}")
     public JobEventDetailDto findJob(@PathVariable("id") String id) {
-        log.info("Calling findJob");
         return jobEventService.findDetailed(id);
     }
 

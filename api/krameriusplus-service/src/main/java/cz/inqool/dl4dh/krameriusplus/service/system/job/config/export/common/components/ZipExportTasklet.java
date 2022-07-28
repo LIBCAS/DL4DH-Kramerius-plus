@@ -39,7 +39,7 @@ public class ZipExportTasklet implements Tasklet {
                             Files.copy(file, zos);
                             zos.closeEntry();
                         } catch (IOException e) {
-                            throw new UncheckedIOException("Error when zipping directory '" + directoryToZip.toString() + "'.", e);
+                            throw new UncheckedIOException("Error when zipping directory '" + directoryToZip + "'.", e);
                         }
                     });
         }

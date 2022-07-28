@@ -176,7 +176,8 @@
 
     <changeSet id="9" author="kollar">
         <addColumn tableName="job_event">
-            <column name="last_execution_failure" type="varchar(255)"/>
+            <column name="last_execution_exit_code" type="varchar(2500)"/>
+            <column name="last_execution_exit_description" type="varchar(2500)"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>

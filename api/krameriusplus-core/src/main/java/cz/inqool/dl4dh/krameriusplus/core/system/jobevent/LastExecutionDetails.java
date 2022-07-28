@@ -12,10 +12,13 @@ import javax.persistence.Enumerated;
 @Getter
 @Setter
 public class LastExecutionDetails {
+
     @JsonIgnore
     private Long lastExecutionId;
 
-    private String lastExecutionFailure;
+    private String lastExecutionExitCode;
+
+    private String lastExecutionExitDescription;
 
     @Enumerated(EnumType.STRING)
     private JobStatus lastExecutionStatus = JobStatus.CREATED;
