@@ -49,11 +49,11 @@ public abstract class Publication extends DigitalObject {
     private ModsMetadata modsMetadata;
 
     private Map<ExternalSystem, EnrichmentParadata> paradata = new HashMap<>();
-    private String url;
+    private boolean pdf;
 
-    @JsonAlias({"pdf", "epub"})
+    @JsonProperty("pdf")
     public void unpackUrl(Map<String, Object> pdfJson) {
-        this.url = (String) pdfJson.get("url");
+        this.pdf = !pdfJson.isEmpty();
     }
 
     @JsonIgnore
