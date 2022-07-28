@@ -95,7 +95,7 @@ public class JobEventLauncher {
          * assertion and the next method returning successfully.
          */
         jobExecution = jobRepository.createJobExecution(job.getName(), jobParameters);
-        jobEventService.updateRunningJob(jobEvent.getId(), jobExecution.getJobId(), jobExecution.getId(), null);
+        jobEventService.updateRunningJob(jobEvent.getId(), jobExecution.getJobId(), jobExecution.getId());
 
         try {
             taskExecutor.execute(new Runnable() {

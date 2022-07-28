@@ -36,7 +36,6 @@ public class StepFailureListener implements StepExecutionListener {
     public ExitStatus afterStep(StepExecution stepExecution) {
         List<Throwable> failures = stepExecution.getFailureExceptions();
         if (!failures.isEmpty()) {
-            stepExecution.getJobExecution().addFailureException(failures.get(0));
             JobEventDto jobEvent = jobEventService.find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
             jobEvent.getDetails().setLastExecutionFailure(failures.get(0).getMessage());
             jobEventService.update(jobEvent);
