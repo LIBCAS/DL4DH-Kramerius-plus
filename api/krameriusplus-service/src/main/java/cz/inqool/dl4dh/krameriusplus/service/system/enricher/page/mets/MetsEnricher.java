@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.XmlException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.MetsMetadata;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.DomParser;
@@ -11,7 +11,6 @@ import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.valueextr
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.nio.file.Path;
@@ -53,7 +52,7 @@ public class MetsEnricher {
         NodeList nodeList = document.getElementsByTagName(tagName);
 
         if (nodeList.getLength() < 1) {
-            throw new MissingObjectException(Node.class, "No nodes with tag <" + tagName + "> were found");
+            throw new XmlException("No nodes with tag <" + tagName + "> were found", XmlException.ErrorCode.MISSING_TAG);
         }
 
         return nodeList;
