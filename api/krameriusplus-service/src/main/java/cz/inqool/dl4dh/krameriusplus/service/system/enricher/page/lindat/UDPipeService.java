@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
@@ -19,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException.ErrorCode.UD_PIPE_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails.LogLevel.ERROR;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 /**
@@ -64,7 +65,7 @@ public class UDPipeService {
                     .bodyToMono(LindatServiceResponseDto.class)
                     .block();
 
-            notNull(response, () -> new ExternalServiceException("UDPipe did not return results", ExternalServiceException.ErrorCode.UD_PIPE_ERROR, SystemLogDetails.LogLevel.ERROR));
+            notNull(response, () -> new ExternalServiceException("UDPipe did not return results", UD_PIPE_ERROR, ERROR));
 
             if (response.getResult() != null) {
                 response.setResultLines(response.getResult().split("\n"));
@@ -72,7 +73,7 @@ public class UDPipeService {
 
             return response;
         } catch (Exception e) {
-            throw new ExternalServiceException(ExternalServiceException.ErrorCode.UD_PIPE_ERROR, e);
+            throw new ExternalServiceException(UD_PIPE_ERROR, e);
         }
     }
 

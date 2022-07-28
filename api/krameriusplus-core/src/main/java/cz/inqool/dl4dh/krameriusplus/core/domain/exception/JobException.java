@@ -5,6 +5,7 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.exception;
  *
  */
 public class JobException extends GeneralException {
+
     public JobException(String message, ErrorCode errorCode) {
         super(message, errorCode, LogLevel.ERROR);
     }

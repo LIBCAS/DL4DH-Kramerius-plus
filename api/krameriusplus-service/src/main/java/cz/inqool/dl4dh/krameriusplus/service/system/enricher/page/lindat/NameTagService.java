@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NamedEntity;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
@@ -19,6 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException.ErrorCode.NAME_TAG_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails.LogLevel.ERROR;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.SystemLogDetails.LogLevel.WARNING;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.isTrue;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
@@ -75,7 +77,7 @@ public class NameTagService {
                     .bodyToMono(LindatServiceResponseDto.class)
                     .block();
 
-            notNull(response, () -> new ExternalServiceException("NameTag did not return results", ExternalServiceException.ErrorCode.NAME_TAG_ERROR, SystemLogDetails.LogLevel.ERROR));
+            notNull(response, () -> new ExternalServiceException("NameTag did not return results", NAME_TAG_ERROR, ERROR));
 
             if (response.getResult() != null) {
                 response.setResultLines(response.getResult().split("\n"));
@@ -83,7 +85,7 @@ public class NameTagService {
 
             return response;
         } catch (Exception e) {
-            throw new ExternalServiceException(ExternalServiceException.ErrorCode.NAME_TAG_ERROR, e);
+            throw new ExternalServiceException(NAME_TAG_ERROR, e);
         }
     }
 
@@ -100,7 +102,7 @@ public class NameTagService {
             Token token = tokens.get(tokenCounter++);
 
             isTrue(token.getContent().equals(word),
-                    () -> new ExternalServiceException("Response word not equal to input word", ExternalServiceException.ErrorCode.NAME_TAG_ERROR, SystemLogDetails.LogLevel.ERROR));
+                    () -> new ExternalServiceException("Response word not equal to input word", NAME_TAG_ERROR, ERROR));
 
             if (!metadata.equals("O")) {
                 token.setNameTagMetadata(metadata);
@@ -153,7 +155,7 @@ public class NameTagService {
         } else {
             isTrue(namedEntityMap.containsKey(type),
                     () -> new ExternalServiceException("Named entity missing \"B\" label representing the start of a named entity type",
-                            ExternalServiceException.ErrorCode.NAME_TAG_ERROR, SystemLogDetails.LogLevel.WARNING));
+                            NAME_TAG_ERROR, WARNING));
 
             NamedEntity namedEntity = namedEntityMap.get(type);
             namedEntity.getTokens().add(token);
