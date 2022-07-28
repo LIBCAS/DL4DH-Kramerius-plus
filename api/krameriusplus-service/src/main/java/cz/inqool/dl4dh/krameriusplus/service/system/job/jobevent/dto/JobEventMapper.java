@@ -5,7 +5,6 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.JobEventConfigMapper;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.dto.JobMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
