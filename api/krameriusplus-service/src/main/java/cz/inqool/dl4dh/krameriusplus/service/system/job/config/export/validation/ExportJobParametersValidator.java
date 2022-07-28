@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.validation;
 
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -15,23 +15,23 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 public class ExportJobParametersValidator implements JobParametersValidator {
 
     @Override
-    public void validate(JobParameters parameters) throws JobParametersInvalidException {
-        if (parameters == null) {
-            throw new NullPointerException("jobParameters");
+    public void validate(JobParameters jobParameters) throws JobParametersInvalidException {
+        if (jobParameters == null) {
+            throw new JobParametersInvalidException("JobParameters are null.");
         }
 
         Map<String, Object> invalidParameters = new HashMap<>();
 
-        if (parameters.getString(PUBLICATION_ID) == null) {
+        if (jobParameters.getString(PUBLICATION_ID) == null) {
             invalidParameters.put(PUBLICATION_ID, null);
         }
 
-        if (parameters.getString(PARAMS) == null) {
+        if (jobParameters.getString(PARAMS) == null) {
             invalidParameters.put(PARAMS, null);
         }
 
         if (!invalidParameters.isEmpty()) {
-            throw new JobParametersInvalidException("Invalid parameters: " + invalidParameters);
+            throw new JobParametersInvalidException("Invalid jobParameters: " + invalidParameters);
         }
     }
 }
