@@ -1,11 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublishInfo;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.DataProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -18,7 +15,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 @Component
 @StepScope
 @Slf4j
-public class KrameriusPublicationReader implements ItemReader<Publication> {
+public class KrameriusPublicationReader implements ItemReader<DigitalObject> {
 
     private final DataProvider dataProvider;
 
@@ -32,7 +29,7 @@ public class KrameriusPublicationReader implements ItemReader<Publication> {
     }
 
     @Override
-    public Publication read() throws JobParametersInvalidException {
+    public DigitalObject read() {
         if (isRead) {
             return null;
         }
@@ -41,15 +38,7 @@ public class KrameriusPublicationReader implements ItemReader<Publication> {
 
         log.debug("Downloading publication with ID={}", publicationId);
 
-        DigitalObject digitalObject = dataProvider.getDigitalObject(publicationId);
-        if (!(digitalObject instanceof Publication)) {
-            throw new JobParametersInvalidException("Received DigitalObject which is not a publication");
-        }
-
-        Publication publication = (Publication) digitalObject;
-        publication.setPublishInfo(new PublishInfo());
-
-        return publication;
+        return dataProvider.getDigitalObject(publicationId);
     }
 
     @BeforeStep
