@@ -10,6 +10,7 @@ import { StepExecutionList } from 'components/job-event/step-execution-list'
 import { JobEventDataDisplay } from 'components/job-event/job-event-data-display'
 import { StepExecutionDetail } from 'components/job-event/step-execution-detail'
 import { CircularProgress } from '@material-ui/core'
+import { JobEventRunErrorAlert } from 'modules/jobs/job-event/job-event-run-error-alert'
 
 export const JobEventDetailPage: FC<
 	RouteComponentProps<{ jobEventId: string }>
@@ -70,6 +71,11 @@ export const JobEventDetailPage: FC<
 								onRefreshClick={onRefreshClick}
 							/>
 						</Grid>
+						{jobEvent.runErrorMessage && (
+							<Grid item xs={12}>
+								<JobEventRunErrorAlert jobEvent={jobEvent} />
+							</Grid>
+						)}
 						<Grid item xs={12}>
 							<JobExecutionList
 								executions={jobEvent?.executions}

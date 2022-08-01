@@ -25,5 +25,5 @@ public class ExecutionDetails {
 
     private String runErrorMessage;
 
-    private String runErrorStacktrace;
+    private String runErrorStackTrace;
 }

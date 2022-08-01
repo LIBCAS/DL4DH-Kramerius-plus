@@ -5,11 +5,9 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventRunDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Component for running jobs
@@ -36,9 +34,7 @@ public class JobEventRunner {
         } catch (Exception e) {
             JobEventDto jobEventDto = jobEventMapper.toDto(jobEvent);
             jobEventDto.getDetails().setRunErrorMessage(e.getMessage());
-            jobEventDto.getDetails().setRunErrorStacktrace(Arrays.stream(e.getStackTrace()).sequential()
-                    .map(StackTraceElement::toString)
-                    .collect(Collectors.joining()));
+            jobEventDto.getDetails().setRunErrorStackTrace(ExceptionUtils.getStackTrace(e));
             jobEventService.update(jobEventDto);
             throw new IllegalStateException("Failed to run job", e);
         }
