@@ -72,8 +72,8 @@ public class WebClientConfig {
                                        @Value("${system.kramerius.code}") String krameriusCode,
                                        @Value("${system.kramerius.default-url}") String krameriusUrl) throws SSLException, JsonProcessingException {
         String uri = UriComponentsBuilder
-                .fromHttpUrl("https://registr.digitalniknihovna.cz/libraries/")
-                .path(krameriusCode + ".json")
+                .fromHttpUrl("https://api.registr.digitalniknihovna.cz/api/libraries")
+                .path(krameriusCode)
                 .build()
                 .toUriString();
 
@@ -95,11 +95,11 @@ public class WebClientConfig {
 
         } catch (Exception e) {
             if (krameriusUrl == null) {
-                throw new IllegalStateException("Failed to connect to https://registr.digitalniknihovna.cz and" +
+                throw new IllegalStateException("Failed to connect to https://api.registr.digitalniknihovna.cz and" +
                         " no default URL of Kramerius is set.");
             } else {
                 krameriusInfo.put("url", krameriusUrl);
-                log.warn("Failed to connect to https://registr.digitalniknihovna.cz and retrieve information about Kramerius instance. " +
+                log.warn("Failed to connect to https://api.registr.digitalniknihovna.cz and retrieve information about Kramerius instance. " +
                         "Default URL of Kramerius is set to {}", krameriusUrl);
             }
         }
