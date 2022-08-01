@@ -11,7 +11,7 @@ import javax.persistence.Enumerated;
 @Embeddable
 @Getter
 @Setter
-public class LastExecutionDetails {
+public class ExecutionDetails {
 
     @JsonIgnore
     private Long lastExecutionId;
@@ -22,4 +22,8 @@ public class LastExecutionDetails {
 
     @Enumerated(EnumType.STRING)
     private JobStatus lastExecutionStatus = JobStatus.CREATED;
+
+    private String runErrorMessage;
+
+    private String runErrorStacktrace;
 }

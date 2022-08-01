@@ -34,7 +34,7 @@ public class JobEvent extends DatedObject {
     private JobEvent parent;
 
     @Embedded
-    private LastExecutionDetails details = new LastExecutionDetails();
+    private ExecutionDetails details = new ExecutionDetails();
 
     @Embedded
     private JobEventConfig config;
