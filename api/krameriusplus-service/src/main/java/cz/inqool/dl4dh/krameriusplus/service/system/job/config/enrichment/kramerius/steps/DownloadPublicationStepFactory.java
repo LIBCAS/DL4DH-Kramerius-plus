@@ -1,10 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.steps;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.FlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.PublicationMongoWriter;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.KrameriusPublicationReader;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadPublicationProcessor;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadPublicationReader;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +17,18 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ste
 
 @Component
 @Slf4j
-public class DownloadPublicationStepFactory extends FlowStepFactory<Publication, Publication> {
+public class DownloadPublicationStepFactory extends FlowStepFactory<DigitalObject, Publication> {
 
-    private final KrameriusPublicationReader reader;
+    private final DownloadPublicationReader reader;
 
     private final PublicationMongoWriter writer;
 
+    private final DownloadPublicationProcessor processor;
+
     @Autowired
-    public DownloadPublicationStepFactory(KrameriusPublicationReader reader, PublicationMongoWriter writer) {
+    public DownloadPublicationStepFactory(DownloadPublicationReader reader, PublicationMongoWriter writer, DownloadPublicationProcessor processor) {
         this.reader = reader;
+        this.processor = processor;
         this.writer = writer;
     }
 
@@ -32,12 +38,17 @@ public class DownloadPublicationStepFactory extends FlowStepFactory<Publication,
     }
 
     @Override
-    protected ItemReader<Publication> getItemReader() {
+    protected ItemReader<DigitalObject> getItemReader() {
         return reader;
     }
 
     @Override
     protected ItemWriter<Publication> getItemWriter() {
         return writer;
+    }
+
+    @Override
+    protected ItemProcessor<DigitalObject, Publication> getItemProcessor() {
+        return processor;
     }
 }

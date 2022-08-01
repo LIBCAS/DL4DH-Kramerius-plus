@@ -15,6 +15,8 @@ import org.w3c.dom.NodeList;
 
 import java.nio.file.Path;
 
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.XmlException.ErrorCode.MISSING_TAG;
+
 @Service
 public class MetsEnricher {
 
@@ -52,7 +54,7 @@ public class MetsEnricher {
         NodeList nodeList = document.getElementsByTagName(tagName);
 
         if (nodeList.getLength() < 1) {
-            throw new XmlException("No nodes with tag <" + tagName + "> were found", XmlException.ErrorCode.MISSING_TAG);
+            throw new XmlException("No nodes with tag <" + tagName + "> were found", MISSING_TAG);
         }
 
         return nodeList;

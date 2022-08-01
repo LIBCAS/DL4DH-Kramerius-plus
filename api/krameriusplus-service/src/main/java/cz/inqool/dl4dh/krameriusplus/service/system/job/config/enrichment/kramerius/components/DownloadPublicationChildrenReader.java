@@ -16,7 +16,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 @Component
 @StepScope
 @Slf4j
-public class KrameriusPublicationChildrenReader implements ItemReader<DigitalObject> {
+public class DownloadPublicationChildrenReader implements ItemReader<DigitalObject> {
 
     private final DataProvider dataProvider;
 
@@ -27,8 +27,8 @@ public class KrameriusPublicationChildrenReader implements ItemReader<DigitalObj
     private int nextToReadIndex = 0;
 
     @Autowired
-    public KrameriusPublicationChildrenReader(DataProvider dataProvider,
-                                              @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId) {
+    public DownloadPublicationChildrenReader(DataProvider dataProvider,
+                                             @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId) {
         this.dataProvider = dataProvider;
         this.publicationId = publicationId;
     }

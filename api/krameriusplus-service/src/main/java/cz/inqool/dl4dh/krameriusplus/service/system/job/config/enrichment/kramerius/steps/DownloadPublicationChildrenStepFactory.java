@@ -5,7 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.FlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.PageMongoWriter;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadPublicationChildrenProcessor;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.KrameriusPublicationChildrenReader;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadPublicationChildrenReader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
@@ -19,14 +19,14 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ste
 @Component
 public class DownloadPublicationChildrenStepFactory extends FlowStepFactory<DigitalObject, Page> {
 
-    private final KrameriusPublicationChildrenReader reader;
+    private final DownloadPublicationChildrenReader reader;
 
     private final DownloadPublicationChildrenProcessor processor;
 
     private final PageMongoWriter writer;
 
     @Autowired
-    public DownloadPublicationChildrenStepFactory(KrameriusPublicationChildrenReader reader,
+    public DownloadPublicationChildrenStepFactory(DownloadPublicationChildrenReader reader,
                                                   DownloadPublicationChildrenProcessor processor,
                                                   PageMongoWriter writer) {
         this.reader = reader;

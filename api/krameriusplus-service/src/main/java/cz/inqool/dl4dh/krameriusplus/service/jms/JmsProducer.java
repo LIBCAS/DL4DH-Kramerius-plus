@@ -14,14 +14,14 @@ public class JmsProducer {
     private JmsTemplate jmsTemplate;
 
     public void sendMessage(String queue, JobEventRunDto jobEvent) {
-        try{
+        try {
             log.debug("Attempting Send message : " + jobEvent.toString());
             jmsTemplate.convertAndSend(queue, jobEvent,
                     message -> {
                         message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, 500);
                         return message;
                     });
-        } catch(Exception e) {
+        } catch (Exception e) {
             log.error("Received Exception during send Message: ", e);
         }
     }

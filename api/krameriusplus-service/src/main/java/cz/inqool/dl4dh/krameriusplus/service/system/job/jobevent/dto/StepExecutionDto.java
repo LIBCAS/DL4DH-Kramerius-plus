@@ -1,26 +1,38 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.dto;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobParameter;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
-public class JobExecutionDto {
+public class StepExecutionDto {
 
     private Long id;
 
-    private Collection<StepExecutionDto> stepExecutions;
+    private String stepName;
 
     private BatchStatus status;
 
-    private Date startTime;
+    private int readCount;
 
-    private Date createTime;
+    private int writeCount;
+
+    private int commitCount;
+
+    private int rollbackCount;
+
+    private int readSkipCount;
+
+    private int processSkipCount;
+
+    private int writeSkipCount;
+
+    private Date startTime;
 
     private Date endTime;
 
@@ -28,11 +40,12 @@ public class JobExecutionDto {
 
     private ExitStatus exitStatus;
 
-    private String jobConfigurationName;
+    private boolean terminateOnly;
+
+    private int filterCount;
 
     private List<Throwable> failureExceptions;
 
-    private Map<String, JobParameter> jobParameters = new HashMap<>();
     /**
      * Returns the difference in milliseconds
      */

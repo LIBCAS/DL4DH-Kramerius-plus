@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.dto;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto;
 
 import org.mapstruct.Mapper;
 import org.springframework.batch.core.*;

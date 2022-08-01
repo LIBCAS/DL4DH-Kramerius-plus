@@ -9,6 +9,7 @@ public class XmlException extends GeneralException{
     }
 
     public enum ErrorCode implements LogCode {
-        MISSING_TAG
+        MISSING_TAG,
+        INVALID_NUMBER_OF_ELEMENTS
     }
 }

@@ -1,11 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export;
 
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobConfigBase;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.validation.ExportJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class ExportJobConfigBase extends JobConfigBase {
+public abstract class ExportJobConfig extends JobConfigBase {
 
     private ExportJobParametersValidator exportJobParametersValidator;
 

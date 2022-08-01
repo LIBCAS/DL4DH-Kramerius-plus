@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.EnrichmentParadata;
@@ -47,6 +48,13 @@ public abstract class Publication extends DigitalObject {
     private ModsMetadata modsMetadata;
 
     private Map<ExternalSystem, EnrichmentParadata> paradata = new HashMap<>();
+
+    private boolean pdf;
+
+    @JsonProperty("pdf")
+    public void unpackUrl(Map<String, Object> pdfJson) {
+        this.pdf = !pdfJson.isEmpty();
+    }
 
     @JsonIgnore
     private String ndkDirPath;

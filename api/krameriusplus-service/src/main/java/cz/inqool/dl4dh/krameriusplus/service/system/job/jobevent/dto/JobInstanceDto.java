@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.dto;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto;
 
 import lombok.Getter;
 import lombok.Setter;
