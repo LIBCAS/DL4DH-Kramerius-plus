@@ -180,4 +180,11 @@
             <column name="last_execution_exit_description" type="varchar(2500)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="10" author="kollar">
+        <addColumn tableName="job_event">
+            <column name="run_error_message" type="varchar(2500)"/>
+            <column name="run_error_stack_trace" type="varchar(2500)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

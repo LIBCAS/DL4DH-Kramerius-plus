@@ -15,4 +15,6 @@ export interface JobEvent {
 	executions: JobExecution[]
 	config: JobEventConfig
 	lastExecutionStatus: string
+	runErrorMessage?: string
+	runErrorStackTrace?: string
 }
