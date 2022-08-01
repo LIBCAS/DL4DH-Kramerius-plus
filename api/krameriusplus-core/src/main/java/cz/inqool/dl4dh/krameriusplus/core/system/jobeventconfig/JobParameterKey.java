@@ -6,8 +6,6 @@ package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig;
  */
 public class JobParameterKey {
     public static final String PUBLICATION_ID = "publicationId";
-    public static final String PUBLICATION_TITLE = "publicationTitle";
-    public static final String EXPORT_FORMAT = "exportFormat";
     public static final String PARAMS = "params";
     public static final String JOB_EVENT_ID = "jobEventId";
     public static final String KRAMERIUS_JOB = "krameriusJob";
