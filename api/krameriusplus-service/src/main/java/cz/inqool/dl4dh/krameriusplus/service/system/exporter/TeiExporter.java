@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.exporter;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
@@ -33,14 +34,15 @@ public class TeiExporter {
     }
 
     public void export(String publicationId, TeiParams teiParams, Path teiFile) throws IOException {
-        Publication publication = publicationService.listTei(publicationId);
-
+        Publication publication = publicationService.find(publicationId);
         FileRef teiHeader = fileService.find(publication.getTeiHeaderFileId());
+
+        QueryResults<Page> pages = publicationService.findAllPages(publicationId);
 
         List<InputStream> teiBodies = new ArrayList<>();
 
         try (InputStream teiHeaderIs = teiHeader.open()) {
-            for (Page page : publication.getPages()) {
+            for (Page page : pages.getResults()) {
                 FileRef teiBody = fileService.find(page.getTeiBodyFileId());
                 teiBodies.add(teiBody.open());
             }

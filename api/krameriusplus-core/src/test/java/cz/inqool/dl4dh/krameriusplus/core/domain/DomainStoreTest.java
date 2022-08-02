@@ -96,25 +96,6 @@ public class DomainStoreTest extends CoreBaseTest {
     }
 
     @Test
-    public void findWithCustomFields() {
-        Publication publication = new Monograph();
-        publication.setId("1");
-        publication.setTitle("Title 1");
-        publication.setPolicy("Policy 1");
-        publicationStore.save(publication);
-
-        List<String> includeFields = new ArrayList<>();
-        includeFields.add("_id");
-        includeFields.add("title");
-
-        Publication actual = publicationStore.find("1", includeFields);
-
-        Assertions.assertEquals(publication.getId(), actual.getId());
-        assertEquals(publication.getTitle(), actual.getTitle());
-        assertNull(actual.getPolicy());
-    }
-
-    @Test
     public void update() {
         Publication expected = new Monograph();
         expected.setId("1");
@@ -151,31 +132,6 @@ public class DomainStoreTest extends CoreBaseTest {
         assertTrue(IntStream.range(0, 10)
                 .mapToObj(String::valueOf)
                 .allMatch(id -> result.stream().anyMatch(pub -> pub.getId().equals(id))));
-    }
-
-    @Test
-    public void findWithoutPages() {
-        List<Page> pages = new ArrayList<>();
-        for (int j = 0; j < 10; j++) {
-            Page page = new Page();
-            page.setId(String.valueOf(j));
-            page.setContent("Content of the page " + j);
-            pages.add(pageStore.save(page));
-        }
-
-        Publication publication = new Monograph();
-        publication.setId("1");
-        publication.setTitle("Title");
-        publication.setPolicy("Policy");
-        publication.setPages(pages);
-        publicationStore.save(publication);
-
-        Publication actual = publicationStore.find("1", getIncludeFields("title", "policy"));
-
-        assertEquals(0, actual.getPages().size());
-        Assertions.assertEquals("1", actual.getId());
-        assertEquals("Title", actual.getTitle());
-        assertEquals("Policy", actual.getPolicy());
     }
 
     @Test

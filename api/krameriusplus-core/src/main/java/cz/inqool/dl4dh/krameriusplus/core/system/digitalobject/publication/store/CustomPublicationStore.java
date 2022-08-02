@@ -3,23 +3,16 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.stor
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
-import lombok.NonNull;
+import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
 import java.util.List;
 
 public interface CustomPublicationStore {
-    Publication listWithTei(String publicationId);
 
-    String getTitle(String publicationId);
+    List<Publication> findAllPublishedModified(Instant publishedModifiedAfter);
 
-    List<Publication> listPublishedModified(Instant publishedModifiedAfter);
+    QueryResults<Publication> findAllChildren(String parentId, Pageable pageRequest);
 
-    QueryResults<Publication> list(String publicationId, int page, int pageSize);
-
-    QueryResults<Publication> list(PublicationListFilterDto filter, int page, int pageSize);
-
-    Publication find(@NonNull String id, List<String> includeFields);
-
-    Publication find(@NonNull String id);
+    QueryResults<Publication> findAll(PublicationListFilterDto filter, Pageable pageRequest);
 }

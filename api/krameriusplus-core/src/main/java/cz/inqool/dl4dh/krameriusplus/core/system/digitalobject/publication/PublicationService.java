@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store.PageStore;
@@ -10,11 +9,14 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.eq;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
@@ -35,27 +37,18 @@ public class PublicationService {
         publicationStore.save(publication);
     }
 
-    /**
-     * Returns the given publication with only teiHeader and teiBody fields
-     * @param publicationId
-     * @return
-     */
-    public Publication listTei(String publicationId) {
-        Publication result = publicationStore.listWithTei(publicationId);
-
-        result.setPages(pageStore.listWithTei(publicationId));
-
-        return result;
-    }
-
-    public List<Publication> listPublishedModified(Instant publishedModifiedAfter) {
-        return publicationStore.listPublishedModified(publishedModifiedAfter);
+    public List<Publication> findAllPublishedModified(Instant publishedModifiedAfter) {
+        return publicationStore.findAllPublishedModified(publishedModifiedAfter);
     }
 
     @Transactional
     public void publish(String publicationId) {
-        Publication publication = publicationStore.find(publicationId);
+        Optional<Publication> publicationOptional = publicationStore.findById(publicationId);
+        if (publicationOptional.isEmpty()) {
+            throw new MissingObjectException(Publication.class, publicationId);
+        }
 
+        Publication publication = publicationOptional.get();
         publication.getPublishInfo().publish();
 
         publicationStore.save(publication);
@@ -63,8 +56,12 @@ public class PublicationService {
 
     @Transactional
     public void unPublish(String publicationId) {
-        Publication publication = publicationStore.find(publicationId);
+        Optional<Publication> publicationOptional = publicationStore.findById(publicationId);
+        if (publicationOptional.isEmpty()) {
+            throw new MissingObjectException(Publication.class, publicationId);
+        }
 
+        Publication publication = publicationOptional.get();
         publication.getPublishInfo().unPublish();
 
         publicationStore.save(publication);
@@ -88,25 +85,20 @@ public class PublicationService {
         return page;
     }
 
-    public QueryResults<Publication> listChildren(String publicationId, int page, int pageSize) {
-        return publicationStore.list(publicationId, page, pageSize);
+    public QueryResults<Publication> findAllChildren(String publicationId, int page, int pageSize) {
+        return publicationStore.findAllChildren(publicationId, PageRequest.of(page, pageSize));
     }
 
-    public QueryResults<Page> listPages(String publicationId, int page, int pageSize) {
-        return pageStore.list(publicationId, page, pageSize);
+    public QueryResults<Page> findAllPages(String publicationId) {
+        return pageStore.findAllByPublication(publicationId, Pageable.unpaged());
     }
 
-    public QueryResults<Publication> list(PublicationListFilterDto filter, int page, int pageSize) {
-        return publicationStore.list(filter, page, pageSize);
+    public QueryResults<Page> findAllPages(String publicationId, int page, int pageSize) {
+        return pageStore.findAllByPublication(publicationId, PageRequest.of(page, pageSize));
     }
 
-    public List<Publication> list(Params params) {
-        //return publicationStore.listAll(params);
-        return null;
-    }
-
-    public String getTitle(String publicationId) {
-        return publicationStore.getTitle(publicationId);
+    public QueryResults<Publication> findAll(PublicationListFilterDto filter, int page, int pageSize) {
+        return publicationStore.findAll(filter, PageRequest.of(page, pageSize));
     }
 
     @Autowired

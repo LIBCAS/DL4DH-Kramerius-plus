@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.DateTimeException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -55,7 +54,7 @@ public class PublicationApi {
     public QueryResults<Publication> listChildren(@PathVariable("id") String publicationId,
                                                   @RequestParam(value = "page", defaultValue = "0") int page,
                                                   @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-        return publicationService.listChildren(publicationId, page, pageSize);
+        return publicationService.findAllChildren(publicationId, page, pageSize);
     }
 
     @Operation(summary = "List publications.")
@@ -73,7 +72,7 @@ public class PublicationApi {
                                           @DateTimeFormat(iso = DATE_TIME) Instant publishedBefore,
                                           @RequestParam(value = "publishedAfter", required = false)
                                           @DateTimeFormat(iso = DATE_TIME) Instant publishedAfter) {
-        return publicationService.list(new PublicationListFilterDto(
+        return publicationService.findAll(new PublicationListFilterDto(
                         title, parentId, createdBefore, createdAfter,
                         isPublished, publishedBefore, publishedAfter),
                 page, pageSize);
@@ -86,7 +85,7 @@ public class PublicationApi {
         try {
             Instant instant = Instant.from(formatter.parse(publishedModifiedAfter));
 
-            return publicationService.listPublishedModified(instant);
+            return publicationService.findAllPublishedModified(instant);
         } catch (DateTimeException e) {
             throw new ValidationException("Failed to parse given dateTime", INVALID_PARAMETERS, e);
         }
@@ -98,7 +97,7 @@ public class PublicationApi {
     public QueryResults<Page> listPages(@PathVariable("id") String publicationId,
                                         @RequestParam(value = "page", defaultValue = "0") int page,
                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-        return publicationService.listPages(publicationId, page, pageSize);
+        return publicationService.findAllPages(publicationId, page, pageSize);
     }
 
     @Operation(summary = "Find page for given publication by id. Page contains all metadata.")

@@ -47,7 +47,7 @@ public class CreateExportTasklet implements Tasklet {
 
         String jobEventId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(JOB_EVENT_ID);
         String publicationId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(PUBLICATION_ID);
-        String publicationTitle = publicationService.getTitle(publicationId);
+        String publicationTitle = publicationService.find(publicationId).getTitle();
 
         FileRef fileRef;
 

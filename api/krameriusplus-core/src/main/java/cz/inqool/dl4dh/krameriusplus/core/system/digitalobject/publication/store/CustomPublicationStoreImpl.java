@@ -2,10 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.stor
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.AbstractMongoStore;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
@@ -24,18 +23,26 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
         super(mongoOperations, Publication.class);
     }
 
-    public QueryResults<Publication> list(String publicationId, int page, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "index"));
+    public QueryResults<Publication> findAllChildren(String parentId, Pageable pageRequest) {
+        if (pageRequest.isPaged() && pageRequest.getSort().equals(Sort.unsorted())) {
+            pageRequest = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(),
+                    Sort.by(Sort.Direction.ASC, "index"));
+        }
 
-        Query query = Query.query(where("parentId").is(publicationId));
+        Query query = Query.query(where("parentId").is(parentId));
 
         long total = mongoOperations.count(query, type);
 
-        return new QueryResults<>(mongoOperations.find(query.with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
+        List<Publication> result = mongoOperations.find(query.with(pageRequest), type);
+
+        return constructQueryResults(result, pageRequest, total);
     }
 
-    public QueryResults<Publication> list(PublicationListFilterDto filter, int page, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "created"));
+    public QueryResults<Publication> findAll(PublicationListFilterDto filter, Pageable pageRequest) {
+        if (pageRequest.isPaged() && pageRequest.getSort().equals(Sort.unsorted())) {
+            pageRequest = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(),
+                    Sort.by(Sort.Direction.DESC, "created"));
+        }
 
         Query query = new Query();
 
@@ -69,29 +76,12 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
 
         long total = mongoOperations.count(query, type);
 
-        return new QueryResults<>(mongoOperations.find(query.with(pageRequest), type), (long) pageSize, (long) page * pageSize, total);
+        List<Publication> result = mongoOperations.find(query.with(pageRequest), type);
+
+        return constructQueryResults(result, pageRequest, total);
     }
 
-    public Publication listWithTei(String publicationId) {
-        Query query = Query.query(where("_id").is(publicationId));
-
-        query.fields().include("_class", "_id", "teiHeaderFileId");
-
-        return mongoOperations.findOne(query, type);
-    }
-
-    public String getTitle(String publicationId) {
-        Query query = Query.query(where("_id").is(publicationId));
-
-        query.fields().include("_class", "title");
-
-        Publication publication = mongoOperations.findOne(query, type);
-        notNull(publication, () -> new MissingObjectException(Publication.class, publicationId));
-
-        return publication.getTitle();
-    }
-
-    public List<Publication> listPublishedModified(Instant publishedModifiedAfter) {
+    public List<Publication> findAllPublishedModified(Instant publishedModifiedAfter) {
         Query query = Query.query(where("publishInfo.publishedLastModified").gte(publishedModifiedAfter));
 
         return mongoOperations.find(query, type);

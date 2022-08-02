@@ -1,6 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store;
 
+import com.querydsl.core.QueryResults;
 import lombok.NonNull;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -9,6 +11,7 @@ import java.util.List;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public abstract class AbstractMongoStore<T> {
+
     protected final MongoOperations mongoOperations;
 
     protected final Class<T> type;
@@ -38,5 +41,13 @@ public abstract class AbstractMongoStore<T> {
         query.addCriteria(where("_id").is(id));
 
         return mongoOperations.findOne(query, type);
+    }
+
+    protected QueryResults<T> constructQueryResults(List<T> resultSet, Pageable pageable, long count) {
+        if (pageable == Pageable.unpaged()) {
+            return new QueryResults<>(resultSet, null, null, count);
+        }
+
+        return new QueryResults<>(resultSet, (long) pageable.getPageNumber(), pageable.getOffset(), count);
     }
 }
