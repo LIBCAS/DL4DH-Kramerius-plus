@@ -11,12 +11,14 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.perio
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,22 +31,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataMongoTest
-@AutoConfigureDataMongo
-public class DomainStoreTest {
+@DataMongoTest(properties = {"spring.mongodb.embedded.version=4.0.2"},
+        excludeAutoConfiguration = {DataSourceAutoConfiguration.class,
+        DataSourceTransactionManagerAutoConfiguration.class,
+        HibernateJpaAutoConfiguration.class})
+@EnableMongoRepositories(basePackages = "cz.inqool.dl4dh.krameriusplus")
 
+public class DomainStoreTest {
     @Autowired
     private MongoTemplate mongoTemplate;
-
+    @Autowired
     private PublicationStore publicationStore;
-
+    @Autowired
     private PageStore pageStore;
 
-    @BeforeEach
-    void setUp(@Autowired PageStore pageStore,@Autowired PublicationStore publicationStore) {
-        this.publicationStore = publicationStore;
-        this.pageStore = pageStore;
-    }
 
     @AfterEach
     void cleanUp() {
@@ -120,7 +120,7 @@ public class DomainStoreTest {
         includeFields.add("_id");
         includeFields.add("title");
 
-        Publication actual = null; //publicationStore.findAl("1", includeFields);
+        Publication actual = null; //publicationStore.findAll("1", includeFields);
 
         Assertions.assertEquals(publication.getId(), actual.getId());
         assertEquals(publication.getTitle(), actual.getTitle());
