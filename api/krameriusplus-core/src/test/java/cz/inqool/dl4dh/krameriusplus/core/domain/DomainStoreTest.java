@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest
 @AutoConfigureDataMongo
@@ -39,9 +41,10 @@ public class DomainStoreTest {
     private PageStore pageStore;
 
     @BeforeEach
-    void setUp() {
-        publicationStore = new PublicationStore(mongoTemplate);
-        pageStore = new PageStore(mongoTemplate);
+    @Autowired
+    void setUp(PageStore pageStore, PublicationStore publicationStore) {
+        this.publicationStore = publicationStore;
+        this.pageStore = pageStore;
     }
 
     @AfterEach
