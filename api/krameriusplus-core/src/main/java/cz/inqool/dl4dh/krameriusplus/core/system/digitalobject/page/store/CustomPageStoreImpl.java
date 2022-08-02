@@ -1,21 +1,20 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page;
+package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.AbstractMongoStore;
-import org.springframework.beans.factory.annotation.Autowired;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.repository.RepositoryDefinition;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-@RepositoryDefinition(domainClass = Page.class, idClass = String.class)
+@Repository
 public class CustomPageStoreImpl extends AbstractMongoStore<Page> implements CustomPageStore {
-    @Autowired
     public CustomPageStoreImpl(MongoOperations mongoOperations) {
         super(mongoOperations, Page.class);
     }

@@ -1,15 +1,15 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
+package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.AbstractMongoStore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.repository.RepositoryDefinition;
+import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,10 +17,9 @@ import java.util.List;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-@RepositoryDefinition(domainClass = Publication.class, idClass = String.class)
+@Repository
 public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> implements CustomPublicationStore {
 
-    @Autowired
     public CustomPublicationStoreImpl(MongoOperations mongoOperations) {
         super(mongoOperations, Publication.class);
     }

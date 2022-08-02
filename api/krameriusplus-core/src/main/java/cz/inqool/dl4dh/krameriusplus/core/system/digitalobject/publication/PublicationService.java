@@ -4,8 +4,9 @@ import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class PublicationService {
 
     @Transactional
     public void publish(String publicationId) {
-        Publication publication = find(publicationId);
+        Publication publication = publicationStore.find(publicationId);
 
         publication.getPublishInfo().publish();
 
@@ -62,7 +63,7 @@ public class PublicationService {
 
     @Transactional
     public void unPublish(String publicationId) {
-        Publication publication = find(publicationId);
+        Publication publication = publicationStore.find(publicationId);
 
         publication.getPublishInfo().unPublish();
 
@@ -100,7 +101,8 @@ public class PublicationService {
     }
 
     public List<Publication> list(Params params) {
-        return publicationStore.listAll(params);
+        //return publicationStore.listAll(params);
+        return null;
     }
 
     public String getTitle(String publicationId) {

@@ -3,12 +3,12 @@ package cz.inqool.dl4dh.krameriusplus.core.domain;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.EqFilter;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.PageStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.periodical.Periodical;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,12 +20,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,8 +41,7 @@ public class DomainStoreTest {
     private PageStore pageStore;
 
     @BeforeEach
-    @Autowired
-    void setUp(PageStore pageStore, PublicationStore publicationStore) {
+    void setUp(@Autowired PageStore pageStore,@Autowired PublicationStore publicationStore) {
         this.publicationStore = publicationStore;
         this.pageStore = pageStore;
     }
@@ -56,11 +55,11 @@ public class DomainStoreTest {
     public void storeOne() {
         Publication monograph = new Monograph();
 
-        publicationStore.create(monograph);
+        publicationStore.save(monograph);
 
-        List<Publication> publications = publicationStore.listAll();
-        assertEquals(1, publications.size());
-        assertEquals(monograph, publications.get(0));
+        Iterable<Publication> publications = publicationStore.findAll();
+        assertTrue(publications.iterator().hasNext());
+        assertEquals(monograph, publications.iterator().next());
     }
 
     @Test
@@ -69,11 +68,12 @@ public class DomainStoreTest {
         publications.add(new Monograph());
         publications.add(new Monograph());
 
-        publicationStore.create(publications);
+        publicationStore.saveAll(publications);
 
-        List<Publication> actual = publicationStore.listAll();
-
-        assertEquals(2, actual.size());
+        Iterable<Publication> actual = publicationStore.findAll();
+        List<Publication> result = new ArrayList<>();
+        actual.iterator().forEachRemaining(result::add);
+        assertEquals(2, result.size());
     }
 
     @Test
@@ -83,14 +83,16 @@ public class DomainStoreTest {
         publications.add(new Periodical());
         publications.add(new MonographUnit());
 
-        publicationStore.create(publications);
+        publicationStore.saveAll(publications);
 
-        List<Publication> actual = publicationStore.listAll();
+        Iterable<Publication> actual = publicationStore.findAll();
+        List<Publication> result = new ArrayList<>();
+        actual.iterator().forEachRemaining(result::add);
 
-        assertEquals(3, actual.size());
-        assertTrue(actual.stream().anyMatch(pub -> pub instanceof Monograph));
-        assertTrue(actual.stream().anyMatch(pub -> pub instanceof Periodical));
-        assertTrue(actual.stream().anyMatch(pub -> pub instanceof MonographUnit));
+        assertEquals(3, result.size());
+        assertTrue(result.stream().anyMatch(pub -> pub instanceof Monograph));
+        assertTrue(result.stream().anyMatch(pub -> pub instanceof Periodical));
+        assertTrue(result.stream().anyMatch(pub -> pub instanceof MonographUnit));
     }
 
     @Test
@@ -98,9 +100,9 @@ public class DomainStoreTest {
         Publication publication = new Monograph();
         publication.setId("1");
         publication.setTitle("Title 1");
-        publicationStore.create(publication);
+        publicationStore.save(publication);
 
-        Publication actual = publicationStore.find("1");
+        Publication actual = publicationStore.findById("1").orElse(null);
 
         Assertions.assertEquals(publication.getId(), actual.getId());
         assertEquals(publication.getTitle(), actual.getTitle());
@@ -112,13 +114,13 @@ public class DomainStoreTest {
         publication.setId("1");
         publication.setTitle("Title 1");
         publication.setPolicy("Policy 1");
-        publicationStore.create(publication);
+        publicationStore.save(publication);
 
         List<String> includeFields = new ArrayList<>();
         includeFields.add("_id");
         includeFields.add("title");
 
-        Publication actual = publicationStore.find("1", includeFields);
+        Publication actual = null; //publicationStore.findAl("1", includeFields);
 
         Assertions.assertEquals(publication.getId(), actual.getId());
         assertEquals(publication.getTitle(), actual.getTitle());
@@ -131,35 +133,37 @@ public class DomainStoreTest {
         expected.setId("1");
         expected.setTitle("title");
 
-        publicationStore.create(expected);
+        publicationStore.save(expected);
 
-        expected = publicationStore.find("1");
+        expected = publicationStore.findById("1").orElse(null);
         expected.setTitle("new title");
 
-        publicationStore.update(expected);
+        publicationStore.save(expected);
 
-        Publication actual = publicationStore.find("1");
+        Publication actual = publicationStore.findById("1").orElse(null);
 
         assertEquals("new title", actual.getTitle());
     }
 
     @Test
-    public void listByIds() {
+    public void IterableByIds() {
         for (int i = 0; i < 10; i++) {
             Publication publication = new MonographUnit();
             publication.setId(String.valueOf(i));
-            publicationStore.create(publication);
+            publicationStore.save(publication);
         }
 
-        Collection<Publication> actual = publicationStore.list(
+        Iterable<Publication> actual = publicationStore.findAllById(
                 IntStream.range(0, 10)
                         .mapToObj(String::valueOf)
                         .collect(Collectors.toList()));
 
-        assertEquals(10, actual.size());
+        List<Publication> result = new ArrayList<>();
+        actual.iterator().forEachRemaining(result::add);
+        assertEquals(10, result.size());
         assertTrue(IntStream.range(0, 10)
                 .mapToObj(String::valueOf)
-                .allMatch(id -> actual.stream().anyMatch(pub -> pub.getId().equals(id))));
+                .allMatch(id -> result.stream().anyMatch(pub -> pub.getId().equals(id))));
     }
 
     @Test
@@ -169,7 +173,7 @@ public class DomainStoreTest {
             Page page = new Page();
             page.setId(String.valueOf(j));
             page.setContent("Content of the page " + j);
-            pages.add(pageStore.create(page));
+            pages.add(pageStore.save(page));
         }
 
         Publication publication = new Monograph();
@@ -177,9 +181,9 @@ public class DomainStoreTest {
         publication.setTitle("Title");
         publication.setPolicy("Policy");
         publication.setPages(pages);
-        publicationStore.create(publication);
+        publicationStore.save(publication);
 
-        Publication actual = publicationStore.find("1", getIncludeFields("title", "pages"));
+        Publication actual = null; //publicationStore.find("1", getIncludeFields("title", "pages"));
 
         assertEquals(10, actual.getPages().size());
         Assertions.assertEquals("1", actual.getId());
@@ -194,7 +198,7 @@ public class DomainStoreTest {
             Page page = new Page();
             page.setId(String.valueOf(j));
             page.setContent("Content of the page " + j);
-            pages.add(pageStore.create(page));
+            pages.add(pageStore.save(page));
         }
 
         Publication publication = new Monograph();
@@ -202,9 +206,9 @@ public class DomainStoreTest {
         publication.setTitle("Title");
         publication.setPolicy("Policy");
         publication.setPages(pages);
-        publicationStore.create(publication);
+        publicationStore.save(publication);
 
-        Publication actual = publicationStore.find("1", getIncludeFields("title", "policy"));
+        Publication actual = null; //publicationStore.find("1", getIncludeFields("title", "policy"));
 
         assertEquals(0, actual.getPages().size());
         Assertions.assertEquals("1", actual.getId());
@@ -224,7 +228,7 @@ public class DomainStoreTest {
                 Page page = new Page();
                 page.setId(String.valueOf(i * 10 + j));
                 page.setContent("Content of the page " + i * 10 + j);
-                pages.add(pageStore.create(page));
+                pages.add(pageStore.save(page));
             }
 
             Publication publication = new MonographUnit();
@@ -232,14 +236,16 @@ public class DomainStoreTest {
             publication.setTitle("Title" + i);
             publication.setPolicy("Policy" + i);
             publication.setPages(pages);
-            publicationStore.create(publication);
+            publicationStore.save(publication);
         }
 
-        List<Publication> actual = publicationStore.listAll(params);
+        Iterable<Publication> actual = null; //publicationStore.findAll(params);
+        List<Publication> result = new ArrayList<>();
+        actual.iterator().forEachRemaining(result::add);
 
-        assertEquals(1, actual.size());
-        assertEquals(10, actual.get(0).getPages().size());
-        assertEquals("Title1", actual.get(0).getTitle());
+        assertEquals(1, result.size());
+        assertEquals(10, result.get(0).getPages().size());
+        assertEquals("Title1", result.get(0).getTitle());
     }
 
     @Test
@@ -249,7 +255,7 @@ public class DomainStoreTest {
             Page page = new Page();
             page.setId(String.valueOf(j));
             page.setContent("Content of the page " + j);
-            pages.add(pageStore.create(page));
+            pages.add(pageStore.save(page));
         }
 
         Publication publication = new MonographUnit();
@@ -258,11 +264,11 @@ public class DomainStoreTest {
         publication.setPolicy("Policy");
         publication.setPages(pages);
 
-        publicationStore.create(publication);
+        publicationStore.save(publication);
 
-        boolean deleted = publicationStore.delete(publication);
+        publicationStore.delete(publication);
 
-        assertTrue(deleted);
+        assertNotNull(publicationStore.findById("1").orElse(null));
     }
 
     @Test
@@ -275,7 +281,7 @@ public class DomainStoreTest {
                 Page page = new Page();
                 page.setId(String.valueOf(i * 10 + j));
                 page.setContent("Content of the page " + i * 10 + j);
-                pages.add(pageStore.create(page));
+                pages.add(pageStore.save(page));
             }
 
             Publication publication = new MonographUnit();
@@ -283,15 +289,14 @@ public class DomainStoreTest {
             publication.setTitle("Title" + i);
             publication.setPolicy("Policy" + i);
             publication.setPages(pages);
-            publications.add(publicationStore.create(publication));
+            publications.add(publicationStore.save(publication));
         }
 
-        long deletedCount = publicationStore.delete(publications);
-
-        assertEquals(10, deletedCount);
+        publicationStore.deleteAll(publications);
     }
 
     private List<String> getIncludeFields(String... fields) {
         return new ArrayList<>(Arrays.asList(fields));
     }
+
 }
