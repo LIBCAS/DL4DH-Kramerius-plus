@@ -1,8 +1,4 @@
 spring:
-  #  datasource:
-  #    url: jdbc:postgresql://localhost:5432/kramerius_plus_db
-  #    username: postgres
-  #    password: uzidem9izo
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
@@ -19,6 +15,9 @@ spring:
     mongodb:
       auto-index-creation: true
       database: KrameriusPlus
+  mongodb:
+    embedded:
+      version: 4.0.2
   activemq:
     user: admin
     password: admin

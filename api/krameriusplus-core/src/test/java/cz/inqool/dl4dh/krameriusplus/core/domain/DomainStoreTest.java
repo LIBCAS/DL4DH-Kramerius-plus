@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.EqFilter;
+import cz.inqool.dl4dh.krameriusplus.core.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
@@ -13,12 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,25 +20,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@DataMongoTest(properties = {"spring.mongodb.embedded.version=4.0.2"},
-        excludeAutoConfiguration = {DataSourceAutoConfiguration.class,
-        DataSourceTransactionManagerAutoConfiguration.class,
-        HibernateJpaAutoConfiguration.class})
-@EnableMongoRepositories(basePackages = "cz.inqool.dl4dh.krameriusplus")
+public class DomainStoreTest extends CoreBaseTest {
 
-public class DomainStoreTest {
     @Autowired
     private MongoTemplate mongoTemplate;
+
     @Autowired
     private PublicationStore publicationStore;
+
     @Autowired
     private PageStore pageStore;
-
 
     @AfterEach
     void cleanUp() {
@@ -120,7 +107,7 @@ public class DomainStoreTest {
         includeFields.add("_id");
         includeFields.add("title");
 
-        Publication actual = null; //publicationStore.findAll("1", includeFields);
+        Publication actual = publicationStore.find("1", includeFields);
 
         Assertions.assertEquals(publication.getId(), actual.getId());
         assertEquals(publication.getTitle(), actual.getTitle());
@@ -167,31 +154,6 @@ public class DomainStoreTest {
     }
 
     @Test
-    public void findWithPages() {
-        List<Page> pages = new ArrayList<>();
-        for (int j = 0; j < 10; j++) {
-            Page page = new Page();
-            page.setId(String.valueOf(j));
-            page.setContent("Content of the page " + j);
-            pages.add(pageStore.save(page));
-        }
-
-        Publication publication = new Monograph();
-        publication.setId("1");
-        publication.setTitle("Title");
-        publication.setPolicy("Policy");
-        publication.setPages(pages);
-        publicationStore.save(publication);
-
-        Publication actual = null; //publicationStore.find("1", getIncludeFields("title", "pages"));
-
-        assertEquals(10, actual.getPages().size());
-        Assertions.assertEquals("1", actual.getId());
-        assertEquals("Title", actual.getTitle());
-        assertNull(actual.getPolicy());
-    }
-
-    @Test
     public void findWithoutPages() {
         List<Page> pages = new ArrayList<>();
         for (int j = 0; j < 10; j++) {
@@ -208,7 +170,7 @@ public class DomainStoreTest {
         publication.setPages(pages);
         publicationStore.save(publication);
 
-        Publication actual = null; //publicationStore.find("1", getIncludeFields("title", "policy"));
+        Publication actual = publicationStore.find("1", getIncludeFields("title", "policy"));
 
         assertEquals(0, actual.getPages().size());
         Assertions.assertEquals("1", actual.getId());
@@ -217,58 +179,19 @@ public class DomainStoreTest {
     }
 
     @Test
-    public void findByParams() {
-        Params params = new Params();
-        params.includeFields("title", "pages");
-        params.addFilters(new EqFilter("title", "Title1"));
-
-        for (int i = 0; i < 10; i++) {
-            List<Page> pages = new ArrayList<>();
-            for (int j = 0; j < 10; j++) {
-                Page page = new Page();
-                page.setId(String.valueOf(i * 10 + j));
-                page.setContent("Content of the page " + i * 10 + j);
-                pages.add(pageStore.save(page));
-            }
-
-            Publication publication = new MonographUnit();
-            publication.setId(String.valueOf(i));
-            publication.setTitle("Title" + i);
-            publication.setPolicy("Policy" + i);
-            publication.setPages(pages);
-            publicationStore.save(publication);
-        }
-
-        Iterable<Publication> actual = null; //publicationStore.findAll(params);
-        List<Publication> result = new ArrayList<>();
-        actual.iterator().forEachRemaining(result::add);
-
-        assertEquals(1, result.size());
-        assertEquals(10, result.get(0).getPages().size());
-        assertEquals("Title1", result.get(0).getTitle());
-    }
-
-    @Test
     public void deleteOne() {
-        List<Page> pages = new ArrayList<>();
-        for (int j = 0; j < 10; j++) {
-            Page page = new Page();
-            page.setId(String.valueOf(j));
-            page.setContent("Content of the page " + j);
-            pages.add(pageStore.save(page));
-        }
-
         Publication publication = new MonographUnit();
         publication.setId("1");
         publication.setTitle("Title");
         publication.setPolicy("Policy");
-        publication.setPages(pages);
 
         publicationStore.save(publication);
 
+        assertNotNull(publicationStore.findById("1").orElse(null));
+
         publicationStore.delete(publication);
 
-        assertNotNull(publicationStore.findById("1").orElse(null));
+        assertNull(publicationStore.findById("1").orElse(null));
     }
 
     @Test
