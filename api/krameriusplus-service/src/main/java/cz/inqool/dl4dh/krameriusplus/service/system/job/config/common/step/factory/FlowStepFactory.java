@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepContainer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.DatedObjectWriteListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemProcessor;
@@ -22,7 +23,10 @@ public abstract class FlowStepFactory<IN extends DomainObject, OUT extends Domai
     /**
      * There's a bug in Spring, which causes that not all subclass of this abstract
      * superclass creates a bean, when this method is annotated with @Bean. Therefore,
-     * we need a different way to register beans for every subclass of this class
+     * we need a different way to register beans for every subclass of this class.
+     *
+     * This method is called in {@link StepContainer}, which is responsible for creating and holding a collection
+     * of Steps as beans
      */
     public Step build() {
         return getBuilder()
