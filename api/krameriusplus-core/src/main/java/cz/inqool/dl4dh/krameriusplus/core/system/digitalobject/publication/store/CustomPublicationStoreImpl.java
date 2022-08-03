@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store;
 
-import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.AbstractMongoStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import org.springframework.data.domain.PageRequest;

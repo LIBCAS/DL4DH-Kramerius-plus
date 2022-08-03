@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store;
 
-import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import org.springframework.data.domain.Pageable;
 

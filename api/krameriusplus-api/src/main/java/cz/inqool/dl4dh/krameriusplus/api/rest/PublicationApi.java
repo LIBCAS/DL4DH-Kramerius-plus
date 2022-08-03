@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
-import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
@@ -95,8 +95,8 @@ public class PublicationApi {
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping("/{id}/pages")
     public QueryResults<Page> listPages(@PathVariable("id") String publicationId,
-                                        @RequestParam(value = "page", defaultValue = "0") int page,
-                                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+                                                                                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                                                  @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return publicationService.findAllPages(publicationId, page, pageSize);
     }
 

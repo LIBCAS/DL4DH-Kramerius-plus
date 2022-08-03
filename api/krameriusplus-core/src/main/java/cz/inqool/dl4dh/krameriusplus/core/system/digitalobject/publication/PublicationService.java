@@ -1,6 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication;
 
-import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Paging;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store.PageStore;
@@ -98,7 +100,10 @@ public class PublicationService {
     }
 
     public QueryResults<Publication> findAll(PublicationListFilterDto filter, int page, int pageSize) {
-        return publicationStore.findAll(filter, PageRequest.of(page, pageSize));
+        Params params = filter.toParams();
+        params.setPaging(Paging.of(page, pageSize));
+
+        return publicationStore.findAll(params);
     }
 
     @Autowired

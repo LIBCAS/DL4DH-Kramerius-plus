@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -56,6 +57,10 @@ public class Params {
     }
 
     public Query toMongoQuery() {
+        return toMongoQuery(true);
+    }
+
+    public Query toMongoQuery(boolean withPaging) {
         Query query = new Query();
 
         for (Filter filter : filters) {
@@ -63,7 +68,10 @@ public class Params {
         }
 
         this.applyFields(query);
-        this.applyPaging(query);
+
+        if (!withPaging) {
+            this.applyPaging(query);
+        }
 
         return query;
     }
@@ -87,18 +95,25 @@ public class Params {
     }
 
     private void applyPaging(Query query) {
-        Sort sort;
+        query.with(toPageable());
+    }
+
+    private Sort toSort() {
         if (sorting.isEmpty()) {
-            sort = Sort.by(Sort.Direction.DESC, "created");
+            return Sort.by(Sort.Direction.DESC, "created");
         } else {
-            sort = Sort.by(getSorting()
+            return Sort.by(getSorting()
                     .stream()
                     .map(Sorting::toOrder)
                     .collect(Collectors.toList()));
         }
+    }
 
-        query.with(paging == null ?
+    public Pageable toPageable() {
+        Sort sort = toSort();
+
+        return paging == null ?
                 PageRequest.of(0, Integer.MAX_VALUE, sort) :
-                PageRequest.of(paging.getPage(), paging.getPageSize(), sort));
+                PageRequest.of(paging.getPage(), paging.getPageSize(), sort);
     }
 }
