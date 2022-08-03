@@ -1,23 +1,22 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.ndk.components;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.mods;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.publication.metadata.ModsWrapper;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
+import lombok.NonNull;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
 @StepScope
-public class EnrichPublicationNdkProcessor implements ItemProcessor<Publication, Publication> {
-
+public class EnrichPublicationModsProcessor implements ItemProcessor<Publication, Publication> {
     private final StreamProvider streamProvider;
 
     @Autowired
-    public EnrichPublicationNdkProcessor(StreamProvider streamProvider) {
+    public EnrichPublicationModsProcessor(StreamProvider streamProvider) {
         this.streamProvider = streamProvider;
     }
 
