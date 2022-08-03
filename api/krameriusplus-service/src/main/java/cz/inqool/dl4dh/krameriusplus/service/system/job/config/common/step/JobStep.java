@@ -11,7 +11,6 @@ public class JobStep {
 
     // ENRICHMENT_NDK Job
     public static final String PREPARE_PUBLICATION_NDK = "PreparePublicationNdkDirectoryPathStep";
-    public static final String ENRICH_PUBLICATION_NDK = "EnrichPublicationNdkStep";
     public static final String PREPARE_PAGES_NDK = "PreparePagesNdkFilePathStep";
     public static final String ENRICH_PAGES_NDK = "EnrichPagesNdkStep";
 
@@ -24,6 +23,7 @@ public class JobStep {
     public static final String ENRICH_PAGES_UD_PIPE = "EnrichPagesUDPipeStep";
     public static final String ENRICH_PAGES_NAME_TAG = "EnrichPagesNameTagStep";
     public static final String ENRICH_PAGES_ALTO = "EnrichPagesAltoStep";
+    public static final String ENRICH_PUBLICATION_MODS = "EnrichPublicationModsStep";
     public static final String CLEAN_UP_PAGES = "CleanUpPagesStep";
 
     // EXPORT COMMON

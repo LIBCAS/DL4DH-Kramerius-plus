@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob.ENRICHMENT_NDK;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.*;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICHMENT_VALIDATION;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_NDK;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.PREPARE_PAGES_NDK;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.PREPARE_PUBLICATION_NDK;
 
 @Configuration
 public class EnrichNdkJobConfig extends EnrichmentJobConfig {
@@ -16,7 +19,6 @@ public class EnrichNdkJobConfig extends EnrichmentJobConfig {
         return super.getJobBuilder()
                 .start(stepContainer.getStep(ENRICHMENT_VALIDATION))
                 .next(stepContainer.getStep(PREPARE_PUBLICATION_NDK))
-                .next(stepContainer.getStep(ENRICH_PUBLICATION_NDK))
                 .next(stepContainer.getStep(PREPARE_PAGES_NDK))
                 .next(stepContainer.getStep(ENRICH_PAGES_NDK))
                 .build();
