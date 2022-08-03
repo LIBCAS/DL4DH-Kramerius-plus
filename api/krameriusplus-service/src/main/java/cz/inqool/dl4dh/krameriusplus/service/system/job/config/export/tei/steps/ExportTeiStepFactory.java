@@ -20,8 +20,13 @@ public class ExportTeiStepFactory extends AbstractStepFactory {
 
     @Override
     public Step build() {
-        return stepBuilderFactory.get(EXPORT_TEI)
+        return getBuilder()
                 .tasklet(tasklet)
                 .build();
+    }
+
+    @Override
+    protected String getStepName() {
+        return EXPORT_TEI;
     }
 }

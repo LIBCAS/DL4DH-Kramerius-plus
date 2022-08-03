@@ -72,7 +72,7 @@ public class WebClientConfig {
                                        @Value("${system.kramerius.code}") String krameriusCode,
                                        @Value("${system.kramerius.default-url}") String krameriusUrl) throws SSLException, JsonProcessingException {
         String uri = UriComponentsBuilder
-                .fromHttpUrl("https://api.registr.digitalniknihovna.cz/api/libraries")
+                .fromHttpUrl("https://api.registr.digitalniknihovna.cz/api/libraries/")
                 .path(krameriusCode)
                 .build()
                 .toUriString();

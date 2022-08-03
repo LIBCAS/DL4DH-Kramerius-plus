@@ -2,10 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Filter;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -18,33 +18,27 @@ import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.isTrue;
 
 @Getter
 @Setter
-@Schema(description = "Set of parameters that control filtering, paging and sorting.")
 public class Params {
 
     /**
      * Paging configuration
      * Not applying, if paging equals to null
      */
-    @Schema(description = "Paging configuration. If null, paging is disabled.")
     protected Paging paging = null;
 
     /**
      * Sorting configuration
      * Not applying, if paging equals to null
      */
-    @Schema(description = "Sorting configuration. If null, defaults to sort by 'created' DESC.")
     protected List<Sorting> sorting = new ArrayList<>();
 
     /**
      * List of filters that will be applied. The operator between them is by default AND
      */
-    @Schema(description = "List of filters that will be applied. The operator between them is by default AND.")
     protected List<Filter> filters = new ArrayList<>();
 
-    @Schema(description = "List of field names to include when fetching data. Cannot be combined with 'excludeFilters'.")
     protected List<String> includeFields = new ArrayList<>();
 
-    @Schema(description = "List of field names to exclude when fetching data. Cannot be combined with 'includeFilters'.")
     protected List<String> excludeFields = new ArrayList<>();
 
     public Params addFilters(Filter... filter) {
@@ -62,19 +56,27 @@ public class Params {
         return this;
     }
 
-    public Query toQuery() {
+    public Query toMongoQuery() {
+        return toMongoQuery(true);
+    }
+
+    public Query toMongoQuery(boolean withPaging) {
         Query query = new Query();
+
         for (Filter filter : filters) {
             query.addCriteria(filter.toCriteria());
         }
 
-        this.setFields(query);
-        this.setSort(query);
+        this.applyFields(query);
+
+        if (!withPaging) {
+            this.applyPaging(query);
+        }
 
         return query;
     }
 
-    public void setFields(Query query) {
+    private void applyFields(Query query) {
         isTrue(includeFields.isEmpty() || excludeFields.isEmpty(),
                 () -> new IllegalArgumentException("Cannot set both inclusion and exclusion parameters"));
 
@@ -92,19 +94,26 @@ public class Params {
         }
     }
 
-    public void setSort(Query query) {
-        Sort sort;
+    private void applyPaging(Query query) {
+        query.with(toPageable());
+    }
+
+    private Sort toSort() {
         if (sorting.isEmpty()) {
-            sort = Sort.by(Sort.Direction.DESC, "created");
+            return Sort.by(Sort.Direction.DESC, "created");
         } else {
-            sort = Sort.by(getSorting()
+            return Sort.by(getSorting()
                     .stream()
                     .map(Sorting::toOrder)
                     .collect(Collectors.toList()));
         }
+    }
 
-        query.with(paging == null ?
+    public Pageable toPageable() {
+        Sort sort = toSort();
+
+        return paging == null ?
                 PageRequest.of(0, Integer.MAX_VALUE, sort) :
-                PageRequest.of(paging.getPage(), paging.getPageSize(), sort));
+                PageRequest.of(paging.getPage(), paging.getPageSize(), sort);
     }
 }

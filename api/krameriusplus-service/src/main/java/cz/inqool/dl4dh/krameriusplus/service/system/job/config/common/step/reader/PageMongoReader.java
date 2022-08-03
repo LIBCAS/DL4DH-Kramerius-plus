@@ -23,24 +23,24 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @StepScope
 public class PageMongoReader extends MongoItemReader<Page> {
 
-    private final Query query;
-
-    private final MongoOperations template;
+    /**
+     * Total number of Page documents, that match the given query
+     */
+    private final long numberOfItems;
 
     @Autowired
     public PageMongoReader(ObjectMapper objectMapper,
                            MongoOperations mongoOperations,
                            @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId,
                            @Value("#{jobParameters['" + PARAMS + "']}") String paramsString) throws JsonProcessingException {
-        Query query = new Query();
-        query.addCriteria(where("parentId").is(publicationId));
-
+        Query query;
         if (paramsString != null) {
-            processJobParameters(paramsString, objectMapper, query);
+            query = paramsToQuery(paramsString, objectMapper);
+        } else {
+            query = new Query();
         }
 
-        this.query = query;
-        this.template = mongoOperations;
+        query.addCriteria(where("parentId").is(publicationId));
 
         setName("currentPage");
         setTemplate(mongoOperations);
@@ -48,24 +48,18 @@ public class PageMongoReader extends MongoItemReader<Page> {
         setTargetType(Page.class);
         setPageSize(10);
         setQuery(query);
+
+        numberOfItems = mongoOperations.count(query, Page.class);
     }
 
-    private void processJobParameters(String paramsString, ObjectMapper objectMapper, Query query) throws JsonProcessingException {
+    private Query paramsToQuery(String paramsString, ObjectMapper objectMapper) throws JsonProcessingException {
         Params params = objectMapper.readValue(paramsString, Params.class);
 
-        if (params.getPaging() != null) {
-            setMaxItemCount(params.getPaging().getPageSize());
-            setCurrentItemCount(params.getPaging().getPage() * params.getPaging().getPageSize());
-        }
-
-        params.getFilters().forEach(filter -> query.addCriteria(filter.toCriteria()));
-        params.setFields(query);
-        params.setSort(query);
+        return params.toMongoQuery();
     }
 
     @BeforeStep
     public void setNumberOfItems(StepExecution stepExecution) {
-        long numberOfItems = template.count(query, Page.class);
         stepExecution.getExecutionContext().putLong(NUMBER_OF_ITEMS, numberOfItems);
     }
 }

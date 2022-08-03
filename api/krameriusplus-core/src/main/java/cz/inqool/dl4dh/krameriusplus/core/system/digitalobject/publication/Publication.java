@@ -12,9 +12,11 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Norbert Bodnar
@@ -61,4 +63,18 @@ public abstract class Publication extends DigitalObject {
 
     @JsonIgnore
     private String teiHeaderFileId;
+
+    private List<String> donator = new ArrayList<>();
+
+    @JsonProperty("donator")
+    public void unpackDonator(Object donators) {
+        if (donators != null && donators.getClass().equals(String.class)) {
+            donator.add((String) donators);
+        } else if (donators instanceof Collection) {
+            donator.addAll(((List<?>) donators).stream()
+                    .map(obj -> (String) obj)
+                    .collect(Collectors.toList()));
+        }
+    }
 }
+
