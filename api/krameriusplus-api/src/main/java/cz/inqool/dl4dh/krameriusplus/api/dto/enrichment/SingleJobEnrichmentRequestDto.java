@@ -1,11 +1,18 @@
 package cz.inqool.dl4dh.krameriusplus.api.dto.enrichment;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment.EnrichmentJobConfigDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Set;
 
 public interface SingleJobEnrichmentRequestDto {
+
+    /**
+     * Optional name of the new {@link JobEvent}s
+     * @return name of the new JobEvents
+     */
+    String getName();
 
     /**
      * Get config, that should be used on every publication

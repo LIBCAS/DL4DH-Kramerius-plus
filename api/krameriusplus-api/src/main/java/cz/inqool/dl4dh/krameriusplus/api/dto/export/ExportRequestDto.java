@@ -4,6 +4,8 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.Expor
 
 public interface ExportRequestDto {
 
+    String getName();
+
     String getPublicationId();
 
     ExportJobConfigDto getConfig();
