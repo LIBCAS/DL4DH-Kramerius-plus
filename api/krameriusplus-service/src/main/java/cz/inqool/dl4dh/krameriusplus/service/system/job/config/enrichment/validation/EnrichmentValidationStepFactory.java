@@ -19,8 +19,13 @@ public class EnrichmentValidationStepFactory extends AbstractStepFactory {
 
     @Override
     public Step build() {
-        return stepBuilderFactory.get(ENRICHMENT_VALIDATION)
+        return getBuilder()
                 .tasklet(tasklet)
                 .build();
+    }
+
+    @Override
+    protected String getStepName() {
+        return ENRICHMENT_VALIDATION;
     }
 }

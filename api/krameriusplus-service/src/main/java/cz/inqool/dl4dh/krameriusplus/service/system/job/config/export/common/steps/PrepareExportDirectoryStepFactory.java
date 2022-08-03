@@ -20,8 +20,13 @@ public class PrepareExportDirectoryStepFactory extends AbstractStepFactory {
 
     @Override
     public Step build() {
-        return stepBuilderFactory.get(PREPARE_EXPORT_DIRECTORY)
+        return getBuilder()
                 .tasklet(tasklet)
                 .build();
+    }
+
+    @Override
+    protected String getStepName() {
+        return PREPARE_EXPORT_DIRECTORY;
     }
 }

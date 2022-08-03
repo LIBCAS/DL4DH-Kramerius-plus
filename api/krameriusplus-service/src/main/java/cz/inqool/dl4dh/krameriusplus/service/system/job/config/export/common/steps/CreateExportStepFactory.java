@@ -20,8 +20,13 @@ public class CreateExportStepFactory extends AbstractStepFactory {
 
     @Override
     public Step build() {
-        return stepBuilderFactory.get(CREATE_EXPORT)
+        return getBuilder()
                 .tasklet(tasklet)
                 .build();
+    }
+
+    @Override
+    protected String getStepName() {
+        return CREATE_EXPORT;
     }
 }

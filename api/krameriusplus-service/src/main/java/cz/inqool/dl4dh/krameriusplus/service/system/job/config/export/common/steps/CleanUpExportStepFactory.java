@@ -20,8 +20,13 @@ public class CleanUpExportStepFactory extends AbstractStepFactory {
 
     @Override
     public Step build() {
-        return stepBuilderFactory.get(CLEAN_UP_EXPORT)
+        return getBuilder()
                 .tasklet(tasklet)
                 .build();
+    }
+
+    @Override
+    protected String getStepName() {
+        return CLEAN_UP_EXPORT;
     }
 }

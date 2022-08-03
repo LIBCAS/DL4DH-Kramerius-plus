@@ -20,8 +20,13 @@ public class ZipExportStepFactory extends AbstractStepFactory {
 
     @Override
     public Step build() {
-        return stepBuilderFactory.get(ZIP_EXPORT)
+        return getBuilder()
                 .tasklet(tasklet)
                 .build();
+    }
+
+    @Override
+    protected String getStepName() {
+        return ZIP_EXPORT;
     }
 }
