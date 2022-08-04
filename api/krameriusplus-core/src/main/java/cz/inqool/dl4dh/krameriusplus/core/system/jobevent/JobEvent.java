@@ -10,9 +10,12 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import java.util.Date;
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.*;
 
 /**
  * Custom entity representing an abstraction over spring's JobInstance fitted for Kramerius+
@@ -28,6 +31,7 @@ public class JobEvent extends DatedObject {
     private String publicationId;
 
     @Column(unique = true)
+    @NotNull
     private Long instanceId;
 
     @ManyToOne
@@ -40,16 +44,16 @@ public class JobEvent extends DatedObject {
     private JobEventConfig config;
 
     public boolean wasExecuted() {
-        return details != null && details.getLastExecutionId() != null;
+        return details.getLastExecutionStatus() == JobStatus.COMPLETED;
     }
 
     public Map<String, Object> toJobParametersMap() {
         Map<String, Object> jobParametersMap = new HashMap<>();
-        jobParametersMap.put("jobEventId", id);
-        jobParametersMap.put("jobEventName", jobName);
-        jobParametersMap.put("publicationId", publicationId);
-        jobParametersMap.put("created", Date.from(created));
-        jobParametersMap.put("krameriusJob", config.getKrameriusJob().name());
+        jobParametersMap.put(JOB_EVENT_ID, id);
+        jobParametersMap.put(JOB_EVENT_NAME, jobName);
+        jobParametersMap.put(PUBLICATION_ID, publicationId);
+        jobParametersMap.put(TIMESTAMP, Instant.now());
+        jobParametersMap.put(KRAMERIUS_JOB, config.getKrameriusJob().name());
         jobParametersMap.putAll(config.getParameters());
 
         return jobParametersMap;

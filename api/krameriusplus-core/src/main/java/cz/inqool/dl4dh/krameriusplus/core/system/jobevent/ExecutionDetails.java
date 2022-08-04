@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
 
 @Embeddable
 @Getter
@@ -14,6 +15,7 @@ import javax.persistence.Enumerated;
 public class ExecutionDetails {
 
     @JsonIgnore
+    @NotNull
     private Long lastExecutionId;
 
     private String lastExecutionExitCode;

@@ -69,7 +69,7 @@ public class Params {
 
         this.applyFields(query);
 
-        if (!withPaging) {
+        if (withPaging) {
             this.applyPaging(query);
         }
 

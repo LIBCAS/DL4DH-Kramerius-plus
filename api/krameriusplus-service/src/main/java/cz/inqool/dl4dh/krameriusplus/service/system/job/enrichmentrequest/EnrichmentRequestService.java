@@ -8,7 +8,6 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.En
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +41,7 @@ public class EnrichmentRequestService implements DatedService<
         entity.setName(createDto.getName());
 
         for (JobPlanCreateDto jobPlanCreateDto : createDto.getJobPlans()) {
+            jobPlanCreateDto.setEnrichmentRequest(entity);
             entity.getJobPlans().add(jobPlanService.create(jobPlanCreateDto));
         }
 

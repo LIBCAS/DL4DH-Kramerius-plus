@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Optional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
@@ -71,20 +71,40 @@ public class JobPlanService {
     /**
      * Creates a new JobPlan with same configs as the JobPlan, which contains the given JobEvent
      * @param jobEventId id of the JobEvent, of which JobPlan is used as a blueprint
-     * @param childId id of the publication, for which a new JobPlan should be created
+     * @param publicationId id of the publication, for which a new JobPlan should be created
      * @return created JobPlanDto
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public JobPlanDto createForChild(String jobEventId, String childId) {
+    public JobEvent createForChild(String jobEventId, String publicationId) {
         JobEvent parentEvent = jobEventService.findEntity(jobEventId);
         notNull(parentEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
         JobPlan jobPlanBlueprint = store.findByJobEvent(jobEventId);
+        JobEvent eventToEnqueue;
+        if (jobPlanBlueprint == null) {
+            eventToEnqueue = createJobEventForChild(parentEvent, publicationId);
+        } else {
+            eventToEnqueue = createJobPlanForChild(jobPlanBlueprint, parentEvent, publicationId);
+        }
+
+        return eventToEnqueue;
+    }
+
+    private JobEvent createJobEventForChild(JobEvent parentEvent, String publicationId) {
+        JobEvent jobEvent = new JobEvent();
+        jobEvent.setPublicationId(publicationId);
+        jobEvent.setParent(parentEvent);
+        jobEvent.setConfig(createConfigCopy(parentEvent.getConfig()));
+
+        return jobEventService.create(jobEvent);
+    }
+
+    private JobEvent createJobPlanForChild(JobPlan jobPlanBlueprint, JobEvent parentEvent, String publicationId) {
         JobPlan newPlan = new JobPlan();
 
         for (ScheduledJobEvent scheduledJobEvent : jobPlanBlueprint.getScheduledJobEvents()) {
             JobEvent newJobEvent = new JobEvent();
-            newJobEvent.setPublicationId(childId);
+            newJobEvent.setPublicationId(publicationId);
             newJobEvent.setParent(parentEvent);
             newJobEvent.setConfig(createConfigCopy(scheduledJobEvent.getJobEvent().getConfig()));
 
@@ -98,7 +118,14 @@ public class JobPlanService {
             newPlan.getScheduledJobEvents().add(newScheduledJobEvent);
         }
 
-        return mapper.toDto(store.create(newPlan));
+        newPlan = store.create(newPlan);
+
+        Optional<JobEvent> eventToEnqueue = newPlan.getNextToExecute();
+        if (eventToEnqueue.isEmpty()) {
+            throw new IllegalStateException("There has to be at least one JobEvent in JobPlan");
+        }
+
+        return eventToEnqueue.get();
     }
 
     private JobEventConfig createConfigCopy(JobEventConfig config) {
