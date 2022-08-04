@@ -41,9 +41,9 @@ public class ExportApi {
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/tei")
-    public JobEventDto exportTei(@PathVariable("id") String publicationId,
-                                 @RequestBody @Valid TeiExportJobConfigDto config,
-                                 @RequestParam(required = false) String jobName) {
+    public JobEventDto export(@PathVariable("id") String publicationId,
+                              @RequestBody @Valid TeiExportJobConfigDto config,
+                              @RequestParam(required = false) String jobName) {
         return exportFacade.export(new TeiExportRequestDto(jobName, publicationId, config));
     }
 

@@ -1,15 +1,17 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.PUBLICATION_TITLE;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.ZIPPED_FILE;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
@@ -31,13 +34,10 @@ public class CreateExportTasklet implements Tasklet {
 
     private final ExportService exportService;
 
-    private final PublicationService publicationService;
-
     @Autowired
-    public CreateExportTasklet(FileService fileService, ExportService exportService, PublicationService publicationService) {
+    public CreateExportTasklet(FileService fileService, ExportService exportService) {
         this.fileService = fileService;
         this.exportService = exportService;
-        this.publicationService = publicationService;
     }
 
     @Override
@@ -45,9 +45,13 @@ public class CreateExportTasklet implements Tasklet {
         String path = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(ZIPPED_FILE);
         Path zippedFile = Path.of(path);
 
-        String jobEventId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(JOB_EVENT_ID);
-        String publicationId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(PUBLICATION_ID);
-        String publicationTitle = publicationService.find(publicationId).getTitle();
+        StepExecution stepExecution = chunkContext.getStepContext().getStepExecution();
+        JobParameters jobParameters = stepExecution.getJobExecution().getJobParameters();
+        ExecutionContext executionContext = stepExecution.getJobExecution().getExecutionContext();
+
+        String jobEventId = jobParameters.getString(JOB_EVENT_ID);
+        String publicationId = jobParameters.getString(PUBLICATION_ID);
+        String publicationTitle = executionContext.getString(PUBLICATION_TITLE);
 
         FileRef fileRef;
 

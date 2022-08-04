@@ -1,11 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.StepFailureListener;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.listener.ExecutionContextPromotionListener;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +38,7 @@ public abstract class AbstractStepFactory implements StepFactory {
 
     private void applyStepExecutionListeners(StepBuilder stepBuilder) {
         stepBuilder.listener(stepFailureListener);
+        stepBuilder.listener(createPromotionListener());
 
         for (StepExecutionListener listener : getStepExecutionListeners()) {
             stepBuilder.listener(listener);
@@ -52,6 +57,25 @@ public abstract class AbstractStepFactory implements StepFactory {
      */
     protected List<StepExecutionListener> getStepExecutionListeners() {
         return Collections.emptyList();
+    }
+
+    private ExecutionContextPromotionListener createPromotionListener() {
+        List<String> values = new ArrayList<>();
+        Field[] fields = ExecutionContextKey.class.getFields();
+
+        try {
+            for (Field field : fields) {
+                values.add((String) field.get(null));
+            }
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("ExecutionContextKey class has private fields, which cannot be accessed.");
+        }
+
+
+        ExecutionContextPromotionListener listener = new ExecutionContextPromotionListener();
+        listener.setKeys(values.toArray(new String[0]));
+
+        return listener;
     }
 
     @Autowired

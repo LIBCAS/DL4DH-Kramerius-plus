@@ -14,7 +14,8 @@ public class AltoExportJobConfig extends ExportJobConfig {
     @Bean
     public Job exportAltoJob() {
         return getJobBuilder()
-                .start(stepContainer.getStep(PREPARE_EXPORT_DIRECTORY))
+                .start(stepContainer.getStep(PREPARE_PUBLICATION_METADATA))
+                .next(stepContainer.getStep(PREPARE_EXPORT_DIRECTORY))
                 .next(stepContainer.getStep(EXPORT_PAGES_ALTO))
                 .next(stepContainer.getStep(ZIP_EXPORT))
                 .next(stepContainer.getStep(CREATE_EXPORT))

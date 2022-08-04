@@ -5,4 +5,5 @@ public class ExecutionContextKey {
     public static final String ZIPPED_FILE = "zippedFile";
     public static final String PARADATA = "paradata";
     public static final String NUMBER_OF_ITEMS = "numberOfItems";
+    public static final String PUBLICATION_TITLE = "publicationTitle";
 }

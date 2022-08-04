@@ -24,6 +24,7 @@ public class JobStep {
     public static final String CLEAN_UP_PAGES = "CleanUpPagesStep";
 
     // EXPORT COMMON
+    public static final String PREPARE_PUBLICATION_METADATA = "PreparePublicationMetadataStep";
     public static final String PREPARE_EXPORT_DIRECTORY = "PrepareExportDirectoryStep";
     public static final String ZIP_EXPORT = "ZipExportStep";
     public static final String CREATE_EXPORT = "CreateExportStep";

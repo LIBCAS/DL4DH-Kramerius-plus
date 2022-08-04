@@ -14,7 +14,8 @@ public class TeiExportJobConfig extends ExportJobConfig {
     @Bean
     public Job exportTeiJob() {
         return getJobBuilder()
-                .start(stepContainer.getStep(PREPARE_EXPORT_DIRECTORY))
+                .start(stepContainer.getStep(PREPARE_PUBLICATION_METADATA))
+                .next(stepContainer.getStep(PREPARE_EXPORT_DIRECTORY))
                 .next(stepContainer.getStep(EXPORT_TEI))
                 .next(stepContainer.getStep(ZIP_EXPORT))
                 .next(stepContainer.getStep(CREATE_EXPORT))
