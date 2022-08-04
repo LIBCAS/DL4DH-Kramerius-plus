@@ -59,6 +59,8 @@ export const PublicationListTable: FC<Props> = ({
 			autoHeight={true}
 			columns={columns}
 			density="compact"
+			disableColumnFilter
+			disableColumnMenu
 			pageSize={10}
 			paginationMode="server"
 			rowCount={rowCount}

@@ -16,7 +16,6 @@ public class ValidationException extends GeneralException {
     public enum ErrorCode implements LogCode {
         INVALID_EXPORT_TYPE,
         INVALID_PARAMETERS,
-        ALREADY_EXISTS,
-        JOB_PARAMETERS_VALIDATION_FAIL
+        ALREADY_EXISTS
     }
 }
