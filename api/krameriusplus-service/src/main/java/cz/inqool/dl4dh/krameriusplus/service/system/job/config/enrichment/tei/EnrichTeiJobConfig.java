@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob.ENRICHMENT_TEI;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.*;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_TEI;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PUBLICATION_TEI;
 
 @Configuration
 public class EnrichTeiJobConfig extends EnrichmentJobConfig {
@@ -14,8 +15,7 @@ public class EnrichTeiJobConfig extends EnrichmentJobConfig {
     @Bean
     public Job enrichTeiJob() {
         return super.getJobBuilder()
-                .start(stepContainer.getStep(ENRICHMENT_VALIDATION))
-                .next(stepContainer.getStep(ENRICH_PUBLICATION_TEI))
+                .start(stepContainer.getStep(ENRICH_PUBLICATION_TEI))
                 .next(stepContainer.getStep(ENRICH_PAGES_TEI))
                 .build();
     }

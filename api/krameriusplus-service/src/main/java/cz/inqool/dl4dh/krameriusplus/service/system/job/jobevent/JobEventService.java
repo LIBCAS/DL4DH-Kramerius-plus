@@ -9,24 +9,21 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDetailDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanStore;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
@@ -37,8 +34,6 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Getter
     private JobEventStore store;
 
-    private JobPlanStore jobPlanStore;
-
     @Getter
     private JobEventMapper mapper;
 
@@ -46,24 +41,56 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     private JobExplorer jobExplorer;
 
-    private TransactionTemplate transactionTemplate;
+    private JobEventLauncher jobEventLauncher;
 
-    public JobEventDto createAndEnqueue(JobEventCreateDto createDto) {
-        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        JobEvent jobEvent = transactionTemplate.execute(t -> store.create(getMapper().fromCreateDto(createDto)));
+    @Transactional
+    public List<JobEventDto> create(@NonNull List<@Valid JobEventCreateDto> createDtos) {
+        List<JobEventDto> result = new ArrayList<>();
 
-        enqueueJob(jobEvent);
+        createDtos.forEach(createDto -> {
+            result.add(create(createDto));
+        });
 
-        return mapper.toDto(jobEvent);
+        return result;
     }
 
-    public void enqueueNextJobInPlan(String lastExecutedJobEventId) {
-        JobPlan jobPlan = jobPlanStore.findByJobEvent(lastExecutedJobEventId);
+    @Override
+    @Transactional
+    public JobEventDto create(@NonNull JobEventCreateDto createDto) {
+        JobEvent jobEvent = mapper.fromCreateDto(createDto);
 
-        if (jobPlan != null) {
-            Optional<JobEvent> jobEvent = jobPlan.getNextToExecute();
+        return mapper.toDto(create(jobEvent));
+    }
 
-            jobEvent.ifPresent(this::enqueueJob);
+    @Override
+    @Transactional
+    public JobEvent create(@NonNull JobEvent jobEvent) {
+        JobExecution jobExecution = jobEventLauncher.createExecution(
+                jobEvent.getConfig().getKrameriusJob(),
+                mapper.toJobParameters(jobEvent));
+
+        jobEvent.setInstanceId(jobExecution.getJobId());
+        jobEvent.getDetails().setLastExecutionId(jobExecution.getId());
+        jobEvent.getDetails().setLastExecutionStatus(JobStatus.from(jobExecution.getStatus().name()));
+
+        return store.create(jobEvent);
+    }
+
+    public void run(String jobEventId) {
+        JobEvent jobEvent = store.find(jobEventId);
+        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
+
+        JobExecution jobExecution = jobExplorer.getJobExecution(jobEvent.getDetails().getLastExecutionId());
+        notNull(jobExecution, () -> new MissingObjectException(JobExecution.class, String.valueOf(jobEvent.getDetails().getLastExecutionId())));
+
+        try {
+            jobEventLauncher.runJob(jobEvent.getConfig().getKrameriusJob(), jobExecution);
+        } catch (Exception e) {
+            jobEvent.getDetails().setRunErrorMessage(e.getMessage());
+            jobEvent.getDetails().setRunErrorStackTrace(ExceptionUtils.getStackTrace(e));
+            store.update(jobEvent);
+
+            throw new IllegalStateException("Failed to run job", e);
         }
     }
 
@@ -94,16 +121,6 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         return mapper.toDetailDto(jobEvent, executions);
     }
 
-    @Transactional
-    public void updateJobStatus(String jobEventId, JobStatus status) {
-        store.updateJobStatus(jobEventId, status);
-    }
-
-    @Transactional
-    public void updateRunningJob(String jobEventId, Long jobInstanceId, Long jobExecutionId) {
-        store.updateJobRun(jobEventId, jobInstanceId, jobExecutionId);
-    }
-
     public QueryResults<JobEventDto> listEnrichingJobs(JobEventFilter jobEventFilter, int page, int pageSize) {
         if (jobEventFilter.getKrameriusJobs() == null || jobEventFilter.getKrameriusJobs().isEmpty()) {
             jobEventFilter.setKrameriusJobs(KrameriusJob.getEnrichingJobs());
@@ -125,7 +142,11 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     public void enqueueJob(JobEvent jobEvent) {
-        jmsProducer.sendMessage(jobEvent.getConfig().getKrameriusJob().getQueueName(), mapper.toRunDto(jobEvent));
+        jmsProducer.sendMessage(jobEvent.getConfig().getKrameriusJob(), jobEvent.getId());
+    }
+
+    public void enqueueJob(JobEventDto jobEventDto) {
+        jmsProducer.sendMessage(jobEventDto.getConfig().getKrameriusJob(), jobEventDto.getId());
     }
 
     @Autowired
@@ -149,12 +170,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     @Autowired
-    public void setJobPlanStore(JobPlanStore jobPlanStore) {
-        this.jobPlanStore = jobPlanStore;
-    }
-
-    @Autowired
-    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
-        this.transactionTemplate = transactionTemplate;
+    public void setJobEventLauncher(JobEventLauncher jobEventLauncher) {
+        this.jobEventLauncher = jobEventLauncher;
     }
 }

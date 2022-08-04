@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.exception;
 
 /**
- * Exception that occurs when running a Job
+ * Exception that occurs when running or creating a Job
  *
  */
 public class JobException extends GeneralException {
@@ -11,6 +11,10 @@ public class JobException extends GeneralException {
     }
 
     public enum ErrorCode implements LogCode {
-        UNSUPPORTED_DIGITAL_OBJECT
+        INVALID_JOB_PARAMETERS,
+        NOT_RESTARTABLE,
+        ALREADY_RUNNING,
+        UNKNOWN_STATUS,
+        ALREADY_COMPLETE
     }
 }

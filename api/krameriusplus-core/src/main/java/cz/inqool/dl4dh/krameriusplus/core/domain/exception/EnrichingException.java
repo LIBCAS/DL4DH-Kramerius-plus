@@ -13,8 +13,8 @@ public class EnrichingException extends GeneralException {
         super(message, errorCode, LogLevel.ERROR, throwable);
     }
 
-    public EnrichingException(String message, ErrorCode errorCode, LogLevel errorLevel) {
-        super(message, errorCode, errorLevel);
+    public EnrichingException(String message, ErrorCode errorCode) {
+        super(message, errorCode, LogLevel.ERROR);
     }
 
     public enum ErrorCode implements LogCode {
@@ -22,6 +22,7 @@ public class EnrichingException extends GeneralException {
         TEI_ERROR,
         SERIALIZING_ERROR,
         TYPE_ERROR,
-        INVALID_OBJECT_TYPE
+        INVALID_OBJECT_TYPE,
+        UNSUPPORTED_DIGITAL_OBJECT
     }
 }

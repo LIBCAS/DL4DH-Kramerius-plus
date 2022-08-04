@@ -8,44 +8,45 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.Enrich
 import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestSimplifiedCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class EnrichmentFacadeImpl implements EnrichmentFacade {
 
     private final EnrichmentRequestService enrichmentRequestService;
 
-    private final JobPlanService jobPlanService;
-
     private final JobEventService jobEventService;
 
-    private final JobPlanMapper jobPlanMapper;
-
     @Autowired
-    public EnrichmentFacadeImpl(EnrichmentRequestService enrichmentRequestService, JobPlanService jobPlanService,
-                                JobEventService jobEventService, JobPlanMapper jobPlanMapper) {
+    public EnrichmentFacadeImpl(EnrichmentRequestService enrichmentRequestService,
+                                JobEventService jobEventService) {
         this.enrichmentRequestService = enrichmentRequestService;
-        this.jobPlanService = jobPlanService;
         this.jobEventService = jobEventService;
-        this.jobPlanMapper = jobPlanMapper;
     }
 
     @Override
     public EnrichResponseDto enrich(SingleJobEnrichmentRequestDto requestDto) {
         EnrichResponseDto responseDto = new EnrichResponseDto();
 
-        for (String publicationId : requestDto.getPublicationIds()) {
-            JobEventCreateDto createDto = new JobEventCreateDto();
-            createDto.setPublicationId(publicationId);
-            createDto.setConfig(requestDto.getConfig());
+        List<JobEventCreateDto> createDtoList = requestDto.getPublicationIds()
+                .stream()
+                .map(publicationId -> {
+                    JobEventCreateDto createDto = new JobEventCreateDto();
+                    createDto.setPublicationId(publicationId);
+                    createDto.setConfig(requestDto.getConfig());
+                    createDto.setJobName(requestDto.getName());
 
-            JobEventDto jobEventDto = jobEventService.createAndEnqueue(createDto);
+                    return createDto;
+                })
+                .collect(Collectors.toList());
 
-            responseDto.getEnrichJobs().add(jobEventDto);
-        }
+        responseDto.setEnrichJobs(jobEventService.create(createDtoList));
+
+        enqueueNewJobs(responseDto.getEnrichJobs());
 
         return responseDto;
     }
@@ -57,5 +58,11 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
         enrichmentRequestService.startExecution(resultDto);
 
         return resultDto;
+    }
+
+    private void enqueueNewJobs(List<JobEventDto> createdJobs) {
+        for (JobEventDto createdJob : createdJobs) {
+            jobEventService.enqueueJob(createdJob);
+        }
     }
 }

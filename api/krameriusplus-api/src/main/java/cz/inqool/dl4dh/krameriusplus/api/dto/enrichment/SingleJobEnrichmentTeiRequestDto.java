@@ -4,17 +4,11 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment.E
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
-public class SingleJobEnrichmentTeiRequestDto implements SingleJobEnrichmentRequestDto {
-
-    @NotEmpty
-    private Set<String> publicationIds = new HashSet<>();
+public class SingleJobEnrichmentTeiRequestDto extends SingleJobEnrichmentRequestBase {
 
     @NotNull
     private EnrichmentTeiJobConfigDto config;

@@ -2,9 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step;
 
 public class JobStep {
 
-    // ENRICHMENT_COMMON
-    public static final String ENRICHMENT_VALIDATION = "EnrichmentValidationStep";
-
     // ENRICHMENT_KRAMERIUS Job
     public static final String DOWNLOAD_PUBLICATION = "DownloadPublicationStep";
     public static final String DOWNLOAD_PUBLICATION_CHILDREN = "DownloadPublicationChildrenStep";

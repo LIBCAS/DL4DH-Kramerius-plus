@@ -42,8 +42,9 @@ public class ExportApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/tei")
     public JobEventDto exportTei(@PathVariable("id") String publicationId,
-                                 @RequestBody @Valid TeiExportJobConfigDto config) {
-        return exportFacade.export(new TeiExportRequestDto(publicationId, config));
+                                 @RequestBody @Valid TeiExportJobConfigDto config,
+                                 @RequestParam(required = false) String jobName) {
+        return exportFacade.export(new TeiExportRequestDto(jobName, publicationId, config));
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_JSON, which generates an Export in JSON format. " +
@@ -51,8 +52,9 @@ public class ExportApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/json")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                                    @RequestBody @Valid JsonExportJobConfigDto config) {
-        return exportFacade.export(new JsonExportRequestDto(publicationId, config));
+                              @RequestBody @Valid JsonExportJobConfigDto config,
+                              @RequestParam(required = false) String jobName) {
+        return exportFacade.export(new JsonExportRequestDto(jobName, publicationId, config));
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_CSV, which generates an Export in CSV format. " +
@@ -60,8 +62,9 @@ public class ExportApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/csv")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                                    @RequestBody @Valid CsvExportJobConfigDto config) {
-        return exportFacade.export(new CsvExportRequestDto(publicationId, config));
+                              @RequestBody @Valid CsvExportJobConfigDto config,
+                              @RequestParam(required = false) String jobName) {
+        return exportFacade.export(new CsvExportRequestDto(jobName, publicationId, config));
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_ALTO, which generates an Export in ALTO format. " +
@@ -69,8 +72,9 @@ public class ExportApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/alto")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                                    @RequestBody @Valid AltoExportJobConfigDto config) {
-        return exportFacade.export(new AltoExportRequestDto(publicationId, config));
+                              @RequestBody @Valid AltoExportJobConfigDto config,
+                              @RequestParam(required = false) String jobName) {
+        return exportFacade.export(new AltoExportRequestDto(jobName, publicationId, config));
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_TEXT, which generates an Export in TEXT format. " +
@@ -78,8 +82,9 @@ public class ExportApi {
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/{id}/text")
     public JobEventDto export(@PathVariable("id") String publicationId,
-                                    @RequestBody @Valid TextExportJobConfigDto config) {
-        return exportFacade.export(new TextExportRequestDto(publicationId, config));
+                              @RequestBody @Valid TextExportJobConfigDto config,
+                              @RequestParam(required = false) String jobName) {
+        return exportFacade.export(new TextExportRequestDto(jobName, publicationId, config));
     }
 
     @Operation(summary = "List exports.")

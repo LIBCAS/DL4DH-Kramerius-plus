@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.jms;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventRunner;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventRunDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventQueue.E
 @Configuration
 public class JmsListenersConfig implements JmsListenerConfigurer {
 
-    private JobEventRunner jobEventRunner;
+    private JobEventService jobEventService;
 
     private MessageConverter messageConverter;
 
@@ -40,7 +40,7 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
                 JobEventRunDto jobEvent = (JobEventRunDto) messageConverter.fromMessage(message);
 
                 log.debug("Message content: {}", jobEvent);
-                jobEventRunner.runJob(jobEvent);
+                jobEventService.run(jobEvent.getJobEventId());
             } catch (JMSException e) {
                 log.error("Received Exception : " + e);
             }
@@ -55,7 +55,7 @@ public class JmsListenersConfig implements JmsListenerConfigurer {
     }
 
     @Autowired
-    public void setJobEventRunner(JobEventRunner jobEventRunner) {
-        this.jobEventRunner = jobEventRunner;
+    public void setJobEventService(JobEventService jobEventService) {
+        this.jobEventService = jobEventService;
     }
 }
