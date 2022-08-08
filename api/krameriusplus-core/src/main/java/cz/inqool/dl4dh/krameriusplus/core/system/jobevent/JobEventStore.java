@@ -74,5 +74,13 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
     }
 
     public JobEvent getDependency(String publicationId, KrameriusJob prerequisite) {
+        JPAQuery<JobEvent> query = query()
+                .select(qObject)
+                .where(qObject.publicationId.eq(publicationId))
+                .where(qObject.config.krameriusJob.eq(prerequisite))
+                .where(qObject.deleted.isNull())
+                .where(qObject.details.lastExecutionStatus.eq(JobStatus.COMPLETED));
+
+        return query.fetchOne();
     }
 }

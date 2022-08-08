@@ -21,11 +21,11 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 
 @Component
 @StepScope
-public class JobPrerequisitesValidatorTasklet implements Tasklet {
+public class JobPrerequisitesValidationTasklet implements Tasklet {
     private final JobEventStore jobEventStore;
 
     @Autowired
-    public JobPrerequisitesValidatorTasklet(JobEventStore jobEventStore) {
+    public JobPrerequisitesValidationTasklet(JobEventStore jobEventStore) {
         this.jobEventStore = jobEventStore;
     }
 

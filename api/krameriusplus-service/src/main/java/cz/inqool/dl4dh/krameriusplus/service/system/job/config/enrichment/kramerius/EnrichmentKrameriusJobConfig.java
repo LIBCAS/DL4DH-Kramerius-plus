@@ -15,7 +15,7 @@ public class EnrichmentKrameriusJobConfig extends EnrichmentJobConfig {
     @Bean
     public Job enrichingJob() {
         return super.getJobBuilder()
-                .start(stepContainer.getStep(DOWNLOAD_PUBLICATION))
+                .next(stepContainer.getStep(DOWNLOAD_PUBLICATION))
                 .next(stepContainer.getStep(DOWNLOAD_PUBLICATION_CHILDREN))
                 .build();
     }

@@ -1,6 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step;
 
 public class JobStep {
+    // ALL COMMON
+    public static final String VALIDATE_PREREQUISITES = "ValidatePrerequisitesStep";
 
     // ENRICHMENT_KRAMERIUS Job
     public static final String DOWNLOAD_PUBLICATION = "DownloadPublicationStep";
