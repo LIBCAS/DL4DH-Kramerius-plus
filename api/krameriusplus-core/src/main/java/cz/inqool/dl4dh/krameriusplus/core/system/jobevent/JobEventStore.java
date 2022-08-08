@@ -72,4 +72,7 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
 
         return count > 0;
     }
+
+    public JobEvent getDependency(String publicationId, KrameriusJob prerequisite) {
+    }
 }
