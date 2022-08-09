@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobConfigBase;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobParametersValidatorBase;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation.EnrichmentJobParametersValidator;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation.EnrichmentValidator;
+import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -10,17 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class EnrichmentJobConfig extends JobConfigBase {
 
-    private EnrichmentJobParametersValidator enrichmentJobParametersValidator;
+    private EnrichmentValidator enrichmentValidator;
 
     public abstract String getJobName();
 
     @Override
-    public JobParametersValidatorBase getJobParametersValidator() {
-        return enrichmentJobParametersValidator;
+    public JobParametersValidator getJobParametersValidator() {
+        return enrichmentValidator;
     }
 
     @Autowired
-    public void setEnrichmentJobValidator(EnrichmentJobParametersValidator enrichmentJobParametersValidator) {
-        this.enrichmentJobParametersValidator = enrichmentJobParametersValidator;
+    public void setEnrichmentJobValidator(EnrichmentValidator enrichmentValidator) {
+        this.enrichmentValidator = enrichmentValidator;
     }
 }
