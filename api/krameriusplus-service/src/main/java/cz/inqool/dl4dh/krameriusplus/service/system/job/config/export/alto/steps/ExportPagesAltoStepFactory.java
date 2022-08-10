@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.step
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.FlowStepFactory;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.PageMongoReader;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.DownloadPageReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components.ExportPagesAltoWriter;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -14,12 +14,11 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ste
 @Component
 public class ExportPagesAltoStepFactory extends FlowStepFactory<Page, Page> {
 
-    private final PageMongoReader reader;
+    private final DownloadPageReader reader;
 
     private final ExportPagesAltoWriter writer;
-
     @Autowired
-    public ExportPagesAltoStepFactory(PageMongoReader reader, ExportPagesAltoWriter writer) {
+    public ExportPagesAltoStepFactory(DownloadPageReader reader, ExportPagesAltoWriter writer) {
         this.reader = reader;
         this.writer = writer;
     }
