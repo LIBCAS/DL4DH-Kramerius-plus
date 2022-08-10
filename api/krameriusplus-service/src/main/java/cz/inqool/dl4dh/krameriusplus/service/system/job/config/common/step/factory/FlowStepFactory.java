@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepContainer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.DatedObjectWriteListener;
 import org.springframework.batch.core.Step;
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <IN>
  * @param <OUT>
  */
-public abstract class FlowStepFactory<IN extends DomainObject, OUT extends DomainObject>
+public abstract class FlowStepFactory<IN, OUT>
         extends AbstractStepFactory {
 
     protected DatedObjectWriteListener writeListener;
