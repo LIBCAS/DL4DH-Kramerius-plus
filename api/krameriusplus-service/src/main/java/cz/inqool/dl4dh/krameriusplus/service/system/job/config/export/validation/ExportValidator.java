@@ -14,22 +14,20 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators
 
 @Component
 public class ExportValidator implements JobParametersValidator {
-    Set<JobEventValidator> validatorList;
+
+    private Set<JobEventValidator> validatorList;
 
     @Override
     public void validate(JobParameters parameters) throws JobParametersInvalidException {
-        validatorList = validatorList.stream()
-                .filter(validator -> validator.usedIn().contains(EXPORT))
-                .collect(Collectors.toSet());
-
-        for (JobEventValidator validator: validatorList
-             ) {
+        for (JobEventValidator validator: validatorList) {
             validator.validate(parameters);
         }
     }
 
     @Autowired
     public void setValidatorList(Set<JobEventValidator> validatorList) {
-        this.validatorList = validatorList;
+        this.validatorList = validatorList.stream()
+                .filter(validator -> validator.usedIn().contains(EXPORT))
+                .collect(Collectors.toSet());
     }
 }

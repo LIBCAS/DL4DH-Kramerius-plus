@@ -17,6 +17,7 @@ public abstract class JobConfigBase {
     protected JobListener jobListener;
 
     protected JobBuilderFactory jobBuilderFactory;
+
     public SimpleJobBuilder getJobBuilder() {
         return jobBuilderFactory.get(getJobName())
                 .listener(jobListener)

@@ -14,16 +14,12 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators
 
 @Component
 public class EnrichmentValidator implements JobParametersValidator {
+
     private Set<JobEventValidator> validatorSet;
 
     @Override
     public void validate(JobParameters parameters) throws JobParametersInvalidException {
-        validatorSet = validatorSet.stream()
-                .filter(validator -> validator.usedIn().contains(ENRICHMENT))
-                .collect(Collectors.toSet());
-
-        for (JobEventValidator validator: validatorSet
-        ) {
+        for (JobEventValidator validator : validatorSet) {
             validator.validate(parameters);
         }
     }
@@ -33,6 +29,5 @@ public class EnrichmentValidator implements JobParametersValidator {
         this.validatorSet = validatorSet.stream()
                 .filter(validator -> validator.usedIn().contains(ENRICHMENT))
                 .collect(Collectors.toSet());
-
     }
 }

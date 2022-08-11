@@ -1,18 +1,17 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators.JobEventValidator;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators.AbstractRequiredParamsValidator;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators.ValidatorType;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators.ValidatorType.ENRICHMENT;
-import static org.springframework.batch.core.JobParameter.ParameterType.STRING;
 
-public class EnrichmentRequiredParamsValidator implements JobEventValidator {
+@Component
+public class EnrichmentRequiredParamsValidator extends AbstractRequiredParamsValidator {
 
     @Override
     public Set<ValidatorType> usedIn() {
@@ -20,21 +19,7 @@ public class EnrichmentRequiredParamsValidator implements JobEventValidator {
     }
 
     @Override
-    public void validate(JobParameters parameters) throws JobParametersInvalidException {
-        Set<String> missingParameters = new HashSet<>();
-
-        ENRICHMENT.requiredParams().forEach(parameterName -> {
-            JobParameter jobParameter = parameters.getParameters().get(parameterName);
-            if (jobParameter == null) {
-                missingParameters.add(parameterName);
-            } else if (STRING.equals(jobParameter.getType()) &&
-                    ((String) jobParameter.getValue()).isBlank()) {
-                missingParameters.add(parameterName);
-            }
-        });
-
-        if (!missingParameters.isEmpty()) {
-            throw new JobParametersInvalidException("Missing JobParameters: " + missingParameters);
-        }
+    public Set<String> getRequiredParams() {
+        return Set.of(PUBLICATION_ID, JOB_EVENT_ID);
     }
 }

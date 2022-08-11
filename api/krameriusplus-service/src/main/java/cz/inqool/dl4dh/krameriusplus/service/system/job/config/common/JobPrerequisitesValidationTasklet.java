@@ -22,6 +22,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 @Component
 @StepScope
 public class JobPrerequisitesValidationTasklet implements Tasklet {
+
     private final JobEventStore jobEventStore;
 
     @Autowired
