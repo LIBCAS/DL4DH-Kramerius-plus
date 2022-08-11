@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import org.springframework.batch.core.JobParameters;
@@ -39,8 +38,8 @@ public class JobPrerequisitesValidationTasklet implements Tasklet {
         Set<KrameriusJob> prerequisites = KrameriusJob.valueOf(jobParameters.getString(KRAMERIUS_JOB)).getDependentOn();
 
         for (KrameriusJob prerequisite: prerequisites) {
-            JobEvent prerequisiteJob = jobEventStore.getDependency(publicationId, prerequisite);
-            if (prerequisiteJob == null)  {
+            Long count = jobEventStore.getDependency(publicationId, prerequisite);
+            if (count.equals(0L))  {
                 throw new ValidationException("Prerequisite jobs failed or are not finished yet",
                         ValidationException.ErrorCode.DEPENDENCY_ERROR);
             }
