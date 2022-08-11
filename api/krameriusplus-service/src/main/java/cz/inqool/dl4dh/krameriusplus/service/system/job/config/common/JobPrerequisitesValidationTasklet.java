@@ -40,7 +40,7 @@ public class JobPrerequisitesValidationTasklet implements Tasklet {
         for (KrameriusJob prerequisite: prerequisites) {
             Long count = jobEventStore.getDependency(publicationId, prerequisite);
             if (count.equals(0L))  {
-                throw new ValidationException("Prerequisite jobs failed or are not finished yet",
+                throw new ValidationException(String.format("No completed jobs of type %s for publicationId %s", prerequisite, publicationId),
                         ValidationException.ErrorCode.DEPENDENCY_ERROR);
             }
         }
