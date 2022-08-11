@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation;
 
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;

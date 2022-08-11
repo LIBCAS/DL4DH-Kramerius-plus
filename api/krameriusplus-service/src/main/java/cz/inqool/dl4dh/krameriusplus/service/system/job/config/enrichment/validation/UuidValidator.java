@@ -1,24 +1,22 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.DataProvider;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.JobEventValidator;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.ValidatorType;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.NOT_FOUND;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators.ValidatorType.ENRICHMENT;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.ValidatorType.ENRICHMENT;
 
-@Component
 public class UuidValidator implements JobEventValidator {
 
     private final DataProvider dataProvider;
 
-    @Autowired
     public UuidValidator(DataProvider dataProvider) {
         this.dataProvider = dataProvider;
     }

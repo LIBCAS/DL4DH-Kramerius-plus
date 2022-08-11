@@ -1,11 +1,11 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.JobEventValidator;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.ValidatorType;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
@@ -13,14 +13,12 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.KRAMERIUS_JOB;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.OVERRIDE;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators.ValidatorType.ENRICHMENT;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.ValidatorType.ENRICHMENT;
 
-@Component
 public class OverrideValidator implements JobEventValidator {
 
     private final JobEventStore jobEventStore;
 
-    @Autowired
     public OverrideValidator(JobEventStore jobEventStore) {
         this.jobEventStore = jobEventStore;
     }

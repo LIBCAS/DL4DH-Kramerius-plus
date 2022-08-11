@@ -1,26 +1,24 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublishInfo;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.DataProvider;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.JobEventValidator;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.ValidatorType;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.validators.ValidatorType.ENRICHMENT;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.ValidatorType.ENRICHMENT;
 
 
-@Component
 public class PublicationTypeValidator implements JobEventValidator {
 
     private final DataProvider dataProvider;
 
-    @Autowired
     public PublicationTypeValidator(DataProvider dataProvider) {
         this.dataProvider = dataProvider;
     }
