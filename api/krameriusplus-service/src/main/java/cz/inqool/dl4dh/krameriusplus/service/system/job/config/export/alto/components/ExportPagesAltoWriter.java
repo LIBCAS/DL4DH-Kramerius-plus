@@ -26,6 +26,6 @@ public class ExportPagesAltoWriter extends FileWriter<PageAndAltoStringDto> {
 
     @Override
     protected String getItemFileName(DigitalObject item) {
-        return item.getId().substring(5) + ".xml";
+        return item.getIndex() + "_" + item.getId().substring(5) + ".xml";
     }
 }

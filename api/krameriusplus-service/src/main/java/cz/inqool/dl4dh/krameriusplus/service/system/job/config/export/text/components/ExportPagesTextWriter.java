@@ -42,6 +42,6 @@ public class ExportPagesTextWriter extends FileWriter<PageAndAltoDto> {
 
     @Override
     protected String getItemFileName(DigitalObject item) {
-        return item.getId().substring(5) + ".txt";
+        return item.getIndex() + "_" + item.getId().substring(5) + ".txt";
     }
 }
