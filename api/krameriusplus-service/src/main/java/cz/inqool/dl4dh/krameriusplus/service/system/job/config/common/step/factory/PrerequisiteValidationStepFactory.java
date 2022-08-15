@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.VALIDATE_PREREQUISITES;
 
 @Component
-public class PrerequisteValidationStepFactory extends AbstractStepFactory {
+public class PrerequisiteValidationStepFactory extends AbstractStepFactory {
     private final JobPrerequisitesValidationTasklet tasklet;
 
     @Autowired
-    public PrerequisteValidationStepFactory(JobPrerequisitesValidationTasklet tasklet) {
+    public PrerequisiteValidationStepFactory(JobPrerequisitesValidationTasklet tasklet) {
         this.tasklet = tasklet;
     }
 
