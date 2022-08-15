@@ -1,25 +1,22 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation;
 
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.JobParametersValidator;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.springframework.batch.core.JobParameter.ParameterType.STRING;
 
-public abstract class JobParametersValidatorBase implements JobParametersValidator {
-
-    public abstract Set<String> getMandatoryParameters();
+public abstract class AbstractRequiredParamsValidator implements JobEventValidator {
 
     @Override
-    public void validate(JobParameters jobParameters) throws JobParametersInvalidException {
+    public void validate(JobParameters parameters) throws JobParametersInvalidException {
         Set<String> missingParameters = new HashSet<>();
 
-        getMandatoryParameters().forEach(parameterName -> {
-            JobParameter jobParameter = jobParameters.getParameters().get(parameterName);
+        getRequiredParams().forEach(parameterName -> {
+            JobParameter jobParameter = parameters.getParameters().get(parameterName);
             if (jobParameter == null) {
                 missingParameters.add(parameterName);
             } else if (STRING.equals(jobParameter.getType()) &&
@@ -32,4 +29,6 @@ public abstract class JobParametersValidatorBase implements JobParametersValidat
             throw new JobParametersInvalidException("Missing JobParameters: " + missingParameters);
         }
     }
+
+    public abstract Set<String> getRequiredParams();
 }

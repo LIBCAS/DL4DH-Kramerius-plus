@@ -52,14 +52,6 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
                 .executeUpdate();
     }
 
-    public void updateJobRun(String jobEventId, Long instanceId, Long lastExecutionId) {
-        entityManager.createQuery("UPDATE JobEvent j SET j.instanceId=:instanceId, j.details.lastExecutionId=:executionId WHERE j.id=:id")
-                .setParameter("instanceId", instanceId)
-                .setParameter("executionId", lastExecutionId)
-                .setParameter("id", jobEventId)
-                .executeUpdate();
-    }
-
     public boolean existsOtherJobs(String publicationId, String excludeJobEventId, KrameriusJob jobType) {
         Long count = query().select(qObject.count())
                 .where(qObject.deleted.isNull())
@@ -71,5 +63,16 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
         notNull(count, () -> new IllegalStateException("Count query should never return null"));
 
         return count > 0;
+    }
+
+    public Long getDependency(String publicationId, KrameriusJob prerequisite) {
+        JPAQuery<Long> query = query()
+                .select(qObject.count())
+                .where(qObject.publicationId.eq(publicationId))
+                .where(qObject.config.krameriusJob.eq(prerequisite))
+                .where(qObject.deleted.isNull())
+                .where(qObject.details.lastExecutionStatus.eq(JobStatus.COMPLETED));
+
+        return query.fetchFirst();
     }
 }

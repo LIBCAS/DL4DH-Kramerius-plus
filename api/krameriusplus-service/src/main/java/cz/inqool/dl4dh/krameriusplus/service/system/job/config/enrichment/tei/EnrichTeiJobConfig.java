@@ -15,7 +15,7 @@ public class EnrichTeiJobConfig extends EnrichmentJobConfig {
     @Bean
     public Job enrichTeiJob() {
         return super.getJobBuilder()
-                .start(stepContainer.getStep(ENRICH_PUBLICATION_TEI))
+                .next(stepContainer.getStep(ENRICH_PUBLICATION_TEI))
                 .next(stepContainer.getStep(ENRICH_PAGES_TEI))
                 .build();
     }
