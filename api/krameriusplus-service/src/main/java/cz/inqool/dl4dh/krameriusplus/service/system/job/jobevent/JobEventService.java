@@ -105,8 +105,15 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         JobEvent jobEvent = store.find(jobEventId);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
-        if (JobStatus.FAILED.equals(jobEvent.getDetails().getLastExecutionStatus())) {
-            enqueueJob(jobEvent);
+        if (JobStatus.FAILED.equals(jobEvent.getDetails().getLastExecutionStatus()) ||
+                JobStatus.STOPPED.equals(jobEvent.getDetails().getLastExecutionStatus())) {
+            try {
+                jobOperator.restart(jobEvent.getDetails().getLastExecutionId());
+            }
+            catch (Exception e) {
+                throw new IllegalStateException("Exception occurred during restart of JobExecution id=" + jobEvent.getDetails().getLastExecutionId() +
+                        "description=" + e.getMessage());
+            }
         } else {
             throw new IllegalStateException("Only jobs with lastExecutionStatus='FAILED' can be restarted " +
                     "(JobEvent's lastExecutionStatus is " + jobEvent.getDetails().getLastExecutionStatus() + ")");
