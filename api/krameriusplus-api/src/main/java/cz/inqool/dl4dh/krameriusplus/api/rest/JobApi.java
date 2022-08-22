@@ -87,6 +87,7 @@ public class JobApi {
     @PostMapping("/{id}/restart")
     public ResponseEntity<?> restartJob(@PathVariable("id") String jobEventId) {
         jobEventService.restart(jobEventId);
+        jobEventService.update(jobEventService.find(jobEventId));
         return ResponseEntity.ok().build();
     }
 

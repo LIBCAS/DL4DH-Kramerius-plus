@@ -83,6 +83,22 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         return store.create(jobEvent);
     }
 
+    @Override
+    @Transactional
+    public JobEventDto update(@NonNull JobEventDto jobEventDto) {
+        JobInstance instance = jobExplorer.getJobInstance(jobEventDto.getInstanceId());
+        notNull(instance, () -> new MissingObjectException(JobInstance.class, jobEventDto.getId()));
+
+        JobExecution jobExecution = jobExplorer.getLastJobExecution(instance);
+        notNull(jobExecution, () -> new MissingObjectException(JobExecution.class, jobEventDto.getId()));
+
+        jobEventDto.getDetails().setLastExecutionStatus(JobStatus.from(jobExecution.getStatus().name()));
+        jobEventDto.getDetails().setLastExecutionId(jobExecution.getId());
+        jobEventDto.setInstanceId(instance.getInstanceId());
+
+        return mapper.toDto(store.update(mapper.fromDto(jobEventDto)));
+    }
+
     public void run(String jobEventId) {
         JobEvent jobEvent = store.find(jobEventId);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
