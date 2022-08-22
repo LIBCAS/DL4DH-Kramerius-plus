@@ -3,7 +3,11 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.*;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventFilter;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
@@ -16,6 +20,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.JobExecutionNotRunningException;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.NoSuchJobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,13 +50,13 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     private JobEventLauncher jobEventLauncher;
 
+    private JobOperator jobOperator;
+
     @Transactional
     public List<JobEventDto> create(@NonNull List<@Valid JobEventCreateDto> createDtos) {
         List<JobEventDto> result = new ArrayList<>();
 
-        createDtos.forEach(createDto -> {
-            result.add(create(createDto));
-        });
+        createDtos.forEach(createDto -> result.add(create(createDto)));
 
         return result;
     }
@@ -103,6 +110,21 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         } else {
             throw new IllegalStateException("Only jobs with lastExecutionStatus='FAILED' can be restarted " +
                     "(JobEvent's lastExecutionStatus is " + jobEvent.getDetails().getLastExecutionStatus() + ")");
+        }
+    }
+
+    public void stop(String jobEventId) {
+        JobEvent jobEvent = store.find(jobEventId);
+        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
+
+        try {
+            jobOperator.stop(jobEvent.getDetails().getLastExecutionId());
+        }
+        catch (JobExecutionNotRunningException e) {
+            throw new IllegalStateException(String.format("JobEvent with id=%s has no execution running", jobEventId));
+
+        } catch (NoSuchJobExecutionException e) {
+            throw new IllegalStateException("No such Job");
         }
     }
 
@@ -172,5 +194,10 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Autowired
     public void setJobEventLauncher(JobEventLauncher jobEventLauncher) {
         this.jobEventLauncher = jobEventLauncher;
+    }
+
+    @Autowired
+    public void setJobOperator(JobOperator jobOperator) {
+        this.jobOperator = jobOperator;
     }
 }
