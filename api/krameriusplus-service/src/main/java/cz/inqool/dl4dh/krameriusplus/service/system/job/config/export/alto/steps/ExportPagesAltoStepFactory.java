@@ -2,10 +2,11 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.step
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoStringDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.FlowStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.AbstractStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.processor.DownloadPageAltoStringProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.DownloadPageReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components.ExportPagesAltoWriter;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_PAGES_ALTO;
 
 @Component
-public class ExportPagesAltoStepFactory extends FlowStepFactory<Page, PageAndAltoStringDto> {
+public class ExportPagesAltoStepFactory extends AbstractStepFactory {
 
     private final DownloadPageReader reader;
 
@@ -36,18 +37,29 @@ public class ExportPagesAltoStepFactory extends FlowStepFactory<Page, PageAndAlt
         return EXPORT_PAGES_ALTO;
     }
 
-    @Override
-    protected ItemReader<Page> getItemReader() {
+    private ItemReader<Page> getItemReader() {
         return reader;
     }
 
-    @Override
-    protected ItemWriter<PageAndAltoStringDto> getItemWriter() {
+    private ItemWriter<PageAndAltoStringDto> getItemWriter() {
         return writer;
     }
 
-    @Override
-    protected ItemProcessor<Page, PageAndAltoStringDto> getItemProcessor() {
+    private ItemProcessor<Page, PageAndAltoStringDto> getItemProcessor() {
         return processor;
+    }
+
+    @Override
+    public Step build() {
+        return getBuilder()
+                .<Page, PageAndAltoStringDto>chunk(getChunkSize())
+                .reader(getItemReader())
+                .processor(getItemProcessor())
+                .writer(getItemWriter())
+                .build();
+    }
+
+    private int getChunkSize() {
+        return 5;
     }
 }

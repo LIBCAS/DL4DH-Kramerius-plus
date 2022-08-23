@@ -3,7 +3,9 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.list
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DatedObjectFieldGenerator;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
+import lombok.NonNull;
 import org.springframework.batch.core.ItemWriteListener;
+import org.springframework.batch.core.annotation.BeforeWrite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,7 @@ public class DatedObjectWriteListener implements ItemWriteListener<DomainObject>
     }
 
     @Override
+    @BeforeWrite
     public void beforeWrite(List<? extends DomainObject> items) {
         items.forEach(item -> {
             if (item instanceof DatedObject) {
@@ -29,12 +32,12 @@ public class DatedObjectWriteListener implements ItemWriteListener<DomainObject>
     }
 
     @Override
-    public void afterWrite(List<? extends DomainObject> items) {
+    public void afterWrite(@NonNull List<? extends DomainObject> items) {
         // do nothing
     }
 
     @Override
-    public void onWriteError(Exception exception, List<? extends DomainObject> items) {
+    public void onWriteError(@NonNull Exception exception, @NonNull List<? extends DomainObject> items) {
         // do nothing
     }
 }
