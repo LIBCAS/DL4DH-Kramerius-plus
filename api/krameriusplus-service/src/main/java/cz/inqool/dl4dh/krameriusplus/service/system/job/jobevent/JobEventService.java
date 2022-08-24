@@ -83,22 +83,6 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         return store.create(jobEvent);
     }
 
-    @Override
-    @Transactional
-    public JobEventDto update(@NonNull JobEventDto jobEventDto) {
-        JobInstance instance = jobExplorer.getJobInstance(jobEventDto.getInstanceId());
-        notNull(instance, () -> new MissingObjectException(JobInstance.class, jobEventDto.getId()));
-
-        JobExecution jobExecution = jobExplorer.getLastJobExecution(instance);
-        notNull(jobExecution, () -> new MissingObjectException(JobExecution.class, jobEventDto.getId()));
-
-        jobEventDto.getDetails().setLastExecutionStatus(JobStatus.from(jobExecution.getStatus().name()));
-        jobEventDto.getDetails().setLastExecutionId(jobExecution.getId());
-        jobEventDto.setInstanceId(instance.getInstanceId());
-
-        return mapper.toDto(store.update(mapper.fromDto(jobEventDto)));
-    }
-
     public void run(String jobEventId) {
         JobEvent jobEvent = store.find(jobEventId);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
@@ -117,21 +101,27 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         }
     }
 
-    public void restart(String jobEventId) {
-        JobEvent jobEvent = store.find(jobEventId);
-        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
-
+    @Transactional
+    public void restart(JobEvent jobEvent) {
         if (JobStatus.FAILED.equals(jobEvent.getDetails().getLastExecutionStatus()) ||
                 JobStatus.STOPPED.equals(jobEvent.getDetails().getLastExecutionStatus())) {
             try {
-                jobOperator.restart(jobEvent.getDetails().getLastExecutionId());
+                JobExecution jobExecution = jobEventLauncher.createExecution(
+                        jobEvent.getConfig().getKrameriusJob(),
+                        mapper.toJobParameters(jobEvent));
+
+                jobEvent.setInstanceId(jobExecution.getJobId());
+                jobEvent.getDetails().setLastExecutionStatus(JobStatus.from(jobExecution.getStatus().name()));
+                jobEvent.getDetails().setLastExecutionId(jobExecution.getId());
+                jobEvent = store.update(jobEvent);
+
+                enqueueJob(jobEvent);
             }
             catch (Exception e) {
-                throw new IllegalStateException("Exception occurred during restart of JobExecution id=" + jobEvent.getDetails().getLastExecutionId() +
-                        "description=" + e.getMessage());
+                throw new IllegalStateException("Job cannot be restarted", e);
             }
         } else {
-            throw new IllegalStateException("Only jobs with lastExecutionStatus='FAILED' can be restarted " +
+            throw new IllegalStateException("Only jobs with lastExecutionStatus='FAILED||STOPPED' can be restarted " +
                     "(JobEvent's lastExecutionStatus is " + jobEvent.getDetails().getLastExecutionStatus() + ")");
         }
     }

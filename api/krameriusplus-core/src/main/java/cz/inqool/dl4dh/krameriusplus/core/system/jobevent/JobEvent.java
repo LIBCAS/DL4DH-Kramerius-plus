@@ -11,11 +11,13 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.*;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_NAME;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.KRAMERIUS_JOB;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 
 /**
  * Custom entity representing an abstraction over spring's JobInstance fitted for Kramerius+
@@ -52,7 +54,6 @@ public class JobEvent extends DatedObject {
         jobParametersMap.put(JOB_EVENT_ID, id);
         jobParametersMap.put(JOB_EVENT_NAME, jobName);
         jobParametersMap.put(PUBLICATION_ID, publicationId);
-        jobParametersMap.put(TIMESTAMP, Instant.now());
         jobParametersMap.put(KRAMERIUS_JOB, config.getKrameriusJob().name());
         jobParametersMap.putAll(config.getParameters());
 

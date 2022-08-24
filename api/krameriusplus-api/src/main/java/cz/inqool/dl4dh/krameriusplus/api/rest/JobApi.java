@@ -86,8 +86,7 @@ public class JobApi {
     @ApiResponse(responseCode = "400", description = "Job with given ID could not be restarted.")
     @PostMapping("/{id}/restart")
     public ResponseEntity<?> restartJob(@PathVariable("id") String jobEventId) {
-        jobEventService.restart(jobEventId);
-        jobEventService.update(jobEventService.find(jobEventId));
+        jobEventService.restart(jobEventService.findEntity(jobEventId));
         return ResponseEntity.ok().build();
     }
 
