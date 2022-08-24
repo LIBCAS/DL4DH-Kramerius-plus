@@ -112,6 +112,8 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
                 jobEvent.setInstanceId(jobExecution.getJobId());
                 jobEvent.getDetails().setLastExecutionStatus(JobStatus.from(jobExecution.getStatus().name()));
+                jobEvent.getDetails().setLastExecutionExitCode(null);
+                jobEvent.getDetails().setLastExecutionExitDescription(null);
                 jobEvent.getDetails().setLastExecutionId(jobExecution.getId());
                 jobEvent = store.update(jobEvent);
 
