@@ -2,10 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.TeiExportParams;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei.header.TeiHeaderFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,12 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.annotation.Resource;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -83,7 +88,7 @@ public class WebClientTeiConnector implements TeiConnector {
     }
 
     @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params) {
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setAccept(List.of(MediaType.APPLICATION_XML));
@@ -111,7 +116,7 @@ public class WebClientTeiConnector implements TeiConnector {
     }
 
     @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params, Path outputFile) {
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params, Path outputFile) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setAccept(List.of(MediaType.APPLICATION_XML));
