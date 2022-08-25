@@ -6,11 +6,11 @@ import {
 	Button,
 	ToggleButton,
 	ToggleButtonGroup,
+	Box,
 } from '@mui/material'
-import { Box } from '@mui/system'
 import { ChangeEvent, FC } from 'react'
 import { CustomDateTimePicker } from './custom-date-time-picker'
-import { PublicationFilter } from './publication-api'
+import { PublicationFilter } from '../../api/publication-api'
 
 type Props = {
 	onTextChange: (
@@ -102,7 +102,7 @@ export const PublicationListFilter: FC<Props> = ({
 					</Grid>
 				</Grid>
 				<Box sx={{ paddingTop: 4 }}>
-					<Button color="primary" variant="contained" onClick={onFilterClick}>
+					<Button variant="contained" onClick={onFilterClick}>
 						Filtrovat
 					</Button>
 				</Box>

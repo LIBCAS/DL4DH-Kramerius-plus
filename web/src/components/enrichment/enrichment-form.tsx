@@ -1,5 +1,4 @@
-import { Box } from '@mui/system'
-import { Grid, Typography, Button } from '@mui/material'
+import { Grid, Typography, Button, Box } from '@mui/material'
 import { EnrichmentAccordion } from './enrichment-accordion'
 import { FormEvent, useState } from 'react'
 import { JobPlanCreate } from '../../models/job/job-plan-create'
@@ -10,7 +9,6 @@ import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment/enr
 import { ConfigDialog } from './config-accordion/config-dialog'
 import { toast } from 'react-toastify'
 import { createPlan } from '../../api/enrichment-api'
-import { ApiError } from 'models/api-error'
 
 const initialCurrentConfig: EnrichmentJobEventConfig = {
 	override: true,
@@ -155,9 +153,7 @@ export const EnrichmentForm = () => {
 				setPlan(initialPlan)
 			} else {
 				toast(
-					`Při pokusu o vytvoření plánu nastala chyba: ${
-						(response.data as ApiError).message
-					}`,
+					`Při pokusu o vytvoření plánu nastala chyba: ${response.statusText}`,
 					{
 						type: 'error',
 					},

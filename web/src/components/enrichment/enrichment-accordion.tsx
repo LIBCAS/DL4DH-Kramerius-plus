@@ -1,4 +1,4 @@
-import { Box } from '@mui/system'
+import { Box } from '@mui/material'
 import { useState } from 'react'
 import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment/enrichment-job-event-config'
 import { EnrichmentKrameriusJob } from '../../enums/enrichment-kramerius-job'

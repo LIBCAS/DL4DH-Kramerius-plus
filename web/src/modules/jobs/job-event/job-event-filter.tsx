@@ -60,15 +60,17 @@ export const JobEventFilter = ({ jobTypes, onSubmit }: Props) => {
 						<TextField
 							fullWidth
 							label="UUID publikace"
+							size="small"
 							value={filter.publicationId}
 							onChange={handleUuidChange}
-						></TextField>
+						/>
 					</Grid>
 					<Grid item lg={2} md={4} sm={6} xs={8}>
 						<TextField
 							fullWidth
 							label="Typ úlohy"
 							select
+							size="small"
 							onChange={handleJobTypeChange}
 						>
 							<MenuItem value={undefined}>Všechny</MenuItem>
@@ -84,6 +86,7 @@ export const JobEventFilter = ({ jobTypes, onSubmit }: Props) => {
 							fullWidth
 							label="Stav"
 							select
+							size="small"
 							onChange={handleLastExecutionStatusChange}
 						>
 							<MenuItem value={undefined}>Všechny</MenuItem>

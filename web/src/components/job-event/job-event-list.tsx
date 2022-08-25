@@ -4,13 +4,13 @@ import {
 	GridRenderCellParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
+import { listJobEvents } from 'api/job-api'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { JobType } from 'enums/job-type'
 import { JobEvent } from 'models/job/job-event'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter } from 'utils/formatters'
-import { listJobEvents } from '../../modules/jobs/job-api'
 import { JobEventFilterDto } from '../../modules/jobs/job-event/job-event-filter-dto'
 
 type Props = {
@@ -33,6 +33,7 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
+	const navigate = useNavigate()
 
 	const columns = [
 		{
@@ -51,7 +52,7 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 			field: 'created',
 			headerName: 'Vytvořeno',
 			width: 180,
-			type: 'datetime',
+			type: 'string',
 			valueFormatter: dateTimeFormatter,
 		},
 		{
@@ -78,15 +79,19 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 			flex: 1,
 			sortable: false,
 			renderCell: (params: GridRenderCellParams) => {
+				const onClick = () => {
+					navigate(params.row['id'])
+				}
 				return (
-					<Link
-						style={{ textDecoration: 'none ' }}
-						to={`${jobType}/${params.row['id']}`}
+					<Button
+						color="primary"
+						// component={Link}
+						// to={params.row['id']}
+						variant="contained"
+						onClick={onClick}
 					>
-						<Button color="primary" variant="contained">
-							Detail
-						</Button>
-					</Link>
+						Detail
+					</Button>
 				)
 			},
 		},

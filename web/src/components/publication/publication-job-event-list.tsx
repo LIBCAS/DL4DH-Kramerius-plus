@@ -2,10 +2,10 @@ import { Paper } from '@mui/material'
 import { DataGrid, GridRowParams } from '@mui/x-data-grid'
 import { KrameriusJob } from 'enums/kramerius-job'
 import { JobEvent } from 'models/job/job-event'
-import { listJobEvents } from 'modules/jobs/job-api'
+import { listJobEvents } from 'api/job-api'
 import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
 import { dateTimeFormatter } from 'utils/formatters'
+import { useNavigate } from 'react-router'
 
 type Props = {
 	publicationId: string
@@ -22,7 +22,7 @@ export const PublicationJobEventList = ({
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const columns = [
 		{
@@ -69,7 +69,7 @@ export const PublicationJobEventList = ({
 	const onPageChange = (page: number) => setPage(page)
 
 	const onRowClick = (params: GridRowParams) => {
-		history.push(`/jobs/enriching/${params.row['id']}`)
+		navigate(`/jobs/enriching/${params.row['id']}`)
 	}
 
 	return (

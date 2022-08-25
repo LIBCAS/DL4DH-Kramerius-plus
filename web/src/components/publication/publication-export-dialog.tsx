@@ -9,8 +9,7 @@ import { DialogContentProps } from '../dialog/types'
 import { Params, TeiParams } from '../../models'
 import { JSONParams } from './publication-export-json'
 import { TEIParams } from './publication-export-tei'
-import { Typography } from '@material-ui/core'
-import { Box } from '@mui/system'
+import { Typography, Box } from '@mui/material'
 import { CsvExportJobEventConfig } from 'models/job/config/export/csv-export-job-event-config'
 import { AltoExportJobEventConfig } from 'models/job/config/export/alto-export-job-event-config'
 import { ExportJobEventConfig } from 'models/job/config/export/export-job-event-config'
@@ -27,18 +26,6 @@ const exportPublication = async (
 	config: ExportJobEventConfig,
 	format: ExportFormat,
 ) => {
-	// const filters = (params.filters ?? []).map(f => ({
-	// 	field: f.field,
-	// 	value: f.value,
-	// 	operation: f.operation,
-	// }))
-
-	// const processedParams = {
-	// 	...params,
-	// 	filters,
-	// 	sort: [{ field: 'index', direction: params.sort }],
-	// }
-
 	try {
 		const response = await fetch(`/api/exports/${id}/${format}`, {
 			method: 'POST',

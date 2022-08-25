@@ -18,8 +18,8 @@ export const ConfigAccordionContent = ({
 	onNewConfigClick,
 }: Props) => {
 	return (
-		<Grid component="form" container spacing={2}>
-			<Grid component="form" item xs={12}>
+		<Grid container spacing={2}>
+			<Grid item xs={12}>
 				<ConfigList
 					configs={configs}
 					onClick={onConfigClick}
