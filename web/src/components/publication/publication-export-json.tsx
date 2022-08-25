@@ -1,11 +1,8 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
-
 import { Params } from '../../models'
 import { SelectField } from '../select-field/select-field'
 import { fieldOptions } from './publication-items'
+import { Grid, Box, Typography } from '@mui/material'
 
 type Props = {
 	params: Params
@@ -13,24 +10,14 @@ type Props = {
 	disabled: boolean
 }
 
-const useStyles = makeStyles(() => ({
-	root: {
-		marginTop: 20,
-		marginBottom: 10,
-		width: 400,
-	},
-	parameters: {
-		marginBottom: '1rem',
-	},
-}))
-
 export const JSONParams = ({ setParams, params, disabled }: Props) => {
-	const classes = useStyles()
 	const { includeFields = [], excludeFields = [] } = params
 
 	return (
-		<div className={classes.root}>
-			<Typography className={classes.parameters}>Parametry stránek</Typography>
+		<Box>
+			<Typography paddingBottom={2} paddingTop={2}>
+				Parametry stránek
+			</Typography>
 
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
@@ -69,7 +56,6 @@ export const JSONParams = ({ setParams, params, disabled }: Props) => {
 					/>
 				</Grid>
 			</Grid>
-			{/* <ExportFilters filters={filters} setParams={setParams} /> */}
-		</div>
+		</Box>
 	)
 }

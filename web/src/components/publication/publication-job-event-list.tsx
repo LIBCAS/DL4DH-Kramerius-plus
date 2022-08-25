@@ -2,10 +2,10 @@ import { Paper } from '@mui/material'
 import { DataGrid, GridRowParams } from '@mui/x-data-grid'
 import { KrameriusJob } from 'enums/kramerius-job'
 import { JobEvent } from 'models/job/job-event'
-import { listJobEvents } from 'api/job-api'
 import { useEffect, useState } from 'react'
 import { dateTimeFormatter } from 'utils/formatters'
 import { useNavigate } from 'react-router'
+import { listJobEvents } from 'api/job-api'
 
 type Props = {
 	publicationId: string

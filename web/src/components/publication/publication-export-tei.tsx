@@ -1,8 +1,5 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
-
+import { Typography, Grid, Box } from '@mui/material'
 import { TeiParams } from '../../models'
 import { SelectField } from '../select-field/select-field'
 import { AltoParam, UDPipeParam, NameTagParam } from '../../models/tei-params'
@@ -17,24 +14,14 @@ type Props = {
 	setParams: React.Dispatch<React.SetStateAction<TeiParams>>
 }
 
-const useStyles = makeStyles(() => ({
-	root: {
-		marginTop: 20,
-		marginBottom: 10,
-		width: 400,
-	},
-	parameters: {
-		marginBottom: '1rem',
-	},
-}))
-
 export const TEIParams = ({ setParams, params }: Props) => {
-	const classes = useStyles()
 	const { udPipeParams = [], altoParams = [], nameTagParams = [] } = params
 
 	return (
-		<div className={classes.root}>
-			<Typography className={classes.parameters}>Parametry stránek</Typography>
+		<Box>
+			<Typography paddingBottom={2} paddingTop={2}>
+				Parametry stránek
+			</Typography>
 
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
@@ -93,6 +80,6 @@ export const TEIParams = ({ setParams, params }: Props) => {
 			</Grid>
 
 			{/* <ExportFilters filters={filters} setParams={setParams} /> */}
-		</div>
+		</Box>
 	)
 }

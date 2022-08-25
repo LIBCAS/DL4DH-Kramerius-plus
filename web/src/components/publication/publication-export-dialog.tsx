@@ -16,30 +16,11 @@ import { ExportJobEventConfig } from 'models/job/config/export/export-job-event-
 import { JsonExportJobEventConfig } from 'models/job/config/export/json-export-job-event-config'
 import { TeiExportJobEventConfig } from 'models/job/config/export/tei-export-job-event-config'
 import { TextExportJobEventConfig } from 'models/job/config/export/text-export-job-event-config'
+import { exportPublication } from 'api/export-api'
 
-type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
+export type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
 
 type Delimiter = '\t' | ','
-
-const exportPublication = async (
-	id: string,
-	config: ExportJobEventConfig,
-	format: ExportFormat,
-) => {
-	try {
-		const response = await fetch(`/api/exports/${id}/${format}`, {
-			method: 'POST',
-			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify(config),
-		})
-
-		return response
-	} catch (e) {
-		return {
-			ok: false,
-		}
-	}
-}
 
 const defaultParams: Params = {
 	filters: [],
