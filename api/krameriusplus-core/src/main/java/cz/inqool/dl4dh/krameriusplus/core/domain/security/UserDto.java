@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.user.dto;
+package cz.inqool.dl4dh.krameriusplus.core.domain.security;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.dto.DatedObjectDto;
 import lombok.Getter;

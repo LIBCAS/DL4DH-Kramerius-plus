@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
 import lombok.NonNull;
 import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.JobInterruptedException;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -25,6 +26,8 @@ public class StepFailureListener implements StepExecutionListener {
 
     private static final String UNEXPECTED_EXCEPTION_CODE = "UNEXPECTED_ERROR_OCCURRED";
 
+    private static final String STOP_EXCEPTION_CODE = "STEP_STOPPED";
+
     private final JobEventService jobEventService;
 
     @Autowired
@@ -43,8 +46,17 @@ public class StepFailureListener implements StepExecutionListener {
 
         if (!failures.isEmpty()) {
             Throwable exception = failures.get(0);
-            String errorCode = exception instanceof GeneralException ?
-                    ((GeneralException) exception).getErrorCode().name() : UNEXPECTED_EXCEPTION_CODE;
+            String errorCode;
+
+            if (exception instanceof GeneralException) {
+                errorCode = ((GeneralException) exception).getErrorCode().name();
+            }
+            else if (exception instanceof JobInterruptedException) {
+                errorCode = STOP_EXCEPTION_CODE;
+            }
+            else {
+                errorCode = UNEXPECTED_EXCEPTION_CODE;
+            }
 
             JobEventDto jobEvent = jobEventService.find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
             jobEvent.getDetails().setLastExecutionExitCode(errorCode);

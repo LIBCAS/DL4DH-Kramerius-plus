@@ -1,11 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.config;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.user.UserStore;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,12 +23,6 @@ public class SecurityConfig {
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(UserStore userStore) {
-        return username -> userStore.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username '" + username + "' not found."));
     }
 
     @Bean

@@ -84,4 +84,13 @@ public class JobApi {
         jobEventService.restart(jobEventId);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "Stop job with given ID.")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Job with given ID could not be stopped.")
+    @PostMapping("/{id}/stop")
+    public ResponseEntity<?> stopJob(@PathVariable("id") String jobEventId) {
+        jobEventService.stop(jobEventId);
+        return ResponseEntity.ok().build();
+    }
 }

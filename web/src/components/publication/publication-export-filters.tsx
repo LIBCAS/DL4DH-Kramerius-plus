@@ -1,12 +1,7 @@
-import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
-import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
-import Typography from '@material-ui/core/Typography'
 import { v4 } from 'uuid'
+import { Grid, Button, IconButton, Typography, TextField } from '@mui/material'
 
 import { TeiParams, Params } from '../../models'
 import { Filter } from '../../models/filter'
@@ -16,28 +11,7 @@ type Props = {
 	setParams: React.Dispatch<React.SetStateAction<Params | TeiParams>>
 }
 
-const useStyles = makeStyles(() => ({
-	title: {
-		marginBottom: 8,
-	},
-	input: {
-		'& input': {
-			padding: '8px 10px',
-		},
-		'& > div': {
-			paddingRight: 8,
-		},
-		marginBottom: 8,
-	},
-	button: {
-		padding: '2px 6px',
-		textTransform: 'none',
-	},
-}))
-
 export const ExportFilters = ({ filters, setParams }: Props) => {
-	const classes = useStyles()
-
 	const addFilter = () =>
 		setParams(p => ({
 			...p,
@@ -93,14 +67,13 @@ export const ExportFilters = ({ filters, setParams }: Props) => {
 
 	return (
 		<div>
-			<Typography className={classes.title}>Filtry</Typography>
+			<Typography marginBottom={1}>Filtry</Typography>
 			{filters.map(({ id, field, value }) => (
 				<Grid key={id} container spacing={1}>
 					<Grid item xs={11}>
 						<Grid container spacing={2}>
 							<Grid item xs={6}>
 								<TextField
-									classes={{ root: classes.input }}
 									fullWidth
 									name={id}
 									placeholder="Vložte název"
@@ -111,7 +84,6 @@ export const ExportFilters = ({ filters, setParams }: Props) => {
 							</Grid>
 							<Grid item xs={6}>
 								<TextField
-									classes={{ root: classes.input }}
 									fullWidth
 									name={id}
 									placeholder="Vložte hodnotu"
@@ -135,8 +107,7 @@ export const ExportFilters = ({ filters, setParams }: Props) => {
 			))}
 
 			<Button
-				className={classes.button}
-				color="primary"
+				color="inherit"
 				startIcon={<AddCircleOutlineIcon />}
 				onClick={addFilter}
 			>

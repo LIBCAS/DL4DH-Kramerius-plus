@@ -27,7 +27,7 @@ spring:
     job:
       enabled: false
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
   #    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
   main:
     allow-bean-definition-overriding: true

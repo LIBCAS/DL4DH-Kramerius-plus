@@ -1,7 +1,10 @@
 import { Grid, Typography, Divider, Button } from '@mui/material'
+import { restartJob, stopJob } from 'api/job-api'
+import { ApiError } from 'models'
 import { JobEvent } from 'models/job/job-event'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { formatDateTime } from 'utils/formatters'
 import { JobEventDataRow } from './job-event-data-row'
 
@@ -14,6 +17,47 @@ export const JobEventDataDisplay: FC<Props> = ({
 	jobEvent,
 	onRefreshClick,
 }) => {
+	const onStop = () => {
+		const callStop = async () => {
+			const response = await stopJob(jobEvent.id)
+
+			if (response.ok) {
+				toast('Úloha úspěšně zastavená', {
+					type: 'success',
+				})
+			} else {
+				const body = await response.json()
+				toast(`Nastala chyba: ${(body as ApiError).message}`, {
+					type: 'error',
+				})
+			}
+
+			onRefreshClick()
+		}
+
+		callStop()
+	}
+
+	const onRestart = () => {
+		const callRestart = async () => {
+			const response = await restartJob(jobEvent.id)
+
+			if (response.ok) {
+				toast('Úloha úspěšně restartována', {
+					type: 'success',
+				})
+			} else {
+				const body = await response.json()
+				toast(`Nastala chyba: ${(body as ApiError).message}`, {
+					type: 'error',
+				})
+			}
+
+			onRefreshClick()
+		}
+		callRestart()
+	}
+
 	return (
 		<Grid container direction="column" spacing={2} sx={{ p: 2 }}>
 			<Grid container justifyContent="space-between">
@@ -22,8 +66,28 @@ export const JobEventDataDisplay: FC<Props> = ({
 						Detail úlohy
 					</Typography>
 				</Grid>
-				<Grid container item spacing={2} xs={4}>
-					<Grid item lg={6} md={12}>
+				<Grid container item spacing={2} xs={6}>
+					<Grid item lg={3} md={12}>
+						<Button
+							color="primary"
+							fullWidth
+							variant="contained"
+							onClick={onStop}
+						>
+							Zastavit
+						</Button>
+					</Grid>
+					<Grid item lg={3} md={12}>
+						<Button
+							color="primary"
+							fullWidth
+							variant="contained"
+							onClick={onRestart}
+						>
+							Restartovat
+						</Button>
+					</Grid>
+					<Grid item lg={3} md={12}>
 						<Link
 							style={{ textDecoration: 'none ' }}
 							to={`/publications/${jobEvent.publicationId}`}
@@ -33,7 +97,7 @@ export const JobEventDataDisplay: FC<Props> = ({
 							</Button>
 						</Link>
 					</Grid>
-					<Grid item lg={6} md={12}>
+					<Grid item lg={3} md={12}>
 						<Button
 							color="primary"
 							fullWidth
@@ -66,7 +130,6 @@ export const JobEventDataDisplay: FC<Props> = ({
 				<JobEventDataRow
 					label="Parametre úlohy (JSON)"
 					value={JSON.stringify(jobEvent.config.parameters, null, 4)}
-					valueComponent="pre"
 				/>
 			</Grid>
 		</Grid>

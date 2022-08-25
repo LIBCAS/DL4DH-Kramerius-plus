@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.cfg.exceptions.rest;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.SchedulingException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
@@ -26,7 +27,8 @@ public class RestExceptionHandler {
     @ExceptionHandler({
             SchedulingException.class,
             ValidationException.class,
-            javax.validation.ValidationException.class
+            javax.validation.ValidationException.class,
+            JobException.class
     })
     public ResponseEntity<RestException> badRequest(HttpServletRequest request, Exception e) {
         return defaultExceptionHandling(request, e, HttpStatus.BAD_REQUEST);

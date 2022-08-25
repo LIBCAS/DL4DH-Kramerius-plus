@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.*;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
@@ -16,6 +17,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.JobExecutionNotRunningException;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.NoSuchJobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.JobException.ErrorCode.NOT_RUNNING;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Service
@@ -43,13 +48,13 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     private JobEventLauncher jobEventLauncher;
 
+    private JobOperator jobOperator;
+
     @Transactional
     public List<JobEventDto> create(@NonNull List<@Valid JobEventCreateDto> createDtos) {
         List<JobEventDto> result = new ArrayList<>();
 
-        createDtos.forEach(createDto -> {
-            result.add(create(createDto));
-        });
+        createDtos.forEach(createDto -> result.add(create(createDto)));
 
         return result;
     }
@@ -94,15 +99,34 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         }
     }
 
+    @Transactional
     public void restart(String jobEventId) {
+        JobEvent jobEvent = findEntity(jobEventId);
+
+        JobExecution jobExecution = jobEventLauncher.createExecution(
+                jobEvent.getConfig().getKrameriusJob(),
+                mapper.toJobParameters(jobEvent));
+
+        jobEvent.getDetails().setLastExecutionStatus(JobStatus.from(jobExecution.getStatus().name()));
+        jobEvent.getDetails().setLastExecutionExitCode(null);
+        jobEvent.getDetails().setLastExecutionExitDescription(null);
+        jobEvent.getDetails().setLastExecutionId(jobExecution.getId());
+        jobEvent = store.update(jobEvent);
+
+        enqueueJob(jobEvent);
+    }
+
+    public void stop(String jobEventId) {
         JobEvent jobEvent = store.find(jobEventId);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
-        if (JobStatus.FAILED.equals(jobEvent.getDetails().getLastExecutionStatus())) {
-            enqueueJob(jobEvent);
-        } else {
-            throw new IllegalStateException("Only jobs with lastExecutionStatus='FAILED' can be restarted " +
-                    "(JobEvent's lastExecutionStatus is " + jobEvent.getDetails().getLastExecutionStatus() + ")");
+        try {
+            jobOperator.stop(jobEvent.getDetails().getLastExecutionId());
+        } catch (JobExecutionNotRunningException e) {
+            throw new JobException(String.format("JobEvent with id=%s has no execution running", jobEventId),
+                    NOT_RUNNING);
+        } catch (NoSuchJobExecutionException e) {
+            throw new IllegalStateException("No such Job");
         }
     }
 
@@ -172,5 +196,10 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Autowired
     public void setJobEventLauncher(JobEventLauncher jobEventLauncher) {
         this.jobEventLauncher = jobEventLauncher;
+    }
+
+    @Autowired
+    public void setJobOperator(JobOperator jobOperator) {
+        this.jobOperator = jobOperator;
     }
 }

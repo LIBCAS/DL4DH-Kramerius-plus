@@ -1,45 +1,32 @@
-import React, { useState } from 'react'
-import RadioGroup from '@material-ui/core/RadioGroup'
-import Radio from '@material-ui/core/Radio'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
+import React, { FC, useState } from 'react'
 import { toast } from 'react-toastify'
-
-import { DefaultDialog } from '../dialog/knav-dialog/knav-default-dialog'
 import { DialogContentProps } from '../dialog/types'
 import { Params, TeiParams } from '../../models'
 import { JSONParams } from './publication-export-json'
 import { TEIParams } from './publication-export-tei'
-import { Typography, Box } from '@mui/material'
+import {
+	Typography,
+	Box,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogActions,
+	RadioGroup,
+	Radio,
+	FormControlLabel,
+	Button,
+} from '@mui/material'
 import { CsvExportJobEventConfig } from 'models/job/config/export/csv-export-job-event-config'
 import { AltoExportJobEventConfig } from 'models/job/config/export/alto-export-job-event-config'
 import { ExportJobEventConfig } from 'models/job/config/export/export-job-event-config'
 import { JsonExportJobEventConfig } from 'models/job/config/export/json-export-job-event-config'
 import { TeiExportJobEventConfig } from 'models/job/config/export/tei-export-job-event-config'
 import { TextExportJobEventConfig } from 'models/job/config/export/text-export-job-event-config'
+import { exportPublication } from 'api/export-api'
 
-type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
+export type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
 
 type Delimiter = '\t' | ','
-
-const exportPublication = async (
-	id: string,
-	config: ExportJobEventConfig,
-	format: ExportFormat,
-) => {
-	try {
-		const response = await fetch(`/api/exports/${id}/${format}`, {
-			method: 'POST',
-			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify(config),
-		})
-
-		return response
-	} catch (e) {
-		return {
-			ok: false,
-		}
-	}
-}
 
 const defaultParams: Params = {
 	filters: [],
@@ -54,12 +41,11 @@ const defaultTeiParams: TeiParams = {
 	altoParams: [],
 }
 
-export const PublicationExportDialog = ({
-	initialValues,
-	onClose,
-}: DialogContentProps<{
-	id: string
-}>) => {
+export const PublicationExportDialog: FC<{
+	onClose: () => void
+	open: boolean
+	publicationId: string
+}> = ({ onClose, open, publicationId }) => {
 	const [format, setFormat] = useState<ExportFormat>('json')
 	const [delimiter, setDelimiter] = useState<Delimiter>(',')
 	const [params, setParams] = useState<Params>(defaultParams)
@@ -108,7 +94,7 @@ export const PublicationExportDialog = ({
 			} as TextExportJobEventConfig
 		}
 
-		const response = await exportPublication(initialValues!.id, config, format)
+		const response = await exportPublication(publicationId, config, format)
 
 		if (response.ok) {
 			toast('Operace proběhla úspěšně', {
@@ -124,77 +110,89 @@ export const PublicationExportDialog = ({
 	}
 
 	return (
-		<DefaultDialog
-			contentHeight={470}
-			minWidth={400}
-			title="Výběr formátu"
+		<Dialog
+			fullWidth
+			open={open}
+			onClose={onClose}
 			onSubmit={handleSubmitExport}
 		>
-			<RadioGroup
-				aria-label="export-format"
-				name="format"
-				value={format}
-				onChange={handleChange}
-			>
-				<FormControlLabel
-					control={<Radio color="primary" />}
-					label="JSON"
-					value="json"
-				/>
-				<FormControlLabel
-					control={<Radio color="primary" />}
-					label="CSV"
-					value="csv"
-				/>
-				<FormControlLabel
-					control={<Radio color="primary" />}
-					label="TEI"
-					value="tei"
-				/>
-				<FormControlLabel
-					control={<Radio color="primary" />}
-					label="ALTO"
-					value="alto"
-				/>
-				<FormControlLabel
-					control={<Radio color="primary" />}
-					label="TEXT"
-					value="text"
-				/>
-			</RadioGroup>
+			<DialogTitle>Výběr formátu</DialogTitle>
 
-			{format === 'csv' && (
-				<Box sx={{ pt: 2 }}>
-					<Typography variant="body1">Oddělovač</Typography>
-					<RadioGroup
-						aria-label="export-format"
-						name="format"
-						value={delimiter}
-						onChange={handleDelimiterChange}
-					>
-						<FormControlLabel
-							control={<Radio color="primary" />}
-							label="Čárka"
-							value=","
-						/>
-						<FormControlLabel
-							control={<Radio color="primary" />}
-							label="Tabulátor"
-							value="	"
-						/>
-					</RadioGroup>
-				</Box>
-			)}
+			<DialogContent>
+				<RadioGroup
+					aria-label="export-format"
+					name="format"
+					value={format}
+					onChange={handleChange}
+				>
+					<FormControlLabel
+						control={<Radio color="primary" />}
+						label="JSON"
+						value="json"
+					/>
+					<FormControlLabel
+						control={<Radio color="primary" />}
+						label="CSV"
+						value="csv"
+					/>
+					<FormControlLabel
+						control={<Radio color="primary" />}
+						label="TEI"
+						value="tei"
+					/>
+					<FormControlLabel
+						control={<Radio color="primary" />}
+						label="ALTO"
+						value="alto"
+					/>
+					<FormControlLabel
+						control={<Radio color="primary" />}
+						label="TEXT"
+						value="text"
+					/>
+				</RadioGroup>
 
-			{format === 'tei' ? (
-				<TEIParams params={teiParams} setParams={setTeiParams} />
-			) : (
-				<JSONParams
-					disabled={disabledParams}
-					params={params}
-					setParams={setParams}
-				/>
-			)}
-		</DefaultDialog>
+				{format === 'csv' && (
+					<Box sx={{ pt: 2 }}>
+						<Typography variant="body1">Oddělovač</Typography>
+						<RadioGroup
+							aria-label="export-format"
+							name="format"
+							value={delimiter}
+							onChange={handleDelimiterChange}
+						>
+							<FormControlLabel
+								control={<Radio color="primary" />}
+								label="Čárka"
+								value=","
+							/>
+							<FormControlLabel
+								control={<Radio color="primary" />}
+								label="Tabulátor"
+								value="	"
+							/>
+						</RadioGroup>
+					</Box>
+				)}
+
+				{format === 'tei' ? (
+					<TEIParams params={teiParams} setParams={setTeiParams} />
+				) : (
+					<JSONParams
+						disabled={disabledParams}
+						params={params}
+						setParams={setParams}
+					/>
+				)}
+			</DialogContent>
+			<DialogActions>
+				<Button color="inherit" onClick={onClose}>
+					Zavřít
+				</Button>
+				<Button color="inherit" onClick={handleSubmitExport}>
+					Potvrdit
+				</Button>
+			</DialogActions>
+		</Dialog>
 	)
 }

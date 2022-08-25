@@ -13,8 +13,9 @@ public class JobException extends GeneralException {
     public enum ErrorCode implements LogCode {
         INVALID_JOB_PARAMETERS,
         NOT_RESTARTABLE,
-        ALREADY_RUNNING,
-        UNKNOWN_STATUS,
-        ALREADY_COMPLETE
+        NOT_RUNNING,
+        IS_RUNNING,
+        IS_COMPLETE,
+        UNKNOWN_STATUS
     }
 }
