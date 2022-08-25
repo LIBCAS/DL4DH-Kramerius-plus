@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.TeiExportParams;
 
 import java.io.File;
 import java.io.InputStream;
@@ -15,7 +15,7 @@ public interface TeiConnector {
 
     String convertToTeiHeader(Publication publication);
 
-    File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params);
+    File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params);
 
-    File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params,  Path outputFile);
+    File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params, Path outputFile);
 }
