@@ -68,6 +68,7 @@ springdoc:
   swagger-ui.path: /swagger
 
 system:
+  environment: DEV
   kramerius:
     code: nkp
     default-url: https://www.ndk.cz
@@ -86,6 +87,18 @@ system:
 #      path: todo
   json:
     serializeEmptyArrays: true
+  security:
+    auth: keycloak
+    jwt:
+      secret: kramerius-plus
+
+keycloak:
+  auth-server-url: https://keycloak.sekan.eu
+  realm: DL4DHFeeder
+  resource: feeder
+  public-client: true
+  principal-attribute: preferred_username
+  bearer-only: true
 
 active-mq:
   messaging:

@@ -22,7 +22,7 @@ export const JobEventDataDisplay: FC<Props> = ({
 						Detail úlohy
 					</Typography>
 				</Grid>
-				<Grid container spacing={2} xs={4}>
+				<Grid container item spacing={2} xs={4}>
 					<Grid item lg={6} md={12}>
 						<Link
 							style={{ textDecoration: 'none ' }}

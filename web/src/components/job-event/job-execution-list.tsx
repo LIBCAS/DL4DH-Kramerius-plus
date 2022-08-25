@@ -1,5 +1,4 @@
-import { Typography } from '@material-ui/core'
-import { Box } from '@mui/system'
+import { Typography, Box } from '@mui/material'
 import {
 	DataGrid,
 	GridColDef,

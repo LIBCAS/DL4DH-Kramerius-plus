@@ -1,141 +1,67 @@
 import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
-import { ApiError } from 'models'
 import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
-import fetch from 'utils/fetch'
+import { customFetch } from 'utils/custom-fetch'
 
-export async function createPlan(
+export const createPlan = async (
 	publicationIds: string[],
 	configs: EnrichmentJobEventConfig[],
 	name?: string,
-) {
-	try {
-		await fetch('/api/enrichment/plan', {
-			method: 'POST',
-			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publicationIds, name, configs }),
-		})
-
-		return {
-			ok: true,
-			data: {},
-		}
-	} catch (e) {
-		console.error(e)
-
-		return {
-			ok: false,
-			data: e as ApiError,
-		}
-	}
+): Promise<Response> => {
+	return await customFetch('/api/enrichment/plan', {
+		method: 'POST',
+		body: JSON.stringify({ publicationIds, name, configs }),
+	})
 }
 
-export async function downloadKStructure(
+export const downloadKStructure = async (
 	publicationIds: string[],
 	override: boolean,
-) {
+): Promise<Response> => {
 	const requestUrl = '/api/enrichment/kramerius'
 	const config = {
 		krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS,
 	}
-
-	try {
-		await fetch(requestUrl, {
-			method: 'POST',
-			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publicationIds, config, override }),
-		})
-
-		return {
-			ok: true,
-			data: {},
-		}
-	} catch (e) {
-		console.error(e)
-
-		return {
-			ok: false,
-			data: e as ApiError,
-		}
-	}
+	return await customFetch(requestUrl, {
+		method: 'POST',
+		body: JSON.stringify({ publicationIds, config, override }),
+	})
 }
 
-export async function enrichExternal(publicationIds: string[]) {
+export const enrichExternal = async (
+	publicationIds: string[],
+): Promise<Response> => {
 	const requestUrl = '/api/enrichment/external'
 	const config = {
 		krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL,
 	}
-
-	try {
-		await fetch(requestUrl, {
-			method: 'POST',
-			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publicationIds, config }),
-		})
-
-		return {
-			ok: true,
-			data: {},
-		}
-	} catch (e) {
-		console.error(e)
-
-		return {
-			ok: false,
-			data: e as ApiError,
-		}
-	}
+	return await customFetch(requestUrl, {
+		method: 'POST',
+		body: JSON.stringify({ publicationIds, config }),
+	})
 }
 
-export async function enrichNdk(publicationIds: string[]) {
+export const enrichNdk = async (
+	publicationIds: string[],
+): Promise<Response> => {
 	const requestUrl = '/api/enrichment/ndk'
 	const config = {
 		krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_NDK,
 	}
-
-	try {
-		await fetch(requestUrl, {
-			method: 'POST',
-			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publicationIds, config }),
-		})
-
-		return {
-			ok: true,
-			data: {},
-		}
-	} catch (e) {
-		console.error(e)
-
-		return {
-			ok: false,
-			data: e as ApiError,
-		}
-	}
+	return await customFetch(requestUrl, {
+		method: 'POST',
+		body: JSON.stringify({ publicationIds, config }),
+	})
 }
 
-export async function enrichTei(publicationIds: string[]) {
+export const enrichTei = async (
+	publicationIds: string[],
+): Promise<Response> => {
 	const requestUrl = '/api/enrichment/tei'
 	const config = {
 		krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_TEI,
 	}
-
-	try {
-		await fetch(requestUrl, {
-			method: 'POST',
-			headers: new Headers({ 'Content-Type': 'application/json' }),
-			body: JSON.stringify({ publicationIds, config }),
-		})
-
-		return {
-			ok: true,
-			data: {},
-		}
-	} catch (e) {
-		console.error(e)
-
-		return {
-			ok: false,
-			data: e as ApiError,
-		}
-	}
+	return await customFetch(requestUrl, {
+		method: 'POST',
+		body: JSON.stringify({ publicationIds, config }),
+	})
 }

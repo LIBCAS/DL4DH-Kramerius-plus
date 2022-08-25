@@ -1,4 +1,5 @@
-import { KeyboardDateTimePicker } from '@material-ui/pickers'
+import { TextField } from '@mui/material'
+import { DateTimePicker } from '@mui/x-date-pickers'
 import { FC } from 'react'
 
 type Props = {
@@ -15,20 +16,13 @@ export const CustomDateTimePicker: FC<Props> = ({
 	onChange,
 }) => {
 	return (
-		<KeyboardDateTimePicker
+		<DateTimePicker
 			ampm={false}
-			cancelLabel="Zrušit"
-			clearLabel="Vymazat"
-			clearable
 			disableFuture
 			disabled={disabled}
-			format="dd/MM/yyyy HH:mm"
-			fullWidth
-			inputVariant="outlined"
+			inputFormat="dd/MM/yyyy HH:mm"
 			label={label}
-			showTodayButton
-			size="small"
-			todayLabel="Dnes"
+			renderInput={params => <TextField {...params} fullWidth size="small" />}
 			value={value}
 			onChange={onChange}
 		/>

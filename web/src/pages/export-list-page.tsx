@@ -5,9 +5,10 @@ import {
 	GridRenderCellParams,
 } from '@mui/x-data-grid'
 import { Export } from 'models'
-import { useEffect, useState } from 'react'
-import { listExports } from './export-api'
+import { FC, useEffect, useState } from 'react'
+import { listExports } from '../api/export-api'
 import { Button } from '@mui/material'
+import { PageWrapper } from './page-wrapper'
 
 const getType = (params: GridValueGetterParams) => {
 	return params.row['fileRef'].contentType
@@ -79,7 +80,7 @@ const columns: GridColDef[] = [
 	},
 ]
 
-export const ExportList = () => {
+export const ExportListPage: FC = () => {
 	const [rowCount, setRowCount] = useState<number>()
 	const [exports, setExports] = useState<Export[]>([])
 	const [page, setPage] = useState<number>(0)
@@ -108,16 +109,18 @@ export const ExportList = () => {
 	const onPageChange = (page: number) => setPage(page)
 
 	return (
-		<DataGrid
-			autoHeight={true}
-			columns={columns}
-			density="compact"
-			pageSize={10}
-			paginationMode="server"
-			rowCount={rowCountState}
-			rows={exports}
-			rowsPerPageOptions={[]}
-			onPageChange={onPageChange}
-		/>
+		<PageWrapper requireAuth>
+			<DataGrid
+				autoHeight={true}
+				columns={columns}
+				density="compact"
+				pageSize={10}
+				paginationMode="server"
+				rowCount={rowCountState}
+				rows={exports}
+				rowsPerPageOptions={[10]}
+				onPageChange={onPageChange}
+			/>
+		</PageWrapper>
 	)
 }

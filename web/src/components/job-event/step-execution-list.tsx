@@ -1,5 +1,4 @@
-import { Typography } from '@material-ui/core'
-import { Box } from '@mui/system'
+import { Typography, Box } from '@mui/material'
 import {
 	DataGrid,
 	GridColDef,
@@ -34,7 +33,7 @@ const stepColumns: GridColDef[] = [
 		field: 'startTime',
 		headerName: 'Čas spustenia',
 		width: 200,
-		type: 'datetime',
+		type: 'string',
 		valueFormatter: dateTimeFormatter,
 	},
 	{

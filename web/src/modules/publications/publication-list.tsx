@@ -1,12 +1,22 @@
 import { Grid } from '@mui/material'
 import { Publication } from 'models'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { listPublications, PublicationFilter } from './publication-api'
+import { listPublications } from '../../api/publication-api'
 import { PublicationListFilter } from './publication-list-filter'
 import { PublicationListTable } from './publication-list-table'
 
 type Props = {
 	onRowClick: (publicationId: string) => void
+}
+
+type PublicationFilter = {
+	title?: string
+	parentId?: string
+	createdBefore?: Date
+	createdAfter?: Date
+	isPublished?: boolean
+	publishedBefore?: Date
+	publishedAfter?: Date
 }
 
 export const PublicationList = ({ onRowClick }: Props) => {

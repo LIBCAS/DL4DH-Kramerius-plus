@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core'
 import {
 	Grid,
 	Paper,
@@ -22,27 +21,16 @@ import { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { DialogContext } from '../../components/dialog/dialog-context'
 import { PublicationExportDialog } from '../../components/publication/publication-export-dialog'
-import { getPublication, publish, unpublish } from './publication-api'
+import { getPublication, publish, unpublish } from '../../api/publication-api'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { formatDateTime } from 'utils/formatters'
+import { Loading } from 'components/loading'
 
 type Props = {
 	publicationId: string
 }
 
-const useStyles = makeStyles(() => ({
-	paper: {
-		marginBottom: 8,
-		padding: '8px 16px',
-	},
-	exportButton: {
-		textTransform: 'none',
-		padding: '6px 10px',
-	},
-}))
-
 export const PublicationDetail = ({ publicationId }: Props) => {
-	const classes = useStyles()
 	const [publication, setPublication] = useState<Publication>()
 	const { open } = useContext(DialogContext)
 	const [selectedJobType, setSelectedJobType] =
@@ -125,33 +113,32 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 		noSsr: true,
 	})
 
-	return (
+	return publication ? (
 		<Paper sx={{ p: 3 }} variant="outlined">
 			<Grid container spacing={2}>
 				<Grid container item justifyContent="space-between" spacing={1}>
 					<Grid item xl={8} xs={12}>
-						<ReadOnlyField label="UUID" value={publication?.id} />
+						<ReadOnlyField label="UUID" value={publication.id} />
 						<ReadOnlyField
 							label="Vytvořeno"
 							value={
-								publication && formatDateTime(publication?.created.toString())
+								publication && formatDateTime(publication.created.toString())
 							}
 						/>
-						<ReadOnlyField label="Název" value={publication?.title} />
+						<ReadOnlyField label="Název" value={publication.title} />
 						<ReadOnlyField
 							label="ModsMetadata"
-							value={JSON.stringify(publication?.modsMetadata, null, 4)}
+							value={JSON.stringify(publication.modsMetadata, null, 4)}
 						/>
-						<ReadOnlyField label="Model" value={publication?.model} />
+						<ReadOnlyField label="Model" value={publication.model} />
 						<ReadOnlyField
 							label="Context"
-							value={JSON.stringify(publication?.context)}
+							value={JSON.stringify(publication.context)}
 						/>
 					</Grid>
 					<Grid container direction="column" item spacing={1} xl={4} xs={12}>
 						<Grid item xs={1}>
 							<Button
-								className={classes.exportButton}
 								color="primary"
 								fullWidth
 								variant="contained"
@@ -162,13 +149,12 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 						</Grid>
 						<Grid item xs={1}>
 							<Button
-								className={classes.exportButton}
 								color="primary"
 								fullWidth
 								variant="contained"
 								onClick={handlePublishButton}
 							>
-								{publication?.publishInfo.isPublished
+								{publication.publishInfo.isPublished
 									? 'Zrušit publikování'
 									: 'Publikovat'}
 							</Button>
@@ -230,75 +216,8 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 					</Grid>
 				</Grid>
 			</Grid>
-			{/* <Box>
-				<Box sx={{ paddingLeft: 3 }}>
-					<Typography variant="h6">Úlohy</Typography>
-				</Box>
-				<Box
-					alignItems="center"
-					display="flex"
-					flexDirection="column"
-					justifyContent="center"
-					sx={{ p: 2 }}
-				>
-					<ButtonGroup className={classes.exportButton} color="primary">
-						<Button
-							variant={getButtonVariant(
-								EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS,
-							)}
-							onClick={() =>
-								setSelectedJobType(EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS)
-							}
-						>
-							Stahování dat
-						</Button>
-						<Button
-							variant={getButtonVariant(
-								EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL,
-							)}
-							onClick={() =>
-								setSelectedJobType(EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL)
-							}
-						>
-							Obohacení externími nástroji
-						</Button>
-						<Button
-							variant={getButtonVariant(EnrichmentKrameriusJob.ENRICHMENT_NDK)}
-							onClick={() =>
-								setSelectedJobType(EnrichmentKrameriusJob.ENRICHMENT_NDK)
-							}
-						>
-							Obohacení NDK
-						</Button>
-						<Button
-							variant={getButtonVariant(EnrichmentKrameriusJob.ENRICHMENT_TEI)}
-							onClick={() =>
-								setSelectedJobType(EnrichmentKrameriusJob.ENRICHMENT_TEI)
-							}
-						>
-							Obohacení TEI
-						</Button>
-					</ButtonGroup>
-				</Box>
-				<Box sx={{ p: 3 }}>
-					<Button
-						color="primary"
-						disabled={selectedJobType == undefined}
-						variant="contained"
-						onClick={createNewJob}
-					>
-						Spustit novou úlohu
-					</Button>
-				</Box>
-				{selectedJobType !== undefined && (
-					<Box sx={{ p: 3 }}>
-						<PublicationJobEventList
-							krameriusJob={selectedJobType}
-							publicationId={publicationId}
-						/>
-					</Box>
-				)}
-			</Box> */}
 		</Paper>
+	) : (
+		<Loading />
 	)
 }
