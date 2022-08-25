@@ -1,6 +1,7 @@
 export type DialogContentProps<T = any> = {
 	initialValues?: T
 	onClose: () => void
+	open: boolean
 }
 
 export type DialogProps<T = any> = Omit<DialogContentProps<T>, 'onClose'> & {

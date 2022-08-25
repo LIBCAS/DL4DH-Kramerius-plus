@@ -1,29 +1,31 @@
-import React from 'react'
-import { makeStyles, createStyles } from '@material-ui/core/styles'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormControl from '@material-ui/core/FormControl'
-import { SelectClassKey } from '@material-ui/core/Select'
+import {
+	Select,
+	MenuItem,
+	InputLabel,
+	FormControl,
+	SelectClassKey,
+	SelectChangeEvent,
+	OutlinedInput,
+} from '@mui/material'
 import { v4 } from 'uuid'
 import { get } from 'lodash'
 
-const useStyles = makeStyles(() =>
-	createStyles({
-		root: {
-			width: '100%',
-			marginBottom: 8,
-		},
-		label: {
-			padding: '0 5px',
-			zIndex: 100,
-			backgroundColor: '#fff',
-			color: 'black',
-			fontSize: 16,
-			fontWeight: 'bold',
-		},
-	}),
-)
+// const useStyles = makeStyles(() =>
+// 	createStyles({
+// 		root: {
+// 			width: '100%',
+// 			marginBottom: 8,
+// 		},
+// 		label: {
+// 			padding: '0 5px',
+// 			zIndex: 100,
+// 			backgroundColor: '#fff',
+// 			color: 'black',
+// 			fontSize: 16,
+// 			fontWeight: 'bold',
+// 		},
+// 	}),
+// )
 
 export interface Item {
 	/**
@@ -51,7 +53,7 @@ export interface SelectFieldProps<TOption extends Item> {
 	/**
 	 * String or number value of input.
 	 */
-	value: string | string[] | TOption | TOption[]
+	value: string | string[]
 
 	/**
 	 * Change handler.
@@ -96,34 +98,34 @@ export function SelectField<TOption>({
 	onChange,
 	items = [],
 	disabled,
-	additionalClasses,
 	multiple = false,
 	optionMapper = o => get(o, 'id', v4()),
 	labelMapper = o => get(o, 'label'),
 }: SelectFieldProps<TOption>) {
-	const classes = useStyles()
-
 	/**
 	 * Change handler.
 	 */
-	const handleChange = (
-		event: React.ChangeEvent<{ name?: string | undefined; value: unknown }>,
-	) => {
-		const value = event.target.value as string
+	const handleChange = (event: SelectChangeEvent<typeof value>) => {
+		const selectValue = event.target.value
 
-		onChange(value)
+		onChange(
+			typeof selectValue === 'string' ? selectValue.split(',') : selectValue,
+		)
 	}
 
 	return (
-		<FormControl className={classes.root} variant="outlined">
-			<InputLabel className={classes.label} disabled={!!disabled} shrink>
+		<FormControl fullWidth variant="outlined">
+			<InputLabel disabled={!!disabled} id="select-label">
 				{label}
 			</InputLabel>
 			<Select
-				classes={additionalClasses}
 				color="primary"
 				disabled={!!disabled}
 				error={false}
+				fullWidth
+				input={<OutlinedInput label={label} />}
+				label={label}
+				labelId="select-label"
 				lang="cs"
 				multiple={multiple}
 				spellCheck={true}

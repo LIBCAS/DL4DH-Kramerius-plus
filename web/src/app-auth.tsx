@@ -3,7 +3,6 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
 import { Navbar } from './components/navbar/navbar'
-import { DialogProvider } from './components/dialog/dialog-context-provider'
 import { PublicationsPage } from 'pages/publication-list-page'
 import { HomePage } from 'pages/home-page'
 import { EnrichmentPage } from 'pages/enrichment-page'
@@ -32,27 +31,25 @@ export const AppAuth: FC = () => {
 				}
 			}}
 		>
-			<DialogProvider>
-				<LocalizationProvider dateAdapter={AdapterDateFns}>
-					<BrowserRouter>
-						<Navbar info={info} />
-						<Routes>
-							<Route element={<HomePage />} path="/" />
-							<Route element={<ExportListPage />} path="exports" />
-							<Route element={<PublicationsPage />} path="publications">
-								<Route element={<PublicationsPage />} path=":publicationId" />
-							</Route>
-							<Route path="jobs/:jobType">
-								<Route element={<JobEventListPage />} index />
-								<Route element={<JobEventDetailPage />} path=":jobEventId" />
-							</Route>
-							<Route element={<EnrichmentPage />} path="enrichment" />
-							<Route element={<NotFoundPage />} path="*" />
-						</Routes>
-					</BrowserRouter>
-				</LocalizationProvider>
-				<ToastContainer newestOnTop position="bottom-left" />
-			</DialogProvider>
+			<LocalizationProvider dateAdapter={AdapterDateFns}>
+				<BrowserRouter>
+					<Navbar info={info} />
+					<Routes>
+						<Route element={<HomePage />} path="/" />
+						<Route element={<ExportListPage />} path="exports" />
+						<Route element={<PublicationsPage />} path="publications">
+							<Route element={<PublicationsPage />} path=":publicationId" />
+						</Route>
+						<Route path="jobs/:jobType">
+							<Route element={<JobEventListPage />} index />
+							<Route element={<JobEventDetailPage />} path=":jobEventId" />
+						</Route>
+						<Route element={<EnrichmentPage />} path="enrichment" />
+						<Route element={<NotFoundPage />} path="*" />
+					</Routes>
+				</BrowserRouter>
+			</LocalizationProvider>
+			<ToastContainer newestOnTop position="bottom-left" />
 		</ReactKeycloakProvider>
 	)
 }

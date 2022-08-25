@@ -130,7 +130,6 @@ export const JobEventDataDisplay: FC<Props> = ({
 				<JobEventDataRow
 					label="Parametre úlohy (JSON)"
 					value={JSON.stringify(jobEvent.config.parameters, null, 4)}
-					valueComponent="pre"
 				/>
 			</Grid>
 		</Grid>

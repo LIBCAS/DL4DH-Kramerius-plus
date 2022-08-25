@@ -17,9 +17,8 @@ import {
 	enrichNdk,
 	enrichTei,
 } from 'api/enrichment-api'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { DialogContext } from '../../components/dialog/dialog-context'
 import { PublicationExportDialog } from '../../components/publication/publication-export-dialog'
 import { getPublication, publish, unpublish } from '../../api/publication-api'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
@@ -32,18 +31,16 @@ type Props = {
 
 export const PublicationDetail = ({ publicationId }: Props) => {
 	const [publication, setPublication] = useState<Publication>()
-	const { open } = useContext(DialogContext)
 	const [selectedJobType, setSelectedJobType] =
 		useState<EnrichmentKrameriusJob>()
+	const [open, setOpen] = useState<boolean>(false)
 
-	const handleOpenExportDialog = () => {
-		open({
-			initialValues: {
-				id: publicationId,
-			},
-			Content: PublicationExportDialog,
-			size: 'md',
-		})
+	const onDialogOpen = () => {
+		setOpen(true)
+	}
+
+	const onDialogClose = () => {
+		setOpen(false)
 	}
 
 	useEffect(() => {
@@ -142,7 +139,7 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 								color="primary"
 								fullWidth
 								variant="contained"
-								onClick={handleOpenExportDialog}
+								onClick={onDialogOpen}
 							>
 								Exportovat
 							</Button>
@@ -216,6 +213,11 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 					</Grid>
 				</Grid>
 			</Grid>
+			<PublicationExportDialog
+				open={open}
+				publicationId={publicationId}
+				onClose={onDialogClose}
+			/>
 		</Paper>
 	) : (
 		<Loading />
