@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -30,6 +32,13 @@ public class RestExceptionHandler {
         return defaultExceptionHandling(request, e, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({
+            BadCredentialsException.class,
+            UsernameNotFoundException.class
+    })
+    public ResponseEntity<RestException> unauthorized(HttpServletRequest request, Exception e) {
+        return defaultExceptionHandling(request, e, HttpStatus.UNAUTHORIZED);
+    }
 
     @ExceptionHandler({
             MissingObjectException.class
