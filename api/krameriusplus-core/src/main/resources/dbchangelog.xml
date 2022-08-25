@@ -187,4 +187,9 @@
             <column name="run_error_stack_trace" type="varchar(2500)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="11" author="bodnar">
+        <sqlFile path="bootstrap/spring-batch-h2-schema.sql" dbms="h2"/>
+        <sqlFile path="bootstrap/spring-batch-postgre-schema.sql" dbms="postgresql" />
+    </changeSet>
 </databaseChangeLog>
