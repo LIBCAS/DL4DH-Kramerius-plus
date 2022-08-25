@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.TeiExportParams;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class DummyTeiConnector implements TeiConnector {
 
     @SneakyThrows
     @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params) {
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params) {
         File file = File.createTempFile("download", "tmp");
         StreamUtils.copy("Test TEI full".getBytes(StandardCharsets.UTF_8), new FileOutputStream(file));
 
@@ -40,7 +40,7 @@ public class DummyTeiConnector implements TeiConnector {
 
     @SneakyThrows
     @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params, Path outputFile) {
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params, Path outputFile) {
         File file = File.createTempFile("download", "tmp");
         StreamUtils.copy("Test TEI full".getBytes(StandardCharsets.UTF_8), new FileOutputStream(outputFile.toFile()));
 

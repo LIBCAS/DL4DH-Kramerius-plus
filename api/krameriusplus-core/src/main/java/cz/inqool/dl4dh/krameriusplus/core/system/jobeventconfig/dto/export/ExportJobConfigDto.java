@@ -12,7 +12,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 @Setter
 public abstract class ExportJobConfigDto extends JobEventConfigCreateDto {
 
-    public abstract Params getParams();
+    private Params params = new Params();
 
     @Override
     protected void populateJobParameters() {
