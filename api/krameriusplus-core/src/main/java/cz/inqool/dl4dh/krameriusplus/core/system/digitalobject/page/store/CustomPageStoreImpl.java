@@ -22,7 +22,7 @@ public class CustomPageStoreImpl extends AbstractMongoStore<Page> implements Cus
     }
 
     public QueryResults<Page> findAllByPublication(String publicationId, Pageable pageRequest) {
-        if (pageRequest.getSort().equals(Sort.unsorted())) {
+        if (pageRequest.isPaged() && pageRequest.getSort().equals(Sort.unsorted())) {
             pageRequest = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(),
                     Sort.by(Sort.Direction.ASC, "index"));
         }
