@@ -32,11 +32,14 @@ export const getJobEvent = async (jobEventId: string): Promise<JobEvent> => {
 	return await response?.json()
 }
 
-export const restartJobExecution = async (
-	jobEventId: string,
-): Promise<Response> => {
-	const response = await customFetch(`/api/jobs/${jobEventId}/restart`, {
+export const restartJob = async (jobEventId: string): Promise<Response> => {
+	return await customFetch(`/api/jobs/${jobEventId}/restart`, {
 		method: 'POST',
 	})
-	return response
+}
+
+export const stopJob = async (jobEventId: string): Promise<Response> => {
+	return await customFetch(`/api/jobs/${jobEventId}/stop`, {
+		method: 'POST',
+	})
 }

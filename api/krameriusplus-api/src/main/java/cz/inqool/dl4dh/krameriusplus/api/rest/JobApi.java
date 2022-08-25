@@ -14,12 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.Set;
@@ -86,7 +81,7 @@ public class JobApi {
     @ApiResponse(responseCode = "400", description = "Job with given ID could not be restarted.")
     @PostMapping("/{id}/restart")
     public ResponseEntity<?> restartJob(@PathVariable("id") String jobEventId) {
-        jobEventService.restart(jobEventService.findEntity(jobEventId));
+        jobEventService.restart(jobEventId);
         return ResponseEntity.ok().build();
     }
 

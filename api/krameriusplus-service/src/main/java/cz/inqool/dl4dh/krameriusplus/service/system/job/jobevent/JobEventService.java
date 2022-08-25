@@ -2,12 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventFilter;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.*;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
@@ -32,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.JobException.ErrorCode.NOT_RUNNING;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Service
@@ -102,30 +100,20 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     @Transactional
-    public void restart(JobEvent jobEvent) {
-        if (JobStatus.FAILED.equals(jobEvent.getDetails().getLastExecutionStatus()) ||
-                JobStatus.STOPPED.equals(jobEvent.getDetails().getLastExecutionStatus())) {
-            try {
-                JobExecution jobExecution = jobEventLauncher.createExecution(
-                        jobEvent.getConfig().getKrameriusJob(),
-                        mapper.toJobParameters(jobEvent));
+    public void restart(String jobEventId) {
+        JobEvent jobEvent = findEntity(jobEventId);
 
-                jobEvent.setInstanceId(jobExecution.getJobId());
-                jobEvent.getDetails().setLastExecutionStatus(JobStatus.from(jobExecution.getStatus().name()));
-                jobEvent.getDetails().setLastExecutionExitCode(null);
-                jobEvent.getDetails().setLastExecutionExitDescription(null);
-                jobEvent.getDetails().setLastExecutionId(jobExecution.getId());
-                jobEvent = store.update(jobEvent);
+        JobExecution jobExecution = jobEventLauncher.createExecution(
+                jobEvent.getConfig().getKrameriusJob(),
+                mapper.toJobParameters(jobEvent));
 
-                enqueueJob(jobEvent);
-            }
-            catch (Exception e) {
-                throw new IllegalStateException("Job cannot be restarted", e);
-            }
-        } else {
-            throw new IllegalStateException("Only jobs with lastExecutionStatus='FAILED||STOPPED' can be restarted " +
-                    "(JobEvent's lastExecutionStatus is " + jobEvent.getDetails().getLastExecutionStatus() + ")");
-        }
+        jobEvent.getDetails().setLastExecutionStatus(JobStatus.from(jobExecution.getStatus().name()));
+        jobEvent.getDetails().setLastExecutionExitCode(null);
+        jobEvent.getDetails().setLastExecutionExitDescription(null);
+        jobEvent.getDetails().setLastExecutionId(jobExecution.getId());
+        jobEvent = store.update(jobEvent);
+
+        enqueueJob(jobEvent);
     }
 
     public void stop(String jobEventId) {
@@ -134,10 +122,9 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
         try {
             jobOperator.stop(jobEvent.getDetails().getLastExecutionId());
-        }
-        catch (JobExecutionNotRunningException e) {
-            throw new IllegalStateException(String.format("JobEvent with id=%s has no execution running", jobEventId));
-
+        } catch (JobExecutionNotRunningException e) {
+            throw new JobException(String.format("JobEvent with id=%s has no execution running", jobEventId),
+                    NOT_RUNNING);
         } catch (NoSuchJobExecutionException e) {
             throw new IllegalStateException("No such Job");
         }

@@ -1,4 +1,6 @@
+import { ExportFormat } from 'components/publication/publication-export-dialog'
 import { Export } from 'models/export'
+import { ExportJobEventConfig } from 'models/job/config/export/export-job-event-config'
 import { QueryResults } from 'models/query-results'
 import { customFetch } from 'utils/custom-fetch'
 
@@ -16,4 +18,15 @@ export const listExports = async (
 	})
 
 	return await response?.json()
+}
+
+export const exportPublication = async (
+	id: string,
+	config: ExportJobEventConfig,
+	format: ExportFormat,
+): Promise<Response> => {
+	return await customFetch(`/api/exports/${id}/${format}`, {
+		method: 'POST',
+		body: JSON.stringify(config),
+	})
 }

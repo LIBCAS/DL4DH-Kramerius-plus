@@ -56,7 +56,7 @@ public class JobEventLauncher {
                 BatchStatus status = execution.getStatus();
                 if (status.isRunning() || status == BatchStatus.STOPPING) {
                     throw new JobException("A job execution for this job is already running: "
-                            + lastExecution, ALREADY_RUNNING);
+                            + lastExecution, IS_RUNNING);
                 } else if (status == BatchStatus.UNKNOWN) {
                     throw new JobException(
                             "Cannot restart step [" + execution.getStepName() + "] from UNKNOWN status. "
@@ -85,9 +85,9 @@ public class JobEventLauncher {
         try {
             jobExecution = jobRepository.createJobExecution(job.getName(), jobParameters);
         } catch (JobInstanceAlreadyCompleteException e) {
-            throw new JobException(e.getMessage(), ALREADY_COMPLETE);
+            throw new JobException(e.getMessage(), IS_COMPLETE);
         } catch (JobExecutionAlreadyRunningException e) {
-            throw new JobException(e.getMessage(), ALREADY_RUNNING);
+            throw new JobException(e.getMessage(), IS_RUNNING);
         } catch (JobRestartException e) {
             throw new JobException(e.getMessage(), NOT_RESTARTABLE);
         }
