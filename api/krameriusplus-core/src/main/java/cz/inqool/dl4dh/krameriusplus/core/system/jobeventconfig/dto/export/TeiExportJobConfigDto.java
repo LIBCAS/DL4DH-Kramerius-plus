@@ -1,18 +1,38 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.TeiExportParams;
+import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.Map;
+
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PARAMS;
 
 @Getter
 @Setter
 public class TeiExportJobConfigDto extends ExportJobConfigDto {
 
-    private TeiParams params = new TeiParams();
+    private TeiExportParams teiExportParams = new TeiExportParams();
 
     @Override
     public KrameriusJob getKrameriusJob() {
         return KrameriusJob.EXPORT_TEI;
+    }
+
+    @Override
+    protected void populateJobParameters() {
+        super.populateJobParameters();
+        jobParameters.put(PARAMS, JsonUtils.toJsonString(teiExportParams));
+    }
+
+    @JsonProperty("params")
+    public void unpackParams(Map<String, List<String>> params) {
+        teiExportParams.setAltoParams(params.get("altoParams"));
+        teiExportParams.setUdPipeParams(params.get("udPipeParams"));
+        teiExportParams.setNameTagParams(params.get("nameTagParams"));
     }
 }
