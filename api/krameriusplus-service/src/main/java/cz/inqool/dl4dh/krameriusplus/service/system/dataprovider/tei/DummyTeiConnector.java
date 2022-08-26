@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.TeiExportParams;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.TeiExportParams;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

@@ -6,7 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publi
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.TeiExportParams;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.TeiExportParams;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei.TeiConnector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
