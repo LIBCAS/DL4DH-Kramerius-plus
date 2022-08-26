@@ -104,10 +104,10 @@ public class WebClientTeiConnector implements TeiConnector {
         return restTemplate.execute("/merge", HttpMethod.POST,
                 restTemplate.httpEntityCallback(requestEntity),
                 clientHttpResponse -> {
-            File ret = File.createTempFile("tei_merge_" + formatter.format(LocalDateTime.now()), null);
-            StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
-            return ret;
-        });
+                    File ret = File.createTempFile("tei_merge_" + formatter.format(LocalDateTime.now()), null);
+                    StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
+                    return ret;
+                });
     }
 
     @Override
@@ -130,12 +130,12 @@ public class WebClientTeiConnector implements TeiConnector {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         try (OutputStream out = new FileOutputStream(outputFile.toString())) {
-                    return restTemplate.execute("/merge", HttpMethod.POST,
+            return restTemplate.execute("/merge", HttpMethod.POST,
                     restTemplate.httpEntityCallback(requestEntity),
-            clientHttpResponse -> {
-                StreamUtils.copy(clientHttpResponse.getBody(), out);
-                return outputFile.toFile();
-            });
+                    clientHttpResponse -> {
+                        StreamUtils.copy(clientHttpResponse.getBody(), out);
+                        return outputFile.toFile();
+                    });
         } catch (IOException exception) {
             throw new UncheckedIOException("Failed to write merged TEI file", exception);
         }
