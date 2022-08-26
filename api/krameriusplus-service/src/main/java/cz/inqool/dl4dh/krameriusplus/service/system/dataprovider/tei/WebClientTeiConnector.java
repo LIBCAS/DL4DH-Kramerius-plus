@@ -26,7 +26,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import javax.annotation.Resource;
 import java.io.*;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -83,7 +82,7 @@ public class WebClientTeiConnector implements TeiConnector {
     }
 
     @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params) {
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params, Path outputFile) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setAccept(List.of(MediaType.APPLICATION_XML));
@@ -98,34 +97,6 @@ public class WebClientTeiConnector implements TeiConnector {
         params.getUdPipeParams().forEach(param -> body.add("UDPipe", param.getName()));
         params.getNameTagParams().forEach(param -> body.add("NameTag", param.getName()));
         params.getAltoParams().forEach(param -> body.add("ALTO", param.getName()));
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        return restTemplate.execute("/merge", HttpMethod.POST,
-                restTemplate.httpEntityCallback(requestEntity),
-                clientHttpResponse -> {
-                    File ret = File.createTempFile("tei_merge_" + formatter.format(LocalDateTime.now()), null);
-                    StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
-                    return ret;
-                });
-    }
-
-    @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params, Path outputFile) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        headers.setAccept(List.of(MediaType.APPLICATION_XML));
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("header", new MultipartInputStreamFileResource(teiHeader, "header"));
-
-        for (InputStream teiPage : teiPages) {
-            body.add("page[]", new MultipartInputStreamFileResource(teiPage, "page.xml"));
-        }
-
-        params.getUdPipeParams().forEach(param -> body.add("UDPipe", param));
-        params.getNameTagParams().forEach(param -> body.add("NameTag", param));
-        params.getAltoParams().forEach(param -> body.add("ALTO", param));
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 

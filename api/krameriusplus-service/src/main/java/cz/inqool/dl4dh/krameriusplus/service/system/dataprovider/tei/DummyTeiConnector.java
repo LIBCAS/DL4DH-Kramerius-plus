@@ -31,15 +31,6 @@ public class DummyTeiConnector implements TeiConnector {
 
     @SneakyThrows
     @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params) {
-        File file = File.createTempFile("download", "tmp");
-        StreamUtils.copy("Test TEI full".getBytes(StandardCharsets.UTF_8), new FileOutputStream(file));
-
-        return file;
-    }
-
-    @SneakyThrows
-    @Override
     public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params, Path outputFile) {
         File file = File.createTempFile("download", "tmp");
         StreamUtils.copy("Test TEI full".getBytes(StandardCharsets.UTF_8), new FileOutputStream(outputFile.toFile()));

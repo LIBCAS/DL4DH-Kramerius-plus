@@ -15,7 +15,5 @@ public interface TeiConnector {
 
     String convertToTeiHeader(Publication publication);
 
-    File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params);
-
     File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params, Path outputFile);
 }
