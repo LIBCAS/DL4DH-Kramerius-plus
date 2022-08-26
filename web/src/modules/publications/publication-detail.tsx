@@ -24,6 +24,7 @@ import { getPublication, publish, unpublish } from '../../api/publication-api'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { formatDateTime } from 'utils/formatters'
 import { Loading } from 'components/loading'
+import { useInfo } from 'components/navbar/info/info-context'
 
 type Props = {
 	publicationId: string
@@ -34,6 +35,7 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 	const [selectedJobType, setSelectedJobType] =
 		useState<EnrichmentKrameriusJob>()
 	const [open, setOpen] = useState<boolean>(false)
+	const { info } = useInfo()
 
 	const onDialogOpen = () => {
 		setOpen(true)
@@ -110,6 +112,17 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 		noSsr: true,
 	})
 
+	const openInKramerius = () => {
+		if (
+			publication?.model === 'periodical' ||
+			publication?.model === 'periodicalvolume'
+		) {
+			window.open(`${info?.kramerius.url}/periodical/${publicationId}`)
+		} else {
+			window.open(`${info?.kramerius.url}/view/${publicationId}`)
+		}
+	}
+
 	return publication ? (
 		<Paper sx={{ p: 3 }} variant="outlined">
 			<Grid container spacing={2}>
@@ -134,6 +147,16 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 						/>
 					</Grid>
 					<Grid container direction="column" item spacing={1} xl={4} xs={12}>
+						<Grid item xs={1}>
+							<Button
+								color="primary"
+								fullWidth
+								variant="contained"
+								onClick={openInKramerius}
+							>
+								Otevřít v Krameriovi
+							</Button>
+						</Grid>
 						<Grid item xs={1}>
 							<Button
 								color="primary"
@@ -172,7 +195,7 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 						<Grid item lg={8} xl={4}>
 							<Button
 								color="primary"
-								disabled={!selectedJobType}
+								disabled
 								fullWidth
 								variant="contained"
 								onClick={createNewJob}
