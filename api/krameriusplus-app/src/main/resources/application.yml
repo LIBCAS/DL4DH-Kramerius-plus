@@ -88,9 +88,7 @@ system:
   json:
     serializeEmptyArrays: true
   security:
-    auth: keycloak
-    jwt:
-      secret: kramerius-plus
+    secret: kramerius-plus
 
 keycloak:
   auth-server-url: https://keycloak.sekan.eu
