@@ -2,13 +2,17 @@ package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.TeiExportParams;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.AltoParam;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.NameTagParam;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.TeiExportParams;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.UdPipeParam;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PARAMS;
 
@@ -31,8 +35,8 @@ public class TeiExportJobConfigDto extends ExportJobConfigDto {
 
     @JsonProperty("params")
     public void unpackParams(Map<String, List<String>> params) {
-        teiExportParams.setAltoParams(params.get("altoParams"));
-        teiExportParams.setUdPipeParams(params.get("udPipeParams"));
-        teiExportParams.setNameTagParams(params.get("nameTagParams"));
+        teiExportParams.setAltoParams(params.get("altoParams").stream().map(AltoParam::valueOf).collect(Collectors.toList()));
+        teiExportParams.setUdPipeParams(params.get("udPipeParams").stream().map(UdPipeParam::valueOf).collect(Collectors.toList()));
+        teiExportParams.setNameTagParams(params.get("nameTagParams").stream().map(NameTagParam::valueOf).collect(Collectors.toList()));
     }
 }
