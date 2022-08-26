@@ -7,10 +7,9 @@ import { Grid, Box, Typography } from '@mui/material'
 type Props = {
 	params: Params
 	setParams: React.Dispatch<React.SetStateAction<Params>>
-	disabled: boolean
 }
 
-export const JSONParams = ({ setParams, params, disabled }: Props) => {
+export const JSONParams = ({ setParams, params }: Props) => {
 	const { includeFields = [], excludeFields = [] } = params
 
 	return (
@@ -22,7 +21,7 @@ export const JSONParams = ({ setParams, params, disabled }: Props) => {
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<SelectField<{ id: string; label: string }>
-						disabled={disabled || excludeFields.length > 0}
+						disabled={excludeFields.length > 0}
 						items={fieldOptions}
 						label="Zahrnout pole"
 						multiple
@@ -40,7 +39,7 @@ export const JSONParams = ({ setParams, params, disabled }: Props) => {
 
 				<Grid item xs={12}>
 					<SelectField<{ id: string; label: string }>
-						disabled={disabled || includeFields.length > 0}
+						disabled={includeFields.length > 0}
 						items={fieldOptions}
 						label="Nezahrnout pole"
 						multiple

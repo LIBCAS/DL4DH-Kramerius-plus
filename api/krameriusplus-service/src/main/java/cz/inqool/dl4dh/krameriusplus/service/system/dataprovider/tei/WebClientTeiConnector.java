@@ -2,10 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.EnrichingException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.TeiExportParams;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei.header.TeiHeaderFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import javax.annotation.Resource;
 import java.io.*;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -83,7 +82,7 @@ public class WebClientTeiConnector implements TeiConnector {
     }
 
     @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params) {
+    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiExportParams params, Path outputFile) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setAccept(List.of(MediaType.APPLICATION_XML));
@@ -95,47 +94,19 @@ public class WebClientTeiConnector implements TeiConnector {
             body.add("page[]", new MultipartInputStreamFileResource(teiPage, "page.xml"));
         }
 
-        params.getUdPipeParams().forEach(param -> body.add("UDPipe", param));
-        params.getNameTagParams().forEach(param -> body.add("NameTag", param));
-        params.getAltoParams().forEach(param -> body.add("ALTO", param));
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        return restTemplate.execute("/merge", HttpMethod.POST,
-                restTemplate.httpEntityCallback(requestEntity),
-                clientHttpResponse -> {
-            File ret = File.createTempFile("tei_merge_" + formatter.format(LocalDateTime.now()), null);
-            StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
-            return ret;
-        });
-    }
-
-    @Override
-    public File merge(InputStream teiHeader, List<InputStream> teiPages, TeiParams params, Path outputFile) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        headers.setAccept(List.of(MediaType.APPLICATION_XML));
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("header", new MultipartInputStreamFileResource(teiHeader, "header"));
-
-        for (InputStream teiPage : teiPages) {
-            body.add("page[]", new MultipartInputStreamFileResource(teiPage, "page.xml"));
-        }
-
-        params.getUdPipeParams().forEach(param -> body.add("UDPipe", param));
-        params.getNameTagParams().forEach(param -> body.add("NameTag", param));
-        params.getAltoParams().forEach(param -> body.add("ALTO", param));
+        params.getUdPipeParams().forEach(param -> body.add("UDPipe", param.getName()));
+        params.getNameTagParams().forEach(param -> body.add("NameTag", param.getName()));
+        params.getAltoParams().forEach(param -> body.add("ALTO", param.getName()));
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         try (OutputStream out = new FileOutputStream(outputFile.toString())) {
-                    return restTemplate.execute("/merge", HttpMethod.POST,
+            return restTemplate.execute("/merge", HttpMethod.POST,
                     restTemplate.httpEntityCallback(requestEntity),
-            clientHttpResponse -> {
-                StreamUtils.copy(clientHttpResponse.getBody(), out);
-                return outputFile.toFile();
-            });
+                    clientHttpResponse -> {
+                        StreamUtils.copy(clientHttpResponse.getBody(), out);
+                        return outputFile.toFile();
+                    });
         } catch (IOException exception) {
             throw new UncheckedIOException("Failed to write merged TEI file", exception);
         }

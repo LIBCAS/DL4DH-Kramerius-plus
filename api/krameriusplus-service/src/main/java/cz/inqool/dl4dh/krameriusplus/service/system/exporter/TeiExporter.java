@@ -1,12 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.exporter;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.TeiExportParams;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.tei.TeiConnector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class TeiExporter {
         this.teiConnector = teiConnector;
     }
 
-    public void export(String publicationId, TeiParams teiParams, Path teiFile) throws IOException {
+    public void export(String publicationId, TeiExportParams teiParams, Path teiFile) throws IOException {
         Publication publication = publicationService.find(publicationId);
         FileRef teiHeader = fileService.find(publication.getTeiHeaderFileId());
 

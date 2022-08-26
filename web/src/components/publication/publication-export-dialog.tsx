@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react'
 import { toast } from 'react-toastify'
-import { DialogContentProps } from '../dialog/types'
 import { Params, TeiParams } from '../../models'
 import { JSONParams } from './publication-export-json'
 import { TEIParams } from './publication-export-tei'
@@ -16,13 +15,8 @@ import {
 	FormControlLabel,
 	Button,
 } from '@mui/material'
-import { CsvExportJobEventConfig } from 'models/job/config/export/csv-export-job-event-config'
-import { AltoExportJobEventConfig } from 'models/job/config/export/alto-export-job-event-config'
-import { ExportJobEventConfig } from 'models/job/config/export/export-job-event-config'
-import { JsonExportJobEventConfig } from 'models/job/config/export/json-export-job-event-config'
-import { TeiExportJobEventConfig } from 'models/job/config/export/tei-export-job-event-config'
-import { TextExportJobEventConfig } from 'models/job/config/export/text-export-job-event-config'
 import { exportPublication } from 'api/export-api'
+import { TeiExportParams } from 'models/tei-params'
 
 export type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
 
@@ -33,12 +27,22 @@ const defaultParams: Params = {
 	includeFields: [],
 }
 
-const defaultTeiParams: TeiParams = {
-	filters: [],
-	includeFields: [],
+const defaultTeiParams: TeiExportParams = {
 	udPipeParams: [],
 	nameTagParams: [],
 	altoParams: [],
+}
+
+export interface ExportJobConfig {
+	params: Params
+}
+
+interface CsvExportJobConfig extends ExportJobConfig {
+	delimiter: Delimiter
+}
+
+interface TeiExportJobConfig extends ExportJobConfig {
+	teiExportParams: TeiExportParams
 }
 
 export const PublicationExportDialog: FC<{
@@ -70,28 +74,21 @@ export const PublicationExportDialog: FC<{
 	}
 
 	const handleSubmitExport = async () => {
-		let config: ExportJobEventConfig
+		let config
 		if (format === 'csv') {
 			config = {
 				params: params,
 				delimiter: delimiter,
-			} as CsvExportJobEventConfig
-		} else if (format === 'json') {
-			config = {
-				params: params,
-			} as JsonExportJobEventConfig
+			} as CsvExportJobConfig
 		} else if (format === 'tei') {
 			config = {
-				params: teiParams,
-			} as TeiExportJobEventConfig
-		} else if (format === 'alto') {
-			config = {
 				params: params,
-			} as AltoExportJobEventConfig
+				teiExportParams: teiParams,
+			} as TeiExportJobConfig
 		} else {
 			config = {
 				params: params,
-			} as TextExportJobEventConfig
+			} as ExportJobConfig
 		}
 
 		const response = await exportPublication(publicationId, config, format)
@@ -175,15 +172,12 @@ export const PublicationExportDialog: FC<{
 					</Box>
 				)}
 
-				{format === 'tei' ? (
-					<TEIParams params={teiParams} setParams={setTeiParams} />
-				) : (
-					<JSONParams
-						disabled={disabledParams}
-						params={params}
-						setParams={setParams}
-					/>
-				)}
+				{!disabledParams &&
+					(format === 'tei' ? (
+						<TEIParams params={teiParams} setParams={setTeiParams} />
+					) : (
+						<JSONParams params={params} setParams={setParams} />
+					))}
 			</DialogContent>
 			<DialogActions>
 				<Button color="inherit" onClick={onClose}>

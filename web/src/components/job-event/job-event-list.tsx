@@ -120,7 +120,7 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 	return (
 		<Paper>
 			<DataGrid
-				autoHeight={true}
+				autoHeight
 				columns={columns}
 				density="compact"
 				disableColumnFilter

@@ -8,5 +8,8 @@ import lombok.Setter;
 @Setter
 public class EnrichmentTeiJobConfigDto extends EnrichmentJobConfigDto {
 
-    private final KrameriusJob krameriusJob = KrameriusJob.ENRICHMENT_TEI;
+    @Override
+    public KrameriusJob getKrameriusJob() {
+        return KrameriusJob.ENRICHMENT_TEI;
+    }
 }

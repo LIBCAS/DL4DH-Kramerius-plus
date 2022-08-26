@@ -6,10 +6,10 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface JobEventConfigMapper {
 
-    default JobEventConfig fromCreateDto(JobEventConfigCreateDto createDto) {
+    default JobEventConfig fromCreateDto(JobEventConfigDto createDto) {
         JobEventConfig jobEventConfig = new JobEventConfig();
         jobEventConfig.setKrameriusJob(createDto.getKrameriusJob());
-        jobEventConfig.setParameters(createDto.getJobParameters());
+        jobEventConfig.setParameters(createDto.toJobParametersMap());
 
         return jobEventConfig;
     }

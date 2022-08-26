@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.tei.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.TeiParams;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.TeiExportParams;
 import cz.inqool.dl4dh.krameriusplus.service.system.exporter.TeiExporter;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -15,8 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PARAMS;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.TEI_EXPORT_PARAMS;
 
 @Component
 @StepScope
@@ -35,7 +35,7 @@ public class ExportTeiTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String publicationId = (String) chunkContext.getStepContext().getJobParameters().get(PUBLICATION_ID);
-        TeiParams params = objectMapper.readValue((String) chunkContext.getStepContext().getJobParameters().get(PARAMS), TeiParams.class);
+        TeiExportParams params = objectMapper.readValue((String) chunkContext.getStepContext().getJobParameters().get(TEI_EXPORT_PARAMS), TeiExportParams.class);
         Path parentDirectory = Path.of((String) chunkContext.getStepContext().getJobExecutionContext().get(DIRECTORY));
         Path teiFile = Files.createFile(parentDirectory.resolve(publicationId.substring(5) + ".xml"));
 

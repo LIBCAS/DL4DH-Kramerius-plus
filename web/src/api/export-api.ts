@@ -1,6 +1,8 @@
-import { ExportFormat } from 'components/publication/publication-export-dialog'
+import {
+	ExportFormat,
+	ExportJobConfig,
+} from 'components/publication/publication-export-dialog'
 import { Export } from 'models/export'
-import { ExportJobEventConfig } from 'models/job/config/export/export-job-event-config'
 import { QueryResults } from 'models/query-results'
 import { customFetch } from 'utils/custom-fetch'
 
@@ -22,7 +24,7 @@ export const listExports = async (
 
 export const exportPublication = async (
 	id: string,
-	config: ExportJobEventConfig,
+	config: ExportJobConfig,
 	format: ExportFormat,
 ): Promise<Response> => {
 	return await customFetch(`/api/exports/${id}/${format}`, {
