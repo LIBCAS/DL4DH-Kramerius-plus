@@ -7,6 +7,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig;
 public class JobParameterKey {
     public static final String PUBLICATION_ID = "publicationId";
     public static final String PARAMS = "params";
+    public static final String TEI_EXPORT_PARAMS = "teiExportParams";
     public static final String JOB_EVENT_ID = "jobEventId";
     public static final String JOB_EVENT_NAME = "jobEventName";
     public static final String TIMESTAMP = "timestamp";

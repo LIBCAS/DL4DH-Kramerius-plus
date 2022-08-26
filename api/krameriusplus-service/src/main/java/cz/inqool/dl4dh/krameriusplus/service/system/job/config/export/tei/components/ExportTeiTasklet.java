@@ -15,8 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PARAMS;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.TEI_EXPORT_PARAMS;
 
 @Component
 @StepScope
@@ -35,7 +35,7 @@ public class ExportTeiTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String publicationId = (String) chunkContext.getStepContext().getJobParameters().get(PUBLICATION_ID);
-        TeiExportParams params = objectMapper.readValue((String) chunkContext.getStepContext().getJobParameters().get(PARAMS), TeiExportParams.class);
+        TeiExportParams params = objectMapper.readValue((String) chunkContext.getStepContext().getJobParameters().get(TEI_EXPORT_PARAMS), TeiExportParams.class);
         Path parentDirectory = Path.of((String) chunkContext.getStepContext().getJobExecutionContext().get(DIRECTORY));
         Path teiFile = Files.createFile(parentDirectory.resolve(publicationId.substring(5) + ".xml"));
 

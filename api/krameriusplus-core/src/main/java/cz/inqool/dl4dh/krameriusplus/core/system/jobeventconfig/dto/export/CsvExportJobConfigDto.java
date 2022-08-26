@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.DELIMITER;
 
 @Getter
@@ -20,8 +22,10 @@ public class CsvExportJobConfigDto extends ExportJobConfigDto {
     }
 
     @Override
-    protected void populateJobParameters() {
-        super.populateJobParameters();
-        jobParameters.put(DELIMITER, delimiter);
+    public Map<String, Object> toJobParametersMap() {
+        Map<String, Object> jobParametersMap = super.toJobParametersMap();
+        jobParametersMap.put(DELIMITER, delimiter);
+
+        return jobParametersMap;
     }
 }
