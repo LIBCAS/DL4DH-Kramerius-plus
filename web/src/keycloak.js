@@ -4,7 +4,7 @@ import Keycloak from 'keycloak-js'
 // Pass initialization options as required or leave blank to load from 'keycloak.json'
 const keycloak = new Keycloak({
 	url: process.env.REACT_APP_KEYCLOAK_URL || 'https://keycloak.sekan.eu',
-	realm: process.env.REACT_APP_KEYCLOAK_REALN || 'DL4DHFeeder',
+	realm: process.env.REACT_APP_KEYCLOAK_REALM || 'DL4DHFeeder',
 	clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || 'feeder',
 })
 
