@@ -4,6 +4,7 @@ import { Page } from './navbar'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from 'components/auth/auth-context'
+import { useKeycloak } from '@react-keycloak/web'
 
 type Props = {
 	pages: Page[]
@@ -13,6 +14,7 @@ export const ToolbarMenu: FC<Props> = ({ pages }) => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 	const navigate = useNavigate()
 	const { auth } = useAuth()
+	const { keycloak } = useKeycloak()
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget)
@@ -20,6 +22,10 @@ export const ToolbarMenu: FC<Props> = ({ pages }) => {
 	const handleCloseNavMenu = (link: string) => () => {
 		setAnchorElNav(null)
 		navigate(link)
+	}
+
+	const logout = () => {
+		keycloak.logout()
 	}
 
 	return (
@@ -38,6 +44,17 @@ export const ToolbarMenu: FC<Props> = ({ pages }) => {
 							{page.label}
 						</Button>
 					))}
+				{auth && (
+					<Button
+						color="inherit"
+						component={Link}
+						to="/"
+						variant="text"
+						onClick={logout}
+					>
+						Odhlásit se
+					</Button>
+				)}
 			</Box>
 			<Box
 				sx={{
@@ -85,6 +102,7 @@ export const ToolbarMenu: FC<Props> = ({ pages }) => {
 								{page.label}
 							</MenuItem>
 						))}
+					{auth && <MenuItem onClick={logout}>Odhlásit se</MenuItem>}
 				</Menu>
 			</Box>
 		</Box>

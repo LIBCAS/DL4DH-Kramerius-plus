@@ -7,7 +7,7 @@ import {
 import { Export } from 'models'
 import { FC, FormEvent, useEffect, useState } from 'react'
 import { downloadExport, listExports } from '../api/export-api'
-import { Button, FormControl } from '@mui/material'
+import { Button } from '@mui/material'
 import { PageWrapper } from './page-wrapper'
 
 const getType = (params: GridValueGetterParams) => {
