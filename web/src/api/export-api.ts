@@ -32,3 +32,7 @@ export const exportPublication = async (
 		body: JSON.stringify(config),
 	})
 }
+
+export const downloadExport = async (id: string): Promise<Response> => {
+	return await customFetch(`/api/exports/download/${id}`)
+}
