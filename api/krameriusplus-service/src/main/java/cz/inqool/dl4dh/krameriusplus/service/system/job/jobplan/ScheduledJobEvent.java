@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Entity
-public class ScheduledJobEvent extends DatedObject {
+public class ScheduledJobEvent extends OwnedObject {
 
     @NotNull
     @Column(name = "execution_order")

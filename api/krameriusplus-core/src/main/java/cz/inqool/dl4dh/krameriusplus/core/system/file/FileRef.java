@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException;
 import lombok.Getter;
 import lombok.NonNull;
@@ -16,7 +16,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException.ErrorCode.*;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException.ErrorCode.FAILED_TO_CLOSE_FILE;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException.ErrorCode.FAILED_TO_OPEN_FILE;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException.ErrorCode.FILE_ALREADY_OPENED;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException.ErrorCode.FILE_NOT_INITIALIZED;
 import static java.nio.file.Files.newInputStream;
 
 /**
@@ -27,7 +30,7 @@ import static java.nio.file.Files.newInputStream;
 @Getter
 @Setter
 @Entity
-public class FileRef extends DatedObject implements Closeable {
+public class FileRef extends OwnedObject implements Closeable {
 
     private static final int DIR_NAME_LENGTH = 2;
 
