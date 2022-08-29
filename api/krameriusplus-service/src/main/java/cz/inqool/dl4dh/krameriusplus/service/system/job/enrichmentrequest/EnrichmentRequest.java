@@ -20,9 +20,6 @@ public class EnrichmentRequest extends OwnedObject {
 
     private String name;
 
-    // TODO: finish when user management is implemented
-//    private User createdBy;
-
     @OneToMany(mappedBy = "enrichmentRequest")
     private Set<JobPlan> jobPlans = new HashSet<>();
 }
