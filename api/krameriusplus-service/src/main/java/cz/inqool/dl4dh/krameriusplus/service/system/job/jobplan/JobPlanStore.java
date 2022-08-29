@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.OwnedObjectStore;
 import com.querydsl.jpa.impl.JPAQuery;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.OwnedObjectStore;
 import org.springframework.stereotype.Repository;
