@@ -273,5 +273,4 @@
             <column name="export_id" type="${id}"/>
         </createTable>
     </changeSet>
-
 </databaseChangeLog>

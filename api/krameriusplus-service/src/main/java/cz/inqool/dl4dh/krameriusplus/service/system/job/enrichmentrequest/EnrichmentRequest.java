@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import lombok.Getter;
 import lombok.Setter;
