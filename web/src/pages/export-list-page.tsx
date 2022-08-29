@@ -9,6 +9,7 @@ import { FC, FormEvent, useEffect, useState } from 'react'
 import { downloadExport, listExports } from '../api/export-api'
 import { Button } from '@mui/material'
 import { PageWrapper } from './page-wrapper'
+import { toast } from 'react-toastify'
 
 const getType = (params: GridValueGetterParams) => {
 	return params.row['fileRef'].contentType
@@ -68,15 +69,19 @@ const columns: GridColDef[] = [
 				let filename = ''
 				downloadExport(`${params.row['fileRef']?.id}`)
 					.then(response => {
-						filename =
-							response.headers
-								.get('content-disposition')
-								?.split('; ')[1]
-								.split('=')[1] ?? 'file'
+						if (response.ok) {
+							filename =
+								response.headers
+									.get('content-disposition')
+									?.split('; ')[1]
+									.split('=')[1] ?? 'file'
 
-						filename = filename?.substring(1, filename.length - 1)
+							filename = filename?.substring(1, filename.length - 1)
 
-						return response.blob()
+							return response.blob()
+						} else {
+							throw Error(response.statusText)
+						}
 					})
 					.then(blob => {
 						const url = window.URL.createObjectURL(new Blob([blob]))
@@ -87,6 +92,11 @@ const columns: GridColDef[] = [
 						document.body.appendChild(link)
 						link.click()
 						link.parentNode?.removeChild(link)
+					})
+					.catch(e => {
+						toast(`Nastala chyba při stahování: ${e}`, {
+							type: 'error',
+						})
 					})
 
 				event.preventDefault()
