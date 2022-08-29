@@ -43,4 +43,12 @@ public class JobExecutionDto {
 
         return endTime.getTime() - startTime.getTime();
     }
+
+    public String getStatus() {
+        if (status == null || BatchStatus.STARTING.equals(status)) {
+            return "CREATED";
+        } else {
+            return status.name();
+        }
+    }
 }
