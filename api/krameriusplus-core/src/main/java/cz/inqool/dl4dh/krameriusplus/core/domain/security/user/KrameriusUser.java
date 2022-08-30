@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.security.user;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import javax.persistence.Entity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrameriusUser extends DomainObject {
+public class KrameriusUser extends DatedObject {
 
     @Column(nullable = false)
     private String username;

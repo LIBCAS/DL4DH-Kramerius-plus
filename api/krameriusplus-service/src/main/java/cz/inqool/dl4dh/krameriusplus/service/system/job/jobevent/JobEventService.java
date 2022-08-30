@@ -4,7 +4,11 @@ import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.*;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventFilter;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
@@ -82,7 +86,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     public void run(String jobEventId) {
-        JobEvent jobEvent = store.find(jobEventId);
+        JobEvent jobEvent = findEntity(jobEventId);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
         JobExecution jobExecution = jobExplorer.getJobExecution(jobEvent.getDetails().getLastExecutionId());
@@ -117,7 +121,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     public void stop(String jobEventId) {
-        JobEvent jobEvent = store.find(jobEventId);
+        JobEvent jobEvent = findEntity(jobEventId);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
         try {
@@ -131,7 +135,7 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     }
 
     public JobEventDetailDto findDetailed(@NonNull String id) {
-        JobEvent jobEvent = store.find(id);
+        JobEvent jobEvent = findEntity(id);
         notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, id));
 
         List<JobExecution> executions = new ArrayList<>();
