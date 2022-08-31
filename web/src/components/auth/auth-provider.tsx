@@ -13,6 +13,7 @@ export const AuthProvider: FC<{ children: JSX.Element }> = ({ children }) => {
 				try {
 					const currentUser = await getCurrentUser()
 
+					console.log('Current user: ', currentUser)
 					setUser(currentUser)
 				} catch (error) {
 					setUser(null)

@@ -1,16 +1,17 @@
-import { Box, Button, Menu, MenuItem, IconButton } from '@mui/material'
+import { Box, Menu, MenuItem, IconButton } from '@mui/material'
 import { FC, useState } from 'react'
-import { Page } from './navbar'
+import { NavbarInnerItem, NavbarItem } from './navbar'
 import MenuIcon from '@mui/icons-material/Menu'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from 'components/auth/auth-context'
 import { useKeycloak } from '@react-keycloak/web'
+import { NavbarMenuItem } from './navbar-menu-item'
 
-type Props = {
-	pages: Page[]
-}
-
-export const ToolbarMenu: FC<Props> = ({ pages }) => {
+export const ToolbarMenu: FC<{
+	pages: NavbarItem[]
+	lgWidth: string
+	xsWidth: string
+}> = ({ pages, lgWidth, xsWidth }) => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 	const navigate = useNavigate()
 	const { auth } = useAuth()
@@ -19,7 +20,11 @@ export const ToolbarMenu: FC<Props> = ({ pages }) => {
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget)
 	}
-	const handleCloseNavMenu = (link: string) => () => {
+	const handleCloseNavMenu = () => {
+		setAnchorElNav(null)
+	}
+
+	const handleNavMenuClick = (link: string) => () => {
 		setAnchorElNav(null)
 		navigate(link)
 	}
@@ -28,33 +33,41 @@ export const ToolbarMenu: FC<Props> = ({ pages }) => {
 		keycloak.logout()
 	}
 
+	function flatten(arr: NavbarItem[]): NavbarInnerItem[] {
+		return arr.reduce(function (
+			flat: NavbarInnerItem[],
+			toFlatten: NavbarItem,
+		): NavbarInnerItem[] {
+			if (toFlatten.children) {
+				return flat.concat(toFlatten.children)
+			} else {
+				flat.push({
+					name: toFlatten.name,
+					label: toFlatten.label,
+					link: toFlatten.link ?? '/',
+					onlyAuthenticated: toFlatten.onlyAuthenticated,
+				})
+				return flat
+			}
+		},
+		[])
+	}
+
 	return (
-		<Box>
-			<Box sx={{ ml: 2, flexGrow: 1, display: { lg: 'flex', xs: 'none' } }}>
+		<Box sx={{ width: { lg: lgWidth, xs: xsWidth } }}>
+			<Box
+				sx={{
+					flexGrow: 1,
+					display: { lg: 'flex', xs: 'none' },
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+			>
 				{pages
 					.filter(page => !page.onlyAuthenticated || auth)
 					.map(page => (
-						<Button
-							key={page.name}
-							color="inherit"
-							component={Link}
-							to={page.link}
-							variant="text"
-						>
-							{page.label}
-						</Button>
+						<NavbarMenuItem key={page.name} item={page} />
 					))}
-				{auth && (
-					<Button
-						color="inherit"
-						component={Link}
-						to="/"
-						variant="text"
-						onClick={logout}
-					>
-						Odhlásit se
-					</Button>
-				)}
 			</Box>
 			<Box
 				sx={{
@@ -95,10 +108,13 @@ export const ToolbarMenu: FC<Props> = ({ pages }) => {
 					}}
 					onClose={handleCloseNavMenu}
 				>
-					{pages
+					{flatten(pages)
 						.filter(page => !page.onlyAuthenticated || auth)
 						.map(page => (
-							<MenuItem key={page.name} onClick={handleCloseNavMenu(page.link)}>
+							<MenuItem
+								key={page.name}
+								onClick={handleNavMenuClick(page.link || '/')}
+							>
 								{page.label}
 							</MenuItem>
 						))}
