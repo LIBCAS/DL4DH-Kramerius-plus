@@ -224,7 +224,6 @@
             </column>
         </addColumn>
 
-
         <addColumn tableName="enrichment_request">
             <column name="owner_id" type="${id}">
                 <constraints foreignKeyName="enrichment_kramerius_user_FK"

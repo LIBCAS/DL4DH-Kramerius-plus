@@ -38,6 +38,5 @@ public class JobPlanStore extends OwnedObjectStore<JobPlan, QJobPlan> {
         detachAll();
 
         return results.fetch();
-
     }
 }
