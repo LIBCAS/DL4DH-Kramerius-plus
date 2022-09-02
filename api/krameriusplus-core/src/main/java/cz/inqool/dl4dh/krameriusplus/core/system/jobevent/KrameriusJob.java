@@ -19,7 +19,8 @@ public enum KrameriusJob {
     EXPORT_CSV(EXPORT_QUEUE.getQueueName(), Set.of(ENRICHMENT_EXTERNAL)),
     EXPORT_TEI(EXPORT_QUEUE.getQueueName(), Set.of(ENRICHMENT_TEI)),
     EXPORT_ALTO(EXPORT_QUEUE.getQueueName(), Collections.emptySet()),
-    EXPORT_TEXT(EXPORT_QUEUE.getQueueName(), Collections.emptySet());
+    EXPORT_TEXT(EXPORT_QUEUE.getQueueName(), Collections.emptySet()),
+    EXPORT_MERGE(EXPORT_QUEUE.getQueueName(), Collections.emptySet());
 
     private final String queueName;
 

@@ -233,4 +233,45 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="13" author="kollar">
+        <createTable tableName="job_plan_enrichment_request">
+            <column name="enrichment_request_id" type="${id}"/>
+            <column name="job_plan_id" type="${id}"/>
+        </createTable>
+
+        <dropColumn tableName="job_plan" columnName="enrichment_request_id"/>
+    </changeSet>
+
+    <changeSet id="14" author="kollar">
+        <createTable tableName="merged_export">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="merged_export_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="job_event_id" type="${id}">
+                <constraints foreignKeyName="merged_export_job_event_FK"
+                             referencedTableName="job_event"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="file_ref_id" type="${id}">
+                <constraints foreignKeyName="merged_export_file_ref_FK"
+                             referencedTableName="file_ref"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="merged_export_export">
+            <column name="merged_export_id" type="${id}"/>
+            <column name="export_id" type="${id}"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

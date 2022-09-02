@@ -12,9 +12,4 @@ public class JsonExportRequestDto extends ExportRequestBase {
 
     @NotNull
     private JsonExportJobConfigDto config;
-
-    public JsonExportRequestDto(String name, @NotNull String publicationId, JsonExportJobConfigDto config) {
-        super(name, publicationId);
-        this.config = config;
-    }
 }

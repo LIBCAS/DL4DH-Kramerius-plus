@@ -12,9 +12,4 @@ public class AltoExportRequestDto extends ExportRequestBase {
 
     @NotNull
     private AltoExportJobConfigDto config;
-
-    public AltoExportRequestDto(String name, @NotNull String publicationId, AltoExportJobConfigDto config) {
-        super(name, publicationId);
-        this.config = config;
-    }
 }

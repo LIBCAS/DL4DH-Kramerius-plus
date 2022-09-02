@@ -12,9 +12,4 @@ public class TeiExportRequestDto extends ExportRequestBase {
 
     @NotNull
     private TeiExportJobConfigDto config;
-
-    public TeiExportRequestDto(String name, @NotNull String publicationId, TeiExportJobConfigDto config) {
-        super(name, publicationId);
-        this.config = config;
-    }
 }

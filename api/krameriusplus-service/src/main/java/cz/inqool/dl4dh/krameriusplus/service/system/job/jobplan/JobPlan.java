@@ -2,30 +2,17 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.EnrichmentRequest;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Entity
 public class JobPlan extends OwnedObject {
-
-    @ManyToOne
-    private EnrichmentRequest enrichmentRequest;
 
     private String name;
 
