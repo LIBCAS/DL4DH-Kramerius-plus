@@ -87,7 +87,6 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     public void run(String jobEventId) {
         JobEvent jobEvent = findEntity(jobEventId);
-        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
         JobExecution jobExecution = jobExplorer.getJobExecution(jobEvent.getDetails().getLastExecutionId());
         notNull(jobExecution, () -> new MissingObjectException(JobExecution.class, String.valueOf(jobEvent.getDetails().getLastExecutionId())));
@@ -122,7 +121,6 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     public void stop(String jobEventId) {
         JobEvent jobEvent = findEntity(jobEventId);
-        notNull(jobEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
         try {
             jobOperator.stop(jobEvent.getDetails().getLastExecutionId());

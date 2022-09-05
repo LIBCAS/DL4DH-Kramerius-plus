@@ -12,7 +12,8 @@ public class KrameriusUserStore extends DomainStore<KrameriusUser, QKrameriusUse
 
     public KrameriusUser findUserByUsername(String username) {
         JPAQuery<KrameriusUser> query = query().select(qObject)
-                .where(qObject.username.eq(username));
+                .where(qObject.username.eq(username))
+                .where(qObject.deleted.isNull());
 
         detachAll();
 
