@@ -32,6 +32,10 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.Execution
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.JOB_PLAN_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 
+
+/**
+ * Tasklet unzips all files created from the same jobPlan
+ */
 @Component
 @StepScope
 public class UnzipExportsTasklet implements Tasklet {
@@ -74,18 +78,26 @@ public class UnzipExportsTasklet implements Tasklet {
         for (Export export : exports) {
             FileRef fileRef = export.getFileRef();
             try (InputStream is = fileService.find(fileRef.getId()).open()) {
-                Path exportPath = Files.createDirectory(Path.of(unzippedPath + File.separator + buildDirectoryName(export.getPublicationId(),
-                        exportType)));
+                Path exportPath = Files.createDirectory(Path.of(unzippedPath + File.separator + buildDirectoryName(export.getPublicationId(), exportType)));
 
                 unZip(is, exportPath.toFile());
             }
         }
         ExecutionContext executionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
-        executionContext.put(DIRECTORY, unzippedPath.toString());
+        executionContext.put(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
         executionContext.put(JOB_PLAN_ID, jobPlanId);
+
         return RepeatStatus.FINISHED;
     }
 
+
+    /**
+     * code from <a href="https://www.baeldung.com/java-compress-and-uncompress">baeldung</a>
+     *
+     * @param zipFileIs input stream of file to unzip
+     * @param outDir directory for output
+     * @throws IOException in case of FS issues
+     */
     private void unZip(InputStream zipFileIs, File outDir) throws IOException{
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(zipFileIs);
@@ -117,6 +129,13 @@ public class UnzipExportsTasklet implements Tasklet {
         zis.close();
     }
 
+    /**
+     * code from <a href="https://www.baeldung.com/java-compress-and-uncompress">baeldung</a>
+     * @param destinationDir directory
+     * @param zipEntry one zipEntry
+     * @return File to created dir
+     * @throws IOException in case of FS issues
+     */
     private File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 
