@@ -15,8 +15,10 @@ public class KrameriusUserStore extends DomainStore<KrameriusUser, QKrameriusUse
                 .where(qObject.username.eq(username))
                 .where(qObject.deleted.isNull());
 
+        KrameriusUser result = query.fetchFirst();
+
         detachAll();
 
-        return query.fetchFirst();
+        return result;
     }
 }
