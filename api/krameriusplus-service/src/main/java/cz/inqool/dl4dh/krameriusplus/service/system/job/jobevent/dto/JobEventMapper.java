@@ -34,6 +34,7 @@ public interface JobEventMapper extends DatedObjectMapper<JobEvent, JobEventCrea
         eventDto.setInstanceId(entity.getInstanceId());
         eventDto.setDetails(entity.getDetails());
         eventDto.setConfig(entity.getConfig());
+        eventDto.setOwner(entity.getOwner());
 
         if (entity.getParent() != null) {
             eventDto.setParent(toDto(entity.getParent()));
