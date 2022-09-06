@@ -8,8 +8,8 @@ import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.TextExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.MergedExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -115,11 +115,11 @@ public class ExportApi {
         return exportFacade.findByJobEvent(jobEventId);
     }
 
-    @Operation(summary = "Find an export Set")
+    @Operation(summary = "Find a bulk export by JobEventId")
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping("/set")
-    public MergedExportDto findBySetJobEvent(@RequestParam(value = "jobEventId") String jobEventId) {
-        return exportFacade.findSetByJobEventId(jobEventId);
+    @GetMapping("/bulk")
+    public BulkExportDto findBulkByJobEvent(@RequestParam(value = "jobEventId") String jobEventId) {
+        return exportFacade.findBulkExport(jobEventId);
     }
 
     @Operation(summary = "Download export.")

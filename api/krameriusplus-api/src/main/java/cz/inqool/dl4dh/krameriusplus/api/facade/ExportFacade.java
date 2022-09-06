@@ -3,8 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.api.facade;
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.MergedExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 
@@ -18,5 +18,5 @@ public interface ExportFacade {
 
     ExportDto findByJobEvent(String jobEventId);
 
-    MergedExportDto findSetByJobEventId(String jobEventId);
+    BulkExportDto findBulkExport(String jobEventId);
 }

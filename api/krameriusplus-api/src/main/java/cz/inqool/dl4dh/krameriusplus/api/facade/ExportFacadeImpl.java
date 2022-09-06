@@ -5,19 +5,21 @@ import cz.inqool.dl4dh.krameriusplus.api.dto.export.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportService;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.MergedExport;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.MergedExportStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.MergedExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.MergeExportsJobConfigDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.ScheduledJobEvent;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
@@ -34,23 +36,20 @@ public class ExportFacadeImpl implements ExportFacade {
 
     private final ExportService exportService;
 
-    private final MergedExportStore mergedExportStore;
+    private final BulkExportService bulkExportService;
 
     private final FileService fileService;
 
     private final JobPlanMapper jobPlanMapper;
 
-    private final JobEventMapper jobEventMapper;
-
     @Autowired
-    public ExportFacadeImpl(JobPlanService jobPlanService, ExportService exportService,
-                            MergedExportStore store, FileService fileService, JobPlanMapper jobPlanMapper, JobEventMapper jobEventMapper) {
+    public ExportFacadeImpl(JobPlanService jobPlanService, ExportService exportService, BulkExportService bulkExportService,
+                            FileService fileService, JobPlanMapper jobPlanMapper) {
         this.jobPlanService = jobPlanService;
         this.exportService = exportService;
-        this.mergedExportStore = store;
+        this.bulkExportService = bulkExportService;
         this.fileService = fileService;
         this.jobPlanMapper = jobPlanMapper;
-        this.jobEventMapper = jobEventMapper;
     }
 
     @Override
@@ -76,14 +75,8 @@ public class ExportFacadeImpl implements ExportFacade {
     }
 
     @Override
-    public MergedExportDto findSetByJobEventId(String jobEventId) {
-        MergedExport mergedExport = mergedExportStore.findByJobEventId(jobEventId);
-
-        MergedExportDto mergedExportDto = new MergedExportDto();
-        mergedExportDto.setJobEventDto(jobEventMapper.toDto(mergedExport.getJobEvent()));
-        mergedExportDto.setFileRef(mergedExport.getFileRef());
-
-        return mergedExportDto;
+    public BulkExportDto findBulkExport(String jobEventId) {
+        return bulkExportService.findByJobEvent(jobEventId);
     }
 
     private JobPlanDto createJobPlan(ExportRequestDto requestDto) {
@@ -104,18 +97,32 @@ public class ExportFacadeImpl implements ExportFacade {
         if (jobPlanCreateDto.getJobs().size() > 1) {
             JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();
             jobEventCreateDto.setConfig(new MergeExportsJobConfigDto());
-
             jobPlanCreateDto.getJobs().add(jobEventCreateDto);
         }
 
         JobPlan jobPlan = jobPlanService.create(jobPlanCreateDto);
         JobPlanDto jobPlanDto = jobPlanMapper.toDto(jobPlan);
 
+        if (jobPlan.getScheduledJobEvents().size() > 1) {
+            BulkExportCreateDto bulkExportCreateDto = new BulkExportCreateDto();
+            bulkExportCreateDto.setJobEvent(findMergeJob(jobPlan));
+
+            bulkExportService.create(bulkExportCreateDto);
+        }
+
         jobPlanService.startExecution(jobPlanDto);
 
         return jobPlanDto;
-
     }
+
+    private JobEvent findMergeJob(JobPlan jobPlan) {
+        return jobPlan.getScheduledJobEvents().stream()
+                .map(ScheduledJobEvent::getJobEvent)
+                .filter(jobEvent -> jobEvent.getConfig().getKrameriusJob() == KrameriusJob.EXPORT_MERGE)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Merging job not found in plan"));
+    }
+
 
     private void validateParams(Params params) {
         if (!params.getIncludeFields().isEmpty()) {

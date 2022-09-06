@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepContainer;
 import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.builder.SimpleJobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,14 @@ public abstract class JobConfigBase {
     protected JobBuilderFactory jobBuilderFactory;
 
     public SimpleJobBuilder getJobBuilder() {
-        return jobBuilderFactory.get(getJobName())
+        return addComponents(jobBuilderFactory.get(getJobName())
                 .listener(jobListener)
                 .incrementer(new RunIdIncrementer())
-                .validator(getJobParametersValidator())
+                .validator(getJobParametersValidator()))
                 .start(stepContainer.getStep(VALIDATE_PREREQUISITES));
     }
+
+    protected abstract JobBuilder addComponents(JobBuilder jobBuilder);
 
     public abstract String getJobName();
 
