@@ -6,11 +6,10 @@ import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 
 public interface ExportFacade {
 
-    JobPlanDto export(ExportRequestDto requestDto);
+    BulkExportDto export(ExportRequestDto requestDto);
 
     QueryResults<Export> list(String publicationId, int page, int pageSize);
 

@@ -11,7 +11,6 @@ import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,7 +50,7 @@ public class ExportApi {
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/tei")
-    public JobPlanDto export(@RequestBody @Valid TeiExportRequestDto requestDto,
+    public BulkExportDto export(@RequestBody @Valid TeiExportRequestDto requestDto,
                               @RequestParam(required = false) String jobName) {
         requestDto.setName(jobName);
         return exportFacade.export(requestDto);
@@ -61,7 +60,7 @@ public class ExportApi {
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/json")
-    public JobPlanDto export(@RequestBody @Valid JsonExportRequestDto requestDto,
+    public BulkExportDto export(@RequestBody @Valid JsonExportRequestDto requestDto,
                               @RequestParam(required = false) String jobName) {
         requestDto.setName(jobName);
         return exportFacade.export(requestDto);
@@ -71,7 +70,7 @@ public class ExportApi {
             "Allows to specify 'delimiter', which should be used. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/csv")
-    public JobPlanDto export(@RequestBody @Valid CsvExportRequestDto requestDto,
+    public BulkExportDto export(@RequestBody @Valid CsvExportRequestDto requestDto,
                               @RequestParam(required = false) String jobName) {
         requestDto.setName(jobName);
         return exportFacade.export(requestDto);
@@ -81,7 +80,7 @@ public class ExportApi {
             "Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/alto")
-    public JobPlanDto export(@RequestBody @Valid AltoExportRequestDto requestDto,
+    public BulkExportDto export(@RequestBody @Valid AltoExportRequestDto requestDto,
                               @RequestParam(required = false) String jobName) {
         requestDto.setName(jobName);
         return exportFacade.export(requestDto);
@@ -91,7 +90,7 @@ public class ExportApi {
             "Text is extracted from ALTO format. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/text")
-    public JobPlanDto export(@RequestBody @Valid TextExportRequestDto requestDto,
+    public BulkExportDto export(@RequestBody @Valid TextExportRequestDto requestDto,
                              @RequestParam(required = false) String jobName) {
         requestDto.setName(jobName);
         return exportFacade.export(requestDto);

@@ -53,7 +53,7 @@ public class ExportFacadeImpl implements ExportFacade {
     }
 
     @Override
-    public JobPlanDto export(ExportRequestDto requestDto) {
+    public BulkExportDto export(ExportRequestDto requestDto) {
         return createJobPlan(requestDto);
     }
 
@@ -79,9 +79,10 @@ public class ExportFacadeImpl implements ExportFacade {
         return bulkExportService.findByJobEvent(jobEventId);
     }
 
-    private JobPlanDto createJobPlan(ExportRequestDto requestDto) {
+    private BulkExportDto createJobPlan(ExportRequestDto requestDto) {
         validateParams(requestDto.getConfig().getParams());
 
+        // create same exporting job for each publicationId
         JobPlanCreateDto jobPlanCreateDto = new JobPlanCreateDto();
         jobPlanCreateDto.setName(requestDto.getName());
         requestDto.getPublications().
@@ -93,26 +94,22 @@ public class ExportFacadeImpl implements ExportFacade {
                     jobPlanCreateDto.getJobs().add(jobEventCreateDto);
         });
 
-        // add export merging if exporting multiple
-        if (jobPlanCreateDto.getJobs().size() > 1) {
-            JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();
-            jobEventCreateDto.setConfig(new MergeExportsJobConfigDto());
-            jobPlanCreateDto.getJobs().add(jobEventCreateDto);
-        }
+        // add merge job
+        JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();
+        jobEventCreateDto.setConfig(new MergeExportsJobConfigDto());
+        jobPlanCreateDto.getJobs().add(jobEventCreateDto);
 
         JobPlan jobPlan = jobPlanService.create(jobPlanCreateDto);
         JobPlanDto jobPlanDto = jobPlanMapper.toDto(jobPlan);
 
-        if (jobPlan.getScheduledJobEvents().size() > 1) {
-            BulkExportCreateDto bulkExportCreateDto = new BulkExportCreateDto();
-            bulkExportCreateDto.setJobEvent(findMergeJob(jobPlan));
+        BulkExportCreateDto bulkExportCreateDto = new BulkExportCreateDto();
+        bulkExportCreateDto.setJobEvent(findMergeJob(jobPlan));
 
-            bulkExportService.create(bulkExportCreateDto);
-        }
+        BulkExportDto bulkExportDto = bulkExportService.create(bulkExportCreateDto);
 
         jobPlanService.startExecution(jobPlanDto);
 
-        return jobPlanDto;
+        return bulkExportDto;
     }
 
     private JobEvent findMergeJob(JobPlan jobPlan) {
