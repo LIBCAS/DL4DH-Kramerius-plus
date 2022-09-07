@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.file;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.FileException;
 import lombok.Getter;
 import lombok.NonNull;
@@ -30,7 +30,7 @@ import static java.nio.file.Files.newInputStream;
 @Getter
 @Setter
 @Entity
-public class FileRef extends OwnedObject implements Closeable {
+public class FileRef extends DatedObject implements Closeable {
 
     private static final int DIR_NAME_LENGTH = 2;
 

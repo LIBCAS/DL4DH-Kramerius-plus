@@ -26,6 +26,7 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMappe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
@@ -53,6 +54,7 @@ public class ExportFacadeImpl implements ExportFacade {
     }
 
     @Override
+    @Transactional
     public BulkExportDto export(ExportRequestDto requestDto) {
         return createJobPlan(requestDto);
     }

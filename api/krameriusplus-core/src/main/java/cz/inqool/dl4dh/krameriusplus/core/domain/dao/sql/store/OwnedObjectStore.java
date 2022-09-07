@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store;
 
 import com.querydsl.core.types.dsl.EntityPathBase;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.security.user.KrameriusUser;
 import cz.inqool.dl4dh.krameriusplus.core.domain.security.user.KrameriusUserStore;
 import lombok.NonNull;
