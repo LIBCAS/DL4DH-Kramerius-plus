@@ -29,7 +29,7 @@ public abstract class CsvFileWriter<T extends DigitalObject> extends FileWriter<
         if (item instanceof Publication) {
             return "metadata.csv";
         } else if (item instanceof Page) {
-            return String.format("page%04d_uuid_%s.csv", item.getIndex(), item.getId().substring(5));
+            return getPageFilename((Page) item, "csv");
         }
 
         throw new IllegalStateException("Invalid type of item in CSV export: '" + item.getClass().getSimpleName() + "'.");
