@@ -17,10 +17,11 @@ public class MergeExportsJobConfig extends ExportJobConfig {
     @Bean
     public Job mergeExportsJob() {
         return getJobBuilder()
-                .next(stepContainer.getStep(UNZIP_EXPORTS))
+                .next(stepContainer.getStep(UNZIP_EXPORTS)).on("MERGE_DONE").end()
                 .next(stepContainer.getStep(ZIP_EXPORT))
                 .next(stepContainer.getStep(CREATE_MERGED_EXPORT))
                 .next(stepContainer.getStep(CLEAN_UP_EXPORT))
+                .end()
                 .build();
     }
 

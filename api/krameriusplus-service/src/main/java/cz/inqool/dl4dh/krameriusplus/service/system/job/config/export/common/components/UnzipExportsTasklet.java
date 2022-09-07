@@ -1,10 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExport;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanStore;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -13,6 +16,7 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,27 +54,40 @@ public class UnzipExportsTasklet implements Tasklet {
 
     private final FileService fileService;
 
+    private final BulkExportStore bulkExportStore;
+
     @Autowired
     public UnzipExportsTasklet(JobPlanStore jobPlanStore,
                                ExportStore exportStore,
-                               FileService fileService) {
+                               FileService fileService, BulkExportStore bulkExportStore) {
         this.jobPlanStore = jobPlanStore;
         this.exportStore = exportStore;
         this.fileService = fileService;
+        this.bulkExportStore = bulkExportStore;
     }
 
     @Override
+    @Transactional
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String jobEventId = (String) chunkContext.getStepContext().getJobParameters().get(JOB_EVENT_ID);
-
         String jobPlanId = jobPlanStore.findByJobEvent(jobEventId).getId();
-
 
         List<Export> exports = jobPlanStore.findAllInPlan(jobPlanId)
                 .stream()
                 .map(jobEvent -> exportStore.findByJobEvent(jobEvent.getId()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+
+        // assign fileref and set status to finish the whole job
+        if (exports.size() == 1) {
+            BulkExport bulkExport = bulkExportStore.findByJobEventId(jobEventId);
+            bulkExport.setFileRef(exports.get(0).getFileRef());
+
+            bulkExportStore.update(bulkExport);
+            contribution.getStepExecution().setExitStatus(new ExitStatus("MERGE_DONE"));
+
+            return RepeatStatus.FINISHED;
+        }
 
         String exportType = getExportType(exports.get(0).getFileRef().getName());
         Path unzippedPath = Files.createDirectory(Path.of(TMP_PATH + buildDirectoryName(jobPlanId, exportType + "_SET")));
