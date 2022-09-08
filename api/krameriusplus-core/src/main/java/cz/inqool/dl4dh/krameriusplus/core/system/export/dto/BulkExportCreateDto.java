@@ -9,5 +9,6 @@ import lombok.Setter;
 @Setter
 public class BulkExportCreateDto extends DatedObjectCreateDto {
 
+    // TODO: zmenit na JobPlanCreateDto
     private JobEvent jobEvent;
 }

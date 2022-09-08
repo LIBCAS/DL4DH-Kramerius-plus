@@ -16,6 +16,7 @@ public class BulkExportDto extends DatedObjectDto {
 
     private FileRef fileRef;
 
+    // TODO: zmenit na JobPlanDto
     @NotNull
     private JobEventDto jobEventDto;
 
