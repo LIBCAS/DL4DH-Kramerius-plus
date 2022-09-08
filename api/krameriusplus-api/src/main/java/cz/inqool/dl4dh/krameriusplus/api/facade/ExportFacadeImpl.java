@@ -4,13 +4,11 @@ import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
@@ -27,8 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Component
 public class ExportFacadeImpl implements ExportFacade {
@@ -53,6 +49,7 @@ public class ExportFacadeImpl implements ExportFacade {
         this.jobPlanMapper = jobPlanMapper;
     }
 
+    // TODO: tu sa bude vytvarat CreateBulkExportDto, a nasledne sa vytvori a nastavi JobPlan do BulkExportDto
     @Override
     @Transactional
     public BulkExportDto export(ExportRequestDto requestDto) {
@@ -67,13 +64,6 @@ public class ExportFacadeImpl implements ExportFacade {
     @Override
     public FileRef getFile(String fileRefId) {
         return fileService.find(fileRefId);
-    }
-
-    @Override
-    public ExportDto findByJobEvent(String jobEventId) {
-        notNull(jobEventId, () -> new ValidationException("Parameter jobEventId cannot be null", ValidationException.ErrorCode.INVALID_PARAMETERS));
-
-        return exportService.findByJobEvent(jobEventId);
     }
 
     @Override

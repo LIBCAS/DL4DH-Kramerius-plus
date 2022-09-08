@@ -24,6 +24,7 @@ public class BulkExport extends DatedObject {
     @OneToOne
     private FileRef fileRef;
 
+    // TODO: zmenit naviazanie na plan
     @OneToOne
     private JobEvent jobEvent;
 

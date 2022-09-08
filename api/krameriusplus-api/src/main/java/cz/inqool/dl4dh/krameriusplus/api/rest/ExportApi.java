@@ -9,7 +9,6 @@ import cz.inqool.dl4dh.krameriusplus.api.dto.export.TextExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -95,13 +94,6 @@ public class ExportApi {
                                             "for the given publication will be returned.")
                                                 @RequestParam(value = "publicationId", required = false) String publicationId) {
         return exportFacade.list(publicationId, page, pageSize);
-    }
-
-    @Operation(summary = "Find export by JobEventId")
-    @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping
-    public ExportDto findByJobEvent(@RequestParam(value = "jobEventId") String jobEventId) {
-        return exportFacade.findByJobEvent(jobEventId);
     }
 
     @Operation(summary = "Find a bulk export by JobEventId")
