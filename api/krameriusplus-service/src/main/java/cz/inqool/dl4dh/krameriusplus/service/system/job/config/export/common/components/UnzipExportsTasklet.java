@@ -6,7 +6,9 @@ import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.ZipArchiver;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanStore;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.ScheduledJobEvent;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -16,12 +18,8 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -29,11 +27,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.JOB_PLAN_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 
 
@@ -67,16 +62,10 @@ public class UnzipExportsTasklet implements Tasklet {
     }
 
     @Override
-    @Transactional
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String jobEventId = (String) chunkContext.getStepContext().getJobParameters().get(JOB_EVENT_ID);
-        String jobPlanId = jobPlanStore.findByJobEvent(jobEventId).getId();
 
-        List<Export> exports = jobPlanStore.findAllInPlan(jobPlanId)
-                .stream()
-                .map(jobEvent -> exportStore.findByJobEvent(jobEvent.getId()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        List<Export> exports = getExports(jobEventId);
 
         // assign fileref and set status to finish the whole job
         if (exports.size() == 1) {
@@ -89,81 +78,37 @@ public class UnzipExportsTasklet implements Tasklet {
             return RepeatStatus.FINISHED;
         }
 
+        // make path and prepare context for ZipExportTasklet
         String exportType = getExportType(exports.get(0).getFileRef().getName());
-        Path unzippedPath = Files.createDirectory(Path.of(TMP_PATH + buildDirectoryName(jobPlanId, exportType + "_SET")));
+        Path unzippedPath = Files.createDirectory(Path.of(TMP_PATH + buildDirectoryName(jobEventId, exportType + "_SET")));
 
-        for (Export export : exports) {
-            FileRef fileRef = export.getFileRef();
-            try (InputStream is = fileService.find(fileRef.getId()).open()) {
-                Path exportPath = Files.createDirectory(Path.of(unzippedPath + File.separator + buildDirectoryName(export.getPublicationId(), exportType)));
+        unZipIntoDir(unzippedPath, exports, exportType);
 
-                unZip(is, exportPath.toFile());
-            }
-        }
         ExecutionContext executionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
         executionContext.put(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
-        executionContext.put(JOB_PLAN_ID, jobPlanId);
 
         return RepeatStatus.FINISHED;
     }
 
+    private void unZipIntoDir(Path dir, List<Export> exports, String exportType) throws IOException{
+        ZipArchiver zipArchiver = new ZipArchiver(dir);
 
-    /**
-     * code from <a href="https://www.baeldung.com/java-compress-and-uncompress">baeldung</a>
-     *
-     * @param zipFileIs input stream of file to unzip
-     * @param outDir directory for output
-     * @throws IOException in case of FS issues
-     */
-    private void unZip(InputStream zipFileIs, File outDir) throws IOException{
-        byte[] buffer = new byte[1024];
-        ZipInputStream zis = new ZipInputStream(zipFileIs);
-        ZipEntry zipEntry = zis.getNextEntry();
-        while (zipEntry != null) {
-            File newFile = newFile(outDir, zipEntry);
-            if (zipEntry.isDirectory()) {
-                if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                    throw new IOException("Failed to create directory " + newFile);
-                }
-            } else {
-                // fix for Windows-created archives
-                File parent = newFile.getParentFile();
-                if (!parent.isDirectory() && !parent.mkdirs()) {
-                    throw new IOException("Failed to create directory " + parent);
-                }
+        for (Export export : exports) {
+            FileRef fileRef = export.getFileRef();
+            Path exportZipPath = fileService.find(fileRef.getId()).getPath();
 
-                // write file content
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.close();
-            }
-            zipEntry = zis.getNextEntry();
+            zipArchiver.unzipPath(exportZipPath);
         }
-        zis.closeEntry();
-        zis.close();
     }
 
-    /**
-     * code from <a href="https://www.baeldung.com/java-compress-and-uncompress">baeldung</a>
-     * @param destinationDir directory
-     * @param zipEntry one zipEntry
-     * @return File to created dir
-     * @throws IOException in case of FS issues
-     */
-    private File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-        File destFile = new File(destinationDir, zipEntry.getName());
-
-        String destDirPath = destinationDir.getCanonicalPath();
-        String destFilePath = destFile.getCanonicalPath();
-
-        if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-        }
-
-        return destFile;
+    private List<Export> getExports(String jobEventId) {
+        return jobPlanStore.findByJobEvent(jobEventId)
+                .getScheduledJobEvents()
+                .stream()
+                .map(ScheduledJobEvent::getJobEvent)
+                .map(jobEvent -> exportStore.findByJobEvent(jobEvent.getId()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     private String buildDirectoryName(String objectId, String prefix) {

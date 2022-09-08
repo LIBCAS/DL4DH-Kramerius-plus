@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+// TODO: logika bude presunuta do exportService v inom MR
 @Component
 public class ExportFacadeImpl implements ExportFacade {
 

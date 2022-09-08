@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.util.List;
 
+// TODO: uplne odstranit
 @Repository
 public class ExportStore extends DatedStore<Export, QExport> {
 

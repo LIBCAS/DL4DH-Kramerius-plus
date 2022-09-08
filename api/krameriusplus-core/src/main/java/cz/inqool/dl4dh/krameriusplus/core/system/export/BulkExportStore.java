@@ -5,6 +5,8 @@ import com.querydsl.jpa.impl.JPAQuery;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
 import org.springframework.stereotype.Repository;
 
+
+// TODO: uplne odstranit
 @Repository
 public class BulkExportStore extends DatedStore<BulkExport, QBulkExport> {
     public BulkExportStore() {
