@@ -3,7 +3,6 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobConfigBase;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.ExportCompletionListener;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.validation.ExportValidator;
-import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,13 +15,9 @@ public abstract class ExportJobConfig extends JobConfigBase {
     public abstract String getJobName();
 
     @Override
-    protected JobBuilder addComponents(JobBuilder jobBuilder) {
-        return jobBuilder.listener(exportCompletionListener);
-    }
-
-    @Override
-    public JobParametersValidator getJobParametersValidator() {
-        return exportValidator;
+    protected void decorateJobBuilder(JobBuilder jobBuilder) {
+        jobBuilder.listener(exportCompletionListener);
+        jobBuilder.validator(exportValidator);
     }
 
     @Autowired
