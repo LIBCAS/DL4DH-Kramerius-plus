@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.ExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.SingleExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportService;
@@ -15,6 +15,9 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.MergeExportsJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.ExportRequestService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.ScheduledJobEvent;
@@ -40,20 +43,23 @@ public class ExportFacadeImpl implements ExportFacade {
 
     private final JobPlanMapper jobPlanMapper;
 
+    private final ExportRequestService exportRequestService;
+
     @Autowired
     public ExportFacadeImpl(JobPlanService jobPlanService, ExportService exportService, BulkExportService bulkExportService,
-                            FileService fileService, JobPlanMapper jobPlanMapper) {
+                            FileService fileService, JobPlanMapper jobPlanMapper, ExportRequestService exportRequestService) {
         this.jobPlanService = jobPlanService;
         this.exportService = exportService;
         this.bulkExportService = bulkExportService;
         this.fileService = fileService;
         this.jobPlanMapper = jobPlanMapper;
+        this.exportRequestService = exportRequestService;
     }
 
     // TODO: tu sa bude vytvarat CreateBulkExportDto, a nasledne sa vytvori a nastavi JobPlan do BulkExportDto
     @Override
     @Transactional
-    public BulkExportDto export(ExportRequestDto requestDto) {
+    public ExportRequestDto export(SingleExportRequestDto requestDto) {
         return createJobPlan(requestDto);
     }
 
@@ -72,7 +78,7 @@ public class ExportFacadeImpl implements ExportFacade {
         return bulkExportService.findByJobEvent(jobEventId);
     }
 
-    private BulkExportDto createJobPlan(ExportRequestDto requestDto) {
+    private ExportRequestDto createJobPlan(SingleExportRequestDto requestDto) {
         validateParams(requestDto.getConfig().getParams());
 
         // create same exporting job for each publicationId
@@ -98,11 +104,16 @@ public class ExportFacadeImpl implements ExportFacade {
         BulkExportCreateDto bulkExportCreateDto = new BulkExportCreateDto();
         bulkExportCreateDto.setJobEvent(findMergeJob(jobPlan));
 
-        BulkExportDto bulkExportDto = bulkExportService.create(bulkExportCreateDto);
+        bulkExportService.create(bulkExportCreateDto);
+
+        ExportRequestCreateDto exportRequestCreateDto = new ExportRequestCreateDto();
+        exportRequestCreateDto.setBulkExportCreateDto(bulkExportCreateDto);
+
+        ExportRequestDto exportRequestDto = exportRequestService.create(exportRequestCreateDto);
 
         jobPlanService.startExecution(jobPlanDto);
 
-        return bulkExportDto;
+        return exportRequestDto;
     }
 
     private JobEvent findMergeJob(JobPlan jobPlan) {

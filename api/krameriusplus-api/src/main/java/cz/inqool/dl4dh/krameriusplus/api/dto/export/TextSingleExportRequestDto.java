@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TextExportRequestDto extends ExportRequestBase {
+public class TextSingleExportRequestDto extends SingleExportRequestBase {
 
     @NotNull
     private TextExportJobConfigDto config;

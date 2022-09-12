@@ -289,4 +289,36 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="15" author="kollar">
+        <dropColumn tableName="job_plan" columnName="owner_id"/>
+        <dropColumn tableName="job_event" columnName="owner_id"/>
+
+        <createTable tableName="export_request">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="export_request_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <!-- Owned Object -->
+            <column name="owner_id" type="${id}">
+                <constraints foreignKeyName="export_request_owner_FK"
+                             referencedTableName="kramerius_user"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="bulk_export_id" type="${id}">
+                <constraints nullable="false" foreignKeyName="export_request_bulk_export_FK"
+                             referencedTableName="bulk_export"
+                             referencedColumnNames="id"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

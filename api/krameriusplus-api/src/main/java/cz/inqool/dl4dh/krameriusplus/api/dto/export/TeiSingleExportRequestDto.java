@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class TeiExportRequestDto extends ExportRequestBase {
+public class TeiSingleExportRequestDto extends SingleExportRequestBase {
 
     @NotNull
     private TeiExportJobConfigDto config;

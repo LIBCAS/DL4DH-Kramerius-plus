@@ -2,13 +2,13 @@ package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.OwnedObjectStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
 import org.springframework.stereotype.Repository;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Repository
-public class JobEventStore extends OwnedObjectStore<JobEvent, QJobEvent> {
+public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
 
     public JobEventStore() {
         super(JobEvent.class, QJobEvent.class);

@@ -1,15 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.AltoExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.CsvExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.JsonExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.TextExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.AltoSingleExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.CsvSingleExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.JsonSingleExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiSingleExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.TextSingleExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,7 +50,7 @@ public class ExportApi {
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/tei")
-    public BulkExportDto export(@RequestBody @Valid TeiExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid TeiSingleExportRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
@@ -57,7 +58,7 @@ public class ExportApi {
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/json")
-    public BulkExportDto export(@RequestBody @Valid JsonExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid JsonSingleExportRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
@@ -65,7 +66,7 @@ public class ExportApi {
             "Allows to specify 'delimiter', which should be used. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/csv")
-    public BulkExportDto export(@RequestBody @Valid CsvExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid CsvSingleExportRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
@@ -73,7 +74,7 @@ public class ExportApi {
             "Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/alto")
-    public BulkExportDto export(@RequestBody @Valid AltoExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid AltoSingleExportRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
@@ -81,7 +82,7 @@ public class ExportApi {
             "Text is extracted from ALTO format. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/text")
-    public BulkExportDto export(@RequestBody @Valid TextExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid TextSingleExportRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 

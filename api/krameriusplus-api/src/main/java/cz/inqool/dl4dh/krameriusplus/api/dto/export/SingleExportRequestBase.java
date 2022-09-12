@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class ExportRequestBase implements ExportRequestDto {
+public abstract class SingleExportRequestBase implements SingleExportRequestDto {
 
     protected String name;
 
