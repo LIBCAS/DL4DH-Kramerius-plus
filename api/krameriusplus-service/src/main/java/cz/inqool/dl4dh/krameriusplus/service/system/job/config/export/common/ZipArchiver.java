@@ -27,6 +27,8 @@ public class ZipArchiver {
     /**
      * zips directoryToZip
      *
+     * filename is preserved, entry is created under the field directory
+     *
      * @param directoryToZip Path to directory to be zipped
      * @throws Exception IOException in case of FS issues
      */
@@ -50,10 +52,12 @@ public class ZipArchiver {
     /**
      * unzipping method
      *
+     * file name is preserved, entry is created under the field directory
+     *
      * @param zipFilePath path to zip file to be unzipped
      * @throws IOException in case of FS issues
      */
-    public void unzipPath(Path zipFilePath) throws IOException {
+    public void unzip(Path zipFilePath) throws IOException {
         try (InputStream is = Files.newInputStream(zipFilePath)) {
             unZip(is, zipFilePath.getFileName());
         }

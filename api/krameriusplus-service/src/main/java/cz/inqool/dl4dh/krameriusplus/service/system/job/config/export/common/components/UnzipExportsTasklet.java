@@ -97,7 +97,7 @@ public class UnzipExportsTasklet implements Tasklet {
             FileRef fileRef = export.getFileRef();
             Path exportZipPath = fileService.find(fileRef.getId()).getPath();
 
-            zipArchiver.unzipPath(exportZipPath);
+            zipArchiver.unzip(exportZipPath);
         }
     }
 
