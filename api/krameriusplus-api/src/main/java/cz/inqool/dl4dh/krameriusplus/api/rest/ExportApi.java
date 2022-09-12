@@ -1,13 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.*;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.AltoExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.CsvExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.JsonExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.TextExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,7 +19,13 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -40,51 +48,41 @@ public class ExportApi {
     @Operation(summary = "Creates and starts a new job of type EXPORT_TEI, which generates an Export in TEI format. " +
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
-    @PostMapping("/{id}/tei")
-    public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid TeiExportJobConfigDto config,
-                              @RequestParam(required = false) String jobName) {
-        return exportFacade.export(new TeiExportRequestDto(jobName, publicationId, config));
+    @PostMapping("/tei")
+    public BulkExportDto export(@RequestBody @Valid TeiExportRequestDto requestDto) {
+        return exportFacade.export(requestDto);
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_JSON, which generates an Export in JSON format. " +
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
-    @PostMapping("/{id}/json")
-    public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid JsonExportJobConfigDto config,
-                              @RequestParam(required = false) String jobName) {
-        return exportFacade.export(new JsonExportRequestDto(jobName, publicationId, config));
+    @PostMapping("/json")
+    public BulkExportDto export(@RequestBody @Valid JsonExportRequestDto requestDto) {
+        return exportFacade.export(requestDto);
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_CSV, which generates an Export in CSV format. " +
             "Allows to specify 'delimiter', which should be used. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
-    @PostMapping("/{id}/csv")
-    public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid CsvExportJobConfigDto config,
-                              @RequestParam(required = false) String jobName) {
-        return exportFacade.export(new CsvExportRequestDto(jobName, publicationId, config));
+    @PostMapping("/csv")
+    public BulkExportDto export(@RequestBody @Valid CsvExportRequestDto requestDto) {
+        return exportFacade.export(requestDto);
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_ALTO, which generates an Export in ALTO format. " +
             "Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
-    @PostMapping("/{id}/alto")
-    public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid AltoExportJobConfigDto config,
-                              @RequestParam(required = false) String jobName) {
-        return exportFacade.export(new AltoExportRequestDto(jobName, publicationId, config));
+    @PostMapping("/alto")
+    public BulkExportDto export(@RequestBody @Valid AltoExportRequestDto requestDto) {
+        return exportFacade.export(requestDto);
     }
 
     @Operation(summary = "Creates and starts a new job of type EXPORT_TEXT, which generates an Export in TEXT format. " +
             "Text is extracted from ALTO format. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
-    @PostMapping("/{id}/text")
-    public JobEventDto export(@PathVariable("id") String publicationId,
-                              @RequestBody @Valid TextExportJobConfigDto config,
-                              @RequestParam(required = false) String jobName) {
-        return exportFacade.export(new TextExportRequestDto(jobName, publicationId, config));
+    @PostMapping("/text")
+    public BulkExportDto export(@RequestBody @Valid TextExportRequestDto requestDto) {
+        return exportFacade.export(requestDto);
     }
 
     @Operation(summary = "List exports.")
@@ -98,11 +96,11 @@ public class ExportApi {
         return exportFacade.list(publicationId, page, pageSize);
     }
 
-    @Operation(summary = "Find export by JobEventId")
+    @Operation(summary = "Find a bulk export by JobEventId")
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping
-    public ExportDto findByJobEvent(@RequestParam(value = "jobEventId") String jobEventId) {
-        return exportFacade.findByJobEvent(jobEventId);
+    @GetMapping("/bulk")
+    public BulkExportDto findBulkByJobEvent(@RequestParam(value = "jobEventId") String jobEventId) {
+        return exportFacade.findBulkExport(jobEventId);
     }
 
     @Operation(summary = "Download export.")

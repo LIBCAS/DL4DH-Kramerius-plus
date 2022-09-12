@@ -12,9 +12,4 @@ public class CsvExportRequestDto extends ExportRequestBase {
 
     @NotNull
     private CsvExportJobConfigDto config;
-
-    public CsvExportRequestDto(String name, @NotNull String publicationId, CsvExportJobConfigDto config) {
-        super(name, publicationId);
-        this.config = config;
-    }
 }

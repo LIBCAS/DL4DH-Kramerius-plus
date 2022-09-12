@@ -31,6 +31,8 @@ public class JobStep {
     public static final String ZIP_EXPORT = "ZipExportStep";
     public static final String CREATE_EXPORT = "CreateExportStep";
     public static final String CLEAN_UP_EXPORT = "CleanUpExportStep";
+    public static final String UNZIP_EXPORTS = "UnzipExportsStep";
+    public static final String CREATE_MERGED_EXPORT = "CreateMergedExportStep";
 
     // EXPORT JSON
     public static final String EXPORT_PUBLICATION_JSON = "ExportPublicationJsonStep";

@@ -224,13 +224,69 @@
             </column>
         </addColumn>
 
-
         <addColumn tableName="enrichment_request">
             <column name="owner_id" type="${id}">
-                <constraints foreignKeyName="enrichment_kramerius_user_FK"
+                <constraints foreignKeyName="enrichment_request_kramerius_user_FK"
                              referencedTableName="kramerius_user"
                              referencedColumnNames="id"/>
             </column>
         </addColumn>
+    </changeSet>
+
+    <changeSet id="13" author="kollar">
+        <dropColumn tableName="job_plan" columnName="enrichment_request_id"/>
+
+        <createTable tableName="job_plan_enrichment_request">
+            <column name="enrichment_request_id" type="${id}">
+                <constraints foreignKeyName="job_plan_enrichment_request_enrichment_request_FK"
+                         referencedTableName="enrichment_request"
+                         referencedColumnNames="id"/>
+            </column>
+            <column name="job_plan_id" type="${id}">
+                <constraints foreignKeyName="job_plan_enrichment_request_job_plan_FK"
+                             referencedTableName="job_plan"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="14" author="kollar">
+        <createTable tableName="bulk_export">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="bulk_export_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="job_event_id" type="${id}">
+                <constraints foreignKeyName="bulk_export_job_event_FK"
+                             referencedTableName="job_event"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="file_ref_id" type="${id}">
+                <constraints foreignKeyName="bulk_export_file_ref_FK"
+                             referencedTableName="file_ref"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="bulk_export_export">
+            <column name="bulk_export_id" type="${id}">
+                <constraints foreignKeyName="bulk_export_bulk_export_FK"
+                             referencedTableName="bulk_export"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="export_id" type="${id}">
+                <constraints foreignKeyName="bulk_export_export_FK"
+                             referencedTableName="export"
+                             referencedColumnNames="id"/>
+
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

@@ -23,7 +23,7 @@ public abstract class OwnedObjectStore<T extends OwnedObject, Q extends EntityPa
     }
 
     protected void preCreateHook(T entity) {
-        if (entity.getOwner() == null) {
+        if (false) {
             notNull(SecurityContextHolder.getContext(), () -> new MissingObjectException(SecurityContextHolder.class, null));
 
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

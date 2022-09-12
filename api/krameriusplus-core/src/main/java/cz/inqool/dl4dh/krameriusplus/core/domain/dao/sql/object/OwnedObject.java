@@ -9,16 +9,13 @@ import lombok.Setter;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @MappedSuperclass
 public abstract class OwnedObject extends DatedObject {
 
     @ManyToOne
-    @NotNull
     private KrameriusUser owner;
 }

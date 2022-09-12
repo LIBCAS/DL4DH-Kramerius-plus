@@ -38,6 +38,7 @@ public class JobPlanService {
         this.jobEventMapper = jobEventMapper;
     }
 
+    // TODO: zmenit return type na Dto
     @Transactional
     public JobPlan create(JobPlanCreateDto planCreateDto) {
         JobPlan jobPlan = new JobPlan();
