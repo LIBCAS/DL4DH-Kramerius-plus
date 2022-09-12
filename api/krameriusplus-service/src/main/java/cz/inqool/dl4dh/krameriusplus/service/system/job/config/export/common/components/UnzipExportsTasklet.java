@@ -82,7 +82,7 @@ public class UnzipExportsTasklet implements Tasklet {
         String exportType = getExportType(exports.get(0).getFileRef().getName());
         Path unzippedPath = Files.createDirectory(Path.of(TMP_PATH + buildDirectoryName(jobEventId, exportType + "_SET")));
 
-        unZipIntoDir(unzippedPath, exports, exportType);
+        unZipIntoDir(unzippedPath, exports);
 
         ExecutionContext executionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
         executionContext.put(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
@@ -90,7 +90,7 @@ public class UnzipExportsTasklet implements Tasklet {
         return RepeatStatus.FINISHED;
     }
 
-    private void unZipIntoDir(Path dir, List<Export> exports, String exportType) throws IOException{
+    private void unZipIntoDir(Path dir, List<Export> exports) throws IOException{
         ZipArchiver zipArchiver = new ZipArchiver(dir);
 
         for (Export export : exports) {

@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan;
 
-import com.querydsl.jpa.impl.JPAQuery;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.OwnedObjectStore;
 import org.springframework.stereotype.Repository;
 
@@ -14,12 +13,13 @@ public class JobPlanStore extends OwnedObjectStore<JobPlan, QJobPlan> {
     public JobPlan findByJobEvent(String jobEventId) {
         QScheduledJobEvent qScheduledJobEvent = QScheduledJobEvent.scheduledJobEvent;
 
-        JPAQuery<JobPlan> jobPlan = queryFactory.from(qScheduledJobEvent)
+        JobPlan jobPlan = queryFactory.from(qScheduledJobEvent)
                 .select(qScheduledJobEvent.jobPlan)
-                .where(qScheduledJobEvent.jobEvent.id.eq(jobEventId));
+                .where(qScheduledJobEvent.jobEvent.id.eq(jobEventId))
+                .fetchOne();
 
         detachAll();
 
-        return jobPlan.fetchOne();
+        return jobPlan;
     }
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+// TODO: store.find bude vracat dto takze service bude zbytocny
 @Service
 public class BulkExportService implements DatedService<BulkExport, BulkExportCreateDto, BulkExportDto> {
 
