@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -17,5 +18,5 @@ public abstract class ExportRequestBase implements ExportRequestDto {
     protected String name;
 
     @NotNull
-    protected Set<String> publications;
+    protected Set<String> publications = new HashSet<>();
 }
