@@ -112,10 +112,6 @@ public class UnzipExportsTasklet implements Tasklet {
     }
 
     private String buildDirectoryName(String objectId, String prefix) {
-        if (objectId.contains("uuid")) {
-            objectId = objectId.substring(5);
-        }
-
         return prefix + "_" + objectId + "_" + formatter.format(LocalDateTime.now());
     }
 
