@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
@@ -42,6 +43,9 @@ public class ExportPagesTextWriter extends FileWriter<PageAndAltoDto> {
 
     @Override
     protected String getItemFileName(DigitalObject item) {
-        return item.getIndex() + "_" + item.getId().substring(5) + ".txt";
+        if (!(item instanceof Page)) {
+            throw new IllegalStateException(item.getClass().getSimpleName() + " not allowed in TEXT export");
+        }
+        return getPageFilename((Page) item, "txt");
     }
 }
