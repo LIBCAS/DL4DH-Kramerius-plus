@@ -2,8 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.api.rest;
 
 import cz.inqool.dl4dh.krameriusplus.api.cfg.exceptions.rest.RestException;
 import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.JobPlanResponseDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.*;
+import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentExternalRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentKrameriusRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentNdkRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentTeiRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.facade.EnrichmentFacadeImpl;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestSimplifiedCreateDto;
@@ -14,12 +16,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -80,5 +85,17 @@ public class EnrichmentApi {
     @PostMapping(value = "/tei", produces = APPLICATION_JSON_VALUE)
     public EnrichResponseDto enrichTei(@RequestBody @Valid SingleJobEnrichmentTeiRequestDto requestDto) {
         return facade.enrich(requestDto);
+    }
+
+    @Operation(summary = "Find enrichment request.")
+    @GetMapping("/get")
+    public EnrichmentRequestDto get(@RequestParam(name = "enrichmentRequestId") String enrichmentRequestId) {
+        return facade.find(enrichmentRequestId);
+    }
+
+    @Operation(summary = "List enrichment requests.")
+    @GetMapping("/list")
+    public List<EnrichmentRequestDto> list() {
+        return facade.list();
     }
 }

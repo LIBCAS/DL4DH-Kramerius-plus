@@ -1,18 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
-import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.AltoSingleExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.CsvSingleExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.JsonSingleExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiSingleExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.dto.export.TextSingleExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author Norbert Bodnar
@@ -86,24 +83,19 @@ public class ExportApi {
         return exportFacade.export(requestDto);
     }
 
-    @Operation(summary = "List exports.")
+    @Operation(summary = "Find an export request.")
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping("/list")
-    public QueryResults<Export> listExports(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                            @RequestParam(value = "page", defaultValue = "0") int page,
-                                            @Schema(description = "Optional publicationId parameter. When provided, only export " +
-                                            "for the given publication will be returned.")
-                                                @RequestParam(value = "publicationId", required = false) String publicationId) {
-        return exportFacade.list(publicationId, page, pageSize);
+    @GetMapping("/get")
+    public ExportRequestDto find(@RequestParam(value = "exportRequestId") String exportRequestId) {
+        return exportFacade.find(exportRequestId);
     }
 
-    @Operation(summary = "Find a bulk export by JobEventId")
+    @Operation(summary = "List all export requests.")
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping("/bulk")
-    public BulkExportDto findBulkByJobEvent(@RequestParam(value = "jobEventId") String jobEventId) {
-        return exportFacade.findBulkExport(jobEventId);
+    @GetMapping("list")
+    public List<ExportRequestDto> list() {
+        return exportFacade.listAll();
     }
-
     @Operation(summary = "Download export.")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(value = "/download/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

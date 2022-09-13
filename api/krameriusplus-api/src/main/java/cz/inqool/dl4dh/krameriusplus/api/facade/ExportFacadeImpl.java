@@ -29,6 +29,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 // TODO: logika bude presunuta do exportService v inom MR
 @Component
 public class ExportFacadeImpl implements ExportFacade {
@@ -74,8 +76,13 @@ public class ExportFacadeImpl implements ExportFacade {
     }
 
     @Override
-    public BulkExportDto findBulkExport(String jobEventId) {
-        return bulkExportService.findByJobEvent(jobEventId);
+    public ExportRequestDto find(String exportRequestId) {
+        return exportRequestService.find(exportRequestId);
+    }
+
+    @Override
+    public List<ExportRequestDto> listAll() {
+        return exportRequestService.listAll();
     }
 
     private ExportRequestDto createJobPlan(SingleExportRequestDto requestDto) {
@@ -104,10 +111,10 @@ public class ExportFacadeImpl implements ExportFacade {
         BulkExportCreateDto bulkExportCreateDto = new BulkExportCreateDto();
         bulkExportCreateDto.setJobEvent(findMergeJob(jobPlan));
 
-        bulkExportService.create(bulkExportCreateDto);
+        BulkExportDto bulkExportDto = bulkExportService.create(bulkExportCreateDto);
 
         ExportRequestCreateDto exportRequestCreateDto = new ExportRequestCreateDto();
-        exportRequestCreateDto.setBulkExportCreateDto(bulkExportCreateDto);
+        exportRequestCreateDto.setBulkExportDto(bulkExportDto);
 
         ExportRequestDto exportRequestDto = exportRequestService.create(exportRequestCreateDto);
 

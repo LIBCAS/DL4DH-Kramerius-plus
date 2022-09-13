@@ -5,6 +5,8 @@ import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentReque
 import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestSimplifiedCreateDto;
 
+import java.util.List;
+
 public interface EnrichmentFacade {
 
     /**
@@ -25,4 +27,8 @@ public interface EnrichmentFacade {
      * @param createDto
      */
     EnrichmentRequestDto enrich(EnrichmentRequestSimplifiedCreateDto createDto);
+
+    EnrichmentRequestDto find(String enrichmentRequestId);
+
+    List<EnrichmentRequestDto> list();
 }

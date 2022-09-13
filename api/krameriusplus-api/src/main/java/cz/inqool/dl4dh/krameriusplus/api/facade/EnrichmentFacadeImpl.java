@@ -60,6 +60,16 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
         return resultDto;
     }
 
+    @Override
+    public EnrichmentRequestDto find(String enrichmentRequestId) {
+        return enrichmentRequestService.find(enrichmentRequestId);
+    }
+
+    @Override
+    public List<EnrichmentRequestDto> list() {
+        return enrichmentRequestService.listAll();
+    }
+
     private void enqueueNewJobs(List<JobEventDto> createdJobs) {
         for (JobEventDto createdJob : createdJobs) {
             jobEventService.enqueueJob(createdJob);
