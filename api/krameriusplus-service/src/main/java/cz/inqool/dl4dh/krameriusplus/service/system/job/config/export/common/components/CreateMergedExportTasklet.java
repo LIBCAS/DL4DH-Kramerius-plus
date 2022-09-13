@@ -60,9 +60,10 @@ public class CreateMergedExportTasklet implements Tasklet {
 
         JobEvent jobEvent = jobEventStore.find(stepExecution.getJobExecution().getJobParameters().getString(JOB_EVENT_ID));
 
-        BulkExport bulkExport = bulkExportStore.findByJobEventId(jobEvent.getId());
+        BulkExport bulkExport = new BulkExport();
+        bulkExport.setJobEvent(jobEvent);
         bulkExport.setFileRef(fileRef);
-        bulkExportStore.update(bulkExport);
+        bulkExportStore.create(bulkExport);
 
         return RepeatStatus.FINISHED;
     }

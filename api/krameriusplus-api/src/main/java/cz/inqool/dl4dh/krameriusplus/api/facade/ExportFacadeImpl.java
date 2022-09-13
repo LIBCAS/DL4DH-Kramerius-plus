@@ -7,8 +7,6 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting
 import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportService;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportService;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
@@ -39,8 +37,6 @@ public class ExportFacadeImpl implements ExportFacade {
 
     private final ExportService exportService;
 
-    private final BulkExportService bulkExportService;
-
     private final FileService fileService;
 
     private final JobPlanMapper jobPlanMapper;
@@ -52,7 +48,6 @@ public class ExportFacadeImpl implements ExportFacade {
                             FileService fileService, JobPlanMapper jobPlanMapper, ExportRequestService exportRequestService) {
         this.jobPlanService = jobPlanService;
         this.exportService = exportService;
-        this.bulkExportService = bulkExportService;
         this.fileService = fileService;
         this.jobPlanMapper = jobPlanMapper;
         this.exportRequestService = exportRequestService;
@@ -108,13 +103,8 @@ public class ExportFacadeImpl implements ExportFacade {
         JobPlan jobPlan = jobPlanService.create(jobPlanCreateDto);
         JobPlanDto jobPlanDto = jobPlanMapper.toDto(jobPlan);
 
-        BulkExportCreateDto bulkExportCreateDto = new BulkExportCreateDto();
-        bulkExportCreateDto.setJobEvent(findMergeJob(jobPlan));
-
-        BulkExportDto bulkExportDto = bulkExportService.create(bulkExportCreateDto);
-
         ExportRequestCreateDto exportRequestCreateDto = new ExportRequestCreateDto();
-        exportRequestCreateDto.setBulkExportDto(bulkExportDto);
+        exportRequestCreateDto.setJobPlanDto(jobPlanDto);
 
         ExportRequestDto exportRequestDto = exportRequestService.create(exportRequestCreateDto);
 

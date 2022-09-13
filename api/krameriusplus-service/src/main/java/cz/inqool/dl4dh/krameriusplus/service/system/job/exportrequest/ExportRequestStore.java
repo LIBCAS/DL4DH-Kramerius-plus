@@ -10,4 +10,12 @@ public class ExportRequestStore extends OwnedObjectStore<ExportRequest, QExportR
     public ExportRequestStore() {
         super(ExportRequest.class, QExportRequest.class);
     }
+
+    public ExportRequest findByJobPlan(String id) {
+        ExportRequest exportRequest = query().select(qObject).where(qObject.jobPlan.id.eq(id)).fetchFirst();
+
+        detachAll();
+
+        return exportRequest;
+    }
 }

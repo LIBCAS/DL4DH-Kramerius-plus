@@ -313,12 +313,34 @@
             </column>
 
             <column name="bulk_export_id" type="${id}">
-                <constraints nullable="false" foreignKeyName="export_request_bulk_export_FK"
+                <constraints foreignKeyName="export_request_bulk_export_FK"
                              referencedTableName="bulk_export"
                              referencedColumnNames="id"/>
             </column>
 
+            <column name="job_plan_id" type="${id}">
+                <constraints nullable="false" foreignKeyName="export_request_job_plan_FK"
+                             referencedTableName="job_plan"
+                             referencedColumnNames="id"/>
+            </column>
+
         </createTable>
+
+        <createTable tableName="export_request_export">
+            <column name="export_request_id" type="${id}">
+                <constraints foreignKeyName="export_request_export_request_FK"
+                             referencedTableName="export_request"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="export_id" type="${id}">
+                <constraints foreignKeyName="export_request_export_FK"
+                             referencedTableName="export"
+                             referencedColumnNames="id"/>
+
+            </column>
+        </createTable>
+
+        <dropTable tableName="bulk_export_export"/>
     </changeSet>
 
 </databaseChangeLog>

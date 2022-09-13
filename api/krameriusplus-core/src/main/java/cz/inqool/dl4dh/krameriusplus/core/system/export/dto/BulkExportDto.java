@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -19,6 +17,4 @@ public class BulkExportDto extends DatedObjectDto {
     // TODO: zmenit na JobPlanDto
     @NotNull
     private JobEventDto jobEventDto;
-
-    private Set<ExportDto> exports = new HashSet<>();
 }

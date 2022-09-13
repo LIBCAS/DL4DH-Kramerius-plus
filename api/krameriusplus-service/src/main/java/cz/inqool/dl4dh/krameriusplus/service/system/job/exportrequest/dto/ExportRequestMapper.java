@@ -12,11 +12,13 @@ public interface ExportRequestMapper extends DatedObjectMapper<ExportRequest, Ex
 
     BulkExportMapper bulkExportMapper = Mappers.getMapper(BulkExportMapper.class);
 
+    JobPlanMapper jobPlanMapper = Mappers.getMapper(JobPlanMapper.class);
+
     @Override
     default ExportRequest fromCreateDto(ExportRequestCreateDto createDto) {
         ExportRequest exportRequest = new ExportRequest();
 
-        exportRequest.setBulkExport(bulkExportMapper.fromDto(createDto.getBulkExportDto()));
+        exportRequest.setJobPlan(jobPlanMapper.fromDto(createDto.getJobPlanDto()));
 
         return exportRequest;
     }
@@ -30,6 +32,8 @@ public interface ExportRequestMapper extends DatedObjectMapper<ExportRequest, Ex
         exportRequestDto.setUpdated(exportRequest.getUpdated());
         exportRequestDto.setDeleted(exportRequest.getDeleted());
         exportRequestDto.setBulkExportDto(bulkExportMapper.toDto(exportRequest.getBulkExport()));
+        exportRequestDto.setJobPlanDto(jobPlanMapper.toDto(exportRequest.getJobPlan()));
+        exportRequestDto.setExportSet(exportRequest.getExports());
         exportRequestDto.setOwner(exportRequest.getOwner());
 
         return exportRequestDto;
