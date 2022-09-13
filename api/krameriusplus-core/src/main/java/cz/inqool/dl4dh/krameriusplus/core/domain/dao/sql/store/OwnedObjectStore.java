@@ -4,14 +4,11 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.domain.security.feeder.FeederSystemAccount;
 import cz.inqool.dl4dh.krameriusplus.core.domain.security.user.KrameriusUser;
 import cz.inqool.dl4dh.krameriusplus.core.domain.security.user.KrameriusUserStore;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.security.Principal;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
@@ -27,17 +24,7 @@ public abstract class OwnedObjectStore<T extends OwnedObject, Q extends EntityPa
         if (entity.getOwner() == null) {
             notNull(SecurityContextHolder.getContext(), () -> new MissingObjectException(SecurityContextHolder.class, null));
 
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String username;
-            if (principal instanceof Principal) {
-                username = ((Principal) principal).getName();
-            }
-            else if (principal instanceof FeederSystemAccount) {
-                username = ((FeederSystemAccount) principal).getUsername();
-            }
-            else {
-                throw new IllegalStateException("Object is not instance of Principar or FeederSystemAccount");
-            }
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
             KrameriusUser krameriusUser = krameriusUserStore.findUserByUsername(username);
             if (krameriusUser == null) {

@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class JsonSingleExportRequestDto extends SingleExportRequestBase {
+public class JsonExportCreationRequestDto extends ExportCreationRequestBase {
 
     @NotNull
     private JsonExportJobConfigDto config;

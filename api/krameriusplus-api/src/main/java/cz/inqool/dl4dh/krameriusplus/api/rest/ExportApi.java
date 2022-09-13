@@ -1,10 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.AltoSingleExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.CsvSingleExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.JsonSingleExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiSingleExportRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.TextSingleExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.AltoExportCreationRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.CsvExportCreationRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.JsonExportCreationRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.TeiExportCreationRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.TextExportCreationRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -47,7 +46,7 @@ public class ExportApi {
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/tei")
-    public ExportRequestDto export(@RequestBody @Valid TeiSingleExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid TeiExportCreationRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
@@ -55,7 +54,7 @@ public class ExportApi {
             "Job is started asynchronously.")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/json")
-    public ExportRequestDto export(@RequestBody @Valid JsonSingleExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid JsonExportCreationRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
@@ -63,7 +62,7 @@ public class ExportApi {
             "Allows to specify 'delimiter', which should be used. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/csv")
-    public ExportRequestDto export(@RequestBody @Valid CsvSingleExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid CsvExportCreationRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
@@ -71,7 +70,7 @@ public class ExportApi {
             "Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/alto")
-    public ExportRequestDto export(@RequestBody @Valid AltoSingleExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid AltoExportCreationRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
@@ -79,15 +78,15 @@ public class ExportApi {
             "Text is extracted from ALTO format. Job is started asynchronously. ")
     @ApiResponse(responseCode = "200", description = "Job successfully created")
     @PostMapping("/text")
-    public ExportRequestDto export(@RequestBody @Valid TextSingleExportRequestDto requestDto) {
+    public ExportRequestDto export(@RequestBody @Valid TextExportCreationRequestDto requestDto) {
         return exportFacade.export(requestDto);
     }
 
     @Operation(summary = "Find an export request.")
     @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping("/get")
-    public ExportRequestDto find(@RequestParam(value = "exportRequestId") String exportRequestId) {
-        return exportFacade.find(exportRequestId);
+    @GetMapping("/get/{id}")
+    public ExportRequestDto find(@PathVariable String id) {
+        return exportFacade.find(id);
     }
 
     @Operation(summary = "List all export requests.")

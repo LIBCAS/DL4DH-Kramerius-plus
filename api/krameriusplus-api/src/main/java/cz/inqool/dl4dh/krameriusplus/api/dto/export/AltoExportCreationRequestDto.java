@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class AltoSingleExportRequestDto extends SingleExportRequestBase {
+public class AltoExportCreationRequestDto extends ExportCreationRequestBase {
 
     @NotNull
     private AltoExportJobConfigDto config;

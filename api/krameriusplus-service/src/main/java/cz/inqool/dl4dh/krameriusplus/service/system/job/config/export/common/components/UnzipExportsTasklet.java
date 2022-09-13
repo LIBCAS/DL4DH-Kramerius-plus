@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExport;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportStore;
@@ -49,8 +48,6 @@ public class UnzipExportsTasklet implements Tasklet {
 
     private final FileService fileService;
 
-    private final BulkExportStore bulkExportStore;
-
     @Autowired
     public UnzipExportsTasklet(JobPlanStore jobPlanStore,
                                ExportStore exportStore,
@@ -58,7 +55,6 @@ public class UnzipExportsTasklet implements Tasklet {
         this.jobPlanStore = jobPlanStore;
         this.exportStore = exportStore;
         this.fileService = fileService;
-        this.bulkExportStore = bulkExportStore;
     }
 
     @Override
@@ -69,10 +65,6 @@ public class UnzipExportsTasklet implements Tasklet {
 
         // assign fileref and set status to finish the whole job
         if (exports.size() == 1) {
-            BulkExport bulkExport = bulkExportStore.findByJobEventId(jobEventId);
-            bulkExport.setFileRef(exports.get(0).getFileRef());
-
-            bulkExportStore.update(bulkExport);
             contribution.getStepExecution().setExitStatus(new ExitStatus("MERGE_DONE"));
 
             return RepeatStatus.FINISHED;

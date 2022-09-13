@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
 import com.querydsl.core.QueryResults;
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.SingleExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.dto.export.ExportCreationRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportService;
@@ -56,7 +56,7 @@ public class ExportFacadeImpl implements ExportFacade {
     // TODO: tu sa bude vytvarat CreateBulkExportDto, a nasledne sa vytvori a nastavi JobPlan do BulkExportDto
     @Override
     @Transactional
-    public ExportRequestDto export(SingleExportRequestDto requestDto) {
+    public ExportRequestDto export(ExportCreationRequestDto requestDto) {
         return createJobPlan(requestDto);
     }
 
@@ -80,7 +80,7 @@ public class ExportFacadeImpl implements ExportFacade {
         return exportRequestService.listAll();
     }
 
-    private ExportRequestDto createJobPlan(SingleExportRequestDto requestDto) {
+    private ExportRequestDto createJobPlan(ExportCreationRequestDto requestDto) {
         validateParams(requestDto.getConfig().getParams());
 
         // create same exporting job for each publicationId

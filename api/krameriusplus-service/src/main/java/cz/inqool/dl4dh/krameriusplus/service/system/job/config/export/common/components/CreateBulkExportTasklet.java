@@ -25,7 +25,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 
 @Component
 @StepScope
-public class CreateMergedExportTasklet implements Tasklet {
+public class CreateBulkExportTasklet implements Tasklet {
 
     private final FileService fileService;
 
@@ -34,9 +34,9 @@ public class CreateMergedExportTasklet implements Tasklet {
     private final JobEventStore jobEventStore;
 
     @Autowired
-    public CreateMergedExportTasklet(FileService fileService,
-                                     BulkExportStore bulkExportStore,
-                                     JobEventStore jobEventStore) {
+    public CreateBulkExportTasklet(FileService fileService,
+                                   BulkExportStore bulkExportStore,
+                                   JobEventStore jobEventStore) {
         this.fileService = fileService;
         this.bulkExportStore = bulkExportStore;
         this.jobEventStore = jobEventStore;

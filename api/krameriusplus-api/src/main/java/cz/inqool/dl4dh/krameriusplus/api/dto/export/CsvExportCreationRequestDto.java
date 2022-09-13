@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class CsvSingleExportRequestDto extends SingleExportRequestBase {
+public class CsvExportCreationRequestDto extends ExportCreationRequestBase {
 
     @NotNull
     private CsvExportJobConfigDto config;

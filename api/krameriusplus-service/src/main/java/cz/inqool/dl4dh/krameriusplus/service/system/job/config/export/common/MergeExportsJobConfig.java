@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob.EXPORT_MERGE;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.CLEAN_UP_EXPORT;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.CREATE_MERGED_EXPORT;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.CREATE_BULK_EXPORT;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.UNZIP_EXPORTS;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ZIP_EXPORT;
 
@@ -19,7 +19,7 @@ public class MergeExportsJobConfig extends ExportJobConfig {
         return getJobBuilder()
                 .next(stepContainer.getStep(UNZIP_EXPORTS)).on("MERGE_DONE").end()
                 .next(stepContainer.getStep(ZIP_EXPORT))
-                .next(stepContainer.getStep(CREATE_MERGED_EXPORT))
+                .next(stepContainer.getStep(CREATE_BULK_EXPORT))
                 .next(stepContainer.getStep(CLEAN_UP_EXPORT))
                 .end()
                 .build();
