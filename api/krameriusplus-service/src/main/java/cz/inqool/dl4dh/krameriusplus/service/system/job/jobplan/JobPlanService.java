@@ -1,14 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobEventConfig;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.JobEventService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
+import lombok.Getter;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,39 +21,28 @@ import java.util.Optional;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Service
-public class JobPlanService {
+public class JobPlanService implements DatedService<JobPlan, JobPlanCreateDto, JobPlanDto> {
 
+    @Getter
     private final JobPlanStore store;
 
+    @Getter
     private final JobPlanMapper mapper;
 
     private final JobEventService jobEventService;
 
-    private final JobEventMapper jobEventMapper;
-
     @Autowired
-    public JobPlanService(JobPlanStore store, JobPlanMapper mapper, JobEventService jobEventService, JobEventMapper jobEventMapper) {
+    public JobPlanService(JobPlanStore store, JobPlanMapper mapper, JobEventService jobEventService) {
         this.store = store;
         this.mapper = mapper;
         this.jobEventService = jobEventService;
-        this.jobEventMapper = jobEventMapper;
     }
 
-    // TODO: zmenit return type na Dto
+    @Override
     @Transactional
-    public JobPlan create(JobPlanCreateDto planCreateDto) {
-        JobPlan jobPlan = new JobPlan();
-
-        int order = 0;
-        for (JobEventCreateDto jobEventCreateDto : planCreateDto.getJobs()) {
-            JobEvent jobEvent = jobEventMapper.fromDto(jobEventService.create(jobEventCreateDto));
-
-            ScheduledJobEvent scheduledJobEvent = new ScheduledJobEvent();
-            scheduledJobEvent.setOrder(order++);
-            scheduledJobEvent.setJobEvent(jobEvent);
-            scheduledJobEvent.setJobPlan(jobPlan);
-
-            jobPlan.getScheduledJobEvents().add(scheduledJobEvent);
+    public JobPlan create(@NonNull JobPlan jobPlan) {
+        for (ScheduledJobEvent scheduledJobEvent : jobPlan.getScheduledJobEvents()) {
+            jobEventService.create(scheduledJobEvent.getJobEvent());
         }
 
         return store.create(jobPlan);
@@ -76,57 +66,39 @@ public class JobPlanService {
      * @return created JobPlanDto
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public JobEvent createForChild(String jobEventId, String publicationId) {
+    public JobPlanDto createForChild(String jobEventId, String publicationId) {
         JobEvent parentEvent = jobEventService.findEntity(jobEventId);
         notNull(parentEvent, () -> new MissingObjectException(JobEvent.class, jobEventId));
 
         JobPlan jobPlanBlueprint = store.findByJobEvent(jobEventId);
-        JobEvent eventToEnqueue;
-        if (jobPlanBlueprint == null) {
-            eventToEnqueue = createJobEventForChild(parentEvent, publicationId);
-        } else {
-            eventToEnqueue = createJobPlanForChild(jobPlanBlueprint, parentEvent, publicationId);
-        }
+        notNull(jobPlanBlueprint, () -> new MissingObjectException(JobPlan.class, jobEventId));
 
-        return eventToEnqueue;
+        JobPlan childPlan = createCopy(jobPlanBlueprint, publicationId);
+
+        return mapper.toDto(create(childPlan));
     }
 
-    private JobEvent createJobEventForChild(JobEvent parentEvent, String publicationId) {
-        JobEvent jobEvent = new JobEvent();
-        jobEvent.setPublicationId(publicationId);
-        jobEvent.setParent(parentEvent);
-        jobEvent.setConfig(createConfigCopy(parentEvent.getConfig()));
+    private JobPlan createCopy(JobPlan blueprint, String publicationId) {
+        JobPlan copy = new JobPlan();
 
-        return jobEventService.create(jobEvent);
+        for (ScheduledJobEvent scheduledJobEvent : blueprint.getScheduledJobEvents()) {
+            ScheduledJobEvent scheduledJobEventCopy = new ScheduledJobEvent();
+            scheduledJobEventCopy.setOrder(scheduledJobEvent.getOrder());
+            scheduledJobEventCopy.setJobEvent(createCopy(scheduledJobEvent.getJobEvent(), publicationId));
+            scheduledJobEventCopy.setJobPlan(copy);
+
+            copy.getScheduledJobEvents().add(scheduledJobEventCopy);
+        }
+
+        return copy;
     }
 
-    private JobEvent createJobPlanForChild(JobPlan jobPlanBlueprint, JobEvent parentEvent, String publicationId) {
-        JobPlan newPlan = new JobPlan();
+    private JobEvent createCopy(JobEvent blueprint, String publicationId) {
+        JobEvent copy = new JobEvent();
+        copy.setPublicationId(publicationId);
+        copy.setConfig(createConfigCopy(blueprint.getConfig()));
 
-        for (ScheduledJobEvent scheduledJobEvent : jobPlanBlueprint.getScheduledJobEvents()) {
-            JobEvent newJobEvent = new JobEvent();
-            newJobEvent.setPublicationId(publicationId);
-            newJobEvent.setParent(parentEvent);
-            newJobEvent.setConfig(createConfigCopy(scheduledJobEvent.getJobEvent().getConfig()));
-
-            jobEventService.create(newJobEvent);
-
-            ScheduledJobEvent newScheduledJobEvent = new ScheduledJobEvent();
-            newScheduledJobEvent.setJobEvent(newJobEvent);
-            newScheduledJobEvent.setJobPlan(newPlan);
-            newScheduledJobEvent.setOrder(scheduledJobEvent.getOrder());
-
-            newPlan.getScheduledJobEvents().add(newScheduledJobEvent);
-        }
-
-        newPlan = store.create(newPlan);
-
-        Optional<JobEvent> eventToEnqueue = newPlan.getNextToExecute();
-        if (eventToEnqueue.isEmpty()) {
-            throw new IllegalStateException("There has to be at least one JobEvent in JobPlan");
-        }
-
-        return eventToEnqueue.get();
+        return copy;
     }
 
     private JobEventConfig createConfigCopy(JobEventConfig config) {

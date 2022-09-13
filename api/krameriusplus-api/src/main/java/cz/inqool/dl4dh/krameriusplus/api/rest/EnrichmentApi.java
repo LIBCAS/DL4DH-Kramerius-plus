@@ -1,27 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
-import cz.inqool.dl4dh.krameriusplus.api.cfg.exceptions.rest.RestException;
-import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentExternalRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentKrameriusRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentNdkRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentTeiRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.facade.EnrichmentFacadeImpl;
+import cz.inqool.dl4dh.krameriusplus.api.facade.EnrichmentFacade;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestSimplifiedCreateDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,10 +21,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/api/enrichment")
 public class EnrichmentApi {
 
-    private final EnrichmentFacadeImpl facade;
+    private final EnrichmentFacade facade;
 
     @Autowired
-    public EnrichmentApi(EnrichmentFacadeImpl facade) {
+    public EnrichmentApi(EnrichmentFacade facade) {
         this.facade = facade;
     }
 
@@ -47,49 +34,14 @@ public class EnrichmentApi {
             "Every created JobPlan is then enqueued to run. When run, it's first JobEvent will be run. After it successfully finishes, " +
             "the next JobEvent will be run, and so on.")
     @ApiResponse(responseCode = "200", description = "OK")
-    @PostMapping(value = "/plan", produces = APPLICATION_JSON_VALUE)
-    public EnrichmentRequestDto enrich(@Valid @RequestBody EnrichmentRequestSimplifiedCreateDto requestDto) {
+    @PostMapping(produces = APPLICATION_JSON_VALUE)
+    public EnrichmentRequestDto enrich(@Valid @RequestBody EnrichmentRequestCreateDto requestDto) {
         return facade.enrich(requestDto);
     }
 
-    @Operation(summary = "Create and start new jobs of type DOWNLOAD_K_STRUCTURE. Jobs are started asynchronously. " +
-            "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
-    @ApiResponse(responseCode = "200", description = "Jobs successfully created")
-    @ApiResponse(responseCode = "400", description = "Some publications were already enriched and 'override' parameter " +
-            "was not set to true",
-            content = @Content(schema = @Schema(implementation = RestException.class), mediaType = APPLICATION_JSON_VALUE))
-    @PostMapping(value = "/kramerius", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto downloadKStructure(@RequestBody @Valid SingleJobEnrichmentKrameriusRequestDto requestDto) {
-        return facade.enrich(requestDto);
-    }
-
-    @Operation(summary = "Create and start new jobs of type ENRICH_EXTERNAL. Jobs are started asynchronously. " +
-            "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
-    @ApiResponse(responseCode = "200", description = "Jobs successfully created")
-    @PostMapping(value = "/external", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichExternal(@RequestBody @Valid SingleJobEnrichmentExternalRequestDto requestDto) {
-        return facade.enrich(requestDto);
-    }
-
-    @Operation(summary = "Create and start new jobs of type ENRICH_NDK. Jobs are started asynchronously. " +
-            "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
-    @ApiResponse(responseCode = "200", description = "Jobs successfully created")
-    @PostMapping(value = "/ndk", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichNdk(@RequestBody @Valid SingleJobEnrichmentNdkRequestDto requestDto) {
-        return facade.enrich(requestDto);
-    }
-
-    @Operation(summary = "Create and start new jobs of type ENRICH_TEI. Jobs are started asynchronously. " +
-            "A new JobEvent with the given job configuration is created for every publicationId in the publicationIds set.")
-    @ApiResponse(responseCode = "200", description = "Jobs successfully created")
-    @PostMapping(value = "/tei", produces = APPLICATION_JSON_VALUE)
-    public EnrichResponseDto enrichTei(@RequestBody @Valid SingleJobEnrichmentTeiRequestDto requestDto) {
-        return facade.enrich(requestDto);
-    }
-
-    @Operation(summary = "Find enrichment request.")
-    @GetMapping("/get/{id}")
-    public EnrichmentRequestDto get(@PathVariable String id) {
+    @Operation(summary = "Find enrichment request by given ID.")
+    @GetMapping("/{id}")
+    public EnrichmentRequestDto find(@PathVariable String id) {
         return facade.find(id);
     }
 

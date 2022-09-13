@@ -9,20 +9,17 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Entity representing a plan of execution. Each jobEvent in scheduledJobEvents is started only after
+ * the previous one finished.
+ */
 @Getter
 @Setter
 @Entity
 public class JobPlan extends DatedObject {
-
-    private String name;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "jobPlan")
     private Set<ScheduledJobEvent> scheduledJobEvents = new HashSet<>();

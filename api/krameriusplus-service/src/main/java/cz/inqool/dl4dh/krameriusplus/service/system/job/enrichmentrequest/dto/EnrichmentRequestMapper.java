@@ -11,10 +11,10 @@ public interface EnrichmentRequestMapper extends OwnedObjectMapper<EnrichmentReq
 
     JobPlanMapper jobPlanMapper = Mappers.getMapper(JobPlanMapper.class);
 
-    default EnrichmentRequestCreateDto fromSimplifiedCreateDto(EnrichmentRequestSimplifiedCreateDto dto) {
-        EnrichmentRequestCreateDto result = new EnrichmentRequestCreateDto();
+    default EnrichmentRequest fromCreateDto(EnrichmentRequestCreateDto dto) {
+        EnrichmentRequest result = new EnrichmentRequest();
         result.setName(dto.getName());
-        result.setJobPlans(jobPlanMapper.fromEnrichmentRequestCreateDto(dto));
+        result.setJobPlans(jobPlanMapper.fromPublicationsToCreateDtoSet(dto.getPublicationIds(), dto.getConfigs()));
 
         return result;
     }

@@ -1,22 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
-import cz.inqool.dl4dh.krameriusplus.api.dto.EnrichResponseDto;
-import cz.inqool.dl4dh.krameriusplus.api.dto.enrichment.SingleJobEnrichmentRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestSimplifiedCreateDto;
 
 import java.util.List;
 
 public interface EnrichmentFacade {
-
-    /**
-     * Create and run multiple jobs with the given configuration. For every publicationId, a new job with the given
-     * configuration will be created and enqueued. All jobs will be ran asynchronously.
-     *
-     * @param requestDto request with config to be applied and a set of publicationIds
-     * @return dto containing a collection of jobs that were created
-     */
-    EnrichResponseDto enrich(SingleJobEnrichmentRequestDto requestDto);
 
     /**
      * Create and run multiple plans with the given configuration. For every publicationId, a new plan will be created.
@@ -26,7 +15,7 @@ public interface EnrichmentFacade {
      *
      * @param createDto
      */
-    EnrichmentRequestDto enrich(EnrichmentRequestSimplifiedCreateDto createDto);
+    EnrichmentRequestDto enrich(EnrichmentRequestCreateDto createDto);
 
     EnrichmentRequestDto find(String enrichmentRequestId);
 

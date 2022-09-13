@@ -11,16 +11,11 @@ import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.MergeExportsJobConfigDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.ExportRequestService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.ScheduledJobEvent;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -81,36 +76,36 @@ public class ExportFacadeImpl implements ExportFacade {
     }
 
     private ExportRequestDto createJobPlan(ExportCreationRequestDto requestDto) {
-        validateParams(requestDto.getConfig().getParams());
+//        validateParams(requestDto.getConfig().getParams());
+//
+//        // create same exporting job for each publicationId
+//        JobPlanCreateDto jobPlanCreateDto = new JobPlanCreateDto();
+//        jobPlanCreateDto.setName(requestDto.getName());
+//        requestDto.getPublications().
+//                forEach(publicationId -> {
+//                    JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();
+//                    jobEventCreateDto.setPublicationId(publicationId);
+//                    jobEventCreateDto.setJobName(requestDto.getName());
+//                    jobEventCreateDto.setConfig(requestDto.getConfig());
+//                    jobPlanCreateDto.getJobs().add(jobEventCreateDto);
+//        });
+//
+//        // add merge job
+//        JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();
+//        jobEventCreateDto.setConfig(new MergeExportsJobConfigDto());
+//        jobPlanCreateDto.getJobs().add(jobEventCreateDto);
+//
+//        JobPlan jobPlan = jobPlanService.create(jobPlanCreateDto);
+//        JobPlanDto jobPlanDto = jobPlanMapper.toDto(jobPlan);
+//
+//        ExportRequestCreateDto exportRequestCreateDto = new ExportRequestCreateDto();
+//        exportRequestCreateDto.setJobPlanDto(jobPlanDto);
+//
+//        ExportRequestDto exportRequestDto = exportRequestService.create(exportRequestCreateDto);
+//
+//        jobPlanService.startExecution(jobPlanDto);
 
-        // create same exporting job for each publicationId
-        JobPlanCreateDto jobPlanCreateDto = new JobPlanCreateDto();
-        jobPlanCreateDto.setName(requestDto.getName());
-        requestDto.getPublications().
-                forEach(publicationId -> {
-                    JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();
-                    jobEventCreateDto.setPublicationId(publicationId);
-                    jobEventCreateDto.setJobName(requestDto.getName());
-                    jobEventCreateDto.setConfig(requestDto.getConfig());
-                    jobPlanCreateDto.getJobs().add(jobEventCreateDto);
-        });
-
-        // add merge job
-        JobEventCreateDto jobEventCreateDto = new JobEventCreateDto();
-        jobEventCreateDto.setConfig(new MergeExportsJobConfigDto());
-        jobPlanCreateDto.getJobs().add(jobEventCreateDto);
-
-        JobPlan jobPlan = jobPlanService.create(jobPlanCreateDto);
-        JobPlanDto jobPlanDto = jobPlanMapper.toDto(jobPlan);
-
-        ExportRequestCreateDto exportRequestCreateDto = new ExportRequestCreateDto();
-        exportRequestCreateDto.setJobPlanDto(jobPlanDto);
-
-        ExportRequestDto exportRequestDto = exportRequestService.create(exportRequestCreateDto);
-
-        jobPlanService.startExecution(jobPlanDto);
-
-        return exportRequestDto;
+        return null;
     }
 
     private JobEvent findMergeJob(JobPlan jobPlan) {

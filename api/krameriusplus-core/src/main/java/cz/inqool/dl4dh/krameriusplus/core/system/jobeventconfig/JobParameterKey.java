@@ -9,7 +9,6 @@ public class JobParameterKey {
     public static final String PARAMS = "params";
     public static final String TEI_EXPORT_PARAMS = "teiExportParams";
     public static final String JOB_EVENT_ID = "jobEventId";
-    public static final String JOB_EVENT_NAME = "jobEventName";
     public static final String TIMESTAMP = "timestamp";
     public static final String KRAMERIUS_JOB = "krameriusJob";
     public static final String OVERRIDE = "override";
