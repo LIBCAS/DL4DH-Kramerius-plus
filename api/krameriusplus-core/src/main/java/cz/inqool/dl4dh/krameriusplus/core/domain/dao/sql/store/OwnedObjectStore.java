@@ -11,6 +11,8 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.security.Principal;
+
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 public abstract class OwnedObjectStore<T extends OwnedObject, Q extends EntityPathBase<T>> extends DatedStore<T, Q> {
@@ -26,11 +28,17 @@ public abstract class OwnedObjectStore<T extends OwnedObject, Q extends EntityPa
             notNull(SecurityContextHolder.getContext(), () -> new MissingObjectException(SecurityContextHolder.class, null));
 
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//            if (!(principal instanceof Principal)) {
-//                throw new IllegalStateException("SecurityContext principal is not an instance of java.security.Principal");
-//            }
+            String username;
+            if (principal instanceof Principal) {
+                username = ((Principal) principal).getName();
+            }
+            else if (principal instanceof FeederSystemAccount) {
+                username = ((FeederSystemAccount) principal).getUsername();
+            }
+            else {
+                throw new IllegalStateException("Object is not instance of Principar or FeederSystemAccount");
+            }
 
-            String username = ((FeederSystemAccount) principal).getUsername();
             KrameriusUser krameriusUser = krameriusUserStore.findUserByUsername(username);
             if (krameriusUser == null) {
                 krameriusUser = krameriusUserStore.create(new KrameriusUser(username));
