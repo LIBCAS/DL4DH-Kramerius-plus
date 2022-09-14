@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.api.facade;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.ExportRequestService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class ExportFacadeImpl implements ExportFacade {
     }
 
     @Override
-    public ExportRequestDto export(cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestCreateDto requestDto) {
+    public ExportRequestDto export(ExportRequestCreateDto requestDto) {
         ExportRequestDto exportRequestDto = exportRequestService.create(requestDto);
 
         exportRequestService.startExecution(exportRequestDto);

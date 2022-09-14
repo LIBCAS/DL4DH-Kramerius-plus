@@ -14,8 +14,6 @@ public abstract class JobConfigBase {
 
     protected StepContainer stepContainer;
 
-    protected JobListener jobListener;
-
     protected JobBuilderFactory jobBuilderFactory;
 
     public SimpleJobBuilder getJobBuilder() {
@@ -23,7 +21,7 @@ public abstract class JobConfigBase {
 
         decorateJobBuilder(jobBuilder);
 
-        return jobBuilder.listener(jobListener)
+        return jobBuilder
                 .incrementer(new RunIdIncrementer())
                 .start(stepContainer.getStep(VALIDATE_PREREQUISITES));
     }
@@ -35,11 +33,6 @@ public abstract class JobConfigBase {
     @Autowired
     public void setJobBuilderFactory(JobBuilderFactory jobBuilderFactory) {
         this.jobBuilderFactory = jobBuilderFactory;
-    }
-
-    @Autowired
-    public void setJobListener(JobListener jobListener) {
-        this.jobListener = jobListener;
     }
 
     @Autowired
