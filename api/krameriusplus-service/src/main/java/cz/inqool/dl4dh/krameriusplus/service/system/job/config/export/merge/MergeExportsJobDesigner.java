@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.merge;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobConfigBase;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.JobDesignerBase;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -8,10 +8,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob.EXPORT_MERGE;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.*;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.CLEAN_UP_EXPORT;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.CREATE_BULK_EXPORT;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.CREATE_BULK_FILE_REF;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.UNZIP_EXPORTS;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ZIP_EXPORT;
 
 @Configuration
-public class MergeExportsJobConfig extends JobConfigBase {
+public class MergeExportsJobDesigner extends JobDesignerBase {
 
     @Bean
     public Job mergeExportsJob() {

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.VALIDATE_PREREQUISITES;
 
 
-public abstract class JobConfigBase {
+public abstract class JobDesignerBase {
 
     protected StepContainer stepContainer;
 
