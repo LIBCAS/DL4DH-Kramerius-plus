@@ -24,7 +24,7 @@ public class MergeExportsJobConfig extends JobConfigBase {
                 .from(unzipExports()).on("*").to(zipExport())
                 .from(zipExport())
                 .next(createBulkFileRef())
-                .next(stepContainer.getStep(CREATE_BULK_EXPORT)).on("NO_CLEANUP").end()
+                .next(createBulkExport()).on("NO_CLEANUP").end()
                 .next(stepContainer.getStep(CLEAN_UP_EXPORT))
                 .end()
                 .build();

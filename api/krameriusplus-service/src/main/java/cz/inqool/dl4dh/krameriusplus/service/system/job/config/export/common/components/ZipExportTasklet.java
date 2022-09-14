@@ -19,6 +19,9 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.Execution
 @StepScope
 public class ZipExportTasklet implements Tasklet {
 
+    /**
+     * JobExecutionContext requires DIRECTORY key
+     */
     @Override
     public RepeatStatus execute(@NonNull StepContribution contribution, @NonNull ChunkContext chunkContext) throws Exception {
         String directory = (String) chunkContext.getStepContext().getJobExecutionContext().get(DIRECTORY);

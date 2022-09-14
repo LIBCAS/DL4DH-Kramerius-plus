@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.FILE_REF_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
-import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Component
 @StepScope
@@ -38,11 +37,13 @@ public class CreateBulkExportTasklet implements Tasklet {
         this.exportRequestStore = exportRequestStore;
     }
 
+    /**
+     * JobExecutionContext requires FILE_REF_ID key
+     */
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String fileRefId = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(FILE_REF_ID);
         String jobEventId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(JOB_EVENT_ID);
-        notNull(fileRefId, () -> new IllegalStateException("Missing FILE_REF_ID in execution context."));
 
         FileRef fileRef = fileService.find(fileRefId);
 

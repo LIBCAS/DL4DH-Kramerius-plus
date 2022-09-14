@@ -19,6 +19,9 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.Execution
 @StepScope
 public class CleanUpExportTasklet implements Tasklet {
 
+    /**
+     * JobExecutionContext requires DIRECTORY and ZIPPED_FILE keys
+     */
     @Override
     public RepeatStatus execute(@NonNull StepContribution contribution, @NonNull ChunkContext chunkContext) throws Exception {
         String path = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(DIRECTORY);
