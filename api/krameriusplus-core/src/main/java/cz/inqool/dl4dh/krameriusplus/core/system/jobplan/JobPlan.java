@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan;
+package cz.inqool.dl4dh.krameriusplus.core.system.jobplan;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;

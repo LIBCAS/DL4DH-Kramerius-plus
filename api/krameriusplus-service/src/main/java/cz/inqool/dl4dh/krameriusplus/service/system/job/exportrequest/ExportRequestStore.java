@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.OwnedObjectStore;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.QJobPlan;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.QScheduledJobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.QJobPlan;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.QScheduledJobEvent;
 import org.springframework.stereotype.Repository;
 
 @Repository

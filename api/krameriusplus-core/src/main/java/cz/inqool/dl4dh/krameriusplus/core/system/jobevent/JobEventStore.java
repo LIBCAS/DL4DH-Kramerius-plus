@@ -3,7 +3,14 @@ package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.JobPlan;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.QJobPlan;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.QScheduledJobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.ScheduledJobEvent;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
@@ -74,5 +81,21 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
                 .where(qObject.details.lastExecutionStatus.eq(JobStatus.COMPLETED));
 
         return query.fetchFirst();
+    }
+
+    public Optional<JobEvent> findNextToEnqueue(String jobEventId) {
+        QScheduledJobEvent qScheduledJobEvent = QScheduledJobEvent.scheduledJobEvent;
+        QJobPlan qJobPlan = QJobPlan.jobPlan;
+
+        ScheduledJobEvent scheduledJobEvent = queryFactory.from(qScheduledJobEvent)
+                .select(qScheduledJobEvent)
+                .where(qScheduledJobEvent.jobEvent.id.eq(jobEventId))
+                .fetchOne();
+
+        notNull(scheduledJobEvent, () -> new MissingObjectException(ScheduledJobEvent.class, "JobEventId: " + jobEventId));
+
+        JobPlan jobPlan = scheduledJobEvent.getJobPlan();
+
+        return jobPlan.getNextToExecute();
     }
 }

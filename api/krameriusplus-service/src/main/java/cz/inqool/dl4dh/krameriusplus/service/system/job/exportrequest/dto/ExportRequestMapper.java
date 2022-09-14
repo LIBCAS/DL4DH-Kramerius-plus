@@ -6,9 +6,9 @@ import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.dto.BulkExportMapper
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.JobEventConfigMapper;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.MergeExportsJobConfigDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.JobPlan;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.ScheduledJobEvent;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.ExportRequest;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.ScheduledJobEvent;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
