@@ -1,34 +1,40 @@
-import { Paper, Button } from '@mui/material'
+import { Button, Paper } from '@mui/material'
 import {
 	DataGrid,
 	GridRenderCellParams,
-	GridValueGetterParams,
+	GridValueFormatterParams,
 } from '@mui/x-data-grid'
-import { listJobEvents } from 'api/job-api'
-import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
-import { JobType } from 'enums/job-type'
-import { JobEvent } from 'models/job/job-event'
-import { useEffect, useState } from 'react'
+import { listEnrichmentRequests } from 'api/enrichment-api'
+import { KrameriusUser } from 'models/domain/kramerius-user'
+import { EnrichmentRequest } from 'models/enrichment-request'
+import { JobPlan } from 'models/job-plan'
+import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter } from 'utils/formatters'
-import { JobEventFilterDto } from '../../modules/jobs/job-event/job-event-filter-dto'
 
-type Props = {
-	jobType: JobType
-	filter?: JobEventFilterDto
+export const publicationCountFormatter = (params: GridValueFormatterParams) => {
+	if (params.value === undefined) {
+		return '-'
+	}
+
+	const jobPlans = params.value as JobPlan[]
+	return jobPlans.length.toString()
 }
 
-const krameriusJobGetter = (params: GridValueGetterParams) => {
-	return KrameriusJobMapping[params.row['config']['krameriusJob']]
+export const ownerFormatter = (params: GridValueFormatterParams) => {
+	if (params.value == undefined) {
+		return '-'
+	}
+
+	const owner = params.value as KrameriusUser
+	return owner.username
 }
 
-const nameGetter = (params: GridValueGetterParams) => {
-	return params.row['jobName'] ?? ''
-}
-
-export const JobEventList = ({ jobType, filter }: Props) => {
+export const EnrichmentRequestList: FC = () => {
 	const [rowCount, setRowCount] = useState<number>()
-	const [jobEvents, setJobEvents] = useState<JobEvent[]>([])
+	const [enrichmentRequests, setEnrichmentRequests] = useState<
+		EnrichmentRequest[]
+	>([])
 	const [page, setPage] = useState<number>(0)
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
@@ -39,39 +45,35 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 		{
 			field: 'id',
 			headerName: 'ID',
-			width: 300,
-			type: 'string',
-		},
-		{
-			field: 'publicationId',
-			headerName: 'UUID publikace',
-			width: 340,
+			width: 400,
 			type: 'string',
 		},
 		{
 			field: 'created',
 			headerName: 'Vytvořeno',
-			width: 180,
+			width: 250,
 			type: 'string',
 			valueFormatter: dateTimeFormatter,
 		},
 		{
-			field: 'krameriusJob',
-			headerName: 'Typ úlohy',
-			width: 200,
-			valueGetter: krameriusJobGetter,
-		},
-		{
-			field: 'lastExecutionStatus',
-			headerName: 'Poslední stav',
-			width: 120,
-		},
-		{
-			field: 'jobName',
-			headerName: 'Název',
-			width: 150,
+			field: 'owner',
+			headerName: 'Vytvořil',
+			width: 250,
 			type: 'string',
-			valueGetter: nameGetter,
+			valueFormatter: ownerFormatter,
+		},
+		{
+			field: 'name',
+			headerName: 'Název',
+			width: 350,
+			type: 'string',
+		},
+		{
+			field: 'jobPlans',
+			headerName: 'Počet publikací',
+			width: 200,
+			type: 'string',
+			valueFormatter: publicationCountFormatter,
 		},
 		{
 			field: 'action',
@@ -92,16 +94,16 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 	]
 
 	useEffect(() => {
-		async function fetchJobs() {
-			const response = await listJobEvents(jobType, page, 10, filter)
+		async function fetchRequests() {
+			const response = await listEnrichmentRequests()
 
 			if (response) {
-				setJobEvents(response.results)
-				setRowCount(response.total)
+				setEnrichmentRequests(response)
+				setRowCount(response.length)
 			}
 		}
-		fetchJobs()
-	}, [page, filter, jobType])
+		fetchRequests()
+	}, [page])
 
 	useEffect(() => {
 		setRowCountState(prevRowCountState =>
@@ -123,7 +125,7 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 				pageSize={10}
 				paginationMode="server"
 				rowCount={rowCountState}
-				rows={jobEvents}
+				rows={enrichmentRequests}
 				rowsPerPageOptions={[]}
 				onPageChange={onPageChange}
 			/>

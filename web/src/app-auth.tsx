@@ -16,6 +16,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { useAuth } from 'components/auth/auth-context'
 import { FC } from 'react'
 import { useInfo } from 'components/navbar/info/info-context'
+import { EnrichmentRequestListPage } from 'pages/enrichment-request-list-page'
+import { EnrichmentRequestDetailPage } from 'pages/enrichment-request-detail-page'
 
 export const AppAuth: FC = () => {
 	const { setAuth } = useAuth()
@@ -44,7 +46,14 @@ export const AppAuth: FC = () => {
 							<Route element={<JobEventListPage />} index />
 							<Route element={<JobEventDetailPage />} path=":jobEventId" />
 						</Route>
-						<Route element={<EnrichmentPage />} path="enrichment" />
+						<Route path="enrichment">
+							<Route element={<EnrichmentRequestListPage />} index />
+							<Route element={<EnrichmentPage />} path="new" />
+							<Route
+								element={<EnrichmentRequestDetailPage />}
+								path=":requestId"
+							/>
+						</Route>
 						<Route element={<NotFoundPage />} path="*" />
 					</Routes>
 				</BrowserRouter>

@@ -31,13 +31,13 @@ const pages: NavbarItem[] = [
 			{
 				name: 'New enrichment',
 				label: 'Nové obohacení',
-				link: '/enrichment',
+				link: '/enrichment/new',
 				onlyAuthenticated: true,
 			},
 			{
-				name: 'Enrichment plans',
-				label: 'Plány úloh obohacení',
-				link: '/job-plans/enriching',
+				name: 'Enrichment requests',
+				label: 'Žádosti obohacení',
+				link: '/enrichment',
 				onlyAuthenticated: true,
 			},
 			{
