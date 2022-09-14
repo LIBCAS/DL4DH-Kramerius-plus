@@ -4,7 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.Expor
 
 import java.util.Set;
 
-public interface ExportCreationRequestDto {
+public interface ExportRequestCreateDto {
 
     String getName();
 

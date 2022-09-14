@@ -32,6 +32,7 @@ public class JobStep {
     public static final String CREATE_EXPORT = "CreateExportStep";
     public static final String CLEAN_UP_EXPORT = "CleanUpExportStep";
     public static final String UNZIP_EXPORTS = "UnzipExportsStep";
+    public static final String CREATE_BULK_FILE_REF = "CreateBulkFileRefStep";
     public static final String CREATE_BULK_EXPORT = "CreateBulkExportStep";
 
     // EXPORT JSON

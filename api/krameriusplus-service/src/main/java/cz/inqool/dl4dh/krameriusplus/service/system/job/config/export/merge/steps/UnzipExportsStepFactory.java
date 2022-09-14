@@ -1,7 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.steps;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.merge.steps;
 
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.AbstractStepFactory;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.UnzipExportsTasklet;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.merge.components.UnzipExportsTasklet;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

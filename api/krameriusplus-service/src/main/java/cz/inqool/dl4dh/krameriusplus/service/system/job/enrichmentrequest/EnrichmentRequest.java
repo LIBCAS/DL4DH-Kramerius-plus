@@ -5,10 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlan;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,9 +26,9 @@ public class EnrichmentRequest extends OwnedObject {
      * Set of JobPlans. Each jobPlan consists of a sequence of jobEvents for one publication. When execution is started,
      * each publication's jobs (jobPlan) are ran in parallel
      */
-    @JoinTable(name = "job_plan_enrichment_request",
+    @JoinTable(name = "enrichment_request_job_plans",
             joinColumns = @JoinColumn(name = "enrichment_request_id"),
             inverseJoinColumns = @JoinColumn(name = "job_plan_id"))
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<JobPlan> jobPlans = new HashSet<>();
 }

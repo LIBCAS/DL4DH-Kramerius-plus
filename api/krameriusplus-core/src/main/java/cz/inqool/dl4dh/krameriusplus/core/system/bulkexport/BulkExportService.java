@@ -1,14 +1,13 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.export;
+package cz.inqool.dl4dh.krameriusplus.core.system.bulkexport;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportCreateDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.BulkExportMapper;
+import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.dto.BulkExportCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.dto.BulkExportDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.dto.BulkExportMapper;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-// TODO: store.find bude vracat dto takze service bude zbytocny
 @Service
 public class BulkExportService implements DatedService<BulkExport, BulkExportCreateDto, BulkExportDto> {
 
@@ -22,9 +21,5 @@ public class BulkExportService implements DatedService<BulkExport, BulkExportCre
     public BulkExportService(BulkExportMapper mapper, BulkExportStore store) {
         this.mapper = mapper;
         this.store = store;
-    }
-
-    public BulkExportDto findByJobEvent(String jobEventId) {
-        return mapper.toDto(store.findByJobEventId(jobEventId));
     }
 }
