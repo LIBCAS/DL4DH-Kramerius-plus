@@ -55,7 +55,6 @@ public class CreateBulkExportTasklet extends ValidatedTasklet {
         bulkExport.setFileRef(fileRef);
         bulkExportStore.update(bulkExport);
 
-        System.out.println(bulkExport.getExports().size());
         if (bulkExport.getExports().size() == 1) {
             contribution.getStepExecution().setExitStatus(new ExitStatus("NO_CLEANUP"));
         }
