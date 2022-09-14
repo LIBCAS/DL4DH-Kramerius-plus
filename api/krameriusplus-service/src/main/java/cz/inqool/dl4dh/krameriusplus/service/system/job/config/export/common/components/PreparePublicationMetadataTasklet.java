@@ -6,18 +6,20 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.PUBLICATION_TITLE;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 
 @Component
 @StepScope
-public class PreparePublicationMetadataTasklet implements Tasklet {
+public class PreparePublicationMetadataTasklet extends ValidatedTasklet {
 
     private final DataProvider dataProvider;
 
@@ -27,7 +29,7 @@ public class PreparePublicationMetadataTasklet implements Tasklet {
     }
 
     @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    public RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         StepExecution stepExecution = chunkContext.getStepContext().getStepExecution();
         ExecutionContext stepContext = stepExecution.getExecutionContext();
         String publicationId = stepExecution.getJobExecution().getJobParameters().getString(PUBLICATION_ID);
@@ -36,5 +38,10 @@ public class PreparePublicationMetadataTasklet implements Tasklet {
         stepContext.putString(PUBLICATION_TITLE, publication.getTitle());
 
         return RepeatStatus.FINISHED;
+    }
+
+    @Override
+    public Set<String> getRequiredExecutionContextKeys() {
+        return new HashSet<>();
     }
 }

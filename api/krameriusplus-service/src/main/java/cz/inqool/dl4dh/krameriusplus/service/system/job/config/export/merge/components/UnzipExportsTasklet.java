@@ -7,11 +7,11 @@ import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.JobPlanStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.ScheduledJobEvent;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.ZipArchiver;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.ValidatedTasklet;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
@@ -36,7 +38,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
  */
 @Component
 @StepScope
-public class UnzipExportsTasklet implements Tasklet {
+public class UnzipExportsTasklet extends ValidatedTasklet {
 
     public static final String TMP_PATH = "data/tmp/";
 
@@ -58,7 +60,7 @@ public class UnzipExportsTasklet implements Tasklet {
     }
 
     @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    public RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String jobEventId = (String) chunkContext.getStepContext().getJobParameters().get(JOB_EVENT_ID);
 
         List<Export> exports = getExports(jobEventId);
@@ -82,6 +84,11 @@ public class UnzipExportsTasklet implements Tasklet {
         executionContext.put(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
 
         return RepeatStatus.FINISHED;
+    }
+
+    @Override
+    public Set<String> getRequiredExecutionContextKeys() {
+        return new HashSet<>();
     }
 
     private void unZipIntoDir(Path dir, List<Export> exports) throws IOException{

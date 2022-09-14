@@ -5,7 +5,6 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -15,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.KRAMERIUS_JOB;
@@ -22,14 +23,14 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 
 @Component
 @StepScope
-public class PrepareExportDirectoryTasklet implements Tasklet {
+public class PrepareExportDirectoryTasklet extends ValidatedTasklet {
 
     public static final String TMP_PATH = "data/tmp/";
 
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
     @Override
-    public RepeatStatus execute(@NonNull StepContribution contribution, ChunkContext chunkContext) throws IOException {
+    public RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution, ChunkContext chunkContext) throws IOException {
         JobParameters jobParameters = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters();
 
         String publicationId = jobParameters.getString(PUBLICATION_ID);
@@ -42,6 +43,11 @@ public class PrepareExportDirectoryTasklet implements Tasklet {
         chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(DIRECTORY, directoryPath.toString());
 
         return RepeatStatus.FINISHED;
+    }
+
+    @Override
+    public Set<String> getRequiredExecutionContextKeys() {
+        return new HashSet<>();
     }
 
     private String buildDirectoryName(String publicationId, KrameriusJob krameriusJob) {
