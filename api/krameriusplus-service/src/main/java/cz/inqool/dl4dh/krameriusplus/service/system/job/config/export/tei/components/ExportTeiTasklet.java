@@ -34,7 +34,7 @@ public class ExportTeiTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String publicationId = (String) chunkContext.getStepContext().getJobParameters().get(PUBLICATION_ID);
         TeiExportParams params = objectMapper.readValue((String) chunkContext.getStepContext().getJobParameters().get(TEI_EXPORT_PARAMS), TeiExportParams.class);
         Path parentDirectory = Path.of((String) chunkContext.getStepContext().getJobExecutionContext().get(DIRECTORY));
@@ -46,7 +46,7 @@ public class ExportTeiTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public Set<String> getRequiredExecutionContextKeys() {
+    protected Set<String> getRequiredExecutionContextKeys() {
         return Set.of(DIRECTORY);
     }
 }

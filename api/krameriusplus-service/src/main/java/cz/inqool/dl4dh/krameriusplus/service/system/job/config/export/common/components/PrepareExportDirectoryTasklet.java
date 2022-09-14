@@ -14,8 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.KRAMERIUS_JOB;
@@ -30,7 +28,7 @@ public class PrepareExportDirectoryTasklet extends ValidatedTasklet {
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
     @Override
-    public RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution, ChunkContext chunkContext) throws IOException {
+    protected RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution, ChunkContext chunkContext) throws IOException {
         JobParameters jobParameters = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters();
 
         String publicationId = jobParameters.getString(PUBLICATION_ID);
@@ -43,11 +41,6 @@ public class PrepareExportDirectoryTasklet extends ValidatedTasklet {
         chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(DIRECTORY, directoryPath.toString());
 
         return RepeatStatus.FINISHED;
-    }
-
-    @Override
-    public Set<String> getRequiredExecutionContextKeys() {
-        return new HashSet<>();
     }
 
     private String buildDirectoryName(String publicationId, KrameriusJob krameriusJob) {

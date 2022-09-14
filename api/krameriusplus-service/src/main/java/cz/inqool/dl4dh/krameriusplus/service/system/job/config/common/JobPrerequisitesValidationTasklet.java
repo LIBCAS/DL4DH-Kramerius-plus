@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.KRAMERIUS_JOB;
@@ -31,7 +30,7 @@ public class JobPrerequisitesValidationTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution,@NonNull ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution, @NonNull ChunkContext chunkContext) throws Exception {
         JobParameters jobParameters = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters();
 
         String publicationId = jobParameters.getString(PUBLICATION_ID);
@@ -47,10 +46,5 @@ public class JobPrerequisitesValidationTasklet extends ValidatedTasklet {
         }
 
         return RepeatStatus.FINISHED;
-    }
-
-    @Override
-    public Set<String> getRequiredExecutionContextKeys() {
-        return new HashSet<>();
     }
 }

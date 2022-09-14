@@ -41,7 +41,7 @@ public class CreateExportTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String path = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(ZIPPED_FILE);
         Path zippedFile = Path.of(path);
 
@@ -77,7 +77,7 @@ public class CreateExportTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public Set<String> getRequiredExecutionContextKeys() {
+    protected Set<String> getRequiredExecutionContextKeys() {
         return Set.of(ZIPPED_FILE);
     }
 }

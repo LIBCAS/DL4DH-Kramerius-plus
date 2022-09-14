@@ -43,7 +43,7 @@ public class CreateBulkExportTasklet extends ValidatedTasklet {
      * JobExecutionContext requires FILE_REF_ID key
      */
     @Override
-    public RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String fileRefId = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(FILE_REF_ID);
         String jobEventId = chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(JOB_EVENT_ID);
 
@@ -63,7 +63,7 @@ public class CreateBulkExportTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public Set<String> getRequiredExecutionContextKeys() {
+    protected Set<String> getRequiredExecutionContextKeys() {
         return Set.of(FILE_REF_ID);
     }
 }

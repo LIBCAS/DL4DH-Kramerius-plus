@@ -6,6 +6,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class ValidatedTasklet implements Tasklet {
@@ -16,7 +17,7 @@ public abstract class ValidatedTasklet implements Tasklet {
         return executeValidatedTasklet(contribution, chunkContext);
     }
 
-    public void validateKeyPresence(ChunkContext chunkContext) {
+    private void validateKeyPresence(ChunkContext chunkContext) {
         ExecutionContext jobExecutionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
 
         getRequiredExecutionContextKeys().forEach(key -> {
@@ -27,7 +28,9 @@ public abstract class ValidatedTasklet implements Tasklet {
         });
     }
 
-    public abstract RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception;
+    protected abstract RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception;
 
-    public abstract Set<String> getRequiredExecutionContextKeys();
+    protected Set<String> getRequiredExecutionContextKeys() {
+        return new HashSet<>();
+    }
 }

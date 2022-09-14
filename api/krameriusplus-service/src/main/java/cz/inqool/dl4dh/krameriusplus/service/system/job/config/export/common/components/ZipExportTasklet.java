@@ -23,7 +23,7 @@ public class ZipExportTasklet extends ValidatedTasklet {
      * JobExecutionContext requires DIRECTORY key
      */
     @Override
-    public RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution, @NonNull ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution, @NonNull ChunkContext chunkContext) throws Exception {
         String directory = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(DIRECTORY);
         Path directoryToZip = Path.of(directory);
 
@@ -38,7 +38,7 @@ public class ZipExportTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public Set<String> getRequiredExecutionContextKeys() {
+    protected Set<String> getRequiredExecutionContextKeys() {
         return Set.of(DIRECTORY);
     }
 }

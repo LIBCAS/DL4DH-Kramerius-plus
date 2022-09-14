@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.Expor
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ public abstract class ExportRequestCreateDto extends OwnedObjectCreateDto {
 
     private String name;
 
+    @NotEmpty
     private Set<String> publicationIds = new HashSet<>();
 
     public abstract ExportJobConfigDto getConfig();

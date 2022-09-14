@@ -11,9 +11,6 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.PUBLICATION_TITLE;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 
@@ -29,7 +26,7 @@ public class PreparePublicationMetadataTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         StepExecution stepExecution = chunkContext.getStepContext().getStepExecution();
         ExecutionContext stepContext = stepExecution.getExecutionContext();
         String publicationId = stepExecution.getJobExecution().getJobParameters().getString(PUBLICATION_ID);
@@ -38,10 +35,5 @@ public class PreparePublicationMetadataTasklet extends ValidatedTasklet {
         stepContext.putString(PUBLICATION_TITLE, publication.getTitle());
 
         return RepeatStatus.FINISHED;
-    }
-
-    @Override
-    public Set<String> getRequiredExecutionContextKeys() {
-        return new HashSet<>();
     }
 }

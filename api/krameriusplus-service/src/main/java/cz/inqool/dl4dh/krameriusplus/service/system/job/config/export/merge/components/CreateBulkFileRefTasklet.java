@@ -14,8 +14,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.FILE_REF_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.ZIPPED_FILE;
@@ -32,7 +30,7 @@ public class CreateBulkFileRefTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String path = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(ZIPPED_FILE);
         Path zippedFile = Path.of(path);
 
@@ -48,10 +46,5 @@ public class CreateBulkFileRefTasklet extends ValidatedTasklet {
         chunkContext.getStepContext().getStepExecution().getExecutionContext().putString(FILE_REF_ID, fileRef.getId());
 
         return RepeatStatus.FINISHED;
-    }
-
-    @Override
-    public Set<String> getRequiredExecutionContextKeys() {
-        return new HashSet<>();
     }
 }

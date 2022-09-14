@@ -32,9 +32,6 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
     @Transactional
     public ExportRequestDto create(@NonNull ExportRequestCreateDto createDto) {
         validateParams(createDto.getConfig().getParams());
-        if (createDto.getPublicationIds().isEmpty()) {
-            throw new IllegalStateException("publicationIds cannot be empty");
-        }
 
         ExportRequest entity = mapper.fromCreateDto(createDto);
 

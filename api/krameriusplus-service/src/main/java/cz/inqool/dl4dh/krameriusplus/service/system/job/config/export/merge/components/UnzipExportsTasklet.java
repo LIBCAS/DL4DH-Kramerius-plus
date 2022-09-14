@@ -22,10 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
@@ -60,7 +58,7 @@ public class UnzipExportsTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String jobEventId = (String) chunkContext.getStepContext().getJobParameters().get(JOB_EVENT_ID);
 
         List<Export> exports = getExports(jobEventId);
@@ -81,14 +79,9 @@ public class UnzipExportsTasklet extends ValidatedTasklet {
 
         unZipIntoDir(unzippedPath, exports);
 
-        executionContext.put(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
+        executionContext.putString(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
 
         return RepeatStatus.FINISHED;
-    }
-
-    @Override
-    public Set<String> getRequiredExecutionContextKeys() {
-        return new HashSet<>();
     }
 
     private void unZipIntoDir(Path dir, List<Export> exports) throws IOException{

@@ -23,7 +23,7 @@ public class CleanUpExportTasklet extends ValidatedTasklet {
      * JobExecutionContext requires DIRECTORY and ZIPPED_FILE keys
      */
     @Override
-    public RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution, @NonNull ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(@NonNull StepContribution contribution, @NonNull ChunkContext chunkContext) throws Exception {
         String path = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(DIRECTORY);
         Path directory = Path.of(path);
 
@@ -37,7 +37,7 @@ public class CleanUpExportTasklet extends ValidatedTasklet {
     }
 
     @Override
-    public Set<String> getRequiredExecutionContextKeys() {
+    protected Set<String> getRequiredExecutionContextKeys() {
         return Set.of(DIRECTORY, ZIPPED_FILE);
     }
 }
