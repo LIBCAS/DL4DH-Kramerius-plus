@@ -64,8 +64,10 @@ public class UnzipExportsTasklet implements Tasklet {
         List<Export> exports = getExports(jobEventId);
 
         // assign fileref and set status to finish the whole job
+        ExecutionContext executionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
+
         if (exports.size() == 1) {
-            chunkContext.getStepContext().getStepExecution().getExecutionContext().putString(FILE_REF_ID, exports.get(0).getFileRef().getId());
+            executionContext.putString(FILE_REF_ID, exports.get(0).getFileRef().getId());
             contribution.getStepExecution().setExitStatus(new ExitStatus("MERGE_DONE"));
 
             return RepeatStatus.FINISHED;
@@ -77,7 +79,6 @@ public class UnzipExportsTasklet implements Tasklet {
 
         unZipIntoDir(unzippedPath, exports);
 
-        ExecutionContext executionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
         executionContext.put(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
 
         return RepeatStatus.FINISHED;

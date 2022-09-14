@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.ExportRequestStore;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -50,6 +51,10 @@ public class CreateBulkExportTasklet implements Tasklet {
         BulkExport bulkExport = exportRequest.getBulkExport();
         bulkExport.setFileRef(fileRef);
         bulkExportStore.update(bulkExport);
+
+        if (bulkExport.getExports().size() == 1) {
+            contribution.getStepExecution().setExitStatus(new ExitStatus("NO_CLEANUP"));
+        }
 
         return RepeatStatus.FINISHED;
     }
