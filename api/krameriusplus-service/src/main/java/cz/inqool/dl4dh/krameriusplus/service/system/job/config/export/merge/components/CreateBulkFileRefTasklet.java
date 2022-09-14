@@ -2,10 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.merge.com
 
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.ValidatedTasklet;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.Execution
 
 @Component
 @StepScope
-public class CreateBulkFileRefTasklet implements Tasklet {
+public class CreateBulkFileRefTasklet extends ValidatedTasklet {
 
     private final FileService fileService;
 
@@ -30,7 +30,7 @@ public class CreateBulkFileRefTasklet implements Tasklet {
     }
 
     @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String path = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(ZIPPED_FILE);
         Path zippedFile = Path.of(path);
 

@@ -16,13 +16,12 @@ public class MergeExportsJobConfig extends JobConfigBase {
     @Bean
     public Job mergeExportsJob() {
         return getJobBuilder()
-                .next(unzipExports()).on("MERGE_DONE").to(createBulkFileRef())
+                .next(unzipExports()).on("MERGE_DONE").to(createBulkExport())
                 .from(unzipExports()).on("*").to(zipExport())
                 .from(zipExport())
                 .next(createBulkFileRef())
-                .next(stepContainer.getStep(CREATE_BULK_EXPORT))
-                .next(stepContainer.getStep(CLEAN_UP_EXPORT))
-                .end()
+                .next(createBulkExport()).on("NO_CLEANUP").end()
+                .from(createBulkExport()).on("*").to(stepContainer.getStep(CLEAN_UP_EXPORT)).end()
                 .build();
     }
 
@@ -32,6 +31,10 @@ public class MergeExportsJobConfig extends JobConfigBase {
 
     private Step createBulkFileRef() {
         return stepContainer.getStep(CREATE_BULK_FILE_REF);
+    }
+
+    private Step createBulkExport() {
+        return stepContainer.getStep(CREATE_BULK_EXPORT);
     }
 
     private Step zipExport() {

@@ -7,11 +7,11 @@ import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.JobPlanStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.ScheduledJobEvent;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.ZipArchiver;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.ValidatedTasklet;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
  */
 @Component
 @StepScope
-public class UnzipExportsTasklet implements Tasklet {
+public class UnzipExportsTasklet extends ValidatedTasklet {
 
     public static final String TMP_PATH = "data/tmp/";
 
@@ -58,14 +58,16 @@ public class UnzipExportsTasklet implements Tasklet {
     }
 
     @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    protected RepeatStatus executeValidatedTasklet(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String jobEventId = (String) chunkContext.getStepContext().getJobParameters().get(JOB_EVENT_ID);
 
         List<Export> exports = getExports(jobEventId);
 
         // assign fileref and set status to finish the whole job
+        ExecutionContext executionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
+
         if (exports.size() == 1) {
-            chunkContext.getStepContext().getStepExecution().getExecutionContext().putString(FILE_REF_ID, exports.get(0).getFileRef().getId());
+            executionContext.putString(FILE_REF_ID, exports.get(0).getFileRef().getId());
             contribution.getStepExecution().setExitStatus(new ExitStatus("MERGE_DONE"));
 
             return RepeatStatus.FINISHED;
@@ -77,8 +79,7 @@ public class UnzipExportsTasklet implements Tasklet {
 
         unZipIntoDir(unzippedPath, exports);
 
-        ExecutionContext executionContext = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
-        executionContext.put(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
+        executionContext.putString(DIRECTORY, unzippedPath.toString()); // necessary for zip tasklet
 
         return RepeatStatus.FINISHED;
     }
