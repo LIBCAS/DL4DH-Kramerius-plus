@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.export.dto;
+package cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.dto;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.dto.DatedObjectCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;

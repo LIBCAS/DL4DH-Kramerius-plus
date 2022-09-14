@@ -161,8 +161,6 @@ public class FileService {
 
         FileRef created = store.create(fileRef);
 
-        log.info("Created file " + fileRef.getName());
-
         created.setBasePath(getBasePath());
         return created;
     }

@@ -1,7 +1,5 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.merge.components;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExport;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.ExportStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
@@ -29,6 +27,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.FILE_REF_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 
 
@@ -49,16 +48,13 @@ public class UnzipExportsTasklet implements Tasklet {
 
     private final FileService fileService;
 
-    private final BulkExportStore bulkExportStore;
-
     @Autowired
     public UnzipExportsTasklet(JobPlanStore jobPlanStore,
                                ExportStore exportStore,
-                               FileService fileService, BulkExportStore bulkExportStore) {
+                               FileService fileService) {
         this.jobPlanStore = jobPlanStore;
         this.exportStore = exportStore;
         this.fileService = fileService;
-        this.bulkExportStore = bulkExportStore;
     }
 
     @Override
@@ -69,10 +65,7 @@ public class UnzipExportsTasklet implements Tasklet {
 
         // assign fileref and set status to finish the whole job
         if (exports.size() == 1) {
-            BulkExport bulkExport = bulkExportStore.findByJobEventId(jobEventId);
-            bulkExport.setFileRef(exports.get(0).getFileRef());
-
-            bulkExportStore.update(bulkExport);
+            chunkContext.getStepContext().getStepExecution().getExecutionContext().putString(FILE_REF_ID, exports.get(0).getFileRef().getId());
             contribution.getStepExecution().setExitStatus(new ExitStatus("MERGE_DONE"));
 
             return RepeatStatus.FINISHED;

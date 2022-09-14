@@ -11,8 +11,6 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class JobEventCreateDto extends DatedObjectCreateDto {
 
-    private String jobName;
-
     private JobEventDto parent;
 
     @NotNull

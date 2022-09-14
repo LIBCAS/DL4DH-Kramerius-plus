@@ -1,13 +1,8 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.merge.components;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExport;
-import cz.inqool.dl4dh.krameriusplus.core.system.export.BulkExportStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileService;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
 import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -20,34 +15,24 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.FILE_REF_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.ZIPPED_FILE;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 
 @Component
 @StepScope
-public class CreateMergedExportTasklet implements Tasklet {
+public class CreateBulkFileRefTasklet implements Tasklet {
 
     private final FileService fileService;
 
-    private final BulkExportStore bulkExportStore;
-
-    private final JobEventStore jobEventStore;
-
     @Autowired
-    public CreateMergedExportTasklet(FileService fileService,
-                                     BulkExportStore bulkExportStore,
-                                     JobEventStore jobEventStore) {
+    public CreateBulkFileRefTasklet(FileService fileService) {
         this.fileService = fileService;
-        this.bulkExportStore = bulkExportStore;
-        this.jobEventStore = jobEventStore;
     }
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         String path = chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().getString(ZIPPED_FILE);
         Path zippedFile = Path.of(path);
-
-        StepExecution stepExecution = chunkContext.getStepContext().getStepExecution();
 
         FileRef fileRef;
 
@@ -58,11 +43,7 @@ public class CreateMergedExportTasklet implements Tasklet {
                     "application/zip");
         }
 
-        JobEvent jobEvent = jobEventStore.find(stepExecution.getJobExecution().getJobParameters().getString(JOB_EVENT_ID));
-
-        BulkExport bulkExport = bulkExportStore.findByJobEventId(jobEvent.getId());
-        bulkExport.setFileRef(fileRef);
-        bulkExportStore.update(bulkExport);
+        chunkContext.getStepContext().getStepExecution().getExecutionContext().putString(FILE_REF_ID, fileRef.getId());
 
         return RepeatStatus.FINISHED;
     }

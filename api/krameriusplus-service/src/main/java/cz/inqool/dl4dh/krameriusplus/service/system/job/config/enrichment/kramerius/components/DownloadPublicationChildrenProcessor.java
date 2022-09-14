@@ -3,9 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.krame
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
-import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +20,12 @@ public class DownloadPublicationChildrenProcessor implements ItemProcessor<Digit
 
     private final JobPlanService jobPlanService;
 
-    private final JmsProducer jmsProducer;
-
     private final String jobEventId;
 
     @Autowired
     public DownloadPublicationChildrenProcessor(JobPlanService jobPlanService,
-                                                JmsProducer jmsProducer,
                                                 @Value("#{jobParameters['" + JOB_EVENT_ID + "']}") String jobEventId) {
         this.jobPlanService = jobPlanService;
-        this.jmsProducer = jmsProducer;
         this.jobEventId = jobEventId;
     }
 
@@ -46,8 +41,8 @@ public class DownloadPublicationChildrenProcessor implements ItemProcessor<Digit
         }
     }
 
-    private void createJobPlanForChild(String childId) {
-        JobEvent eventToEnqueue = jobPlanService.createForChild(jobEventId, childId);
-        jmsProducer.sendMessage(eventToEnqueue.getConfig().getKrameriusJob(), eventToEnqueue.getId());
+    private void createJobPlanForChild(String publicationId) {
+        JobPlanDto childPlan = jobPlanService.createForChild(jobEventId, publicationId);
+        jobPlanService.startExecution(childPlan);
     }
 }

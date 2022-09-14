@@ -1,20 +1,25 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Entity representing a plan of execution. Each jobEvent in scheduledJobEvents is started only after
+ * the previous one finished.
+ */
 @Getter
 @Setter
 @Entity
-public class JobPlan extends OwnedObject {
-
-    private String name;
+public class JobPlan extends DatedObject {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "jobPlan")
     private Set<ScheduledJobEvent> scheduledJobEvents = new HashSet<>();
