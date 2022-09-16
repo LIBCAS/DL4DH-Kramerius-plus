@@ -1,18 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
-
-import java.util.List;
+import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestDto;
 
 public interface ExportFacade {
 
     ExportRequestDto export(ExportRequestCreateDto requestDto);
 
-    FileRef getFile(String fileRefId);
-
     ExportRequestDto find(String exportRequestId);
 
-    List<ExportRequestDto> listAll();
+    QueryResults<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize);
 }

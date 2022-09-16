@@ -1,10 +1,10 @@
+import { DatedObject } from './domain/dated-object'
 import { FileRef } from './fileRef'
+import { JobEvent } from './job/job-event'
 
-export interface Export {
-	id?: string
+export interface Export extends DatedObject {
 	publicationId?: string
 	publicationTitle?: string
-	created?: string
-	deleted?: string
 	fileRef?: FileRef
+	jobEvent: JobEvent
 }

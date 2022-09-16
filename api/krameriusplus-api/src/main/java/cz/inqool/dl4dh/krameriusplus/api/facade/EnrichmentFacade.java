@@ -1,9 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
-
-import java.util.List;
+import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestDto;
 
 public interface EnrichmentFacade {
 
@@ -19,5 +18,5 @@ public interface EnrichmentFacade {
 
     EnrichmentRequestDto find(String enrichmentRequestId);
 
-    List<EnrichmentRequestDto> list();
+    QueryResults<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize);
 }

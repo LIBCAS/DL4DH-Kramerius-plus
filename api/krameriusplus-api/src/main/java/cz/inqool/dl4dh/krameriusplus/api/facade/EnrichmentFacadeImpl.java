@@ -1,12 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.EnrichmentRequestService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
+import com.querydsl.core.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.EnrichmentRequestService;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class EnrichmentFacadeImpl implements EnrichmentFacade {
@@ -33,7 +32,7 @@ public class EnrichmentFacadeImpl implements EnrichmentFacade {
     }
 
     @Override
-    public List<EnrichmentRequestDto> list() {
-        return service.listAll();
+    public QueryResults<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize) {
+        return service.list(name, owner, page, pageSize);
     }
 }

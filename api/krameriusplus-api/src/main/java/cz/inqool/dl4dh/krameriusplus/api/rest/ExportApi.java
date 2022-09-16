@@ -1,21 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
-import cz.inqool.dl4dh.krameriusplus.api.dto.export.*;
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
-import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author Norbert Bodnar
@@ -83,22 +78,11 @@ public class ExportApi {
     @Operation(summary = "List all export requests.")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping("/list")
-    public List<ExportRequestDto> list() {
-        return exportFacade.listAll();
-    }
-
-    @Operation(summary = "Download export.")
-    @ApiResponse(responseCode = "200", description = "OK")
-    @GetMapping(value = "/download/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<InputStreamResource> download(@PathVariable("id") String fileRefId) {
-        FileRef file = exportFacade.getFile(fileRefId);
-
-        file.open();
-
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"" + file.getName()+"\"")
-                .header("Content-Length", String.valueOf(file.getSize()))
-                .contentType(MediaType.parseMediaType(file.getContentType()))
-                .body(new InputStreamResource(file.getStream()));
+    public QueryResults<ExportRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                               @RequestParam(value = "page", defaultValue = "0") int page,
+                                               @RequestParam(value = "name", required = false) String name,
+                                               @RequestParam(value = "owner", required = false) String owner,
+                                               @RequestParam(value = "isFinished", required = false) Boolean isFinished) {
+        return exportFacade.list(name, owner, isFinished, page, pageSize);
     }
 }

@@ -2,37 +2,56 @@ import {
 	ExportFormat,
 	ExportJobConfig,
 } from 'components/publication/publication-export-dialog'
-import { Export } from 'models/export'
+import { ExportRequest } from 'models/export-request/export-request'
+import { ExportRequestFilterDto } from 'models/export-request/export-request-filter-dto'
 import { QueryResults } from 'models/query-results'
 import { customFetch } from 'utils/custom-fetch'
 
-export const listExports = async (
+export const exportPublication = async (
+	publicationIds: string[],
+	config: ExportJobConfig,
+	format: ExportFormat,
+	name?: string,
+): Promise<Response> => {
+	return await customFetch(`/api/exports/${format}`, {
+		method: 'POST',
+		body: JSON.stringify({
+			config,
+			name,
+			publicationIds,
+		}),
+	})
+}
+
+export const listExportRequests = async (
 	page: number,
 	pageSize: number,
-	publicationId?: string,
-): Promise<QueryResults<Export>> => {
-	let url = `/api/exports/list?page=${page}&pageSize=${pageSize}`
+	filter?: ExportRequestFilterDto,
+): Promise<QueryResults<ExportRequest>> => {
+	const filterCopy = { ...filter }
 
-	url = publicationId ? `${url}&publicationId=${publicationId}` : url
+	const filterParams = filterCopy
+		? Object.entries(filterCopy)
+				.map(([key, value]) => (value ? `&${key}=${value}` : ''))
+				.join('')
+		: ''
+	const url = `/api/exports/list?page=${page}&pageSize=${pageSize}${filterParams}`
 
 	const response = await customFetch(url, {
 		method: 'GET',
 	})
 
-	return await response?.json()
+	return await response.json()
 }
 
-export const exportPublication = async (
-	id: string,
-	config: ExportJobConfig,
-	format: ExportFormat,
-): Promise<Response> => {
-	return await customFetch(`/api/exports/${id}/${format}`, {
-		method: 'POST',
-		body: JSON.stringify(config),
+export const getExportRequest = async (
+	requestId: string,
+): Promise<ExportRequest> => {
+	const url = `/api/exports/${requestId}`
+
+	const response = await customFetch(url, {
+		method: 'GET',
 	})
-}
 
-export const downloadExport = async (id: string): Promise<Response> => {
-	return await customFetch(`/api/exports/download/${id}`)
+	return await response.json()
 }

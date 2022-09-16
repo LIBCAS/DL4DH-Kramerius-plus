@@ -9,7 +9,6 @@ export const customFetch = async (
 	headers = { ...headers, 'Content-type': 'application/json' }
 
 	if (token) {
-		console.log('Adding token to headers')
 		headers = { ...headers, Authorization: `Bearer ${token}` }
 	}
 

@@ -11,14 +11,7 @@ import { PublicationJobEventList } from 'components/publication/publication-job-
 import { ReadOnlyField } from 'components/read-only-field/read-only-field'
 import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
 import { Publication } from 'models'
-import {
-	downloadKStructure,
-	enrichExternal,
-	enrichNdk,
-	enrichTei,
-} from 'api/enrichment-api'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 import { PublicationExportDialog } from '../../components/publication/publication-export-dialog'
 import { getPublication, publish, unpublish } from '../../api/publication-api'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
@@ -60,39 +53,6 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 			await unpublish(publicationId)
 		} else {
 			await publish(publicationId)
-		}
-
-		const fetchPublication = async () => {
-			const publication = await getPublication(publicationId)
-			setPublication(publication)
-			setSelectedJobType(undefined)
-		}
-
-		fetchPublication()
-	}
-
-	const createNewJob = async () => {
-		async function createJob() {
-			switch (selectedJobType) {
-				case EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS:
-					return downloadKStructure([publicationId], true)
-				case EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL:
-					return enrichExternal([publicationId])
-				case EnrichmentKrameriusJob.ENRICHMENT_NDK:
-					return enrichNdk([publicationId])
-				case EnrichmentKrameriusJob.ENRICHMENT_TEI:
-					return enrichTei([publicationId])
-			}
-		}
-		const response = await createJob()
-		if (response?.ok) {
-			toast('Operace proběhla úspěšně', {
-				type: 'success',
-			})
-		} else {
-			toast('Při pokusu o obohacení nastala chyba.', {
-				type: 'error',
-			})
 		}
 
 		const fetchPublication = async () => {
@@ -191,17 +151,6 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 					>
 						<Grid item lg={4} xl={8}>
 							<Typography variant="h6">Úlohy</Typography>
-						</Grid>
-						<Grid item lg={8} xl={4}>
-							<Button
-								color="primary"
-								disabled
-								fullWidth
-								variant="contained"
-								onClick={createNewJob}
-							>
-								Spustit novou úlohu
-							</Button>
 						</Grid>
 					</Grid>
 					<Grid item xs={12}>

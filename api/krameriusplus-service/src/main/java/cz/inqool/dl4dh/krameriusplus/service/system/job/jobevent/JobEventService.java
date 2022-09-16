@@ -4,9 +4,13 @@ import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.*;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventFilter;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventDetailDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent.dto.JobEventMapper;
@@ -24,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,23 +54,6 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     private JobOperator jobOperator;
 
     private JobEventListener jobEventListener;
-
-    @Transactional
-    public List<JobEventDto> create(@NonNull List<@Valid JobEventCreateDto> createDtos) {
-        List<JobEventDto> result = new ArrayList<>();
-
-        createDtos.forEach(createDto -> result.add(create(createDto)));
-
-        return result;
-    }
-
-    @Override
-    @Transactional
-    public JobEventDto create(@NonNull JobEventCreateDto createDto) {
-        JobEvent jobEvent = mapper.fromCreateDto(createDto);
-
-        return mapper.toDto(create(jobEvent));
-    }
 
     @Override
     @Transactional

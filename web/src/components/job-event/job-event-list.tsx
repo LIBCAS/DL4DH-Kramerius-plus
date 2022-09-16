@@ -83,13 +83,7 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 					navigate(params.row['id'])
 				}
 				return (
-					<Button
-						color="primary"
-						// component={Link}
-						// to={params.row['id']}
-						variant="contained"
-						onClick={onClick}
-					>
+					<Button color="primary" variant="contained" onClick={onClick}>
 						Detail
 					</Button>
 				)

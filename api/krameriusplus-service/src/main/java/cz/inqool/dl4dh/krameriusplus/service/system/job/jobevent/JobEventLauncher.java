@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.jobevent;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.JobException;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;

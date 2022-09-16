@@ -91,7 +91,7 @@ export const PublicationExportDialog: FC<{
 			} as ExportJobConfig
 		}
 
-		const response = await exportPublication(publicationId, config, format)
+		const response = await exportPublication([publicationId], config, format)
 
 		if (response.ok) {
 			toast('Operace proběhla úspěšně', {

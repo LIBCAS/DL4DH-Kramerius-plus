@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.EnrichmentJobDesigner;
 import org.springframework.batch.core.Job;
 import org.springframework.context.annotation.Bean;

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.validation;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.JobEventValidator;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.ValidatorType;
 import org.springframework.batch.core.JobParameters;
@@ -9,10 +9,7 @@ import org.springframework.batch.core.JobParametersInvalidException;
 
 import java.util.Set;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.KRAMERIUS_JOB;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.OVERRIDE;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.*;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.validation.ValidatorType.ENRICHMENT;
 
 public class OverrideValidator implements JobEventValidator {

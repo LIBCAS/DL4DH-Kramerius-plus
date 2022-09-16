@@ -8,7 +8,7 @@ import { MissingAltoStrategy } from '../../enums/missing-alto-strategy'
 import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment/enrichment-job-event-config'
 import { ConfigDialog } from './config-accordion/config-dialog'
 import { toast } from 'react-toastify'
-import { createPlan } from '../../api/enrichment-api'
+import { enrich } from '../../api/enrichment-api'
 
 const initialCurrentConfig: EnrichmentJobEventConfig = {
 	override: true,
@@ -139,7 +139,7 @@ export const EnrichmentForm = () => {
 
 	const onFormSubmit = (event: FormEvent) => {
 		async function sendRequest() {
-			const response = await createPlan(
+			const response = await enrich(
 				plan.publicationIds,
 				plan.configs,
 				plan.name,

@@ -1,8 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.facade.EnrichmentFacade;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -28,11 +28,8 @@ public class EnrichmentApi {
         this.facade = facade;
     }
 
-    @Operation(summary = "Create a more complex plan for running multiple jobs for multiple publications in the specified order. " +
-            "For every publicationId, a new JobPlan will be created, consisting of multiple JobEvents. For every created JobPlan, " +
-            "a new JobEvent is created for every configuration in the given configs array(in order in which they were received). " +
-            "Every created JobPlan is then enqueued to run. When run, it's first JobEvent will be run. After it successfully finishes, " +
-            "the next JobEvent will be run, and so on.")
+    @Operation(summary = "Create an Enrichment request. An EnrichmentRequest consists of a collection of JobPlans, " +
+            "where each JobPlan is a sequence of JobEvents for a given publication.")
     @ApiResponse(responseCode = "200", description = "OK")
     @PostMapping(produces = APPLICATION_JSON_VALUE)
     public EnrichmentRequestDto enrich(@Valid @RequestBody EnrichmentRequestCreateDto requestDto) {
@@ -47,7 +44,10 @@ public class EnrichmentApi {
 
     @Operation(summary = "List enrichment requests.")
     @GetMapping("/list")
-    public List<EnrichmentRequestDto> list() {
-        return facade.list();
+    public QueryResults<EnrichmentRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                                   @RequestParam(value = "name", required = false) String name,
+                                                   @RequestParam(value = "owner", required = false) String owner) {
+        return facade.list(name, owner, page, pageSize);
     }
 }
