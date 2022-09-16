@@ -1,7 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.api.dto.export;
+package cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.TextExportJobConfigDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestCreateDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
