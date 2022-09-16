@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.facade.ExportFacade;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author Norbert Bodnar
@@ -78,7 +78,11 @@ public class ExportApi {
     @Operation(summary = "List all export requests.")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping("/list")
-    public List<ExportRequestDto> list() {
-        return exportFacade.listAll();
+    public QueryResults<ExportRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                               @RequestParam(value = "page", defaultValue = "0") int page,
+                                               @RequestParam(value = "name", required = false) String name,
+                                               @RequestParam(value = "owner", required = false) String owner,
+                                               @RequestParam(value = "isFinished", required = false) Boolean isFinished) {
+        return exportFacade.list(name, owner, isFinished, page, pageSize);
     }
 }

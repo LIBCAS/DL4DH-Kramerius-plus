@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.rest;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.api.facade.EnrichmentFacade;
 import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestDto;
@@ -11,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -44,7 +44,10 @@ public class EnrichmentApi {
 
     @Operation(summary = "List enrichment requests.")
     @GetMapping("/list")
-    public List<EnrichmentRequestDto> list() {
-        return facade.list();
+    public QueryResults<EnrichmentRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                                   @RequestParam(value = "name", required = false) String name,
+                                                   @RequestParam(value = "owner", required = false) String owner) {
+        return facade.list(name, owner, page, pageSize);
     }
 }

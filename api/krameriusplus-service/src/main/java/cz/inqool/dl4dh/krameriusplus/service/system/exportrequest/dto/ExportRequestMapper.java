@@ -13,12 +13,16 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMappe
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(uses = {JobPlanMapper.class, BulkExportMapper.class, JobEventConfigMapper.class})
 public interface ExportRequestMapper extends DatedObjectMapper<ExportRequest, ExportRequestCreateDto, ExportRequestDto> {
 
     JobPlanMapper jobPlanMapper = Mappers.getMapper(JobPlanMapper.class);
 
     JobEventConfigMapper configMapper = Mappers.getMapper(JobEventConfigMapper.class);
+
+    List<ExportRequestDto> toDtoList(List<ExportRequest> enrichmentRequests);
 
     @Override
     default ExportRequest fromCreateDto(ExportRequestCreateDto createDto) {

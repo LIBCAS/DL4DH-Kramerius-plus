@@ -1,12 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.ExportRequestService;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ExportFacadeImpl implements ExportFacade {
@@ -33,7 +32,7 @@ public class ExportFacadeImpl implements ExportFacade {
     }
 
     @Override
-    public List<ExportRequestDto> listAll() {
-        return exportRequestService.listAll();
+    public QueryResults<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize) {
+        return exportRequestService.list(name, owner, isFinished, page, pageSize);
     }
 }

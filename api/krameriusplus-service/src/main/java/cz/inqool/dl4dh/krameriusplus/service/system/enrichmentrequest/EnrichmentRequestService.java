@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestCreateDto;
@@ -50,5 +51,11 @@ public class EnrichmentRequestService implements DatedService<
         for (JobPlanDto jobPlanDto : enrichmentRequestDto.getJobPlans()) {
             jobPlanService.startExecution(jobPlanDto);
         }
+    }
+
+    public QueryResults<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize) {
+        QueryResults<EnrichmentRequest> results = store.list(name, owner, page, pageSize);
+
+        return new QueryResults<>(mapper.toDtoList(results.getResults()), results.getLimit(), results.getOffset(), results.getTotal());
     }
 }

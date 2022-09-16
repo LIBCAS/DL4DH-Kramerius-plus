@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.exportrequest;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
@@ -43,6 +44,12 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
 
     public void startExecution(ExportRequestDto exportRequestDto) {
         jobPlanService.startExecution(exportRequestDto.getJobPlan());
+    }
+
+    public QueryResults<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize) {
+        QueryResults<ExportRequest> results = store.list(name, owner, isFinished, page, pageSize);
+
+        return new QueryResults<>(mapper.toDtoList(results.getResults()), results.getLimit(), results.getOffset(), results.getTotal());
     }
 
     private void validateParams(Params params) {

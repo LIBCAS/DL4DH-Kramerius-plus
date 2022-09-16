@@ -1,9 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
+import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestDto;
-
-import java.util.List;
 
 public interface ExportFacade {
 
@@ -11,5 +10,5 @@ public interface ExportFacade {
 
     ExportRequestDto find(String exportRequestId);
 
-    List<ExportRequestDto> listAll();
+    QueryResults<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize);
 }
