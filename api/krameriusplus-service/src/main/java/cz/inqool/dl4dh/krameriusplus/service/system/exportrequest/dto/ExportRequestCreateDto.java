@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto;
+package cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.dto.OwnedObjectCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.ExportJobConfigDto;
@@ -8,7 +8,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Getter
 @Setter

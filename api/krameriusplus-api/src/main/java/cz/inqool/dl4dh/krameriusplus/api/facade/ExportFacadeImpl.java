@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.ExportRequestService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest.dto.ExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.ExportRequestService;
+import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

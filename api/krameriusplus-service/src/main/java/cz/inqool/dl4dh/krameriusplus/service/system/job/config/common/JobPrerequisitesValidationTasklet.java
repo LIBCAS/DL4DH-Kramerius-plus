@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ValidationException;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.ValidatedTasklet;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepContribution;

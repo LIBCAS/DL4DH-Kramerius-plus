@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.api.facade;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.EnrichmentRequestService;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.EnrichmentRequestService;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

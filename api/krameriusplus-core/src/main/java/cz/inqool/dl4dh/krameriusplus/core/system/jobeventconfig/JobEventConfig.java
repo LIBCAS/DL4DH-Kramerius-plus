@@ -1,7 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobParametersConverter;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
 import lombok.Getter;
 import lombok.Setter;
 

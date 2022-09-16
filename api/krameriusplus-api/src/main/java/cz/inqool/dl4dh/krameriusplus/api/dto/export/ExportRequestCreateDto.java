@@ -1,14 +1,24 @@
 package cz.inqool.dl4dh.krameriusplus.api.dto.export;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export.ExportJobConfigDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
-public interface ExportRequestCreateDto {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public abstract class ExportRequestCreateDto {
 
-    String getName();
+    protected String name;
 
-    Set<String> getPublications();
-
-    ExportJobConfigDto getConfig();
+    @NotNull
+    @NotEmpty
+    protected Set<String> publications = new HashSet<>();
 }

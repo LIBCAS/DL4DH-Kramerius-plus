@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto;
+package cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.dto.OwnedObjectDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;

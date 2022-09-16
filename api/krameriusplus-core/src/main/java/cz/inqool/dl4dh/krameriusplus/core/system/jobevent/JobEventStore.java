@@ -4,6 +4,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.store.DatedStore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.JobPlan;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.QJobPlan;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.QScheduledJobEvent;

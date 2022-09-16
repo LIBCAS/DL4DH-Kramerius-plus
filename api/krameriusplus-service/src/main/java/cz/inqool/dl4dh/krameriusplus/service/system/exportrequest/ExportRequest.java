@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.exportrequest;
+package cz.inqool.dl4dh.krameriusplus.service.system.exportrequest;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.OwnedObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.BulkExport;

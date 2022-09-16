@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.enrichment;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.KrameriusJob;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.MissingAltoOption;
 import lombok.Getter;
 import lombok.Setter;

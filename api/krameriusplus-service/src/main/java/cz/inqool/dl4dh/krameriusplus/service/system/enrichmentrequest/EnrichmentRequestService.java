@@ -1,10 +1,10 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest;
+package cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.JobPlan;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.enrichmentrequest.dto.EnrichmentRequestMapper;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import lombok.Getter;
