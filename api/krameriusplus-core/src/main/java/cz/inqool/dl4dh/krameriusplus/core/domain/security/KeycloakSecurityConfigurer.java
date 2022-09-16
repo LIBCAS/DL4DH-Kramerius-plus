@@ -65,6 +65,7 @@ public class KeycloakSecurityConfigurer extends KeycloakWebSecurityConfigurerAda
                         .antMatchers("/api/info").permitAll()
                         .antMatchers("/h2-console/**").permitAll()
                         .antMatchers("/favicon.ico").permitAll()
+                        .antMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .cors().and()
                 .csrf().disable()

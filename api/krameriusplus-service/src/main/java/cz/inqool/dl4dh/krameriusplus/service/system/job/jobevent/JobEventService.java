@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,23 +50,6 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     private JobOperator jobOperator;
 
     private JobEventListener jobEventListener;
-
-    @Transactional
-    public List<JobEventDto> create(@NonNull List<@Valid JobEventCreateDto> createDtos) {
-        List<JobEventDto> result = new ArrayList<>();
-
-        createDtos.forEach(createDto -> result.add(create(createDto)));
-
-        return result;
-    }
-
-    @Override
-    @Transactional
-    public JobEventDto create(@NonNull JobEventCreateDto createDto) {
-        JobEvent jobEvent = mapper.fromCreateDto(createDto);
-
-        return mapper.toDto(create(jobEvent));
-    }
 
     @Override
     @Transactional

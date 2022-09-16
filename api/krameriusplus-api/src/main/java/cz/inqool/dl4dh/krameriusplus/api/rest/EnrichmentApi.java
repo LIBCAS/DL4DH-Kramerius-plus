@@ -28,11 +28,8 @@ public class EnrichmentApi {
         this.facade = facade;
     }
 
-    @Operation(summary = "Create a more complex plan for running multiple jobs for multiple publications in the specified order. " +
-            "For every publicationId, a new JobPlan will be created, consisting of multiple JobEvents. For every created JobPlan, " +
-            "a new JobEvent is created for every configuration in the given configs array(in order in which they were received). " +
-            "Every created JobPlan is then enqueued to run. When run, it's first JobEvent will be run. After it successfully finishes, " +
-            "the next JobEvent will be run, and so on.")
+    @Operation(summary = "Create an Enrichment request. An EnrichmentRequest consists of a collection of JobPlans, " +
+            "where each JobPlan is a sequence of JobEvents for a given publication.")
     @ApiResponse(responseCode = "200", description = "OK")
     @PostMapping(produces = APPLICATION_JSON_VALUE)
     public EnrichmentRequestDto enrich(@Valid @RequestBody EnrichmentRequestCreateDto requestDto) {
