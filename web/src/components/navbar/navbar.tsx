@@ -60,15 +60,15 @@ const pages: NavbarItem[] = [
 		onlyAuthenticated: true,
 		children: [
 			{
-				name: 'Export jobs',
-				label: 'Úlohy exportování',
-				link: '/jobs/exporting',
+				name: 'Export requests',
+				label: 'Exporty',
+				link: '/exports',
 				onlyAuthenticated: true,
 			},
 			{
-				name: 'Exports',
-				label: 'Exporty',
-				link: '/exports',
+				name: 'Export jobs',
+				label: 'Úlohy exportování',
+				link: '/jobs/exporting',
 				onlyAuthenticated: true,
 			},
 		],

@@ -1,4 +1,5 @@
 import { GridValueFormatterParams } from '@mui/x-data-grid'
+import { KrameriusUser } from 'models/domain/kramerius-user'
 
 export const dateTimeFormatter = (params: GridValueFormatterParams) => {
 	if (params.value === undefined) {
@@ -20,4 +21,13 @@ export const durationFormatter = (params: GridValueFormatterParams) => {
 	}
 
 	return new Date(durationInMillis).toISOString().slice(11, -1)
+}
+
+export const ownerFormatter = (params: GridValueFormatterParams) => {
+	if (params.value == undefined) {
+		return '-'
+	}
+
+	const owner = params.value as KrameriusUser
+	return owner.username
 }

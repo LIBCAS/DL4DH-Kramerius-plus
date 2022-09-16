@@ -4,27 +4,23 @@ import {
 	GridRenderCellParams,
 	GridValueFormatterParams,
 } from '@mui/x-data-grid'
-import { listEnrichmentRequests } from 'api/enrichment-api'
-import { EnrichmentRequest } from 'models/enrichment-request'
-import { JobPlan } from 'models/job-plan'
+import { listExportRequests } from 'api/export-api'
+import { ExportRequest } from 'models/export-request'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter, ownerFormatter } from 'utils/formatters'
 
-export const publicationCountFormatter = (params: GridValueFormatterParams) => {
+const exportDoneFormatter = (params: GridValueFormatterParams) => {
 	if (params.value === undefined) {
-		return '-'
+		return 'NE'
 	}
 
-	const jobPlans = params.value as JobPlan[]
-	return jobPlans.length.toString()
+	return 'ANO'
 }
 
-export const EnrichmentRequestList: FC = () => {
+export const ExportRequestList: FC = () => {
 	const [rowCount, setRowCount] = useState<number>()
-	const [enrichmentRequests, setEnrichmentRequests] = useState<
-		EnrichmentRequest[]
-	>([])
+	const [exportRequests, setExportRequests] = useState<ExportRequest[]>([])
 	const [page, setPage] = useState<number>(0)
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
@@ -59,11 +55,11 @@ export const EnrichmentRequestList: FC = () => {
 			type: 'string',
 		},
 		{
-			field: 'jobPlans',
-			headerName: 'Počet publikací',
+			field: 'bulkExport',
+			headerName: 'Ukončen',
 			width: 200,
 			type: 'string',
-			valueFormatter: publicationCountFormatter,
+			valueFormatter: exportDoneFormatter,
 		},
 		{
 			field: 'action',
@@ -85,10 +81,10 @@ export const EnrichmentRequestList: FC = () => {
 
 	useEffect(() => {
 		async function fetchRequests() {
-			const response = await listEnrichmentRequests()
+			const response = await listExportRequests()
 
 			if (response) {
-				setEnrichmentRequests(response)
+				setExportRequests(response)
 				setRowCount(response.length)
 			}
 		}
@@ -115,7 +111,7 @@ export const EnrichmentRequestList: FC = () => {
 				pageSize={10}
 				paginationMode="server"
 				rowCount={rowCountState}
-				rows={enrichmentRequests}
+				rows={exportRequests}
 				rowsPerPageOptions={[]}
 				onPageChange={onPageChange}
 			/>

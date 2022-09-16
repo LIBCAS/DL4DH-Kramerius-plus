@@ -1,7 +1,7 @@
 import { Paper, Grid } from '@mui/material'
 import { FC } from 'react'
-import { EnrichmentForm } from '../components/enrichment/enrichment-form'
-import { PageWrapper } from './page-wrapper'
+import { EnrichmentForm } from '../../components/enrichment/enrichment-form'
+import { PageWrapper } from '../page-wrapper'
 
 export const EnrichmentPage: FC = () => {
 	return (

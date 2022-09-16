@@ -5,7 +5,7 @@ import { EnrichmentRequestDetail } from 'modules/enrichment-request/enrichment-r
 import { EnrichmentRequestPlans } from 'modules/enrichment-request/enrichment-request-plans'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { PageWrapper } from './page-wrapper'
+import { PageWrapper } from '../page-wrapper'
 import { Loading } from 'components/loading'
 
 export const EnrichmentRequestDetailPage: FC = () => {

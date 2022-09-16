@@ -5,11 +5,11 @@ import {
 	GridRenderCellParams,
 } from '@mui/x-data-grid'
 import { Export } from 'models'
-import { FC, FormEvent, useEffect, useState } from 'react'
-import { downloadExport, listExports } from '../api/export-api'
+import { FC, useEffect, useState } from 'react'
+import { listExports } from '../api/export-api'
 import { Button } from '@mui/material'
 import { PageWrapper } from './page-wrapper'
-import { toast } from 'react-toastify'
+import { download } from 'api/file-ref-api'
 
 const getType = (params: GridValueGetterParams) => {
 	return params.row['fileRef'].contentType
@@ -65,44 +65,8 @@ const columns: GridColDef[] = [
 		flex: 1,
 		sortable: false,
 		renderCell: (params: GridRenderCellParams) => {
-			const onClick = async (event: FormEvent) => {
-				let filename = ''
-				downloadExport(`${params.row['fileRef']?.id}`)
-					.then(response => {
-						if (response.ok) {
-							filename =
-								response.headers
-									.get('content-disposition')
-									?.split('; ')[1]
-									.split('=')[1] ?? 'file'
-
-							filename = filename?.substring(1, filename.length - 1)
-
-							return response.blob()
-						} else {
-							throw Error(response.statusText)
-						}
-					})
-					.then(blob => {
-						const url = window.URL.createObjectURL(new Blob([blob]))
-						const link = document.createElement('a')
-						link.href = url
-						link.setAttribute('download', filename)
-
-						document.body.appendChild(link)
-						link.click()
-						link.parentNode?.removeChild(link)
-					})
-					.catch(e => {
-						toast(`Nastala chyba při stahování: ${e}`, {
-							type: 'error',
-						})
-					})
-
-				event.preventDefault()
-			}
 			return (
-				<form onSubmit={onClick}>
+				<form onSubmit={download(`${params.row['fileRef']?.id}`)}>
 					<Button color="primary" type="submit" variant="contained">
 						Stáhnout
 					</Button>

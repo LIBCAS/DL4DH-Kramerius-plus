@@ -2,7 +2,7 @@ import { Grid } from '@mui/material'
 import { EnrichmentRequestFilter } from 'modules/enrichment-request/enrichment-request-filter'
 import { EnrichmentRequestList } from 'modules/enrichment-request/enrichment-request-list'
 import { FC } from 'react'
-import { PageWrapper } from './page-wrapper'
+import { PageWrapper } from '../page-wrapper'
 
 export const EnrichmentRequestListPage: FC = () => {
 	return (
