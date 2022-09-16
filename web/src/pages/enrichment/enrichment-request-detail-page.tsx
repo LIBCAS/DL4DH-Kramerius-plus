@@ -1,6 +1,6 @@
 import { Divider, Grid, Paper } from '@mui/material'
 import { getEnrichmentRequest } from 'api/enrichment-api'
-import { EnrichmentRequest } from 'models/enrichment-request'
+import { EnrichmentRequest } from 'models/enrichment-request/enrichment-request'
 import { EnrichmentRequestDetail } from 'modules/enrichment-request/enrichment-request-detail'
 import { EnrichmentRequestPlans } from 'modules/enrichment-request/enrichment-request-plans'
 import { FC, useEffect, useState } from 'react'

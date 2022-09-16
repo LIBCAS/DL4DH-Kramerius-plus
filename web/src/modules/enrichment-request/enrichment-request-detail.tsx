@@ -1,6 +1,6 @@
 import { Divider, Grid, Typography } from '@mui/material'
 import { JobEventDataRow } from 'components/job-event/job-event-data-row'
-import { EnrichmentRequest } from 'models/enrichment-request'
+import { EnrichmentRequest } from 'models/enrichment-request/enrichment-request'
 import { FC } from 'react'
 import { formatDateTime } from 'utils/formatters'
 

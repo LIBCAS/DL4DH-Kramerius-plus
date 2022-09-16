@@ -2,26 +2,10 @@ import {
 	ExportFormat,
 	ExportJobConfig,
 } from 'components/publication/publication-export-dialog'
-import { Export } from 'models/export'
-import { ExportRequest } from 'models/export-request'
+import { ExportRequest } from 'models/export-request/export-request'
+import { ExportRequestFilterDto } from 'models/export-request/export-request-filter-dto'
 import { QueryResults } from 'models/query-results'
 import { customFetch } from 'utils/custom-fetch'
-
-export const listExports = async (
-	page: number,
-	pageSize: number,
-	publicationId?: string,
-): Promise<QueryResults<Export>> => {
-	let url = `/api/exports/list?page=${page}&pageSize=${pageSize}`
-
-	url = publicationId ? `${url}&publicationId=${publicationId}` : url
-
-	const response = await customFetch(url, {
-		method: 'GET',
-	})
-
-	return await response?.json()
-}
 
 export const exportPublication = async (
 	publicationIds: string[],
@@ -39,8 +23,19 @@ export const exportPublication = async (
 	})
 }
 
-export const listExportRequests = async (): Promise<ExportRequest[]> => {
-	const url = '/api/exports/list'
+export const listExportRequests = async (
+	page: number,
+	pageSize: number,
+	filter?: ExportRequestFilterDto,
+): Promise<QueryResults<ExportRequest>> => {
+	const filterCopy = { ...filter }
+
+	const filterParams = filterCopy
+		? Object.entries(filterCopy)
+				.map(([key, value]) => (value ? `&${key}=${value}` : ''))
+				.join('')
+		: ''
+	const url = `/api/exports/list?page=${page}&pageSize=${pageSize}${filterParams}`
 
 	const response = await customFetch(url, {
 		method: 'GET',

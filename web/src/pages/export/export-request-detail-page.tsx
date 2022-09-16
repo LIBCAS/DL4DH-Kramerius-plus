@@ -1,7 +1,7 @@
 import { Divider, Grid, Paper } from '@mui/material'
 import { getExportRequest } from 'api/export-api'
 import { Loading } from 'components/loading'
-import { ExportRequest } from 'models/export-request'
+import { ExportRequest } from 'models/export-request/export-request'
 import { ExportRequestDetail } from 'modules/export-request/export-request-detail'
 import { ExportRequestExportsList } from 'modules/export-request/export-request-export-list'
 import { PageWrapper } from 'pages/page-wrapper'

@@ -5,7 +5,8 @@ import {
 	GridValueFormatterParams,
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
-import { ExportRequest } from 'models/export-request'
+import { ExportRequest } from 'models/export-request/export-request'
+import { ExportRequestFilterDto } from 'models/export-request/export-request-filter-dto'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter, ownerFormatter } from 'utils/formatters'
@@ -18,7 +19,9 @@ const exportDoneFormatter = (params: GridValueFormatterParams) => {
 	return 'ANO'
 }
 
-export const ExportRequestList: FC = () => {
+export const ExportRequestList: FC<{ filter: ExportRequestFilterDto }> = ({
+	filter,
+}) => {
 	const [rowCount, setRowCount] = useState<number>()
 	const [exportRequests, setExportRequests] = useState<ExportRequest[]>([])
 	const [page, setPage] = useState<number>(0)
@@ -81,15 +84,15 @@ export const ExportRequestList: FC = () => {
 
 	useEffect(() => {
 		async function fetchRequests() {
-			const response = await listExportRequests()
+			const response = await listExportRequests(page, 10, filter)
 
 			if (response) {
-				setExportRequests(response)
-				setRowCount(response.length)
+				setExportRequests(response.results)
+				setRowCount(response.limit)
 			}
 		}
 		fetchRequests()
-	}, [page])
+	}, [page, filter])
 
 	useEffect(() => {
 		setRowCountState(prevRowCountState =>

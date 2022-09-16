@@ -61,7 +61,7 @@ const pages: NavbarItem[] = [
 		children: [
 			{
 				name: 'Export requests',
-				label: 'Exporty',
+				label: 'Žádosti exportu',
 				link: '/exports',
 				onlyAuthenticated: true,
 			},

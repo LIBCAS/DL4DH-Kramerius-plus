@@ -5,7 +5,8 @@ import {
 	GridValueFormatterParams,
 } from '@mui/x-data-grid'
 import { listEnrichmentRequests } from 'api/enrichment-api'
-import { EnrichmentRequest } from 'models/enrichment-request'
+import { EnrichmentRequest } from 'models/enrichment-request/enrichment-request'
+import { EnrichmentRequestFilterDto } from 'models/enrichment-request/enrichment-request-filter-dto'
 import { JobPlan } from 'models/job-plan'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -20,7 +21,9 @@ export const publicationCountFormatter = (params: GridValueFormatterParams) => {
 	return jobPlans.length.toString()
 }
 
-export const EnrichmentRequestList: FC = () => {
+export const EnrichmentRequestList: FC<{
+	filter: EnrichmentRequestFilterDto
+}> = ({ filter }) => {
 	const [rowCount, setRowCount] = useState<number>()
 	const [enrichmentRequests, setEnrichmentRequests] = useState<
 		EnrichmentRequest[]
@@ -85,15 +88,15 @@ export const EnrichmentRequestList: FC = () => {
 
 	useEffect(() => {
 		async function fetchRequests() {
-			const response = await listEnrichmentRequests()
+			const response = await listEnrichmentRequests(page, 10, filter)
 
 			if (response) {
-				setEnrichmentRequests(response)
-				setRowCount(response.length)
+				setEnrichmentRequests(response.results)
+				setRowCount(response.limit)
 			}
 		}
 		fetchRequests()
-	}, [page])
+	}, [page, filter])
 
 	useEffect(() => {
 		setRowCountState(prevRowCountState =>
