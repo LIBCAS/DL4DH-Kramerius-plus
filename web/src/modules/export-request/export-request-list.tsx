@@ -3,6 +3,7 @@ import {
 	DataGrid,
 	GridRenderCellParams,
 	GridValueFormatterParams,
+	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
 import { ExportRequest } from 'models/export-request/export-request'
@@ -56,6 +57,18 @@ export const ExportRequestList: FC<{ filter: ExportRequestFilterDto }> = ({
 			headerName: 'Název',
 			width: 350,
 			type: 'string',
+		},
+		{
+			field: 'bulkExportFormat',
+			headerName: 'Formát',
+			width: 200,
+			type: 'string',
+			valueGetter: (params: GridValueGetterParams) => {
+				return (
+					exportRequests.find(request => request.id === params.id)?.bulkExport
+						?.format ?? '-'
+				)
+			},
 		},
 		{
 			field: 'bulkExport',

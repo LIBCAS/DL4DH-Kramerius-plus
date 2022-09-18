@@ -1,7 +1,9 @@
 import {
 	DataGrid,
+	GridCallbackDetails,
 	GridColDef,
 	GridRowParams,
+	GridSelectionModel,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { Publication } from 'models'
@@ -13,6 +15,10 @@ type Props = {
 	rowCount?: number
 	onPageChange: (page: number) => void
 	onRowClick: (publicationId: string) => void
+	onSelectionChange: (
+		selectionModel: GridSelectionModel,
+		details: GridCallbackDetails,
+	) => void
 }
 
 const getModel = (params: GridValueGetterParams) => {
@@ -49,6 +55,7 @@ export const PublicationListTable: FC<Props> = ({
 	rowCount,
 	onPageChange,
 	onRowClick,
+	onSelectionChange,
 }) => {
 	const handleRowClick = (params: GridRowParams) => {
 		onRowClick(params.row['id'])
@@ -57,6 +64,7 @@ export const PublicationListTable: FC<Props> = ({
 	return (
 		<DataGrid
 			autoHeight={true}
+			checkboxSelection
 			columns={columns}
 			density="compact"
 			disableColumnFilter
@@ -68,6 +76,7 @@ export const PublicationListTable: FC<Props> = ({
 			rowsPerPageOptions={[]}
 			onPageChange={onPageChange}
 			onRowClick={handleRowClick}
+			onSelectionModelChange={onSelectionChange}
 		/>
 	)
 }

@@ -35,6 +35,10 @@ export const ExportRequestDetail: FC<Props> = ({ request }) => {
 				label="Vytvořeno v"
 				value={formatDateTime(request.created)}
 			/>
+			<JobEventDataRow
+				label="Formát"
+				value={request.bulkExport?.format ?? '-'}
+			/>
 			<JobEventDataRow label="Název" value={request.name ?? '-'} />
 		</Grid>
 	)

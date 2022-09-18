@@ -2,7 +2,7 @@ import { Grid, Typography, Divider, Button } from '@mui/material'
 import { restartJob, stopJob } from 'api/job-api'
 import { ApiError } from 'models'
 import { JobEvent } from 'models/job/job-event'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { formatDateTime } from 'utils/formatters'
@@ -37,6 +37,11 @@ export const JobEventDataDisplay: FC<Props> = ({
 
 		callStop()
 	}
+
+	useEffect(() => {
+		// const decodedJson = JSON.parse(jobEvent.config.parameters)
+		console.log(JSON.stringify(jobEvent.config.parameters))
+	})
 
 	const onRestart = () => {
 		const callRestart = async () => {
@@ -118,7 +123,6 @@ export const JobEventDataDisplay: FC<Props> = ({
 					label="Úloha vytvořená"
 					value={formatDateTime(jobEvent.created.toString())}
 				/>
-				<JobEventDataRow label="Název úlohy" value={jobEvent.jobName || ''} />
 				<JobEventDataRow
 					label="UUID Publikace"
 					value={jobEvent.publicationId}

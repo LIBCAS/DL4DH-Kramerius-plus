@@ -24,7 +24,7 @@ export const ExportRequestDetailPage: FC = () => {
 	}, [requestId])
 
 	return (
-		<PageWrapper>
+		<PageWrapper requireAuth>
 			{exportRequest ? (
 				<Paper sx={{ p: 2 }}>
 					<Grid container>

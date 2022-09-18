@@ -4,4 +4,5 @@ import { DatedObject } from './domain/dated-object'
 export interface BulkExport extends DatedObject {
 	fileRef?: FileRef
 	exports: Export[]
+	format: string
 }

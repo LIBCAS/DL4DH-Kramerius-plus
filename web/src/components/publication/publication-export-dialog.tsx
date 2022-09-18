@@ -48,8 +48,8 @@ interface TeiExportJobConfig extends ExportJobConfig {
 export const PublicationExportDialog: FC<{
 	onClose: () => void
 	open: boolean
-	publicationId: string
-}> = ({ onClose, open, publicationId }) => {
+	publicationIds: string[]
+}> = ({ onClose, open, publicationIds }) => {
 	const [format, setFormat] = useState<ExportFormat>('json')
 	const [delimiter, setDelimiter] = useState<Delimiter>(',')
 	const [params, setParams] = useState<Params>(defaultParams)
@@ -91,7 +91,7 @@ export const PublicationExportDialog: FC<{
 			} as ExportJobConfig
 		}
 
-		const response = await exportPublication([publicationId], config, format)
+		const response = await exportPublication(publicationIds, config, format)
 
 		if (response.ok) {
 			toast('Operace proběhla úspěšně', {

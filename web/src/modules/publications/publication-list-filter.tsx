@@ -22,6 +22,7 @@ type Props = {
 		isPublished: boolean,
 	) => void
 	onFilterClick: () => void
+	onExportClick: () => void
 	filter: PublicationFilter
 }
 
@@ -30,6 +31,7 @@ export const PublicationListFilter: FC<Props> = ({
 	onDateChange,
 	onFilterClick,
 	onPublishedChange,
+	onExportClick,
 	filter,
 }) => {
 	return (
@@ -100,12 +102,19 @@ export const PublicationListFilter: FC<Props> = ({
 							onChange={onDateChange('publishedAfter')}
 						/>
 					</Grid>
+					<Grid container item spacing={2}>
+						<Grid item>
+							<Button variant="contained" onClick={onFilterClick}>
+								Filtrovat
+							</Button>
+						</Grid>
+						<Grid item>
+							<Button variant="contained" onClick={onExportClick}>
+								Exportovat vybrané
+							</Button>
+						</Grid>
+					</Grid>
 				</Grid>
-				<Box sx={{ paddingTop: 4 }}>
-					<Button variant="contained" onClick={onFilterClick}>
-						Filtrovat
-					</Button>
-				</Box>
 			</Box>
 		</Paper>
 	)
