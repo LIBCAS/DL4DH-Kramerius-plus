@@ -29,10 +29,13 @@ public interface ExportRequestMapper extends DatedObjectMapper<ExportRequest, Ex
         JobPlan jobPlan = jobPlanMapper.forEachPublicationIdSameConfig(createDto.getPublicationIds(), createDto.getConfig());
         jobPlan.getScheduledJobEvents().add(createMergeJob(jobPlan));
 
+        BulkExport bulkExport = new BulkExport();
+        bulkExport.setFormat(createDto.getConfig().getFormat());
+
         ExportRequest exportRequest = new ExportRequest();
         exportRequest.setName(createDto.getName());
         exportRequest.setJobPlan(jobPlan);
-        exportRequest.setBulkExport(new BulkExport());
+        exportRequest.setBulkExport(bulkExport);
 
         return exportRequest;
     }

@@ -1,4 +1,6 @@
 import { Grid } from '@mui/material'
+import { GridSelectionModel } from '@mui/x-data-grid'
+import { PublicationExportDialog } from 'components/publication/publication-export-dialog'
 import { Publication } from 'models'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { listPublications } from '../../api/publication-api'
@@ -22,11 +24,21 @@ type PublicationFilter = {
 export const PublicationList = ({ onRowClick }: Props) => {
 	const [rowCount, setRowCount] = useState<number>()
 	const [publications, setPublications] = useState<Publication[]>([])
+	const [selectedPublications, setSelectedPublications] = useState<string[]>([])
 	const [page, setPage] = useState<number>(0)
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
 	const [filter, setFilter] = useState<PublicationFilter>({})
+	const [open, setOpen] = useState<boolean>(false)
+
+	const onDialogOpen = () => {
+		setOpen(true)
+	}
+
+	const onDialogClose = () => {
+		setOpen(false)
+	}
 
 	useEffect(() => {
 		const fetchPublications = async () => {
@@ -79,12 +91,17 @@ export const PublicationList = ({ onRowClick }: Props) => {
 		setFilter({ ...filter, isPublished: isPublished })
 	}
 
+	const onSelectionChange = (selectionModel: GridSelectionModel) => {
+		setSelectedPublications(selectionModel.map(model => model.toString()))
+	}
+
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
 				<PublicationListFilter
 					filter={filter}
 					onDateChange={onDateChange}
+					onExportClick={onDialogOpen}
 					onFilterClick={onFilterClick}
 					onPublishedChange={onPublishedChange}
 					onTextChange={onTextChange}
@@ -96,8 +113,14 @@ export const PublicationList = ({ onRowClick }: Props) => {
 					rowCount={rowCountState}
 					onPageChange={onPageChange}
 					onRowClick={onRowClick}
+					onSelectionChange={onSelectionChange}
 				/>
 			</Grid>
+			<PublicationExportDialog
+				open={open}
+				publicationIds={selectedPublications}
+				onClose={onDialogClose}
+			/>
 		</Grid>
 	)
 }

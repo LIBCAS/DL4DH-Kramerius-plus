@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.system.export;
+package cz.inqool.dl4dh.krameriusplus.core.system.bulkexport;
 
 import lombok.Getter;
 import org.apache.http.entity.ContentType;
@@ -9,8 +9,9 @@ import java.time.format.DateTimeFormatter;
 public enum ExportFormat {
     JSON("json", ContentType.APPLICATION_JSON),
     TEI("xml", ContentType.TEXT_XML),
-    CSV("zip", ContentType.create("application/zip")),
-    TSV("zip", ContentType.create("application/zip"));
+    CSV("csv", ContentType.create("text/csv")),
+    ALTO("xml", ContentType.TEXT_XML),
+    TEXT("txt", ContentType.TEXT_PLAIN);
 
     @Getter
     private final String suffix;
@@ -23,16 +24,6 @@ public enum ExportFormat {
     ExportFormat(String fileSuffix, ContentType mimeType) {
         this.suffix = fileSuffix;
         this.mimeType = mimeType;
-    }
-
-    public static ExportFormat fromString(String value) {
-        for (ExportFormat format : ExportFormat.values()) {
-            if (format.toString().equalsIgnoreCase(value)) {
-                return format;
-            }
-        }
-
-        throw new IllegalArgumentException("Enum value from value '" + value + "' wasn't found");
     }
 
     public String getFileName(String publicationId) {

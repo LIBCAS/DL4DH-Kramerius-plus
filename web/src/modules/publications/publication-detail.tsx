@@ -187,7 +187,7 @@ export const PublicationDetail = ({ publicationId }: Props) => {
 			</Grid>
 			<PublicationExportDialog
 				open={open}
-				publicationId={publicationId}
+				publicationIds={[publicationId]}
 				onClose={onDialogClose}
 			/>
 		</Paper>

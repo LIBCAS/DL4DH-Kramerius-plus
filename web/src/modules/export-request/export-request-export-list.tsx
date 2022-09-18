@@ -30,7 +30,7 @@ export const ExportRequestExportsList: FC<Props> = ({ exports }) => {
 	return (
 		<Grid container spacing={2} sx={{ p: 2 }}>
 			<Grid item xs={12}>
-				<Typography variant="h6">Plány obohacování</Typography>
+				<Typography variant="h6">Dílčí exporty</Typography>
 			</Grid>
 			<Grid item xs={12}>
 				<TableContainer component={Paper}>

@@ -25,7 +25,7 @@ export const EnrichmentRequestDetailPage: FC = () => {
 	}, [requestId])
 
 	return (
-		<PageWrapper>
+		<PageWrapper requireAuth>
 			{enrichmentRequest ? (
 				<Paper sx={{ p: 2 }}>
 					<Grid container>
