@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.TeiExportParams;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
@@ -19,6 +20,11 @@ public class TeiExportJobConfigDto extends ExportJobConfigDto {
     @Override
     public KrameriusJob getKrameriusJob() {
         return KrameriusJob.EXPORT_TEI;
+    }
+
+    @Override
+    public ExportFormat getFormat() {
+        return ExportFormat.TEI;
     }
 
     @Override

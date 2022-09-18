@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.dto.export;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -19,6 +20,11 @@ public class CsvExportJobConfigDto extends ExportJobConfigDto {
     @Override
     public KrameriusJob getKrameriusJob() {
         return KrameriusJob.EXPORT_CSV;
+    }
+
+    @Override
+    public ExportFormat getFormat() {
+        return ExportFormat.CSV;
     }
 
     @Override

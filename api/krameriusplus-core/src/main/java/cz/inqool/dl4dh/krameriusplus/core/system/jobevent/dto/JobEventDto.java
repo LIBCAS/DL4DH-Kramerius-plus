@@ -12,8 +12,6 @@ import lombok.Setter;
 @Setter
 public class JobEventDto extends DatedObjectDto {
 
-    private String jobName;
-
     private String publicationId;
 
     @JsonIgnore

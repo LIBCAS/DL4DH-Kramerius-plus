@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.dto;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.dto.DatedObjectDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.core.system.export.dto.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.file.FileRef;
 import lombok.Getter;
@@ -16,4 +17,6 @@ public class BulkExportDto extends DatedObjectDto {
     private FileRef fileRef;
 
     private Set<ExportDto> exports = new HashSet<>();
+
+    private ExportFormat format;
 }

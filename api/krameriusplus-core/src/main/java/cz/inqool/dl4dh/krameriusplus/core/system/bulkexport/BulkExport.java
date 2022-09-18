@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,4 +25,8 @@ public class BulkExport extends DatedObject {
             inverseJoinColumns = @JoinColumn(name = "export_id"))
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Export> exports = new HashSet<>();
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private ExportFormat format;
 }

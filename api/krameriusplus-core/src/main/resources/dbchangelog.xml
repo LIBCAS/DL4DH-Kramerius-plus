@@ -379,4 +379,10 @@
         <dropColumn tableName="bulk_export" columnName="job_event_id"/>
     </changeSet>
 
+    <changeSet id="17" author="bodnar">
+        <addColumn tableName="bulk_export">
+            <column name="format" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
