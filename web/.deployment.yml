@@ -27,6 +27,8 @@ spec:
               value: ClusterTEIIP
             - name: MONGODB_HOST
               value: ClusterMONGODBIP
+            - name: MONGODB_EXPRESS_HOST
+              value: ClusterMONGODBIP
           resources:
             requests:
               cpu: "20m"
