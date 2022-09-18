@@ -11,6 +11,7 @@ api-build:
     - maven
     - java11
     - lessmemory
+    - docker
   variables:
     IMAGE_NAME: kramerius/api
   script:
@@ -56,6 +57,7 @@ web-build:
   when: manual
   tags:
     - yarn
+    - docker
   variables:
     IMAGE_NAME: kramerius/web
   script:
@@ -95,6 +97,7 @@ activemq-build:
   stage: build
   only:
     - master
+    - docker
   when: manual
   variables:
     IMAGE_NAME: kramerius/activemq
