@@ -3,6 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.krame
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.EnrichmentRequestService;
+import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto.EnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 
@@ -22,14 +25,19 @@ public class DownloadPublicationChildrenProcessor implements ItemProcessor<Digit
 
     private final String jobEventId;
 
+    private final EnrichmentRequestService enrichmentRequestService;
+
     @Autowired
     public DownloadPublicationChildrenProcessor(JobPlanService jobPlanService,
-                                                @Value("#{jobParameters['" + JOB_EVENT_ID + "']}") String jobEventId) {
+                                                @Value("#{jobParameters['" + JOB_EVENT_ID + "']}") String jobEventId,
+                                                EnrichmentRequestService enrichmentRequestService) {
         this.jobPlanService = jobPlanService;
         this.jobEventId = jobEventId;
+        this.enrichmentRequestService = enrichmentRequestService;
     }
 
     @Override
+    @Transactional
     public Page process(@NonNull DigitalObject item) {
         if (item instanceof Page) {
             return (Page) item;
@@ -42,7 +50,13 @@ public class DownloadPublicationChildrenProcessor implements ItemProcessor<Digit
     }
 
     private void createJobPlanForChild(String publicationId) {
+        JobPlanDto parentPlanDto = jobPlanService.findByJobEvent(jobEventId);
+        EnrichmentRequestDto enrichmentRequest = enrichmentRequestService.findByPlan(parentPlanDto.getId());
+
         JobPlanDto childPlan = jobPlanService.createForChild(jobEventId, publicationId);
+        enrichmentRequest.getJobPlans().add(childPlan);
+        enrichmentRequestService.update(enrichmentRequest);
+
         jobPlanService.startExecution(childPlan);
     }
 }

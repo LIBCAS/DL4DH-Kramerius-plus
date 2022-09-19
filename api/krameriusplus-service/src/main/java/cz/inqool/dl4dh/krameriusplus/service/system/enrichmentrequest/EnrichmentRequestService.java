@@ -58,4 +58,8 @@ public class EnrichmentRequestService implements DatedService<
 
         return new QueryResults<>(mapper.toDtoList(results.getResults()), results.getLimit(), results.getOffset(), results.getTotal());
     }
+
+    public EnrichmentRequestDto findByPlan(String jobPlanId) {
+        return mapper.toDto(store.findByPlan(jobPlanId));
+    }
 }

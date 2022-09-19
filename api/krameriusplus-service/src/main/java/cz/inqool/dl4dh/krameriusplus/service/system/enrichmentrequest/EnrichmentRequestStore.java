@@ -34,4 +34,15 @@ public class EnrichmentRequestStore extends OwnedObjectStore<EnrichmentRequest, 
 
         return result;
     }
+
+    public EnrichmentRequest findByPlan(String jobPlanId) {
+        EnrichmentRequest enrichmentRequest = query()
+                .select(qObject)
+                .where(qObject.jobPlans.any().id.eq(jobPlanId))
+                .fetchFirst();
+
+        detachAll();
+
+        return enrichmentRequest;
+    }
 }

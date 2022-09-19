@@ -111,4 +111,8 @@ public class JobPlanService implements DatedService<JobPlan, JobPlanCreateDto, J
 
         return newConfig;
     }
+
+    public JobPlanDto findByJobEvent(String jobEventId) {
+        return mapper.toDto(store.findByJobEvent(jobEventId));
+    }
 }
