@@ -2,7 +2,6 @@ import { Button, Paper } from '@mui/material'
 import {
 	DataGrid,
 	GridRenderCellParams,
-	GridValueFormatterParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
@@ -11,14 +10,6 @@ import { ExportRequestFilterDto } from 'models/export-request/export-request-fil
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter, ownerFormatter } from 'utils/formatters'
-
-const exportDoneFormatter = (params: GridValueFormatterParams) => {
-	if (params.value === undefined) {
-		return 'NE'
-	}
-
-	return 'ANO'
-}
 
 export const ExportRequestList: FC<{ filter: ExportRequestFilterDto }> = ({
 	filter,
@@ -75,7 +66,11 @@ export const ExportRequestList: FC<{ filter: ExportRequestFilterDto }> = ({
 			headerName: 'Ukončen',
 			width: 200,
 			type: 'string',
-			valueFormatter: exportDoneFormatter,
+			valueGetter: (params: GridValueGetterParams) => {
+				return (params.value as ExportRequest).bulkExport?.fileRef
+					? 'ANO'
+					: 'NE'
+			},
 		},
 		{
 			field: 'action',

@@ -15,6 +15,8 @@ public interface CustomPublicationStore {
 
     QueryResults<Publication> findAllChildren(String parentId, Pageable pageRequest);
 
+    List<String> findAllChildrenIds(String parentId);
+
     QueryResults<Publication> findAll(PublicationListFilterDto filter, Pageable pageRequest);
 
     QueryResults<Publication> findAll(Params params);

@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 
@@ -27,5 +28,9 @@ public abstract class AbstractMongoStore<T> {
         List<T> result = mongoOperations.find(params.toMongoQuery(), type);
 
         return constructQueryResults(result, params.toPageable(), total);
+    }
+
+    public List<T> findAll(Query query) {
+        return mongoOperations.find(query, type);
     }
 }
