@@ -5,6 +5,8 @@ public class JobStep {
     public static final String VALIDATE_PREREQUISITES = "ValidatePrerequisitesStep";
 
     // ENRICHMENT_KRAMERIUS Job
+    public static final String DOWNLOAD_DIGITAL_OBJECTS = "DownloadDigitalObjectStep";
+
     public static final String DOWNLOAD_PUBLICATION = "DownloadPublicationStep";
     public static final String DOWNLOAD_PUBLICATION_CHILDREN = "DownloadPublicationChildrenStep";
 
