@@ -10,6 +10,7 @@ import org.springframework.batch.item.data.AbstractPaginatedDataItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,7 @@ public class PageMongoReader extends AbstractPaginatedDataItemReader<Page> {
                             PublicationStore publicationStore,
                             @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId,
                             @Value("#{jobParameters['" + PARAMS + "']}") String stringParams) {
+        setName(PageMongoReader.class.getSimpleName());
         this.pageStore = pageStore;
         this.publicationStore = publicationStore;
         this.currentParentId = publicationId;
@@ -76,7 +78,7 @@ public class PageMongoReader extends AbstractPaginatedDataItemReader<Page> {
     private Query buildQuery() {
         Query query = params.toMongoQuery(false);
         query.addCriteria(where("parentId").is(currentParentId));
-        query.with(PageRequest.of(page, pageSize));
+        query.with(PageRequest.of(page, pageSize)).with(Sort.by("index").ascending());
 
         return query;
     }
@@ -87,6 +89,7 @@ public class PageMongoReader extends AbstractPaginatedDataItemReader<Page> {
 
     private String popParentId() {
         try {
+
             return parentIds.pop();
         } catch (EmptyStackException e) {
             return null;

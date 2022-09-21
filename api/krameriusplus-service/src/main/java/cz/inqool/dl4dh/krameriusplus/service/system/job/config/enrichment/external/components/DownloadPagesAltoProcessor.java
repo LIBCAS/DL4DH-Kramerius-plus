@@ -14,11 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.PARADATA;
 
@@ -33,13 +35,17 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     private final AltoMetadataExtractor altoMetadataExtractor;
 
-    private ExecutionContext executionContext;
+    private StepExecution stepExecution;
 
     private boolean isParadataExtracted = false;
 
     private final MissingAltoStrategyFactory missingAltoStrategyFactory;
 
     private MissingAltoStrategy missingAltoStrategy;
+
+    private String currentParentId;
+
+    private final Map<String, Long> missingAltoPagesCounter = new HashMap<>();
 
     @Autowired
     public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper,
@@ -53,6 +59,10 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     @Override
     public Page process(@NonNull Page item) {
+        if (!item.getParentId().equals(currentParentId)) { // <- ak dostanes stranku s novym parentom, updatnes strategiu, ktora si vo factory dopocita count
+            currentParentId = item.getParentId();
+            missingAltoStrategy = missingAltoStrategyFactory.create(stepExecution, currentParentId);
+        }
         try {
             Alto alto = streamProvider.getAlto(item.getId());
 
@@ -69,18 +79,29 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
                 OCREnrichmentParadata paradata = altoMetadataExtractor.extractOcrParadata(altoDto);
 
                 if (paradata != null) {
-                    executionContext.put(PARADATA, paradata);
+                    stepExecution.getExecutionContext().put(PARADATA, paradata);
                     isParadataExtracted = true;
                 }
             }
 
             return item;
         } catch (KrameriusException e) {
-            if (KrameriusException.ErrorCode.NOT_FOUND.equals(e.getErrorCode())) {
-                return handleMissingAlto(item);
+            if (KrameriusException.ErrorCode.NOT_FOUND.equals(e.getErrorCode()) ||
+            KrameriusException.ErrorCode.UNAUTHORIZED.equals(e.getErrorCode())) {
+                try {
+                    return handleMissingAlto(item);
+                }
+                catch (KrameriusException krameriusException) {
+                    log.warn(krameriusException.getMessage(), krameriusException);
+                    return null;
+                }
             } else {
-                throw e;
+                log.warn(e.getMessage(), e);
+                return null;
             }
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
+            return null;
         }
     }
 
@@ -90,7 +111,6 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
-        this.executionContext = stepExecution.getExecutionContext();
-        this.missingAltoStrategy = missingAltoStrategyFactory.create(stepExecution);
+        this.stepExecution = stepExecution;
     }
 }

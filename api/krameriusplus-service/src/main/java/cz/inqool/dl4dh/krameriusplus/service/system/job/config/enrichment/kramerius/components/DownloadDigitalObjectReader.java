@@ -1,7 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublishInfo;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.DataProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -10,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
@@ -24,9 +27,7 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
 
     private final String publicationId;
 
-    private List<DigitalObject> digitalObjects;
-
-    private int nextToReadIndex = 0;
+    private Deque<DigitalObject> digitalObjects;
 
     @Autowired
     public DownloadDigitalObjectReader(DataProvider dataProvider,
@@ -39,27 +40,32 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
     public DigitalObject read() {
         if (digitalObjects == null) {
             log.debug("Fetching objects for publicationID={}", publicationId);
-            digitalObjects = new ArrayList<>();
+            digitalObjects = new LinkedList<>();
             digitalObjects.add(dataProvider.getDigitalObject(publicationId));
-            findDigitalObjects(publicationId);
         }
 
-        if (nextToReadIndex == digitalObjects.size()) {
+        return getNext();
+    }
+
+    private DigitalObject getNext() {
+        if (digitalObjects.isEmpty()) {
             return null;
         }
 
-        return digitalObjects.get(nextToReadIndex++);
-    }
+        DigitalObject first = digitalObjects.removeFirst();
+        if (first instanceof Publication) {
+            Publication publicationObject = (Publication) first;
+            publicationObject.setPublishInfo(new PublishInfo());
+            if (((Publication) first).isPdf()) {
+                log.warn("Publication is PDF or ePUB cannot be enriched");
+                return getNext();
+            }
 
-    private void findDigitalObjects(String publicationId) {
-        List<DigitalObject> children = dataProvider.getDigitalObjectsForParent(publicationId);
-        if (children.isEmpty()) {
-            return;
+            List<DigitalObject> children = dataProvider.getDigitalObjectsForParent(first.getId());
+            long pageCount = children.stream().filter(digitalObject -> digitalObject instanceof Page).count();
+            publicationObject.setPageCount(pageCount);
+            digitalObjects.addAll(children);
         }
-
-        digitalObjects.addAll(children);
-        children.stream()
-                .filter(object -> object instanceof Publication)
-                .forEach(digitalObject -> findDigitalObjects(digitalObject.getId()));
+        return first;
     }
 }

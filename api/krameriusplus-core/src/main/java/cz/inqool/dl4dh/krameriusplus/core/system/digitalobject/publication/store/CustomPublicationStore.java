@@ -20,4 +20,6 @@ public interface CustomPublicationStore {
     QueryResults<Publication> findAll(PublicationListFilterDto filter, Pageable pageRequest);
 
     QueryResults<Publication> findAll(Params params);
+
+    long countById(String publicationId);
 }

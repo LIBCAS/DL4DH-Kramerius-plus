@@ -66,6 +66,8 @@ public abstract class Publication extends DigitalObject {
 
     private List<String> donator = new ArrayList<>();
 
+    private Long pageCount;
+
     @JsonProperty("donator")
     public void unpackDonator(Object donators) {
         if (donators != null && donators.getClass().equals(String.class)) {

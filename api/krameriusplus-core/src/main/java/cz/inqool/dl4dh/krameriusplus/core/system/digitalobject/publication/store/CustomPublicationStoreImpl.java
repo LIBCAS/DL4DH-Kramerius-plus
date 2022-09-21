@@ -44,7 +44,7 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
     @Override
     public List<String> findAllChildrenIds(String parentId) {
         Query query = Query.query(where("parentId").is(parentId));
-        query.fields().include("_id");
+        query.fields().include("_id", "_class");
 
         return mongoOperations.find(query, type).stream().map(DomainObject::getId).collect(Collectors.toList());
     }
@@ -91,6 +91,11 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
         List<Publication> result = mongoOperations.find(query.with(pageRequest), type);
 
         return constructQueryResults(result, pageRequest, total);
+    }
+
+    @Override
+    public long countById(String publicationId) {
+        return mongoOperations.count(Query.query(where("_id").is(publicationId)), type);
     }
 
     @Override
