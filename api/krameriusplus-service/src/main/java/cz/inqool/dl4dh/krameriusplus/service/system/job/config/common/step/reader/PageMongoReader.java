@@ -89,7 +89,6 @@ public class PageMongoReader extends AbstractPaginatedDataItemReader<Page> {
 
     private String popParentId() {
         try {
-
             return parentIds.pop();
         } catch (EmptyStackException e) {
             return null;

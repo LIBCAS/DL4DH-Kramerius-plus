@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Instant;
 import java.util.List;
@@ -22,4 +23,6 @@ public interface CustomPublicationStore {
     QueryResults<Publication> findAll(Params params);
 
     long countById(String publicationId);
+
+    List<Publication> findAll(Query buildQuery);
 }
