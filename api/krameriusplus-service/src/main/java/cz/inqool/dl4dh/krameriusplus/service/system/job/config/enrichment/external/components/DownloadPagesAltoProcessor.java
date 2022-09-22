@@ -19,9 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.PARADATA;
 
 @Component
@@ -44,8 +41,6 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
     private MissingAltoStrategy missingAltoStrategy;
 
     private String currentParentId;
-
-    private final Map<String, Long> missingAltoPagesCounter = new HashMap<>();
 
     @Autowired
     public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper,
@@ -86,15 +81,8 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
             return item;
         } catch (KrameriusException e) {
-            if (KrameriusException.ErrorCode.NOT_FOUND.equals(e.getErrorCode()) ||
-            KrameriusException.ErrorCode.UNAUTHORIZED.equals(e.getErrorCode())) {
-                try {
-                    return handleMissingAlto(item);
-                }
-                catch (KrameriusException krameriusException) {
-                    log.warn(krameriusException.getMessage(), krameriusException);
-                    return null;
-                }
+            if (KrameriusException.ErrorCode.NOT_FOUND.equals(e.getErrorCode())) {
+                return handleMissingAlto(item);
             } else {
                 log.warn(e.getMessage(), e);
                 return null;
