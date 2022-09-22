@@ -68,6 +68,7 @@ public class PageMongoReader extends AbstractPaginatedDataItemReader<Page> {
         if (pages.isEmpty()) {
             fetchCurrentPublicationChildPublications();
             currentParentId = popParentId();
+            this.page = 0;
 
             return doPageRead();
         }

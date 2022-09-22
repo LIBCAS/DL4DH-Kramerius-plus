@@ -84,7 +84,6 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
             if (KrameriusException.ErrorCode.NOT_FOUND.equals(e.getErrorCode())) {
                 return handleMissingAlto(item);
             } else {
-                log.warn(e.getMessage());
                 return null;
             }
         } catch (Exception e) {
