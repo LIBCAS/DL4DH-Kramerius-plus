@@ -7,9 +7,6 @@ public class JobStep {
     // ENRICHMENT_KRAMERIUS Job
     public static final String DOWNLOAD_DIGITAL_OBJECTS = "DownloadDigitalObjectStep";
 
-    public static final String DOWNLOAD_PUBLICATION = "DownloadPublicationStep";
-    public static final String DOWNLOAD_PUBLICATION_CHILDREN = "DownloadPublicationChildrenStep";
-
     // ENRICHMENT_NDK Job
     public static final String PREPARE_PUBLICATION_NDK = "PreparePublicationNdkDirectoryPathStep";
     public static final String PREPARE_PAGES_NDK = "PreparePagesNdkFilePathStep";
