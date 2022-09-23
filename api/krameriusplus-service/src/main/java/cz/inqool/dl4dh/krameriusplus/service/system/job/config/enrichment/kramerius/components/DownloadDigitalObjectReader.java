@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 
@@ -26,7 +27,7 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
 
     private final String publicationId;
 
-    private Stack<DigitalObject> digitalObjects;
+    private Deque<DigitalObject> digitalObjects;
 
     @Autowired
     public DownloadDigitalObjectReader(DataProvider dataProvider,
@@ -39,7 +40,7 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
     public DigitalObject read() {
         if (digitalObjects == null) {
             log.debug("Fetching objects for publicationID={}", publicationId);
-            digitalObjects = new Stack<>();
+            digitalObjects = new LinkedList<>();
             digitalObjects.add(dataProvider.getDigitalObject(publicationId));
         }
 

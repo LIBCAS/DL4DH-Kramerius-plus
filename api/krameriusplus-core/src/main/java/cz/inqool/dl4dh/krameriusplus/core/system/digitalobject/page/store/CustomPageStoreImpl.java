@@ -37,9 +37,4 @@ public class CustomPageStoreImpl extends AbstractMongoStore<Page> implements Cus
 
         return constructQueryResults(result, pageRequest, count);
     }
-
-    @Override
-    public long countChildrenById(String publicationId) {
-        return mongoOperations.count(Query.query(where("parentId").is(publicationId)), type);
-    }
 }

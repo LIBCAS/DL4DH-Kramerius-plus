@@ -15,7 +15,5 @@ public interface CustomPageStore {
     QueryResults<Page> findAll(Params params);
 
     List<Page> findAll(Query query);
-
-    long countChildrenById(String publicationId);
 }
 

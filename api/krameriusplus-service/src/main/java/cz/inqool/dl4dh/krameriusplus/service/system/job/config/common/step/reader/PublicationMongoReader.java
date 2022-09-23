@@ -11,10 +11,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
+import java.util.Deque;
 import java.util.EmptyStackException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -30,9 +31,10 @@ public class PublicationMongoReader extends AbstractPaginatedDataItemReader<Publ
     private String currentParentId;
 
     private boolean fetchRoot = true;
+
     private final String rootId;
 
-    private final Stack<String> parentIds = new Stack<>();
+    private final Deque<String> parentIds = new LinkedList<>();
 
     @Autowired
     public PublicationMongoReader(PublicationStore publicationStore,
@@ -81,7 +83,7 @@ public class PublicationMongoReader extends AbstractPaginatedDataItemReader<Publ
     }
 
     private void fetchCurrentPublicationChildPublications() {
-        parentIds.addAll(publicationStore.findAllChildrenIds(currentParentId));
+        publicationStore.findAllChildrenIds(currentParentId).forEach(parentIds::push);
     }
 
     private String popParentId() {
