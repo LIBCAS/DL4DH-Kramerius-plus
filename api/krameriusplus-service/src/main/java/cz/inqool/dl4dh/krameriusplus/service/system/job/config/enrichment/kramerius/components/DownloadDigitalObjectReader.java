@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 
@@ -27,7 +26,7 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
 
     private final String publicationId;
 
-    private Deque<DigitalObject> digitalObjects;
+    private Stack<DigitalObject> digitalObjects;
 
     @Autowired
     public DownloadDigitalObjectReader(DataProvider dataProvider,
@@ -40,7 +39,7 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
     public DigitalObject read() {
         if (digitalObjects == null) {
             log.debug("Fetching objects for publicationID={}", publicationId);
-            digitalObjects = new LinkedList<>();
+            digitalObjects = new Stack<>();
             digitalObjects.add(dataProvider.getDigitalObject(publicationId));
         }
 
@@ -52,7 +51,7 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
             return null;
         }
 
-        DigitalObject first = digitalObjects.removeFirst();
+        DigitalObject first = digitalObjects.pop();
         if (first instanceof Publication) {
             Publication publicationObject = (Publication) first;
             publicationObject.setPublishInfo(new PublishInfo());
@@ -64,7 +63,7 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
             List<DigitalObject> children = dataProvider.getDigitalObjectsForParent(first.getId());
             long pageCount = children.stream().filter(digitalObject -> digitalObject instanceof Page).count();
             publicationObject.setPageCount(pageCount);
-            digitalObjects.addAll(children);
+            children.forEach(digitalObjects::push);
         }
         return first;
     }
