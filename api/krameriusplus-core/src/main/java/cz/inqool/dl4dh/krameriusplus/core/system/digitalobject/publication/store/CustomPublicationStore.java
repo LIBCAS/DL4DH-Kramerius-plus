@@ -22,7 +22,5 @@ public interface CustomPublicationStore {
 
     QueryResults<Publication> findAll(Params params);
 
-    long countById(String publicationId);
-
     List<Publication> findAll(Query buildQuery);
 }

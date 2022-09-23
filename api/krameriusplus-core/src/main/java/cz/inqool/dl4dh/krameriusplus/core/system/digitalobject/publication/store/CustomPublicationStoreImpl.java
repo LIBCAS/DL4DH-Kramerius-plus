@@ -94,11 +94,6 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
     }
 
     @Override
-    public long countById(String publicationId) {
-        return mongoOperations.count(Query.query(where("_id").is(publicationId)), type);
-    }
-
-    @Override
     public List<Publication> findAllPublishedModified(Instant publishedModifiedAfter) {
         Query query = Query.query(where("publishInfo.publishedLastModified").gte(publishedModifiedAfter));
 

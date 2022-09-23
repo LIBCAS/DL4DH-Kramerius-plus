@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.MissingAltoOption;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +11,18 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 @Component
 public class MissingAltoStrategyFactory {
 
-    private final PublicationStore publicationStore;
+    private final PageStore pageStore;
 
     @Autowired
-    public MissingAltoStrategyFactory(PublicationStore publicationStore) {
-        this.publicationStore = publicationStore;
+    public MissingAltoStrategyFactory(PageStore pageStore) {
+        this.pageStore = pageStore;
     }
 
     public MissingAltoStrategy create(StepExecution stepExecution, String publicationId) {
         MissingAltoOption option = MissingAltoOption.valueOf(stepExecution.getJobExecution().getJobParameters()
                 .getString(MISSING_ALTO_STRATEGY));
 
-        long totalNumberOfPages = publicationStore.countById(publicationId);
+        long totalNumberOfPages = pageStore.countChildrenById(publicationId);
 
         switch (option) {
             case SKIP:

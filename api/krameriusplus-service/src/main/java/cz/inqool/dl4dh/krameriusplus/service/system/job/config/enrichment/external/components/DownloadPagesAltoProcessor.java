@@ -12,7 +12,6 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.extern
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto.MissingAltoStrategyFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
@@ -21,7 +20,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.PARADATA;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 
 @Component
 @StepScope
@@ -58,7 +56,8 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     @Override
     public Page process(@NonNull Page item) {
-        if (!item.getParentId().equals(currentParentId)) { // <- ak dostanes stranku s novym parentom, updatnes strategiu, ktora si vo factory dopocita count
+        if (!item.getParentId().equals(currentParentId)) {
+            reportMissingAlto(currentParentId);
             currentParentId = item.getParentId();
             missingAltoStrategy = missingAltoStrategyFactory.create(stepExecution, currentParentId);
         }
@@ -98,6 +97,15 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
         }
     }
 
+    private void reportMissingAlto(String currentParentId) {
+        if (missingAltoCounter > 0) {
+            log.warn(String.format("Processing of publication: %s, couldn't find/access %s ALTO items.",
+                    currentParentId, missingAltoCounter));
+        }
+
+        missingAltoCounter = 0L;
+    }
+
     private Page handleMissingAlto(Page item) {
         return missingAltoStrategy.handleMissingAlto(item);
     }
@@ -105,14 +113,5 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         this.stepExecution = stepExecution;
-    }
-
-    // TODO: make a better strategy unaccessible ALTO for pages
-    @AfterStep
-    public void warnAfterProcessing(StepExecution stepExecution) {
-        if (missingAltoCounter > 0) {
-            log.warn(String.format("Processing of publication: %s, couldn't find/access %s ALTO items.",
-                    stepExecution.getJobParameters().getString(PUBLICATION_ID), missingAltoCounter));
-        }
     }
 }
