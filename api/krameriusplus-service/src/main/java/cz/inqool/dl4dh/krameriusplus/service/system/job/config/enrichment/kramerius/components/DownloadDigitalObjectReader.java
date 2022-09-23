@@ -55,7 +55,7 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
         if (first instanceof Publication) {
             Publication publicationObject = (Publication) first;
             publicationObject.setPublishInfo(new PublishInfo());
-            if (((Publication) first).isPdf()) {
+            if (publicationObject.isPdf()) {
                 log.warn("Publication is PDF or ePUB cannot be enriched");
                 return getNext();
             }
