@@ -6,6 +6,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,6 +27,6 @@ public class ExportPublicationJsonFileWriter extends JsonFileWriter<Publication>
 
         Publication publication = items.get(0);
 
-        exporter.export(publication, getItemOutputStream(publication));
+        exporter.export(publication, new FileOutputStream("file"));
     }
 }

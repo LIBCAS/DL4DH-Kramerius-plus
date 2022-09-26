@@ -1,12 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@AllArgsConstructor
 @Getter
-public class PageAndAltoStringDto {
-    private final Page page;
-    private final String altoString;
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class PageAndAltoStringDto extends PageWithPathDto {
+
+    private String altoString;
 }

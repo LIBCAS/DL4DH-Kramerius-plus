@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.co
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
@@ -19,8 +20,8 @@ public abstract class FileWriter<T> implements ItemWriter<T> {
 
     private final static String PAGE_NAME_FORMAT = "page%04d_%s.%s";
 
-    protected OutputStream getItemOutputStream(DigitalObject item) throws IOException {
-        return Files.newOutputStream(exportDirectory.resolve(Path.of(getItemFileName(item))));
+    protected OutputStream getItemOutputStream(PageWithPathDto item) throws IOException {
+        return Files.newOutputStream(Path.of(item.getPath(), getItemFileName(item.getPage())));
     }
 
     protected abstract String getItemFileName(DigitalObject item);

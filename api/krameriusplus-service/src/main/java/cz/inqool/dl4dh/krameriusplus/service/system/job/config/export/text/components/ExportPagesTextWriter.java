@@ -30,22 +30,23 @@ public class ExportPagesTextWriter extends FileWriter<PageAndAltoDto> {
     }
 
     @Override
-    public void write(List<? extends PageAndAltoDto> items) throws Exception {
-        for (PageAndAltoDto item : items) {
-            AltoDto alto = altoMapper.toAltoDto(item.getAlto());
-
-            try (OutputStream out = getItemOutputStream(item.getPage())) {
-                String pageContent = altoMetadataExtractor.extractText(alto);
-                out.write(pageContent.getBytes(StandardCharsets.UTF_8));
-            }
-        }
-    }
-
-    @Override
     protected String getItemFileName(DigitalObject item) {
         if (!(item instanceof Page)) {
             throw new IllegalStateException(item.getClass().getSimpleName() + " not allowed in TEXT export");
         }
         return getPageFilename((Page) item, "txt");
+    }
+
+
+    @Override
+    public void write(List<? extends PageAndAltoDto> items) throws Exception {
+        for (PageAndAltoDto item : items) {
+            AltoDto alto = altoMapper.toAltoDto(item.getAlto());
+
+            try (OutputStream out = getItemOutputStream(item)) {
+                String pageContent = altoMetadataExtractor.extractText(alto);
+                out.write(pageContent.getBytes(StandardCharsets.UTF_8));
+            }
+        }
     }
 }

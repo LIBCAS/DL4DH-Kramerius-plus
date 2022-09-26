@@ -19,7 +19,7 @@ public class ExportPagesAltoWriter extends FileWriter<PageAndAltoStringDto> {
         for (PageAndAltoStringDto item : items) {
             String alto = item.getAltoString();
 
-            try (OutputStream out = getItemOutputStream(item.getPage())) {
+            try (OutputStream out = getItemOutputStream(item)) {
                 out.write(alto.getBytes(StandardCharsets.UTF_8));
             }
         }

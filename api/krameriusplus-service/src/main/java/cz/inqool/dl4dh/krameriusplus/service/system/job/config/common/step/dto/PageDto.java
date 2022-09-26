@@ -1,12 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto;
 
-import cz.inqool.dl4dh.alto.Alto;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PageAndAltoDto extends PageWithPathDto {
+public class PageDto extends ProcessingDto {
 
-    private Alto alto;
+    private Page page;
 }

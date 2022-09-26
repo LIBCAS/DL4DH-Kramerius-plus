@@ -6,6 +6,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class ExportPagesJsonFileWriter extends JsonFileWriter<Page> {
     @Override
     public void write(List<? extends Page> items) throws IOException {
         for (Page item : items) {
-            exporter.export(item, getItemOutputStream(item));
+            exporter.export(item, new FileOutputStream("file"));
         }
     }
 }
