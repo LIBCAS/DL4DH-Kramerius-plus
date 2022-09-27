@@ -12,10 +12,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.Deque;
-import java.util.EmptyStackException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -32,8 +32,6 @@ public class PublicationMongoReader extends AbstractPaginatedDataItemReader<Publ
 
     private boolean fetchRoot = true;
 
-    private final String rootId;
-
     private final Deque<String> parentIds = new LinkedList<>();
 
     @Autowired
@@ -42,8 +40,6 @@ public class PublicationMongoReader extends AbstractPaginatedDataItemReader<Publ
         this.publicationStore = publicationStore;
         setName(PublicationMongoReader.class.getSimpleName());
         this.pageSize = Q_PAGE_SIZE;
-        this.rootId = publicationId;
-
 
         currentParentId = publicationId;
     }
@@ -51,13 +47,7 @@ public class PublicationMongoReader extends AbstractPaginatedDataItemReader<Publ
     @Override
     protected Iterator<Publication> doPageRead() {
         if (currentParentId == null) {
-            if (fetchRoot) {
-                fetchRoot = false;
-                return List.of(publicationStore.findById(rootId).orElseThrow(() -> new IllegalStateException("root not found in db"))).iterator();
-            }
-            else {
-                return null;
-            }
+            return null;
         }
 
         List<Publication> publications = publicationStore.findAll(buildQuery());
@@ -72,6 +62,16 @@ public class PublicationMongoReader extends AbstractPaginatedDataItemReader<Publ
         }
 
         return publications.iterator();
+    }
+
+    @Override
+    protected Publication doRead() throws Exception {
+        if (fetchRoot) {
+            fetchRoot = false;
+            return publicationStore.findById(currentParentId).orElseThrow(() -> new IllegalStateException("root not found in db"));
+        }
+
+        return super.doRead();
     }
 
     private Query buildQuery() {
@@ -89,7 +89,7 @@ public class PublicationMongoReader extends AbstractPaginatedDataItemReader<Publ
     private String popParentId() {
         try {
             return parentIds.pop();
-        } catch (EmptyStackException e) {
+        } catch (NoSuchElementException e) {
             return null;
         }
     }

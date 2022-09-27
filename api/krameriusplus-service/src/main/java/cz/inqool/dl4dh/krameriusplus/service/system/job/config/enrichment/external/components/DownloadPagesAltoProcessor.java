@@ -60,6 +60,7 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
             reportMissingAlto(currentParentId);
             currentParentId = item.getParentId();
             missingAltoStrategy = missingAltoStrategyFactory.create(stepExecution, currentParentId);
+            isParadataExtracted = false;
         }
         try {
             Alto alto = streamProvider.getAlto(item.getId());
