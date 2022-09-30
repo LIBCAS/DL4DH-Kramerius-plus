@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -33,13 +32,17 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     private final AltoMetadataExtractor altoMetadataExtractor;
 
-    private ExecutionContext executionContext;
+    private StepExecution stepExecution;
 
     private boolean isParadataExtracted = false;
 
     private final MissingAltoStrategyFactory missingAltoStrategyFactory;
 
     private MissingAltoStrategy missingAltoStrategy;
+
+    private String currentParentId;
+
+    private Long missingAltoCounter = 0L;
 
     @Autowired
     public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper,
@@ -53,6 +56,12 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     @Override
     public Page process(@NonNull Page item) {
+        if (!item.getParentId().equals(currentParentId)) {
+            reportMissingAlto(currentParentId);
+            currentParentId = item.getParentId();
+            missingAltoStrategy = missingAltoStrategyFactory.create(stepExecution, currentParentId);
+            isParadataExtracted = false;
+        }
         try {
             Alto alto = streamProvider.getAlto(item.getId());
 
@@ -69,19 +78,33 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
                 OCREnrichmentParadata paradata = altoMetadataExtractor.extractOcrParadata(altoDto);
 
                 if (paradata != null) {
-                    executionContext.put(PARADATA, paradata);
+                    stepExecution.getExecutionContext().put(PARADATA, paradata);
                     isParadataExtracted = true;
                 }
             }
 
             return item;
         } catch (KrameriusException e) {
+            missingAltoCounter++;
             if (KrameriusException.ErrorCode.NOT_FOUND.equals(e.getErrorCode())) {
                 return handleMissingAlto(item);
             } else {
-                throw e;
+                return null;
             }
+        } catch (Exception e) {
+            missingAltoCounter++;
+            log.warn(e.getMessage(), e);
+            return null;
         }
+    }
+
+    private void reportMissingAlto(String currentParentId) {
+        if (missingAltoCounter > 0) {
+            log.warn(String.format("Processing of publication: %s, couldn't find/access %s ALTO items.",
+                    currentParentId, missingAltoCounter));
+        }
+
+        missingAltoCounter = 0L;
     }
 
     private Page handleMissingAlto(Page item) {
@@ -90,7 +113,6 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page> {
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
-        this.executionContext = stepExecution.getExecutionContext();
-        this.missingAltoStrategy = missingAltoStrategyFactory.create(stepExecution);
+        this.stepExecution = stepExecution;
     }
 }

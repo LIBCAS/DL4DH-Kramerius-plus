@@ -1,20 +1,30 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.MissingAltoOption;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.NUMBER_OF_ITEMS;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.MISSING_ALTO_STRATEGY;
 
 @Component
 public class MissingAltoStrategyFactory {
 
-    public MissingAltoStrategy create(StepExecution stepExecution) {
+    private final PublicationStore publicationStore;
+
+    @Autowired
+    public MissingAltoStrategyFactory(PublicationStore publicationStore) {
+        this.publicationStore = publicationStore;
+    }
+
+    public MissingAltoStrategy create(StepExecution stepExecution, String publicationId) {
         MissingAltoOption option = MissingAltoOption.valueOf(stepExecution.getJobExecution().getJobParameters()
                 .getString(MISSING_ALTO_STRATEGY));
 
-        long totalNumberOfPages = stepExecution.getExecutionContext().getLong(NUMBER_OF_ITEMS);
+        long totalNumberOfPages = publicationStore.findById(publicationId)
+                .orElseThrow(() -> new IllegalStateException("Publication not found in AltoStrategy"))
+                .getPageCount();
 
         switch (option) {
             case SKIP:

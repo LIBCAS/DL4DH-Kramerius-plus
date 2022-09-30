@@ -22,6 +22,7 @@ public class KrameriusException extends GeneralException {
 
     public enum ErrorCode implements LogCode {
         NOT_FOUND,
+        UNAUTHORIZED,
         MISSING_CHILDREN,
         EXTERNAL_API_ERROR,
         NOT_RESPONDING,

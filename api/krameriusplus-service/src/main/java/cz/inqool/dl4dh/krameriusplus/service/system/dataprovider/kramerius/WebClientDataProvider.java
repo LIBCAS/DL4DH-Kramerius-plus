@@ -15,7 +15,11 @@ import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.*;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.EXTERNAL_API_ERROR;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.NOT_FOUND;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.NOT_RESPONDING;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.UNAUTHORIZED;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.UNDEFINED;
 
 /**
  * @author Norbert Bodnar
@@ -88,6 +92,9 @@ public class WebClientDataProvider implements DataProvider, StreamProvider {
         } catch (WebClientResponseException e) {
             if (e.getRawStatusCode() == 404) {
                 throw new KrameriusException(NOT_FOUND, e);
+            }
+            if (e.getRawStatusCode() == 403) {
+                throw new KrameriusException(UNAUTHORIZED, e);
             }
             throw new KrameriusException(EXTERNAL_API_ERROR, e);
         } catch (WebClientRequestException e) {

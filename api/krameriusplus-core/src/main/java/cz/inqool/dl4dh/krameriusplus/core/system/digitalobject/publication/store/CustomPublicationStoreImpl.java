@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.AbstractMongoStore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -23,6 +25,7 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
         super(mongoOperations, Publication.class);
     }
 
+    @Override
     public QueryResults<Publication> findAllChildren(String parentId, Pageable pageRequest) {
         if (pageRequest.isPaged() && pageRequest.getSort().equals(Sort.unsorted())) {
             pageRequest = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(),
@@ -38,6 +41,15 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
         return constructQueryResults(result, pageRequest, total);
     }
 
+    @Override
+    public List<String> findAllChildrenIds(String parentId) {
+        Query query = Query.query(where("parentId").is(parentId));
+        query.fields().include("_id", "_class");
+
+        return mongoOperations.find(query, type).stream().map(DomainObject::getId).collect(Collectors.toList());
+    }
+
+    @Override
     public QueryResults<Publication> findAll(PublicationListFilterDto filter, Pageable pageRequest) {
         if (pageRequest.isPaged() && pageRequest.getSort().equals(Sort.unsorted())) {
             pageRequest = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(),
@@ -81,6 +93,7 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
         return constructQueryResults(result, pageRequest, total);
     }
 
+    @Override
     public List<Publication> findAllPublishedModified(Instant publishedModifiedAfter) {
         Query query = Query.query(where("publishInfo.publishedLastModified").gte(publishedModifiedAfter));
 

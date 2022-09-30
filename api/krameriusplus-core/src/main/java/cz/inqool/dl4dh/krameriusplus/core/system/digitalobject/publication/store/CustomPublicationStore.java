@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.dto.PublicationListFilterDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Instant;
 import java.util.List;
@@ -15,7 +16,11 @@ public interface CustomPublicationStore {
 
     QueryResults<Publication> findAllChildren(String parentId, Pageable pageRequest);
 
+    List<String> findAllChildrenIds(String parentId);
+
     QueryResults<Publication> findAll(PublicationListFilterDto filter, Pageable pageRequest);
 
     QueryResults<Publication> findAll(Params params);
+
+    List<Publication> findAll(Query buildQuery);
 }

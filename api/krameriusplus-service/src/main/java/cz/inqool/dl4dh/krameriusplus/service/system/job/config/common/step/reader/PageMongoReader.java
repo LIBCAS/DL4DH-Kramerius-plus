@@ -1,65 +1,98 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.BeforeStep;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store.PageStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
+import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.data.MongoItemReader;
+import org.springframework.batch.item.data.AbstractPaginatedDataItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.NUMBER_OF_ITEMS;
+import java.util.EmptyStackException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
+
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PARAMS;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Component
 @StepScope
-public class PageMongoReader extends MongoItemReader<Page> {
+public class PageMongoReader extends AbstractPaginatedDataItemReader<Page> {
 
-    /**
-     * Total number of Page documents, that match the given query
-     */
-    private final long numberOfItems;
+    private static final int Q_PAGE_SIZE = 100;
+
+    private final PageStore pageStore;
+
+    private final PublicationStore publicationStore;
+
+    private final Params params;
+
+    private final Stack<String> parentIds = new Stack<>();
+
+    private String currentParentId;
 
     @Autowired
-    public PageMongoReader(ObjectMapper objectMapper,
-                           MongoOperations mongoOperations,
-                           @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId,
-                           @Value("#{jobParameters['" + PARAMS + "']}") String paramsString) throws JsonProcessingException {
-        Query query;
-        if (paramsString != null) {
-            query = paramsToQuery(paramsString, objectMapper);
+    public PageMongoReader(PageStore pageStore,
+                            PublicationStore publicationStore,
+                            @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId,
+                            @Value("#{jobParameters['" + PARAMS + "']}") String stringParams) {
+        setName(PageMongoReader.class.getSimpleName());
+        this.pageStore = pageStore;
+        this.publicationStore = publicationStore;
+        this.currentParentId = publicationId;
+        this.pageSize = Q_PAGE_SIZE;
+
+        if (stringParams != null) {
+            this.params = JsonUtils.fromJsonString(stringParams, Params.class);
         } else {
-            query = new Query();
+            this.params = new Params();
+        }
+    }
+
+    @Override
+    protected Iterator<Page> doPageRead() {
+        if (currentParentId == null) {
+            return null;
         }
 
-        query.addCriteria(where("parentId").is(publicationId));
+        List<Page> pages = pageStore.findAll(buildQuery());
 
-        setName("currentPage");
-        setTemplate(mongoOperations);
-        setCollection("pages");
-        setTargetType(Page.class);
-        setPageSize(10);
-        setQuery(query);
+        if (pages.isEmpty()) {
+            fetchCurrentPublicationChildPublications();
+            currentParentId = popParentId();
+            this.page = 0;
 
-        numberOfItems = mongoOperations.count(query, Page.class);
+            return doPageRead();
+        }
+
+        return pages.iterator();
     }
 
-    private Query paramsToQuery(String paramsString, ObjectMapper objectMapper) throws JsonProcessingException {
-        Params params = objectMapper.readValue(paramsString, Params.class);
+    private Query buildQuery() {
+        Query query = params.toMongoQuery(false);
+        query.addCriteria(where("parentId").is(currentParentId));
+        query.with(PageRequest.of(page, pageSize)).with(Sort.by("index").ascending());
 
-        return params.toMongoQuery();
+        return query;
     }
 
-    @BeforeStep
-    public void setNumberOfItems(StepExecution stepExecution) {
-        stepExecution.getExecutionContext().putLong(NUMBER_OF_ITEMS, numberOfItems);
+    private void fetchCurrentPublicationChildPublications() {
+        parentIds.addAll(publicationStore.findAllChildrenIds(currentParentId));
+    }
+
+    private String popParentId() {
+        try {
+            return parentIds.pop();
+        } catch (EmptyStackException e) {
+            return null;
+        }
     }
 }

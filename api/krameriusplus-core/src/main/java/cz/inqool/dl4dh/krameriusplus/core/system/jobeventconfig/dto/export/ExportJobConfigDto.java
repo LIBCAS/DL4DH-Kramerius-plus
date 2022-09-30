@@ -23,7 +23,7 @@ public abstract class ExportJobConfigDto extends JobEventConfigDto {
     @Override
     public Map<String, Object> toJobParametersMap() {
         Map<String, Object> jobParametersMap = new HashMap<>();
-        jobParametersMap.put(PARAMS, JsonUtils.toJsonString(getParams()));
+        jobParametersMap.put(PARAMS, JsonUtils.toJsonString(params));
 
         return jobParametersMap;
     }
