@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.comp
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.ProcessingDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PathedDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @StepScope
-public class DownloadPageAltoProcessor implements ItemProcessor<ProcessingDto, PageAndAltoDto> {
+public class DownloadPageAltoProcessor implements ItemProcessor<PathedDto, PageAndAltoDto> {
 
     private final StreamProvider streamProvider;
 
@@ -21,7 +21,7 @@ public class DownloadPageAltoProcessor implements ItemProcessor<ProcessingDto, P
     }
 
     @Override
-    public PageAndAltoDto process(ProcessingDto item) throws Exception {
+    public PageAndAltoDto process(PathedDto item) throws Exception {
         if (!(item instanceof PageWithPathDto)) {
             return null;
         }

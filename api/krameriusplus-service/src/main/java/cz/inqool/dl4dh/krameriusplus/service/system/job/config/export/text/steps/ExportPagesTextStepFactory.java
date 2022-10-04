@@ -1,10 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.steps;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.ProcessingDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.AbstractStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadDigitalObjectReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.CreateFileStructureProcessor;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.DownloadPublicationTreeReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components.DownloadPageAltoProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components.ExportPagesTextWriter;
 import org.springframework.batch.core.Step;
@@ -20,7 +20,7 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ste
 @Component
 public class ExportPagesTextStepFactory extends AbstractStepFactory {
 
-    private final DownloadPublicationTreeReader reader;
+    private final DownloadDigitalObjectReader reader;
 
     private final ExportPagesTextWriter writer;
 
@@ -29,7 +29,7 @@ public class ExportPagesTextStepFactory extends AbstractStepFactory {
     private final CreateFileStructureProcessor createFileStructureProcessor;
 
     @Autowired
-    public ExportPagesTextStepFactory(DownloadPublicationTreeReader reader,
+    public ExportPagesTextStepFactory(DownloadDigitalObjectReader reader,
                                       ExportPagesTextWriter writer,
                                       DownloadPageAltoProcessor downloadPagesAltoProcessor,
                                       CreateFileStructureProcessor createFileStructureProcessor) {
@@ -44,7 +44,7 @@ public class ExportPagesTextStepFactory extends AbstractStepFactory {
         return EXPORT_PAGES_TEXT;
     }
 
-    private ItemReader<ProcessingDto> getItemReader() {
+    private ItemReader<DigitalObject> getItemReader() {
         return reader;
     }
 
@@ -52,8 +52,8 @@ public class ExportPagesTextStepFactory extends AbstractStepFactory {
         return writer;
     }
 
-    private ItemProcessor<ProcessingDto, PageAndAltoDto> getItemProcessor() {
-        return new CompositeItemProcessorBuilder<ProcessingDto, PageAndAltoDto>()
+    private ItemProcessor<DigitalObject, PageAndAltoDto> getItemProcessor() {
+        return new CompositeItemProcessorBuilder<DigitalObject, PageAndAltoDto>()
                 .delegates(createFileStructureProcessor, downloadPagesAltoProcessor)
                 .build();
     }
@@ -61,7 +61,7 @@ public class ExportPagesTextStepFactory extends AbstractStepFactory {
     @Override
     public Step build() {
         return getBuilder()
-                .<ProcessingDto, PageAndAltoDto>chunk(getChunkSize())
+                .<DigitalObject, PageAndAltoDto>chunk(getChunkSize())
                 .reader(getItemReader())
                 .processor(getItemProcessor())
                 .writer(getItemWriter())

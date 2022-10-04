@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PageDto extends ProcessingDto {
+public class PageDto extends PathedDto {
 
     private Page page;
 }

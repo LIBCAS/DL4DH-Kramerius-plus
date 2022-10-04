@@ -1,10 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.ProcessingDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PublicationDto;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
@@ -20,24 +19,22 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.Execution
 
 @Component
 @StepScope
-public class CreateFileStructureProcessor implements ItemProcessor<ProcessingDto, ProcessingDto>, StepExecutionListener {
+public class CreateFileStructureProcessor implements ItemProcessor<DigitalObject, PageWithPathDto>, StepExecutionListener {
 
     private Path currentDir;
 
     @Override
-    public ProcessingDto process(ProcessingDto item) throws Exception {
-        if (item instanceof PageDto) {
-            PageDto pageDto = (PageDto) item;
+    public PageWithPathDto process(DigitalObject item) throws Exception {
+        if (item instanceof Page) {
             PageWithPathDto result = new PageWithPathDto();
-            result.setPage(pageDto.getPage());
+            result.setPage(((Page) item));
             result.setPath(currentDir.toString());
 
             return result;
         }
 
-        if (item instanceof PublicationDto) {
-            Publication publication = ((PublicationDto) item).getPublication();
-            createDir(publication);
+        if (item instanceof Publication) {
+            createDir(((Publication) item));
 
             return null;
         }

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PublicationDto extends ProcessingDto {
+public class PublicationWithPathDto extends PathedDto {
 
     private Publication publication;
 }

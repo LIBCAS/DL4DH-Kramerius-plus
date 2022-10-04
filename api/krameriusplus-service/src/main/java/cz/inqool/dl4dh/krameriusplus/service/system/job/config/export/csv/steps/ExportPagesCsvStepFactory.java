@@ -1,21 +1,25 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.csv.steps;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoFlowStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.AbstractStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.PathResolvingPageMongoReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.csv.components.ExportPagesCsvFileWriter;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_PAGES_CSV;
 
 @Component
-public class ExportPagesCsvStepFactory extends PageMongoFlowStepFactory {
+public class ExportPagesCsvStepFactory extends AbstractStepFactory {
+
+    private final PathResolvingPageMongoReader reader;
 
     private final ExportPagesCsvFileWriter writer;
 
     @Autowired
-    public ExportPagesCsvStepFactory(ExportPagesCsvFileWriter writer) {
+    public ExportPagesCsvStepFactory(PathResolvingPageMongoReader reader, ExportPagesCsvFileWriter writer) {
+        this.reader = reader;
         this.writer = writer;
     }
 
@@ -25,7 +29,12 @@ public class ExportPagesCsvStepFactory extends PageMongoFlowStepFactory {
     }
 
     @Override
-    protected ItemWriter<Page> getItemWriter() {
-        return writer;
+    public Step build() {
+        return getBuilder()
+                .<PageWithPathDto, PageWithPathDto>chunk(5)
+                .reader(reader)
+                .writer(writer)
+                .listener(reader)
+                .build();
     }
 }
