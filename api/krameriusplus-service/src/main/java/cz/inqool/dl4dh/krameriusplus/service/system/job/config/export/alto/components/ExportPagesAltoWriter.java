@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoStringDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PathedDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FileWriter;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.stereotype.Component;
@@ -26,10 +26,10 @@ public class ExportPagesAltoWriter extends FileWriter<PageAndAltoStringDto> {
     }
 
     @Override
-    protected String getItemFileName(PathedDto item) {
-        if (!(item instanceof PageWithPathDto)) {
+    protected String getItemFileName(DigitalObjectWithPathDto item) {
+        if (!(item instanceof PageAndAltoStringDto || !(item.getDigitalObject() instanceof Page))) {
             throw new IllegalStateException(item.getClass().getSimpleName() + " not allowed in ALTO export format");
         }
-        return getPageFilename(((PageWithPathDto) item).getPage(), "xml");
+        return getPageFilename((Page) item.getDigitalObject(), "xml");
     }
 }

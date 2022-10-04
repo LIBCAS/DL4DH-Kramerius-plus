@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.csv.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.exporter.CsvExporter;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PathedDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PublicationWithPathDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FileWriter;
 import org.springframework.batch.core.StepExecution;
 
@@ -16,11 +16,11 @@ public abstract class CsvFileWriter<T> extends FileWriter<T> {
     protected CsvExporter exporter;
 
     @Override
-    protected String getItemFileName(PathedDto item) {
-        if (item instanceof PublicationWithPathDto) {
+    protected String getItemFileName(DigitalObjectWithPathDto item) {
+        if (item.getDigitalObject() instanceof Publication) {
             return "metadata.csv";
-        } else if (item instanceof PageWithPathDto) {
-            return getPageFilename(((PageWithPathDto) item).getPage(), "csv");
+        } else if (item.getDigitalObject() instanceof Page) {
+            return getPageFilename(((Page) item.getDigitalObject()), "csv");
         }
 
         throw new IllegalStateException("Invalid type of item in CSV export: '" + item.getClass().getSimpleName() + "'.");

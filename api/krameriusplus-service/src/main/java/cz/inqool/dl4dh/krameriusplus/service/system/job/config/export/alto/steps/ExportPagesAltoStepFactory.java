@@ -6,7 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.facto
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadDigitalObjectReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components.DownloadPageAltoStringProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components.ExportPagesAltoWriter;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.CreateFileStructureProcessor;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.PathResolvingProcessor;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
@@ -26,16 +26,17 @@ public class ExportPagesAltoStepFactory extends AbstractStepFactory {
 
     private final DownloadPageAltoStringProcessor downloadPageAltoStringProcessor;
 
-    private final CreateFileStructureProcessor createFileStructureProcessor;
+    private final PathResolvingProcessor pathResolvingProcessor;
+
     @Autowired
     public ExportPagesAltoStepFactory(DownloadDigitalObjectReader reader,
                                       ExportPagesAltoWriter writer,
                                       DownloadPageAltoStringProcessor downloadPageAltoStringProcessor,
-                                      CreateFileStructureProcessor createFileStructureProcessor) {
+                                      PathResolvingProcessor pathResolvingProcessor) {
         this.reader = reader;
         this.writer = writer;
         this.downloadPageAltoStringProcessor = downloadPageAltoStringProcessor;
-        this.createFileStructureProcessor = createFileStructureProcessor;
+        this.pathResolvingProcessor = pathResolvingProcessor;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class ExportPagesAltoStepFactory extends AbstractStepFactory {
 
     private ItemProcessor<DigitalObject, PageAndAltoStringDto> getItemProcessor() {
         return new CompositeItemProcessorBuilder<DigitalObject, PageAndAltoStringDto>()
-                .delegates(createFileStructureProcessor, downloadPageAltoStringProcessor)
+                .delegates(pathResolvingProcessor, downloadPageAltoStringProcessor)
                 .build();
     }
 
@@ -64,7 +65,7 @@ public class ExportPagesAltoStepFactory extends AbstractStepFactory {
                 .reader(getItemReader())
                 .processor(getItemProcessor())
                 .writer(getItemWriter())
-                .listener(createFileStructureProcessor)
+                .listener(pathResolvingProcessor)
                 .build();
     }
 

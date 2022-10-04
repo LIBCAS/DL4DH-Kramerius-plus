@@ -1,9 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoStringDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PathedDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @StepScope
-public class DownloadPageAltoStringProcessor implements ItemProcessor<PathedDto, PageAndAltoStringDto> {
+@Slf4j
+public class DownloadPageAltoStringProcessor implements ItemProcessor<DigitalObjectWithPathDto, PageAndAltoStringDto> {
     private final StreamProvider streamProvider;
 
     @Autowired
@@ -20,16 +23,18 @@ public class DownloadPageAltoStringProcessor implements ItemProcessor<PathedDto,
     }
 
     @Override
-    public PageAndAltoStringDto process(PathedDto item) throws Exception {
-        if (!(item instanceof PageWithPathDto)) {
+    public PageAndAltoStringDto process(DigitalObjectWithPathDto item) throws Exception {
+        if (item.getDigitalObject() instanceof Publication) {
             return null;
         }
-        PageWithPathDto pageWithPathDto = (PageWithPathDto) item;
-
         PageAndAltoStringDto pageAndAltoStringDto = new PageAndAltoStringDto();
-        pageAndAltoStringDto.setPage(pageWithPathDto.getPage());
-        pageAndAltoStringDto.setPath(pageWithPathDto.getPath());
-        pageAndAltoStringDto.setAltoString(streamProvider.getAltoString(pageAndAltoStringDto.getPage().getId()));
+        pageAndAltoStringDto.setDigitalObject(item.getDigitalObject());
+        pageAndAltoStringDto.setPath(item.getPath());
+        try {
+            pageAndAltoStringDto.setAltoString(streamProvider.getAltoString(pageAndAltoStringDto.getDigitalObject().getId()));
+        } catch (KrameriusException e) {
+            pageAndAltoStringDto.setAltoString("");
+        }
 
         return pageAndAltoStringDto;
     }

@@ -1,8 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.csv.steps;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.AbstractStepFactory;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.PathResolvingPageMongoReader;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.PageMongoReader;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.PathResolvingProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.csv.components.ExportPagesCsvFileWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +15,18 @@ import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ste
 @Component
 public class ExportPagesCsvStepFactory extends AbstractStepFactory {
 
-    private final PathResolvingPageMongoReader reader;
+    private final PageMongoReader reader;
+
+    private final PathResolvingProcessor pathResolvingProcessor;
 
     private final ExportPagesCsvFileWriter writer;
 
     @Autowired
-    public ExportPagesCsvStepFactory(PathResolvingPageMongoReader reader, ExportPagesCsvFileWriter writer) {
+    public ExportPagesCsvStepFactory(PageMongoReader reader,
+                                     PathResolvingProcessor pathResolvingProcessor,
+                                     ExportPagesCsvFileWriter writer) {
         this.reader = reader;
+        this.pathResolvingProcessor = pathResolvingProcessor;
         this.writer = writer;
     }
 
@@ -31,8 +38,9 @@ public class ExportPagesCsvStepFactory extends AbstractStepFactory {
     @Override
     public Step build() {
         return getBuilder()
-                .<PageWithPathDto, PageWithPathDto>chunk(5)
+                .<Page, DigitalObjectWithPathDto>chunk(5)
                 .reader(reader)
+                .processor(pathResolvingProcessor)
                 .writer(writer)
                 .listener(reader)
                 .build();

@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.json.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.exporter.JsonExporter;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PathedDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PublicationWithPathDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FileWriter;
 
 public abstract class JsonFileWriter<T> extends FileWriter<T> {
@@ -14,13 +14,13 @@ public abstract class JsonFileWriter<T> extends FileWriter<T> {
         this.exporter = exporter;
     }
 
-    protected String getItemFileName(PathedDto item) {
-        if (item instanceof PageWithPathDto) {
-            return getPageFilename(((PageWithPathDto) item).getPage(), "json");
+    protected String getItemFileName(DigitalObjectWithPathDto item) {
+        if (item.getDigitalObject() instanceof Page) {
+            return getPageFilename(((Page) item.getDigitalObject()), "json");
         } else {
-            String itemClass = ((PublicationWithPathDto) item).getPublication().getClass().getSimpleName();
+            String itemClass = ((Publication) item.getDigitalObject()).getClass().getSimpleName();
             return String.format("%s_%s.json", Character.toLowerCase(itemClass.charAt(0)) + itemClass.substring(1),
-                    ((PublicationWithPathDto) item).getPublication().getId().substring(5));
+                    item.getDigitalObject().getId().substring(5));
         }
     }
 }

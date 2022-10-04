@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.co
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObjectContext;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.DataProvider;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.PageMongoReader;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -20,7 +20,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.Execution
 
 @Component
 @StepScope
-public class PathResolvingPageMongoReader implements ItemReader<PageWithPathDto>, StepExecutionListener {
+public class PathResolvingPageMongoReader implements ItemReader<DigitalObjectWithPathDto>, StepExecutionListener {
 
     private final PageMongoReader pageMongoReader;
 
@@ -37,13 +37,13 @@ public class PathResolvingPageMongoReader implements ItemReader<PageWithPathDto>
     }
 
     @Override
-    public PageWithPathDto read() throws Exception {
+    public DigitalObjectWithPathDto read() throws Exception {
         Page page = pageMongoReader.read();
         if (page == null) {
             return null;
         }
 
-        PageWithPathDto result = new PageWithPathDto();
+        DigitalObjectWithPathDto result = new DigitalObjectWithPathDto();
 
         String parent = stripUuid(page.getParentId());
 
@@ -56,7 +56,7 @@ public class PathResolvingPageMongoReader implements ItemReader<PageWithPathDto>
         }
 
         result.setPath(currentPath.toString());
-        result.setPage(page);
+        result.setDigitalObject(page);
         return result;
     }
 

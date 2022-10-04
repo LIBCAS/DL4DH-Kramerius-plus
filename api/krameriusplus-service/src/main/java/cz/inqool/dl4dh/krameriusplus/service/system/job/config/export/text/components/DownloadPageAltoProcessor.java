@@ -1,9 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components;
 
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageWithPathDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PathedDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @StepScope
-public class DownloadPageAltoProcessor implements ItemProcessor<PathedDto, PageAndAltoDto> {
+public class DownloadPageAltoProcessor implements ItemProcessor<DigitalObjectWithPathDto, PageAndAltoDto> {
 
     private final StreamProvider streamProvider;
 
@@ -21,17 +20,12 @@ public class DownloadPageAltoProcessor implements ItemProcessor<PathedDto, PageA
     }
 
     @Override
-    public PageAndAltoDto process(PathedDto item) throws Exception {
-        if (!(item instanceof PageWithPathDto)) {
-            return null;
-        }
-
-        PageWithPathDto pageWithPathDto = (PageWithPathDto) item;
+    public PageAndAltoDto process(DigitalObjectWithPathDto item) throws Exception {
 
         PageAndAltoDto result = new PageAndAltoDto();
-        result.setPage(pageWithPathDto.getPage());
-        result.setPath(pageWithPathDto.getPath());
-        result.setAlto(streamProvider.getAlto(pageWithPathDto.getPage().getId()));
+        result.setDigitalObject(item.getDigitalObject());
+        result.setPath(item.getPath());
+        result.setAlto(streamProvider.getAlto(item.getDigitalObject().getId()));
 
         return result;
     }

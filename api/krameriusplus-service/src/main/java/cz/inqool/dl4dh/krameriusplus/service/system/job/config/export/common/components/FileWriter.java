@@ -4,7 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObjectCont
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.DataProvider;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PathedDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
@@ -25,11 +25,11 @@ public abstract class FileWriter<T> implements ItemWriter<T> {
 
     private final static String PAGE_NAME_FORMAT = "page%04d_%s.%s";
 
-    protected OutputStream getItemOutputStream(PathedDto item) throws IOException {
-        return Files.newOutputStream(Path.of(item.getPath() == null ? "" : item.getPath(), getItemFileName(item)));
+    protected OutputStream getItemOutputStream(DigitalObjectWithPathDto item) throws IOException {
+        return Files.newOutputStream(Path.of(item.getPath(), getItemFileName(item)));
     }
 
-    protected abstract String getItemFileName(PathedDto item);
+    protected abstract String getItemFileName(DigitalObjectWithPathDto item);
 
     protected String getPageFilename(Page page, String fileExtension) {
         Integer pageNumber = page.getIndex();
@@ -48,6 +48,7 @@ public abstract class FileWriter<T> implements ItemWriter<T> {
         Files.createDirectories(publicationPath);
         return publicationPath.toString();
     }
+
     /**
      * Can be overriden to inject objects from context
      * @param stepExecution

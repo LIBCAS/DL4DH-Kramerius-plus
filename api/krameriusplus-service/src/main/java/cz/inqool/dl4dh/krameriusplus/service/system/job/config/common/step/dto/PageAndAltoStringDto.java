@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageAndAltoStringDto extends PageWithPathDto {
+public class PageAndAltoStringDto extends DigitalObjectWithPathDto {
 
     private String altoString;
 }

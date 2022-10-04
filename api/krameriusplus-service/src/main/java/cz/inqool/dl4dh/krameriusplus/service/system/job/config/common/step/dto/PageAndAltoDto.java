@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PageAndAltoDto extends PageWithPathDto {
+public class PageAndAltoDto extends DigitalObjectWithPathDto {
 
     private Alto alto;
 }
