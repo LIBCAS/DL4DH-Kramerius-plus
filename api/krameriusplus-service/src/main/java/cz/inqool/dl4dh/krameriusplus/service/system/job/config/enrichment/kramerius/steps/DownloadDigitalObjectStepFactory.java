@@ -2,8 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.krame
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.FlowStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.DownloadDigitalObjectReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.DigitalObjectMongoWriter;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadDigitalObjectReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

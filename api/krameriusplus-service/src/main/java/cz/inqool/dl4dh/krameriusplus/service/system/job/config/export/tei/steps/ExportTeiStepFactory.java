@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.tei.steps
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.AbstractStepFactory;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components.DownloadDigitalObjectReader;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.DownloadDigitalObjectReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.tei.components.TeiExportPublicationFilterer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.tei.components.TeiPublicationExporter;
 import org.springframework.batch.core.Step;
