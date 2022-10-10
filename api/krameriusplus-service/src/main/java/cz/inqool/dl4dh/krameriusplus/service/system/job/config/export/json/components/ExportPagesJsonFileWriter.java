@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.json.comp
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.exporter.JsonExporter;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Component
 @StepScope
-public class ExportPagesJsonFileWriter extends JsonFileWriter<Page> {
+public class ExportPagesJsonFileWriter extends JsonFileWriter<DigitalObjectWithPathDto> {
 
     @Autowired
     public ExportPagesJsonFileWriter(JsonExporter exporter) {
@@ -19,9 +20,9 @@ public class ExportPagesJsonFileWriter extends JsonFileWriter<Page> {
     }
 
     @Override
-    public void write(List<? extends Page> items) throws IOException {
-        for (Page item : items) {
-            exporter.export(item, getItemOutputStream(item));
+    public void write(List<? extends DigitalObjectWithPathDto> items) throws IOException {
+        for (DigitalObjectWithPathDto item : items) {
+            exporter.export(((Page) item.getDigitalObject()), getItemOutputStream(item));
         }
     }
 }

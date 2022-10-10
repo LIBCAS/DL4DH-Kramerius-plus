@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.eq;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * @author Norbert Bodnar
@@ -93,6 +95,13 @@ public class PublicationService {
 
     public QueryResults<Page> findAllPages(String publicationId) {
         return pageStore.findAllByPublication(publicationId, Pageable.unpaged());
+    }
+
+    public List<Page> findAllPages(String publicationID, Params params) {
+        Query query = params.toMongoQuery(false);
+        query.addCriteria(where("parentId").is(publicationID));
+
+        return pageStore.findAll(query);
     }
 
     public QueryResults<Page> findAllPages(String publicationId, int page, int pageSize) {

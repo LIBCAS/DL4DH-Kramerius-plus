@@ -1,10 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FileWriter;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -30,22 +30,23 @@ public class ExportPagesTextWriter extends FileWriter<PageAndAltoDto> {
     }
 
     @Override
+    protected String getItemFileName(DigitalObjectWithPathDto item) {
+        if (!(item instanceof PageAndAltoDto)) {
+            throw new IllegalStateException(item.getClass().getSimpleName() + " not allowed in TEXT export");
+        }
+        return getPageFilename(((Page) item.getDigitalObject()), "txt");
+    }
+
+
+    @Override
     public void write(List<? extends PageAndAltoDto> items) throws Exception {
         for (PageAndAltoDto item : items) {
             AltoDto alto = altoMapper.toAltoDto(item.getAlto());
 
-            try (OutputStream out = getItemOutputStream(item.getPage())) {
+            try (OutputStream out = getItemOutputStream(item)) {
                 String pageContent = altoMetadataExtractor.extractText(alto);
                 out.write(pageContent.getBytes(StandardCharsets.UTF_8));
             }
         }
-    }
-
-    @Override
-    protected String getItemFileName(DigitalObject item) {
-        if (!(item instanceof Page)) {
-            throw new IllegalStateException(item.getClass().getSimpleName() + " not allowed in TEXT export");
-        }
-        return getPageFilename((Page) item, "txt");
     }
 }

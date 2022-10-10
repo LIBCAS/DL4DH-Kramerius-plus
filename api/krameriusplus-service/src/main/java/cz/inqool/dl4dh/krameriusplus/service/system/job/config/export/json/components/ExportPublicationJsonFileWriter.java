@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.json.comp
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.exporter.JsonExporter;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.eq;
 
 @Component
 @StepScope
-public class ExportPublicationJsonFileWriter extends JsonFileWriter<Publication> {
+public class ExportPublicationJsonFileWriter extends JsonFileWriter<DigitalObjectWithPathDto> {
 
     @Autowired
     public ExportPublicationJsonFileWriter(JsonExporter exporter) {
@@ -21,11 +22,10 @@ public class ExportPublicationJsonFileWriter extends JsonFileWriter<Publication>
     }
 
     @Override
-    public void write(List<? extends Publication> items) throws IOException {
+    public void write(List<? extends DigitalObjectWithPathDto> items) throws IOException {
         eq(items.size(), 1, () -> new IllegalStateException("Expected one publication on write, got: " + items.size()));
 
-        Publication publication = items.get(0);
-
-        exporter.export(publication, getItemOutputStream(publication));
+        DigitalObjectWithPathDto digitalObjectWithPathDto = items.get(0);
+        exporter.export(((Publication) digitalObjectWithPathDto.getDigitalObject()), getItemOutputStream(digitalObjectWithPathDto));
     }
 }

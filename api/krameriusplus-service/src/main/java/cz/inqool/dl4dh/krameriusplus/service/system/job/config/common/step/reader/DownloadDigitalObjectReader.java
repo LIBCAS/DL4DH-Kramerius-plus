@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.kramerius.components;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;

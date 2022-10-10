@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
+import lombok.Getter;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.data.AbstractPaginatedDataItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class PageMongoReader extends AbstractPaginatedDataItemReader<Page> {
 
     private final Stack<String> parentIds = new Stack<>();
 
+    @Getter
     private String currentParentId;
 
     @Autowired

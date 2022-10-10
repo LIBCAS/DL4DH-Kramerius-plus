@@ -1,35 +1,26 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.csv.components;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.exporter.CsvExporter;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FileWriter;
 import org.springframework.batch.core.StepExecution;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.DELIMITER;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.eq;
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
-public abstract class CsvFileWriter<T extends DigitalObject> extends FileWriter<T> {
+public abstract class CsvFileWriter<T> extends FileWriter<T> {
 
     protected CsvExporter exporter;
 
-    protected OutputStream getItemOutputStream(DigitalObject item) throws IOException {
-        return Files.newOutputStream(exportDirectory.resolve(Path.of(getItemFileName(item))));
-    }
-
     @Override
-    protected String getItemFileName(DigitalObject item) {
-        if (item instanceof Publication) {
+    protected String getItemFileName(DigitalObjectWithPathDto item) {
+        if (item.getDigitalObject() instanceof Publication) {
             return "metadata.csv";
-        } else if (item instanceof Page) {
-            return getPageFilename((Page) item, "csv");
+        } else if (item.getDigitalObject() instanceof Page) {
+            return getPageFilename(((Page) item.getDigitalObject()), "csv");
         }
 
         throw new IllegalStateException("Invalid type of item in CSV export: '" + item.getClass().getSimpleName() + "'.");
@@ -43,5 +34,4 @@ public abstract class CsvFileWriter<T extends DigitalObject> extends FileWriter<
 
         exporter = new CsvExporter(delimiter.charAt(0));
     }
-
 }
