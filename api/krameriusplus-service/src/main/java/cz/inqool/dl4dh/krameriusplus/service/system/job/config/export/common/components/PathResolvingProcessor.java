@@ -13,7 +13,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class PathResolvingProcessor implements ItemProcessor<DigitalObject, Digi
         return result;
     }
 
-    private String resolvePath(DigitalObject digitalObject) throws IOException {
+    private String resolvePath(DigitalObject digitalObject) {
         return digitalObject instanceof Page ?
                 resolvePath(((Page) digitalObject)) : resolvePath(((Publication) digitalObject));
     }
@@ -64,7 +63,7 @@ public class PathResolvingProcessor implements ItemProcessor<DigitalObject, Digi
 
     private void cacheTreeBranch(Publication publication) {
         while (publication.getParentId() != null) {
-            parentCache.put(publication.getId(), publication.getParentId());
+            parentCache.putIfAbsent(publication.getId(), publication.getParentId());
             publication = publicationStore.findById(publication.getParentId())
                     .orElseThrow(() -> new IllegalStateException("if parent id exists then parent exists too"));
         }
