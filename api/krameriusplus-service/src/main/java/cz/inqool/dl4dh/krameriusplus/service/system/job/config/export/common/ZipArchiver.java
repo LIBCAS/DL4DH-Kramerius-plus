@@ -63,6 +63,12 @@ public class ZipArchiver {
         }
     }
 
+    public void unzip(Path zipFilePath, Path outputPath) throws IOException {
+        try (InputStream is = Files.newInputStream(zipFilePath)) {
+            unZip(is, outputPath);
+        }
+    }
+
     /**
      * code from <a href="https://www.baeldung.com/java-compress-and-uncompress">baeldung</a>
      *
