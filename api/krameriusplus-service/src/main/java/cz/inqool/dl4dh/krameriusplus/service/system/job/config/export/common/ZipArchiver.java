@@ -59,13 +59,7 @@ public class ZipArchiver {
      */
     public void unzip(Path zipFilePath) throws IOException {
         try (InputStream is = Files.newInputStream(zipFilePath)) {
-            unZip(is, zipFilePath.getFileName());
-        }
-    }
-
-    public void unzip(Path zipFilePath, Path outputPath) throws IOException {
-        try (InputStream is = Files.newInputStream(zipFilePath)) {
-            unZip(is, outputPath);
+            unZip(is);
         }
     }
 
@@ -73,11 +67,10 @@ public class ZipArchiver {
      * code from <a href="https://www.baeldung.com/java-compress-and-uncompress">baeldung</a>
      *
      * @param zipFileIs input stream of file to unzip
-     * @param inputPath name for output after zipping inputstream, this will be appended to the Path field
      * @throws IOException in case of FS issues
      */
-    private void unZip(InputStream zipFileIs, Path inputPath) throws IOException {
-        File outDir = Files.createDirectory(Path.of(resultFilePath + File.separator + inputPath)).toFile();
+    private void unZip(InputStream zipFileIs) throws IOException {
+        File outDir = resultFilePath.toFile();
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(zipFileIs);
         ZipEntry zipEntry = zis.getNextEntry();

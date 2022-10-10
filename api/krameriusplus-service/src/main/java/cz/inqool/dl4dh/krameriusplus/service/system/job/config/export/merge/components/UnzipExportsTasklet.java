@@ -90,9 +90,8 @@ public class UnzipExportsTasklet extends ValidatedTasklet {
         for (Export export : exports) {
             FileRef fileRef = export.getFileRef();
             Path exportZipPath = fileService.find(fileRef.getId()).getPath();
-            Path outPutDir = Path.of(export.getPublicationId().substring(5));
 
-            zipArchiver.unzip(exportZipPath, outPutDir);
+            zipArchiver.unzip(exportZipPath);
         }
     }
 
