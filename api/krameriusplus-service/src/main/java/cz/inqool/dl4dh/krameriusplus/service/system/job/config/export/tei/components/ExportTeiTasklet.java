@@ -40,7 +40,7 @@ public class ExportTeiTasklet extends ValidatedTasklet {
         Path parentDirectory = Path.of((String) chunkContext.getStepContext().getJobExecutionContext().get(DIRECTORY));
         Path teiFile = Files.createFile(parentDirectory.resolve(publicationId.substring(5) + ".xml"));
 
-        exporter.export(publicationId, params, teiFile);
+//        exporter.export(publicationId, params, teiFile);
 
         return RepeatStatus.FINISHED;
     }

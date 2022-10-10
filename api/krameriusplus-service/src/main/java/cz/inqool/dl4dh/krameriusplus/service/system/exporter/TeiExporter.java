@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.exporter;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.PublicationService;
@@ -33,16 +33,16 @@ public class TeiExporter {
         this.teiConnector = teiConnector;
     }
 
-    public void export(String publicationId, TeiExportParams teiParams, Path teiFile) throws IOException {
+    public void export(String publicationId, TeiExportParams teiParams, Params params, Path teiFile) throws IOException {
         Publication publication = publicationService.find(publicationId);
         FileRef teiHeader = fileService.find(publication.getTeiHeaderFileId());
 
-        QueryResults<Page> pages = publicationService.findAllPages(publicationId);
+        List<Page> pages = publicationService.findAllPages(publicationId, params);
 
         List<InputStream> teiBodies = new ArrayList<>();
 
         try (InputStream teiHeaderIs = teiHeader.open()) {
-            for (Page page : pages.getResults()) {
+            for (Page page : pages) {
                 FileRef teiBody = fileService.find(page.getTeiBodyFileId());
                 teiBodies.add(teiBody.open());
             }

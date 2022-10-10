@@ -2,9 +2,11 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.tei.compo
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObjectContext;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.tei.TeiExportParams;
+import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.DataProvider;
 import cz.inqool.dl4dh.krameriusplus.service.system.exporter.TeiExporter;
 import org.springframework.batch.core.ExitStatus;
@@ -14,6 +16,7 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
@@ -21,6 +24,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PARAMS;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.TEI_EXPORT_PARAMS;
 
 /**
@@ -42,11 +46,20 @@ public class TeiPublicationExporter implements StepExecutionListener, ItemWriter
 
     private JobParameters jobParameters;
 
+    private final Params params;
+
     @Autowired
-    public TeiPublicationExporter(DataProvider dataProvider, TeiExporter teiExporter, ObjectMapper objectMapper) {
+    public TeiPublicationExporter(DataProvider dataProvider, TeiExporter teiExporter,
+                                  ObjectMapper objectMapper, @Value("#{jobParameters['" + PARAMS + "']}") String stringParams) {
         this.dataProvider = dataProvider;
         this.teiExporter = teiExporter;
         this.objectMapper = objectMapper;
+
+        if (stringParams != null) {
+            this.params = JsonUtils.fromJsonString(stringParams, Params.class);
+        } else {
+            this.params = new Params();
+        }
     }
 
     @Override
@@ -62,12 +75,13 @@ public class TeiPublicationExporter implements StepExecutionListener, ItemWriter
 
     @Override
     public void write(List<? extends Publication> items) throws Exception {
-        TeiExportParams params = objectMapper.readValue(jobParameters.getString(TEI_EXPORT_PARAMS), TeiExportParams.class);
+        TeiExportParams teiExportParams = objectMapper.readValue(jobParameters.getString(TEI_EXPORT_PARAMS), TeiExportParams.class);
 
         for (Publication publication : items) {
             Path targetPath = resolvePathFromContext(publication.getId());
             Files.createDirectories(targetPath);
-            teiExporter.export(publication.getId(), params, targetPath.resolve(publication.getId().substring(5) + ".xml"));
+            teiExporter.export(publication.getId(), teiExportParams,
+                    params, targetPath.resolve(publication.getId().substring(5) + ".xml"));
         }
     }
 
