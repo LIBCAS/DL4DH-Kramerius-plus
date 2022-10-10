@@ -39,7 +39,7 @@ public class ExportPagesJsonStepFactory extends AbstractStepFactory {
                 .<Page, DigitalObjectWithPathDto>chunk(5)
                 .reader(reader)
                 .writer(writer)
-                .listener(reader)
+                .processor(processor)
                 .listener(processor)
                 .build();
     }

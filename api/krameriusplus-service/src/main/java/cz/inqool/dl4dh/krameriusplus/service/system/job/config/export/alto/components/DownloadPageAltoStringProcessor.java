@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
@@ -24,17 +23,13 @@ public class DownloadPageAltoStringProcessor implements ItemProcessor<DigitalObj
 
     @Override
     public PageAndAltoStringDto process(DigitalObjectWithPathDto item) throws Exception {
-        if (item.getDigitalObject() instanceof Publication) {
+        if (!(item.getDigitalObject() instanceof Publication)) {
             return null;
         }
         PageAndAltoStringDto pageAndAltoStringDto = new PageAndAltoStringDto();
         pageAndAltoStringDto.setDigitalObject(item.getDigitalObject());
         pageAndAltoStringDto.setPath(item.getPath());
-        try {
-            pageAndAltoStringDto.setAltoString(streamProvider.getAltoString(pageAndAltoStringDto.getDigitalObject().getId()));
-        } catch (KrameriusException e) {
-            pageAndAltoStringDto.setAltoString("");
-        }
+        pageAndAltoStringDto.setAltoString(streamProvider.getAltoString(pageAndAltoStringDto.getDigitalObject().getId()));
 
         return pageAndAltoStringDto;
     }

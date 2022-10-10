@@ -42,7 +42,7 @@ public class ExportPagesCsvStepFactory extends AbstractStepFactory {
                 .reader(reader)
                 .processor(pathResolvingProcessor)
                 .writer(writer)
-                .listener(reader)
+                .listener(pathResolvingProcessor)
                 .build();
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,14 +54,12 @@ public class PathResolvingProcessor implements ItemProcessor<DigitalObject, Digi
         return buildPathFromCache(page.getParentId());
     }
 
-    private String resolvePath(Publication publication) throws IOException {
+    private String resolvePath(Publication publication) {
         if (!parentCache.containsKey(publication.getId())) {
             cacheTreeBranch(publication);
         }
 
-        String directory = buildPathFromCache(publication.getId());
-        Files.createDirectory(Path.of(directory));
-        return directory;
+        return buildPathFromCache(publication.getId());
     }
 
     private void cacheTreeBranch(Publication publication) {
