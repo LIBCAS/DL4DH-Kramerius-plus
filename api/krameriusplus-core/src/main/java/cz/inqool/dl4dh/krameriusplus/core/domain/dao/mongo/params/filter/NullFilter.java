@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.util.ReflectionUtils;
 
 public class NullFilter implements Filter {
 
@@ -17,7 +18,7 @@ public class NullFilter implements Filter {
     }
 
     @Override
-    public boolean eval(Object object) throws Exception {
-        return object == null;
+    public boolean eval(Object object) {
+        return ReflectionUtils.findField(object.getClass(), field) == null;
     }
 }

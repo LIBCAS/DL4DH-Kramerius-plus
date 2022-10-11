@@ -7,7 +7,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "operation")
 @JsonSubTypes({
         @JsonSubTypes.Type(name = "EQ", value = EqFilter.class),
-        @JsonSubTypes.Type(name = "OR", value = OrFilter.class)
+        @JsonSubTypes.Type(name = "OR", value = OrFilter.class),
+        @JsonSubTypes.Type(name = "GT", value = GtFilter.class)
 })
 public interface Filter {
 

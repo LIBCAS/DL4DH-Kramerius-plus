@@ -23,7 +23,7 @@ public class RegexFilter implements Filter {
 
     @Override
     public boolean eval(Object object) throws IllegalAccessException {
-        Field[] fields = object.getClass().getDeclaredFields();
+        Field[] fields = object.getClass().getFields();
 
         for (Field objectField : fields) {
             if (objectField.getName().equals(field)) {

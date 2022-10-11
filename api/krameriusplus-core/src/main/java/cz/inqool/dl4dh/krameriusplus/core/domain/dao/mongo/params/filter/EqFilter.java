@@ -2,7 +2,12 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -10,6 +15,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class EqFilter implements Filter {
 
     private final String field;
+
     private final Object value;
 
     public EqFilter(@JsonProperty("field") String field, @JsonProperty("value") Object value) {
@@ -23,17 +29,13 @@ public class EqFilter implements Filter {
     }
 
     @Override
-    public boolean eval(Object object) throws IllegalAccessException {
-        Field[] fields = object.getClass().getDeclaredFields();
-
-        for (Field objectField : fields) {
-            if (objectField.getName().equals(field)) {
-                Object objectFieldValue = objectField.get(object);
-
-                return objectFieldValue.equals(value);
-            }
+    public boolean eval(Object object) throws InvocationTargetException, IllegalAccessException {
+        Field matchingField = ReflectionUtils.findField(object.getClass(), field);
+        if (matchingField == null) {
+            return false;
         }
+        Method accessor = ReflectionUtils.findMethod(object.getClass(), "get" + StringUtils.capitalize(field));
 
-        return false;
+        return accessor != null && accessor.invoke(object).equals(value);
     }
 }

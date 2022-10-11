@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.facto
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.DownloadDigitalObjectReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components.DownloadPageAltoStringProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.alto.components.ExportPagesAltoWriter;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FilteringProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.PathResolvingProcessor;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemProcessor;
@@ -24,6 +25,10 @@ public class ExportPagesAltoStepFactory extends AbstractStepFactory {
 
     private final ExportPagesAltoWriter writer;
 
+    private final FilteringProcessor filteringProcessor;
+
+    private final DownloadPageAltoStringProcessor processor;
+
     private final DownloadPageAltoStringProcessor downloadPageAltoStringProcessor;
 
     private final PathResolvingProcessor pathResolvingProcessor;
@@ -31,10 +36,13 @@ public class ExportPagesAltoStepFactory extends AbstractStepFactory {
     @Autowired
     public ExportPagesAltoStepFactory(DownloadDigitalObjectReader reader,
                                       ExportPagesAltoWriter writer,
+                                      FilteringProcessor filteringProcessor, DownloadPageAltoStringProcessor processor) {
                                       DownloadPageAltoStringProcessor downloadPageAltoStringProcessor,
                                       PathResolvingProcessor pathResolvingProcessor) {
         this.reader = reader;
         this.writer = writer;
+        this.filteringProcessor = filteringProcessor;
+        this.processor = processor;
         this.downloadPageAltoStringProcessor = downloadPageAltoStringProcessor;
         this.pathResolvingProcessor = pathResolvingProcessor;
     }
