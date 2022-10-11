@@ -1,12 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import org.springframework.data.mongodb.core.query.Criteria;
 
-import java.lang.reflect.Field;
+public class RegexFilter extends FieldValueOperation {
 
-public class RegexFilter implements Filter {
-
+    @Getter
     private final String field;
 
     private final String value;
@@ -22,18 +22,7 @@ public class RegexFilter implements Filter {
     }
 
     @Override
-    public boolean eval(Object object) throws IllegalAccessException {
-        Field[] fields = object.getClass().getFields();
-
-        for (Field objectField : fields) {
-            if (objectField.getName().equals(field)) {
-                Object objectFieldValue = objectField.get(object);
-                if (objectFieldValue instanceof String) {
-                    return ((String) objectFieldValue).matches(value);
-                }
-            }
-        }
-
-        return false;
+    protected boolean doCompare(Object object) {
+        return object instanceof String && ((String) object).matches(value);
     }
 }

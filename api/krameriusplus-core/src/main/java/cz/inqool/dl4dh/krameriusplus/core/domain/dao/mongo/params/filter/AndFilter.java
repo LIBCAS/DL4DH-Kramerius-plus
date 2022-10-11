@@ -9,7 +9,7 @@ public class AndFilter implements Filter {
 
     private final List<Filter> filters;
 
-    public AndFilter(@JsonProperty List<Filter> filters) {
+    public AndFilter(@JsonProperty("filters") List<Filter> filters) {
         this.filters = filters;
     }
 
