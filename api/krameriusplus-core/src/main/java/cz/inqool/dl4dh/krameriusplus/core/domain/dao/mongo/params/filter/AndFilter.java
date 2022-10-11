@@ -19,4 +19,15 @@ public class AndFilter implements Filter {
 
         return criteria.andOperator(filters.stream().map(Filter::toCriteria).toArray(Criteria[]::new));
     }
+
+    @Override
+    public boolean eval(Object object) throws Exception {
+        boolean result = true;
+
+        for (Filter filter : filters) {
+            result = result && filter.eval(object);
+        }
+
+        return result;
+    }
 }

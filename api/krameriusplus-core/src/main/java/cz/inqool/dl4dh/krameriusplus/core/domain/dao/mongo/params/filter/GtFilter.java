@@ -3,6 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import java.lang.reflect.Field;
+
 public class GtFilter implements Filter {
 
     private final String field;
@@ -17,5 +19,21 @@ public class GtFilter implements Filter {
     @Override
     public Criteria toCriteria() {
         return Criteria.where(field).gt(value);
+    }
+
+    @Override
+    public boolean eval(Object object) throws IllegalAccessException {
+        Field[] fields = object.getClass().getDeclaredFields();
+
+        for (Field objectField : fields) {
+            if (objectField.getName().equals(field)) {
+                Object objectFieldValue = objectField.get(object);
+                if (objectFieldValue instanceof Number && value instanceof Number) {
+                    return ((Number) objectFieldValue).doubleValue() > ((Number) value).doubleValue();
+                }
+            }
+        }
+
+        return false;
     }
 }

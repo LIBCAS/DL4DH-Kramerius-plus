@@ -17,4 +17,6 @@ public interface Filter {
      * @return created criteria object
      */
     Criteria toCriteria();
+
+    boolean eval(Object object) throws Exception;
 }

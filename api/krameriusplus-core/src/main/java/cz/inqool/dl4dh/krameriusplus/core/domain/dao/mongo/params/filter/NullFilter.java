@@ -15,4 +15,9 @@ public class NullFilter implements Filter {
     public Criteria toCriteria() {
         return Criteria.where(field).exists(false);
     }
+
+    @Override
+    public boolean eval(Object object) throws Exception {
+        return object == null;
+    }
 }
