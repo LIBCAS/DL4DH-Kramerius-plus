@@ -36,7 +36,7 @@ public class TeiExporter {
     public void export(String publicationId, TeiExportParams teiParams, Params params, Path teiFile) throws IOException {
         Publication publication = publicationService.find(publicationId);
         FileRef teiHeader = fileService.find(publication.getTeiHeaderFileId());
-
+        params.includeFields("teiBodyFileId");
         List<Page> pages = publicationService.findAllPages(publicationId, params);
 
         List<InputStream> teiBodies = new ArrayList<>();
