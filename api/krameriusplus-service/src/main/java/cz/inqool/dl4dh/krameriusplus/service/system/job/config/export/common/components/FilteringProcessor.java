@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.co
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Filter;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.utils.JsonUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
@@ -14,7 +14,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 
 @Component
 @StepScope
-public class FilteringProcessor implements ItemProcessor<Page, Page> {
+public class FilteringProcessor implements ItemProcessor<DigitalObject, DigitalObject> {
 
     private final Params params;
     
@@ -28,7 +28,7 @@ public class FilteringProcessor implements ItemProcessor<Page, Page> {
     }
 
     @Override
-    public Page process(Page item) throws Exception {
+    public DigitalObject process(DigitalObject item) throws Exception {
         for (Filter filter : params.getFilters()) {
             if (!filter.eval(item)) {
                 return null;
