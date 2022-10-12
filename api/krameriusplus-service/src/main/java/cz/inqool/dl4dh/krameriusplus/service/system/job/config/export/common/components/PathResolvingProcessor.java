@@ -62,16 +62,15 @@ public class PathResolvingProcessor implements ItemProcessor<DigitalObject, Digi
     }
 
     private void cacheTreeBranch(Publication publication) {
-        while (publication.getParentId() != null) {
+        while (publication != null && publication.getParentId() != null) {
             parentCache.putIfAbsent(publication.getId(), publication.getParentId());
-            publication = publicationStore.findById(publication.getParentId())
-                    .orElseThrow(() -> new IllegalStateException("if parent id exists then parent exists too"));
+            publication = publicationStore.findById(publication.getParentId()).orElse(null);
         }
     }
 
     private String buildPathFromCache(String id) {
         if (!parentCache.containsKey(id)) {
-            cacheTreeBranch(publicationStore.findById(id).orElseThrow(() -> new IllegalStateException("if parent id exists then parent exists too")));
+            cacheTreeBranch(publicationStore.findById(id).orElse(null));
         }
 
         Path result = Path.of(stripUuid(id));
