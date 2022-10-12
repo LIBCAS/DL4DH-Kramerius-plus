@@ -12,7 +12,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -92,10 +91,6 @@ public class PublicationService {
 
     public QueryResults<Publication> findAllChildren(String publicationId, int page, int pageSize) {
         return publicationStore.findAllChildren(publicationId, PageRequest.of(page, pageSize));
-    }
-
-    public QueryResults<Page> findAllPages(String publicationId) {
-        return pageStore.findAllByPublication(publicationId, Pageable.unpaged());
     }
 
     public List<Page> findAllPages(String publicationID, Params params) {

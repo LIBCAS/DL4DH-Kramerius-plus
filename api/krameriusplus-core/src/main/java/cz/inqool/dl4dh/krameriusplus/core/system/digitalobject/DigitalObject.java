@@ -62,7 +62,14 @@ public abstract class DigitalObject extends DatedObject {
             throw new IllegalStateException("When can context have more than 1 inner array?");
         }
 
-        this.context = new ArrayList<>(context.get(0));
+        List<DigitalObjectContext> contextList = context.get(0);
+
+        this.context = new ArrayList<>(contextList);
+
+        if (contextList.size() >= 2) {
+            // set parentId from context because otherwise root objects in enrichment have parentId set to null
+            this.parentId = contextList.get(contextList.size() - 2).getPid();
+        }
     }
 
     public abstract String getModel();

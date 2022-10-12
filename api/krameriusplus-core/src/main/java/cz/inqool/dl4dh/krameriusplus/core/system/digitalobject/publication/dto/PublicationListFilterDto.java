@@ -20,6 +20,10 @@ public class PublicationListFilterDto {
 
     private String parentId;
 
+    private String model;
+
+    private Boolean isRootEnrichment;
+
     private Instant createdBefore;
 
     private Instant createdAfter;
@@ -37,7 +41,17 @@ public class PublicationListFilterDto {
             params.addFilters(new RegexFilter("title", title));
         }
         if (parentId != null) {
-            params.addFilters(new EqFilter("parentId", parentId));
+            if (parentId.isBlank()) {
+                params.addFilters(new EqFilter("parentId", null));
+            } else {
+                params.addFilters(new EqFilter("parentId", parentId));
+            }
+        }
+        if (model != null) {
+            params.addFilters(new EqFilter("_class", model));
+        }
+        if (isRootEnrichment != null) {
+            params.addFilters(new EqFilter("isRootEnrichment", isRootEnrichment));
         }
         if (createdBefore != null) {
             params.addFilters(new LtFilter("created", createdBefore));

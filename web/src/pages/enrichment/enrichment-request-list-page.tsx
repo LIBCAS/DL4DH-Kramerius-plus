@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material'
 import { EnrichmentRequestFilterDto } from 'models/enrichment-request/enrichment-request-filter-dto'
 import { EnrichmentRequestFilter } from 'modules/enrichment-request/enrichment-request-filter'
-import { EnrichmentRequestList } from 'modules/enrichment-request/enrichment-request-list'
+import { EnrichmentRequestGrid } from 'modules/enrichment-request/enrichment-request-list'
 import { FC, useState } from 'react'
 import { PageWrapper } from '../page-wrapper'
 
@@ -19,7 +19,7 @@ export const EnrichmentRequestListPage: FC = () => {
 					<EnrichmentRequestFilter onSubmit={onFilterSubmit} />
 				</Grid>
 				<Grid item xs={12}>
-					<EnrichmentRequestList filter={filter} />
+					<EnrichmentRequestGrid filter={filter} />
 				</Grid>
 			</Grid>
 		</PageWrapper>

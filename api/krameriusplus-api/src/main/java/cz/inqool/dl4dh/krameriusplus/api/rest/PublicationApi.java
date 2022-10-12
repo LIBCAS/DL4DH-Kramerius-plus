@@ -63,6 +63,8 @@ public class PublicationApi {
                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                           @RequestParam(value = "title", required = false) String title,
                                           @RequestParam(value = "parentId", required = false) String parentId,
+                                          @RequestParam(value = "model", required = false) String model,
+                                          @RequestParam(value = "isRootEnrichment", required = false) Boolean isRootEnrichment,
                                           @RequestParam(value = "createdBefore", required = false)
                                           @DateTimeFormat(iso = DATE_TIME) Instant createdBefore,
                                           @RequestParam(value = "createdAfter", required = false)
@@ -73,7 +75,7 @@ public class PublicationApi {
                                           @RequestParam(value = "publishedAfter", required = false)
                                           @DateTimeFormat(iso = DATE_TIME) Instant publishedAfter) {
         return publicationService.findAll(new PublicationListFilterDto(
-                        title, parentId, createdBefore, createdAfter,
+                        title, parentId, model, isRootEnrichment, createdBefore, createdAfter,
                         isPublished, publishedBefore, publishedAfter),
                 page, pageSize);
     }

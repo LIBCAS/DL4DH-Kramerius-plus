@@ -11,11 +11,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -67,6 +63,13 @@ public abstract class Publication extends DigitalObject {
     private List<String> donator = new ArrayList<>();
 
     private Long pageCount;
+
+    /**
+     * Flag for deciding, if this publication should be shown in grid. Should be set to true
+     * for publications, which don't have parentId or their parent has not yet been enriched
+     */
+    @JsonIgnore
+    private boolean isRootEnrichment = false;
 
     @JsonProperty("donator")
     public void unpackDonator(Object donators) {

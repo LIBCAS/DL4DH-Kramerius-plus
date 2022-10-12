@@ -1,5 +1,5 @@
 import { ModsMetadata } from '.'
-import { PublicationModel } from '../enums/publicationModel'
+import { DigitalObjectModel } from '../enums/publication-model'
 import { PublishInfo } from './publish-info'
 
 export interface Publication {
@@ -10,7 +10,7 @@ export interface Publication {
 	collections?: string[]
 	policy?: string
 	modsMetadata?: ModsMetadata
-	model?: PublicationModel
+	model?: DigitalObjectModel
 	date?: string
 	pages?: string[]
 	index?: string
