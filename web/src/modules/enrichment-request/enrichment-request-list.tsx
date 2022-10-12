@@ -21,7 +21,7 @@ export const publicationCountFormatter = (params: GridValueFormatterParams) => {
 	return jobPlans.length.toString()
 }
 
-export const EnrichmentRequestList: FC<{
+export const EnrichmentRequestGrid: FC<{
 	filter: EnrichmentRequestFilterDto
 }> = ({ filter }) => {
 	const [rowCount, setRowCount] = useState<number>()
@@ -92,7 +92,7 @@ export const EnrichmentRequestList: FC<{
 
 			if (response) {
 				setEnrichmentRequests(response.results)
-				setRowCount(response.limit)
+				setRowCount(response.total)
 			}
 		}
 		fetchRequests()

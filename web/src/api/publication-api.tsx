@@ -1,3 +1,4 @@
+import { DigitalObjectModel } from 'enums/publication-model'
 import { Publication } from 'models'
 import { QueryResults } from 'models/query-results'
 import { customFetch } from 'utils/custom-fetch'
@@ -5,11 +6,13 @@ import { customFetch } from 'utils/custom-fetch'
 export type PublicationFilter = {
 	title?: string
 	parentId?: string
+	model?: DigitalObjectModel
 	createdBefore?: Date
 	createdAfter?: Date
 	isPublished?: boolean
 	publishedBefore?: Date
 	publishedAfter?: Date
+	isRootEnrichment?: boolean
 }
 
 export const getPublication = async (

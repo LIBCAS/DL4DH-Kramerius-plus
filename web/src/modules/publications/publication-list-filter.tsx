@@ -7,73 +7,119 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 	Box,
+	Select,
+	SelectChangeEvent,
+	MenuItem,
+	FormControl,
+	InputLabel,
 } from '@mui/material'
-import { ChangeEvent, FC } from 'react'
+import { ChangeEvent, FC, useState } from 'react'
 import { CustomDateTimePicker } from './custom-date-time-picker'
 import { PublicationFilter } from '../../api/publication-api'
+import {
+	DigitalObjectModel,
+	DigitalObjectModelMapping,
+	publicationModelList,
+} from 'enums/publication-model'
 
 type Props = {
-	onTextChange: (
-		key: keyof PublicationFilter,
-	) => (event: ChangeEvent<HTMLInputElement>) => void
-	onDateChange: (key: keyof PublicationFilter) => (value: Date | null) => void
-	onPublishedChange: (
-		event: React.MouseEvent<HTMLElement>,
-		isPublished: boolean,
-	) => void
-	onFilterClick: () => void
+	onSubmit: (filter: PublicationFilter) => void
 	onExportClick: () => void
-	filter: PublicationFilter
 }
 
 export const PublicationListFilter: FC<Props> = ({
-	onTextChange,
-	onDateChange,
-	onFilterClick,
-	onPublishedChange,
+	onSubmit,
 	onExportClick,
-	filter,
 }) => {
+	const [filter, setFilter] = useState<PublicationFilter>({
+		parentId: '',
+	} as PublicationFilter)
+
+	const handleFieldChange =
+		(field: string) => (event: ChangeEvent<HTMLInputElement>) => {
+			setFilter(prevFilter => ({
+				...prevFilter,
+				[field]: event.target.value,
+			}))
+		}
+
+	const handleSubmit = () => {
+		onSubmit(filter)
+	}
+
+	const onPublishedChange = (
+		event: React.MouseEvent<HTMLElement>,
+		isPublished: boolean,
+	) => {
+		setFilter(prevFilter => ({
+			...prevFilter,
+			isPublished,
+		}))
+	}
+
+	const handleModelChange = (event: SelectChangeEvent) => {
+		const val = event.target.value
+
+		setFilter(prevFilter => ({
+			...prevFilter,
+			model: val as DigitalObjectModel,
+		}))
+	}
+
+	const onDateChange =
+		(key: keyof PublicationFilter) => (value: Date | null) => {
+			setFilter(prevFilter => ({ ...prevFilter, [key]: value }))
+		}
+
 	return (
-		<Paper variant="outlined">
+		<Paper elevation={2}>
 			<Box component="form" sx={{ p: 2 }}>
 				<Grid container spacing={3}>
 					<Grid item xs={12}>
 						<Typography variant="h5">Filtrování</Typography>
 					</Grid>
-					<Grid item lg={6} xs={12}>
+					<Grid item lg={3} xs={12}>
 						<TextField
 							fullWidth
 							label="Název"
 							size="small"
 							value={filter.title}
-							onChange={onTextChange('title')}
+							onChange={handleFieldChange('title')}
 						/>
 					</Grid>
-					<Grid item lg={6} xs={12}>
-						<TextField
-							fullWidth
-							label="UUID rodiče"
-							size="small"
-							value={filter.parentId}
-							onChange={onTextChange('parentId')}
-						/>
+					<Grid item lg={3} xs={12}>
+						<FormControl fullWidth size="small">
+							<InputLabel id="demo-simple-select-label">Model</InputLabel>
+							<Select
+								defaultValue={undefined}
+								label="Model"
+								value={filter.model}
+								onChange={handleModelChange}
+							>
+								<MenuItem value={''}>Všechny</MenuItem>
+								{publicationModelList.map(model => (
+									<MenuItem key={model} value={model}>
+										{DigitalObjectModelMapping[model]}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
 					</Grid>
-					<Grid item lg={6} xs={12}>
+					<Grid item lg={3} xs={12}>
 						<CustomDateTimePicker
 							label="Vytvořeno před"
 							value={filter.createdBefore || null}
 							onChange={onDateChange('createdBefore')}
 						/>
 					</Grid>
-					<Grid item lg={6} xs={12}>
+					<Grid item lg={3} xs={12}>
 						<CustomDateTimePicker
 							label="Vytvořeno po"
 							value={filter.createdAfter || null}
 							onChange={onDateChange('createdAfter')}
 						/>
 					</Grid>
-					<Grid item lg={12} md={12} xl={12} xs={12}>
+					<Grid item lg={6} md={12} xs={12}>
 						<ToggleButtonGroup
 							color="primary"
 							exclusive
@@ -86,7 +132,7 @@ export const PublicationListFilter: FC<Props> = ({
 							<ToggleButton value={false}>Nepublikované</ToggleButton>
 						</ToggleButtonGroup>
 					</Grid>
-					<Grid item lg={6} xs={12}>
+					<Grid item lg={3} xs={12}>
 						<CustomDateTimePicker
 							disabled={!filter.isPublished}
 							label="Publikováno před"
@@ -94,7 +140,7 @@ export const PublicationListFilter: FC<Props> = ({
 							onChange={onDateChange('publishedBefore')}
 						/>
 					</Grid>
-					<Grid item lg={6} xs={12}>
+					<Grid item lg={3} xs={12}>
 						<CustomDateTimePicker
 							disabled={!filter.isPublished}
 							label="Publikováno po"
@@ -104,7 +150,7 @@ export const PublicationListFilter: FC<Props> = ({
 					</Grid>
 					<Grid container item spacing={2}>
 						<Grid item>
-							<Button variant="contained" onClick={onFilterClick}>
+							<Button variant="contained" onClick={handleSubmit}>
 								Filtrovat
 							</Button>
 						</Grid>

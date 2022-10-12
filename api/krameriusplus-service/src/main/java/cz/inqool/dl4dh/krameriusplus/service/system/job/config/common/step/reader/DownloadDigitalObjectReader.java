@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,6 +65,8 @@ public class DownloadDigitalObjectReader implements ItemReader<DigitalObject> {
             List<DigitalObject> children = dataProvider.getDigitalObjectsForParent(first.getId());
             long pageCount = children.stream().filter(digitalObject -> digitalObject instanceof Page).count();
             publicationObject.setPageCount(pageCount);
+
+            Collections.reverse(children);
             children.forEach(digitalObjects::push);
         }
         return first;

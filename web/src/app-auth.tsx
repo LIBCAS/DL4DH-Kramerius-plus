@@ -3,7 +3,7 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
 import { Navbar } from './components/navbar/navbar'
-import { PublicationsPage } from 'pages/publication-list-page'
+import { PublicationListPage } from 'pages/publication/publication-list-page'
 import { HomePage } from 'pages/home-page'
 import { EnrichmentPage } from 'pages/enrichment/enrichment-page'
 import { JobEventListPage } from 'pages/job-event-list-page'
@@ -19,6 +19,7 @@ import { EnrichmentRequestListPage } from 'pages/enrichment/enrichment-request-l
 import { EnrichmentRequestDetailPage } from 'pages/enrichment/enrichment-request-detail-page'
 import { ExportRequestListPage } from 'pages/export/export-request-list-page'
 import { ExportRequestDetailPage } from 'pages/export/export-request-detail-page'
+import { PublicationDetailPage } from 'pages/publication/publication-detail-page'
 
 export const AppAuth: FC = () => {
 	const { setAuth } = useAuth()
@@ -39,8 +40,12 @@ export const AppAuth: FC = () => {
 					<Navbar info={info} />
 					<Routes>
 						<Route element={<HomePage />} path="/" />
-						<Route element={<PublicationsPage />} path="publications">
-							<Route element={<PublicationsPage />} path=":publicationId" />
+						<Route path="publications">
+							<Route element={<PublicationListPage />} index />
+							<Route
+								element={<PublicationDetailPage />}
+								path=":publicationId"
+							/>
 						</Route>
 						<Route path="jobs/:jobType">
 							<Route element={<JobEventListPage />} index />

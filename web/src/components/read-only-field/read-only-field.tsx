@@ -14,11 +14,11 @@ export const ReadOnlyField = ({ label, value }: Props) => {
 	}
 
 	return (
-		<Grid container sx={{ margin: 1, padding: 1 }}>
-			<Grid item xs={3}>
+		<Grid container sx={{ m: 1 }}>
+			<Grid item xs={2}>
 				<Typography variant="body2">{label}</Typography>
 			</Grid>
-			<Grid item xs={9}>
+			<Grid item xs={10}>
 				<Typography color="primary" variant="body2">
 					{value}
 				</Typography>
