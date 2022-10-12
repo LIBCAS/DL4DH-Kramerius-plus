@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,6 +101,7 @@ public class PublicationService {
     public List<Page> findAllPages(String publicationID, Params params) {
         Query query = params.toMongoQuery(false);
         query.addCriteria(where("parentId").is(publicationID));
+        query.with(Sort.by(Sort.Order.asc("index")));
 
         return pageStore.findAll(query);
     }
