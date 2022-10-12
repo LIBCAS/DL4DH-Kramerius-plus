@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.DIRECTORY;
@@ -88,7 +89,9 @@ public class TeiPublicationExporter implements StepExecutionListener, ItemWriter
     private Path resolvePathFromContext(String id) {
         Publication publicationWithContext = (Publication) dataProvider.getDigitalObject(id);
         List<DigitalObjectContext> context = publicationWithContext.getContext();
-        context = context.subList(0, context.size() - 1);
+        // in tei one publication = one file, so dont create directories for publications that contain pages
+        // root is never needed (created in (CREATE_EXPORT_DIRECTORY))
+        context = context.size() == 1 ? new ArrayList<>() : context.subList(1, context.size() - 1);
         Path resultPath = Path.of(exportDirectory);
 
         for (DigitalObjectContext digitalObjectContext : context) {

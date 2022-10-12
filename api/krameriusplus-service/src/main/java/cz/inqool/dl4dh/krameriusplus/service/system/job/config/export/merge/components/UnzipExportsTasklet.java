@@ -91,7 +91,7 @@ public class UnzipExportsTasklet extends ValidatedTasklet {
             FileRef fileRef = export.getFileRef();
             Path exportZipPath = fileService.find(fileRef.getId()).getPath();
 
-            zipArchiver.unzip(exportZipPath);
+            zipArchiver.unzip(exportZipPath, export.getPublicationId().substring(5));
         }
     }
 
