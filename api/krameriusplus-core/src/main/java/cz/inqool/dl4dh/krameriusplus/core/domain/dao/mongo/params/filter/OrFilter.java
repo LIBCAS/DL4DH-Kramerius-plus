@@ -19,4 +19,15 @@ public class OrFilter implements Filter {
 
         return criteria.orOperator(filters.stream().map(Filter::toCriteria).toArray(Criteria[]::new));
     }
+
+    @Override
+    public boolean eval(Object object) throws Exception {
+        boolean result = false;
+
+        for (Filter filter : filters) {
+            result = result || filter.eval(object);
+        }
+
+        return result;
+    }
 }

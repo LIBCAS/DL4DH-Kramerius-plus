@@ -57,9 +57,9 @@ public class ZipArchiver {
      * @param zipFilePath path to zip file to be unzipped
      * @throws IOException in case of FS issues
      */
-    public void unzip(Path zipFilePath) throws IOException {
+    public void unzip(Path zipFilePath, String publicationDirName) throws IOException {
         try (InputStream is = Files.newInputStream(zipFilePath)) {
-            unZip(is);
+            unZip(is, publicationDirName);
         }
     }
 
@@ -69,8 +69,8 @@ public class ZipArchiver {
      * @param zipFileIs input stream of file to unzip
      * @throws IOException in case of FS issues
      */
-    private void unZip(InputStream zipFileIs) throws IOException {
-        File outDir = resultFilePath.toFile();
+    private void unZip(InputStream zipFileIs, String dirName) throws IOException {
+        File outDir = Files.createDirectory(Path.of(resultFilePath.toString(), dirName)).toFile();
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(zipFileIs);
         ZipEntry zipEntry = zis.getNextEntry();

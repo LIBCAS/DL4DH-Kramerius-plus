@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.AbstractStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.DownloadDigitalObjectReader;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.FilteringProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.common.components.PathResolvingProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components.DownloadPageAltoProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components.ExportPagesTextWriter;
@@ -12,7 +13,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.builder.CompositeItemProcessorBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.EXPORT_PAGES_TEXT;
@@ -28,15 +28,16 @@ public class ExportPagesTextStepFactory extends AbstractStepFactory {
 
     private final PathResolvingProcessor pathResolvingProcessor;
 
-    @Autowired
-    public ExportPagesTextStepFactory(DownloadDigitalObjectReader reader,
-                                      ExportPagesTextWriter writer,
-                                      DownloadPageAltoProcessor downloadPagesAltoProcessor,
-                                      PathResolvingProcessor pathResolvingProcessor) {
+    private final FilteringProcessor filteringProcessor;
+
+    public ExportPagesTextStepFactory(DownloadDigitalObjectReader reader, ExportPagesTextWriter writer,
+                                      DownloadPageAltoProcessor downloadPagesAltoProcessor, PathResolvingProcessor pathResolvingProcessor,
+                                      FilteringProcessor filteringProcessor) {
         this.reader = reader;
         this.writer = writer;
         this.downloadPagesAltoProcessor = downloadPagesAltoProcessor;
         this.pathResolvingProcessor = pathResolvingProcessor;
+        this.filteringProcessor = filteringProcessor;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class ExportPagesTextStepFactory extends AbstractStepFactory {
 
     private ItemProcessor<DigitalObject, PageAndAltoDto> getItemProcessor() {
         return new CompositeItemProcessorBuilder<DigitalObject, PageAndAltoDto>()
-                .delegates(pathResolvingProcessor, downloadPagesAltoProcessor)
+                .delegates(filteringProcessor, pathResolvingProcessor, downloadPagesAltoProcessor)
                 .build();
     }
 

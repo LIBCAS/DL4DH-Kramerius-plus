@@ -9,7 +9,7 @@ public class AndFilter implements Filter {
 
     private final List<Filter> filters;
 
-    public AndFilter(@JsonProperty List<Filter> filters) {
+    public AndFilter(@JsonProperty("filters") List<Filter> filters) {
         this.filters = filters;
     }
 
@@ -18,5 +18,16 @@ public class AndFilter implements Filter {
         Criteria criteria = new Criteria();
 
         return criteria.andOperator(filters.stream().map(Filter::toCriteria).toArray(Criteria[]::new));
+    }
+
+    @Override
+    public boolean eval(Object object) throws Exception {
+        boolean result = true;
+
+        for (Filter filter : filters) {
+            result = result && filter.eval(object);
+        }
+
+        return result;
     }
 }

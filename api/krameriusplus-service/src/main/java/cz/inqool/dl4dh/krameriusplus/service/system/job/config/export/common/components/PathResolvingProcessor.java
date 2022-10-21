@@ -31,6 +31,8 @@ public class PathResolvingProcessor implements ItemProcessor<DigitalObject, Digi
 
     private String exportDirectory;
 
+    private String root;
+
     @Autowired
     public PathResolvingProcessor(PublicationStore publicationStore) {
         this.publicationStore = publicationStore;
@@ -73,10 +75,11 @@ public class PathResolvingProcessor implements ItemProcessor<DigitalObject, Digi
             cacheTreeBranch(publicationStore.findById(id).orElse(null));
         }
 
-        Path result = Path.of(stripUuid(id));
-        while (id != null) {
-            id = parentCache.get(id);
+        Path result = Path.of(".");
+        while (!root.equals(id)) {
             result = Path.of(id != null ? stripUuid(id) : "" , result.toString());
+            id = parentCache.get(id);
+
         }
 
         return Path.of(exportDirectory, result.toString()).toString();
@@ -90,6 +93,7 @@ public class PathResolvingProcessor implements ItemProcessor<DigitalObject, Digi
     public void beforeStep(StepExecution stepExecution) {
         exportDirectory = stepExecution.getJobExecution().getExecutionContext().getString(DIRECTORY);
         parentCache.put(stepExecution.getJobParameters().getString(PUBLICATION_ID), null);
+        root = stepExecution.getJobParameters().getString(PUBLICATION_ID);
         notNull(exportDirectory, () -> new IllegalStateException("export context missing export directory"));
 
     }
