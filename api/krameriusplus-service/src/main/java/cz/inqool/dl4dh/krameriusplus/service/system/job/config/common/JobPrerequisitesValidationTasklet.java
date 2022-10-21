@@ -44,7 +44,7 @@ public class JobPrerequisitesValidationTasklet extends ValidatedTasklet {
 
         String publicationId = jobParameters.getString(PUBLICATION_ID);
         // Workaround for merge job since it is the only job not tied to a publication
-        if (publicationId == null) {
+        if ("null".equals(publicationId) || publicationId == null) {
             return RepeatStatus.FINISHED;
         }
         List<String> relevantContext =  getRelevantContext((Publication) dataProvider.getDigitalObject(publicationId));
