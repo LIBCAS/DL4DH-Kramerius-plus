@@ -11,6 +11,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.QScheduledJobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobplan.ScheduledJobEvent;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
@@ -73,10 +74,10 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
         return count > 0;
     }
 
-    public Long getDependency(String publicationId, KrameriusJob prerequisite) {
+    public Long getDependency(List<String> publicationIds, KrameriusJob prerequisite) {
         JPAQuery<Long> query = query()
                 .select(qObject.count())
-                .where(qObject.publicationId.eq(publicationId))
+                .where(qObject.publicationId.in(publicationIds))
                 .where(qObject.config.krameriusJob.eq(prerequisite))
                 .where(qObject.deleted.isNull())
                 .where(qObject.details.lastExecutionStatus.eq(JobStatus.COMPLETED));
