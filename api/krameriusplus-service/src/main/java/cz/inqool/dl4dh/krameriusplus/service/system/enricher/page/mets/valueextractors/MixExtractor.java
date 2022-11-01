@@ -2,16 +2,25 @@ package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.valueext
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.mix.MetsMixElement;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.DomParser;
+import cz.inqool.dl4dh.mets.MdSecType;
 import gov.loc.mix.v20.Mix;
+import gov.loc.mix.v20.MixType;
+import org.w3c.dom.Node;
+
+import javax.xml.bind.JAXB;
+import java.io.StringReader;
 
 public class MixExtractor extends NDKExtractor<MetsMixElement, Mix> {
 
     public MixExtractor(DomParser domParser) {
-        super(domParser, "MIX", "mix:mix", Mix.class);
+        super(domParser, "MIX");
     }
 
     @Override
-    protected MetsMixElement processXmlComplexType(Mix xmlComplexType) {
+    protected MetsMixElement processMetadataSection(MdSecType mdSection) {
+        String mixObject = domParser.nodeToString((Node) mdSection.getMdWrap().getXmlData().getAny().get(0));
+        MixType xmlComplexType = JAXB.unmarshal(new StringReader(mixObject), Mix.class);
+
         MetsMixElement mixElement = new MetsMixElement();
 
         if (xmlComplexType.getBasicDigitalObjectInformation() != null) {

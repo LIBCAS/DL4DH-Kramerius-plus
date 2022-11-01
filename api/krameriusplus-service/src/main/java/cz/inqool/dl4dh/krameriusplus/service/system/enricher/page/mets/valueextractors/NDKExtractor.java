@@ -1,15 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.valueextractors;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.MetsElement;
-import cz.inqool.dl4dh.krameriusplus.core.utils.XMLUtils;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.DomParser;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import cz.inqool.dl4dh.mets.MdSecType;
 
-import javax.xml.bind.JAXB;
-import java.io.StringReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,51 +19,32 @@ public abstract class NDKExtractor<T extends MetsElement, E> {
 
     private final String ATTRIBUTE_ID_PREFIX;
 
-    private final String PREMIS_TAG_NAME;
-
-    private final Class<E> clazz;
-
     private final Map<String, T> result = new HashMap<>();
 
-    public NDKExtractor(DomParser domParser, String attributeIdPrefix, String premisTagName, Class<E> clazz) {
+    public NDKExtractor(DomParser domParser, String attributeIdPrefix) {
         this.domParser = domParser;
         this.ATTRIBUTE_ID_PREFIX = attributeIdPrefix;
-        this.PREMIS_TAG_NAME = premisTagName;
-        this.clazz = clazz;
     }
 
-    public Map<String, T> extract(NodeList nodeList) {
-
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) node;
-
-                extractXmlComplexType(element);
-            }
+    public Map<String, T> extract(List<MdSecType> mdSections) {
+        for (MdSecType mdSection : mdSections) {
+            extractXmlComplexType(mdSection);
         }
-
+        
         return result;
     }
 
 
-    private void extractXmlComplexType(Element element) {
-        String elementId = element.getAttribute("ID");
+    private void extractXmlComplexType(MdSecType mdSection) {
+        String elementId = mdSection.getID();
 
         if (elementId.startsWith(ATTRIBUTE_ID_PREFIX)) {
-            String nodeAsString = domParser.nodeToString(XMLUtils.getFirstIfOnly(element.getElementsByTagName(PREMIS_TAG_NAME)));
-
-            E xmlComplexType = JAXB.unmarshal(new StringReader(nodeAsString), clazz);
-
-            if (xmlComplexType != null) {
-                T metsPremis = processXmlComplexType(xmlComplexType);
+                T metsPremis = processMetadataSection(mdSection);
                 metsPremis.setId(elementId);
 
                 result.put(elementId, metsPremis);
-            }
         }
     }
 
-    protected abstract T processXmlComplexType(E xmlComplexType);
+    protected abstract T processMetadataSection(MdSecType mdSection);
 }

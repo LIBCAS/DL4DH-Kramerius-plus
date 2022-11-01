@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.ndk.c
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.MetsFileFinder;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.publication.xml.dto.MainMetsDto;
 import lombok.NonNull;
@@ -19,7 +20,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -34,7 +34,7 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
 
     private final MetsFileFinder metsFileFinder;
 
-    private final MongoOperations mongoOperations;
+    private final PublicationStore publicationStore;
 
     private Path publicationNdkPath;
 
@@ -45,9 +45,9 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
     @Autowired
     public PreparePagesNdkProcessor(MetsFileFinder metsFileFinder,
                                     @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId,
-                                    MongoOperations mongoOperations) {
+                                    MongoOperations mongoOperations, PublicationStore publicationStore) {
         this.metsFileFinder = metsFileFinder;
-        this.mongoOperations = mongoOperations;
+        this.publicationStore = publicationStore;
         initialize(publicationId);
     }
 
@@ -80,7 +80,7 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
                     String matchSuffix = matchingFileId.substring(matchingFileId.length() - 4) + ".xml";
                     Optional<Path> matchingPageMetsFile = pageMetsFiles
                             .filter(file -> file.getFileName().toString().substring(0, 3).equalsIgnoreCase("amd"))
-                            .filter(file -> file.endsWith(matchSuffix))
+                            .filter(file -> file.getFileName().toString().endsWith(matchSuffix))
                             .findFirst();
 
                     if (matchingPageMetsFile.isPresent()) {
@@ -121,7 +121,7 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
         Query query = query(where("_id").is(publicationId));
         query.fields().include("ndkDirPath");
 
-        Publication publication = Objects.requireNonNull(mongoOperations.findOne(query, Publication.class));
+        Publication publication = publicationStore.findById(publicationId).orElseThrow(() -> new IllegalStateException("publication id already has not been initialized"));
 
         return Path.of(publication.getNdkDirPath());
     }

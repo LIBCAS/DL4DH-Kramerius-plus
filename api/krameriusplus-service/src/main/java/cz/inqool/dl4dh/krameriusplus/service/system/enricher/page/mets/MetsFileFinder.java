@@ -95,6 +95,9 @@ public class MetsFileFinder {
     }
 
     private boolean matchMainMetsFilename(Path file) {
+        if (file.getFileName().toString().length() < 4) {
+            return false;
+        }
         return file.getFileName().toString().substring(0, 4).equalsIgnoreCase("mets")
                 && file.getFileName().toString().endsWith(".xml");
     }
