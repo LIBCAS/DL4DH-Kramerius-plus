@@ -9,7 +9,6 @@ public class JobStep {
 
     // ENRICHMENT_NDK Job
     public static final String PREPARE_PUBLICATION_NDK = "PreparePublicationNdkDirectoryPathStep";
-    public static final String PREPARE_PAGES_NDK = "PreparePagesNdkFilePathStep";
     public static final String ENRICH_PAGES_NDK = "EnrichPagesNdkStep";
 
     // ENRICHMENT_TEI Job
