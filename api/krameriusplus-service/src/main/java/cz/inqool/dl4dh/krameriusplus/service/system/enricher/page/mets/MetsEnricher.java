@@ -2,11 +2,11 @@ package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.MetsMetadata;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.DomParser;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.valueextractors.MixExtractor;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.valueextractors.PremisAgentExtractor;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.valueextractors.PremisEventExtractor;
-import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.valueextractors.PremisObjectExtractor;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.agent.MetsPremisAgentElement;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.event.MetsPremisEventElement;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.mix.MetsMixElement;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.object.MetsPremisObjectElement;
+import cz.inqool.dl4dh.mets.AmdSecType;
 import cz.inqool.dl4dh.mets.MdSecType;
 import cz.inqool.dl4dh.mets.Mets;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +19,11 @@ import java.util.List;
 @Service
 public class MetsEnricher {
 
-    private final DomParser domParser;
+    private final MetsExtractor metsExtractor;
 
     @Autowired
-    public MetsEnricher(DomParser domParser) {
-        this.domParser = domParser;
+    public MetsEnricher(MetsExtractor metsExtractor) {
+        this.metsExtractor = metsExtractor;
     }
 
     public void enrich(Page page) {
@@ -37,13 +37,14 @@ public class MetsEnricher {
 
         MetsMetadata metsMetadata = new MetsMetadata();
 
-        List<MdSecType> techMDNodes = document.getAmdSec().get(0).getTechMD();
-        List<MdSecType> digiprovMDNodes = document.getAmdSec().get(0).getDigiprovMD();
+        AmdSecType amdSec = document.getAmdSec().get(0);
+        List<MdSecType> techMDNodes = amdSec.getTechMD();
+        List<MdSecType> digiprovMDNodes = amdSec.getDigiprovMD();
 
-        metsMetadata.setPremisObjects(new PremisObjectExtractor(domParser).extract(techMDNodes));
-        metsMetadata.setPremisEvents(new PremisEventExtractor(domParser).extract(digiprovMDNodes));
-        metsMetadata.setPremisAgents(new PremisAgentExtractor(domParser).extract(digiprovMDNodes));
-        metsMetadata.setMix(new MixExtractor(domParser).extract(techMDNodes));
+        metsMetadata.setPremisObjects(metsExtractor.extract(techMDNodes, "OBJ", MetsPremisObjectElement.class));
+        metsMetadata.setMix(metsExtractor.extract(techMDNodes, "MIX", MetsMixElement.class));
+        metsMetadata.setPremisEvents(metsExtractor.extract(digiprovMDNodes, "EVT", MetsPremisEventElement.class));
+        metsMetadata.setPremisAgents(metsExtractor.extract(digiprovMDNodes, "AGENT", MetsPremisAgentElement.class));
 
         page.setMetsMetadata(metsMetadata);
     }
