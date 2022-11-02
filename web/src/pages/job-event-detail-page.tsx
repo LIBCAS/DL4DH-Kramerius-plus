@@ -1,4 +1,4 @@
-import { Box, Grid, Paper } from '@mui/material'
+import { Box, Grid, Paper, Typography } from '@mui/material'
 import { StepExecution } from 'models'
 import { JobEvent } from 'models/job/job-event'
 import { JobExecution } from 'models/job/job-execution'
@@ -39,6 +39,7 @@ export const JobEventDetailPage: FC = () => {
 		setSelectedExecution(
 			jobEvent?.executions.find(execution => execution.id === executionId),
 		)
+		setSelectedStep(undefined)
 	}
 
 	const handleStepClick = (stepId: number) => {
@@ -85,14 +86,36 @@ export const JobEventDetailPage: FC = () => {
 									onRowClick={handleExecutionClick}
 								/>
 							</Grid>
-							{selectedExecution && (
+							{selectedExecution &&
+								selectedExecution.stepExecutions.length > 0 && (
+									<Grid item xs={12}>
+										<StepExecutionList
+											steps={selectedExecution?.stepExecutions}
+											onRowClick={handleStepClick}
+										/>
+									</Grid>
+								)}
+							{selectedExecution?.exitStatus.exitDescription && (
 								<Grid item xs={12}>
-									<StepExecutionList
-										steps={selectedExecution?.stepExecutions}
-										onRowClick={handleStepClick}
-									/>
+									<Paper sx={{ p: 5 }}>
+										<Grid container>
+											<Grid item lg={2} xs={4}>
+												<Typography variant="subtitle1">Chyba</Typography>
+											</Grid>
+											<Grid item lg={10} xs={8}>
+												<Typography
+													color="primary"
+													style={{ wordWrap: 'break-word' }}
+													variant="body2"
+												>
+													{selectedExecution.exitStatus.exitDescription}
+												</Typography>
+											</Grid>
+										</Grid>
+									</Paper>
 								</Grid>
 							)}
+
 							{selectedStep && (
 								<Grid item xs={12}>
 									<StepExecutionDetail stepExecution={selectedStep} />
