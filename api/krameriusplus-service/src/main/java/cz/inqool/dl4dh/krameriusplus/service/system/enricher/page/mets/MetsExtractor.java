@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets;
 
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.MetsElement;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.DomParser;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.mappers.MetsMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.mappers.MetsMapperMap;
@@ -24,8 +25,8 @@ public class MetsExtractor {
         mappers.forEach(this.mappers::put);
     }
 
-    public <T> Map<String, T> extract(List<MdSecType> mdSections, String idAttrPrefix,
-                                      Class<T> resultType) {
+    public <T extends MetsElement> Map<String, T> extract(List<MdSecType> mdSections, String idAttrPrefix,
+                                                          Class<T> resultType) {
         Map<String, T> result = new HashMap<>();
 
         for (MdSecType mdSection : mdSections) {
