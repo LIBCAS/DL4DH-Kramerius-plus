@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.NdkEnrichmentException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.publication.xml.XMLMetsUnmarshaller;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.publication.xml.dto.MainMetsDto;
@@ -17,6 +18,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.NdkEnrichmentException.ErrorCode.NDK_DIRECTORY_NOT_CONFIGURED;
+
 @Component
 @Slf4j
 public class MetsFileFinder {
@@ -31,26 +34,26 @@ public class MetsFileFinder {
     }
 
     public Optional<Path> findNdkPublicationDirectory(String publicationId) {
-        if (ndkPath != null) {
-            try (Stream<Path> ndkFiles = Files.list(Path.of(ndkPath))) {
-                List<Path> matchingDirs = ndkFiles
-                        .filter(Files::isDirectory)
-                        .filter(dir -> dir.getFileName().toString().equals(publicationId.substring(5)))
-                        .collect(Collectors.toList());
-
-                if (matchingDirs.size() != 1) {
-                    log.warn("NDK directory with id=\"" + publicationId + "\" not found");
-                    return Optional.empty();
-                }
-
-                return Optional.of(matchingDirs.get(0));
-            } catch (IOException e) {
-                throw new UncheckedIOException("Failed to list files in folder '" + ndkPath + "'", e);
-            }
+        if (ndkPath == null) {
+            throw new NdkEnrichmentException("NDK directory path is not configured", NDK_DIRECTORY_NOT_CONFIGURED);
         }
 
-        log.warn("NDK directory not set");
-        return Optional.empty();
+        try (Stream<Path> ndkFiles = Files.list(Path.of(ndkPath))) {
+            List<Path> matchingDirs = ndkFiles
+                    .filter(Files::isDirectory)
+                    .filter(dir -> dir.getFileName().toString().equals(publicationId.substring(5)))
+                    .collect(Collectors.toList());
+
+            if (matchingDirs.size() != 1) {
+                log.warn("NDK directory with id=\"" + publicationId + "\" not found");
+                return Optional.empty();
+            }
+
+            return Optional.of(matchingDirs.get(0));
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to list files in folder '" + ndkPath + "'", e);
+        }
+
     }
 
     public Path findMainMetsFile(Path ndkDir) {
@@ -72,6 +75,7 @@ public class MetsFileFinder {
     /**
      * Tries to identify NDK files for pages by looking at the <mets:structMap TYPE="PHYSICAL"> elements in the
      * main mets file and matches {@link Page#getTitle()} with ORDERLABEL attribute in <mets:div> elements.
+     *
      * @param mainMetsPath
      */
     public List<MainMetsDto.Div> getMetsDivElements(Path mainMetsPath) {

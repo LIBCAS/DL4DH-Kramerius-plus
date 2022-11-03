@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.ndk.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.NdkEnrichmentException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
@@ -11,7 +12,6 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.NdkEnrichmentException.ErrorCode.PAGE_METS_ERROR;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -45,7 +46,7 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
     @Autowired
     public PreparePagesNdkProcessor(MetsFileFinder metsFileFinder,
                                     @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String publicationId,
-                                    MongoOperations mongoOperations, PublicationStore publicationStore) {
+                                    PublicationStore publicationStore) {
         this.metsFileFinder = metsFileFinder;
         this.publicationStore = publicationStore;
         initialize(publicationId);
@@ -112,7 +113,7 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
             }
 
             if (!Files.exists(pageMetsDir)) {
-                throw new IllegalStateException("Could not find /amdSec folder");
+                throw new NdkEnrichmentException("Could not find /amdSec folder", PAGE_METS_ERROR);
             }
         }
     }
@@ -121,7 +122,8 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
         Query query = query(where("_id").is(publicationId));
         query.fields().include("ndkDirPath");
 
-        Publication publication = publicationStore.findById(publicationId).orElseThrow(() -> new IllegalStateException("publication id already has not been initialized"));
+        Publication publication = publicationStore.findById(publicationId)
+                .orElseThrow(() -> new IllegalStateException("Publication has not been initialized."));
 
         return Path.of(publication.getNdkDirPath());
     }

@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.ndk.components;
 
+import cz.inqool.dl4dh.krameriusplus.core.domain.exception.NdkEnrichmentException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.MetsFileFinder;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 import java.util.Optional;
+
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.NdkEnrichmentException.ErrorCode.NDK_DIRECTORY_NOT_FOUND;
 
 @Component
 @StepScope
@@ -31,6 +34,6 @@ public class PreparePublicationNdkProcessor implements ItemProcessor<Publication
             return item;
         }
 
-        throw new IllegalStateException("NDK directory not found for publication " + item.getId());
+        throw new NdkEnrichmentException("NDK directory not found for publication " + item.getId(), NDK_DIRECTORY_NOT_FOUND);
     }
 }
