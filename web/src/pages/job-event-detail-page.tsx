@@ -115,12 +115,6 @@ export const JobEventDetailPage: FC = () => {
 									</Paper>
 								</Grid>
 							)}
-
-							{selectedStep && (
-								<Grid item xs={12}>
-									<StepExecutionDetail stepExecution={selectedStep} />
-								</Grid>
-							)}
 						</Grid>
 					</Paper>
 				)}

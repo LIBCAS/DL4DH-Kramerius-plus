@@ -33,7 +33,7 @@ public class MetsEnricher {
             return;
         }
 
-        Mets document = JAXB.unmarshal(page.getNdkFilePath(), Mets.class);
+        Mets document = JAXB.unmarshal(metsPath.toFile(), Mets.class);
 
         MetsMetadata metsMetadata = new MetsMetadata();
 
