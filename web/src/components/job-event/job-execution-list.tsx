@@ -25,6 +25,12 @@ const executionColumns: GridColDef[] = [
 		width: 150,
 	},
 	{
+		field: 'createTime',
+		headerName: 'Čas vytvorenia',
+		width: 200,
+		valueFormatter: dateTimeFormatter,
+	},
+	{
 		field: 'startTime',
 		headerName: 'Čas spustenia',
 		width: 200,

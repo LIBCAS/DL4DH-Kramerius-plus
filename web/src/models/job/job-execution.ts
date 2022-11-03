@@ -12,6 +12,7 @@ export interface JobExecution {
 	stepExecutions: StepExecution[]
 	status: string
 	startTime?: Date
+	createTime?: Date
 	endTime?: Date
 	exitStatus: ExitStatus
 	jobConfigurationName: string
