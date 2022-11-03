@@ -16,6 +16,7 @@ public class JobStep {
     public static final String ENRICH_PAGES_TEI = "EnrichPagesTeiBodyStep";
 
     // ENRICH PAGES PHASE
+    public static final String ENRICH_PAGES_EXTERNAL = "EnrichPagesExternalStep";
     public static final String DOWNLOAD_PAGES_ALTO = "DownloadPagesAltoStep";
     public static final String ENRICH_PAGES_UD_PIPE = "EnrichPagesUDPipeStep";
     public static final String ENRICH_PAGES_NAME_TAG = "EnrichPagesNameTagStep";

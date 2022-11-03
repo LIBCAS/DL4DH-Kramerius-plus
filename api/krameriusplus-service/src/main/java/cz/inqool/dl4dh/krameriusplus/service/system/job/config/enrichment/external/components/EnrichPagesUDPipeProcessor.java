@@ -3,7 +3,9 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.exter
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.UDPipeService;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.UDPipeProcessDto;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ExecutionContext;
@@ -16,7 +18,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.Execution
 
 @Component
 @StepScope
-public class EnrichPagesUDPipeProcessor implements ItemProcessor<Page, Page> {
+public class EnrichPagesUDPipeProcessor implements ItemProcessor<Page, Page>, StepExecutionListener {
 
     private final UDPipeService udPipeService;
 
@@ -46,5 +48,10 @@ public class EnrichPagesUDPipeProcessor implements ItemProcessor<Page, Page> {
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
         this.executionContext = stepExecution.getExecutionContext();
+    }
+
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        return null;
     }
 }

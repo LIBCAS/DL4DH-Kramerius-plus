@@ -48,6 +48,7 @@ public class Page extends DigitalObject {
      * in EnrichingJob can access it when needed. Should be removed after the job is finished.
      */
     @JsonIgnore
+    @Transient
     private String content;
 
     /**
@@ -55,6 +56,7 @@ public class Page extends DigitalObject {
      * in EnrichingJob can access it when needed. Should be removed after the job is finished.
      */
     @JsonIgnore
+    @Transient
     private AltoDto.LayoutDto altoLayout;
 
     /**
