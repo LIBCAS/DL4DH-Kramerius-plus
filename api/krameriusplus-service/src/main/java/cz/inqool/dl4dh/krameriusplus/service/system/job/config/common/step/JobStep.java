@@ -17,12 +17,7 @@ public class JobStep {
 
     // ENRICH PAGES PHASE
     public static final String ENRICH_PAGES_EXTERNAL = "EnrichPagesExternalStep";
-    public static final String DOWNLOAD_PAGES_ALTO = "DownloadPagesAltoStep";
-    public static final String ENRICH_PAGES_UD_PIPE = "EnrichPagesUDPipeStep";
-    public static final String ENRICH_PAGES_NAME_TAG = "EnrichPagesNameTagStep";
-    public static final String ENRICH_PAGES_ALTO = "EnrichPagesAltoStep";
     public static final String ENRICH_PUBLICATION_MODS = "EnrichPublicationModsStep";
-    public static final String CLEAN_UP_PAGES = "CleanUpPagesStep";
 
     // EXPORT COMMON
     public static final String PREPARE_PUBLICATION_METADATA = "PreparePublicationMetadataStep";
