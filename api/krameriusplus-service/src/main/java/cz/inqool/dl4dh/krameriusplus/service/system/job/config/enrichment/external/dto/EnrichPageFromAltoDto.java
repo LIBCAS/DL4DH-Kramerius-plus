@@ -17,22 +17,32 @@ import java.util.List;
 public class EnrichPageFromAltoDto {
 
     /**
-     * Map from and to page
+     * Map from page
      */
     private String id;
 
     /**
-     * Map from and to page
+     * Map from page
      */
     private String parentId;
 
+    private String rootId;
+
+    private String policy;
+
+    private String title;
+
+    private String pageType;
+
+    private String pageNumber;
+
     /**
-     * Map only to page, from UDPipeService
+     * Map to page, from UDPipeService
      */
     private List<Token> tokens = new ArrayList<>();
 
     /**
-     * Map only to page, from NameTagService
+     * Map to page, from NameTagService
      */
     private NameTagMetadata nameTagMetadata;
 

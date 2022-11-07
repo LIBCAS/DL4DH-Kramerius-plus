@@ -90,7 +90,7 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, EnrichPag
                 OCREnrichmentParadata paradata = altoMetadataExtractor.extractOcrParadata(altoDto);
 
                 if (paradata != null) {
-                    Publication publication = publicationStore.findById(dto.getId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
+                    Publication publication = publicationStore.findById(dto.getParentId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
                     publication.getParadata().put(paradata.getExternalSystem(), paradata);
                     isParadataExtracted = true;
                 }

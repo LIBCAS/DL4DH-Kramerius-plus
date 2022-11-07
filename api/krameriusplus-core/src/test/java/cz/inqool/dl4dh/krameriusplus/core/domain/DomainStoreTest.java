@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DomainStoreTest extends CoreBaseTest {
 
@@ -159,7 +162,6 @@ public class DomainStoreTest extends CoreBaseTest {
             for (int j = 0; j < 10; j++) {
                 Page page = new Page();
                 page.setId(String.valueOf(i * 10 + j));
-                page.setContent("Content of the page " + i * 10 + j);
                 pages.add(pageStore.save(page));
             }
 
