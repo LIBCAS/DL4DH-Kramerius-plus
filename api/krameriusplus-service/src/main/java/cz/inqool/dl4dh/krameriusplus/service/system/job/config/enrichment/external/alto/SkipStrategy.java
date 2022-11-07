@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.EnrichPageFromAltoDto;
 
 /**
  * Strategy for handling missing ALTO format, which skips the page with missing
@@ -9,7 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 public class SkipStrategy implements MissingAltoStrategy {
 
     @Override
-    public Page handleMissingAlto(Page item) {
+    public EnrichPageFromAltoDto handleMissingAlto(EnrichPageFromAltoDto item) {
         return item;
     }
 }

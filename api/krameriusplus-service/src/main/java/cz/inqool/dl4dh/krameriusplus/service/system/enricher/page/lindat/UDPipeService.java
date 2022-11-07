@@ -1,12 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeEnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.LindatServiceResponseDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.UDPipeProcessDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.EnrichPageFromAltoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class UDPipeService {
     /**
      * Processes the input text content and sets tokens attribute on page.
      */
-    public UDPipeProcessDto processPage(Page page) {
+    public UDPipeProcessDto processPage(EnrichPageFromAltoDto page) {
         UDPipeProcessDto result = new UDPipeProcessDto();
 
         String pageContent = page.getContent();

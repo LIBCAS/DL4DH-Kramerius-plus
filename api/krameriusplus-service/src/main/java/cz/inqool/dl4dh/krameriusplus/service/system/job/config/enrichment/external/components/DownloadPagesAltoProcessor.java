@@ -12,6 +12,8 @@ import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.Strea
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto.MissingAltoStrategy;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto.MissingAltoStrategyFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.EnrichPageFromAltoDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.PageMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -26,7 +28,7 @@ import org.springframework.stereotype.Component;
 @Component
 @StepScope
 @Slf4j
-public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page>, StepExecutionListener {
+public class DownloadPagesAltoProcessor implements ItemProcessor<Page, EnrichPageFromAltoDto>, StepExecutionListener {
 
     private final StreamProvider streamProvider;
 
@@ -48,52 +50,57 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page>, St
 
     private final PublicationStore publicationStore;
 
+    private final PageMapper pageMapper;
+
     @Autowired
     public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper,
                                       AltoMetadataExtractor altoMetadataExtractor,
-                                      MissingAltoStrategyFactory missingAltoStrategyFactory, PublicationStore publicationStore) {
+                                      MissingAltoStrategyFactory missingAltoStrategyFactory, PublicationStore publicationStore, PageMapper pageMapper) {
         this.streamProvider = streamProvider;
         this.altoMapper = altoMapper;
         this.altoMetadataExtractor = altoMetadataExtractor;
         this.missingAltoStrategyFactory = missingAltoStrategyFactory;
         this.publicationStore = publicationStore;
+        this.pageMapper = pageMapper;
     }
 
     @Override
-    public Page process(@NonNull Page item) {
-        if (!item.getParentId().equals(currentParentId)) {
+    public EnrichPageFromAltoDto process(@NonNull Page item) {
+        EnrichPageFromAltoDto dto = pageMapper.fromPage(item);
+
+        if (!dto.getParentId().equals(currentParentId)) {
             reportMissingAlto(currentParentId);
-            currentParentId = item.getParentId();
+            currentParentId = dto.getParentId();
             missingAltoStrategy = missingAltoStrategyFactory.create(stepExecution, currentParentId);
             isParadataExtracted = false;
         }
         try {
-            Alto alto = streamProvider.getAlto(item.getId());
+            Alto alto = streamProvider.getAlto(dto.getId());
 
             if (alto == null) {
-                handleMissingAlto(item);
+                handleMissingAlto(dto);
             }
 
             AltoDto altoDto = altoMapper.toAltoDto(alto);
 
-            item.setContent(altoMetadataExtractor.extractText(altoDto));
-            item.setAltoLayout(altoDto.getLayout());
+            dto.setContent(altoMetadataExtractor.extractText(altoDto));
+            dto.setAltoLayout(altoDto.getLayout());
 
             if (!isParadataExtracted) {
                 OCREnrichmentParadata paradata = altoMetadataExtractor.extractOcrParadata(altoDto);
 
                 if (paradata != null) {
-                    Publication publication = publicationStore.findById(item.getParentId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
+                    Publication publication = publicationStore.findById(dto.getId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
                     publication.getParadata().put(paradata.getExternalSystem(), paradata);
                     isParadataExtracted = true;
                 }
             }
 
-            return item;
+            return dto;
         } catch (KrameriusException e) {
             missingAltoCounter++;
             if (KrameriusException.ErrorCode.NOT_FOUND.equals(e.getErrorCode())) {
-                return handleMissingAlto(item);
+                return handleMissingAlto(dto);
             } else {
                 return null;
             }
@@ -113,7 +120,7 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page>, St
         missingAltoCounter = 0L;
     }
 
-    private Page handleMissingAlto(Page item) {
+    private EnrichPageFromAltoDto handleMissingAlto(EnrichPageFromAltoDto item) {
         return missingAltoStrategy.handleMissingAlto(item);
     }
 

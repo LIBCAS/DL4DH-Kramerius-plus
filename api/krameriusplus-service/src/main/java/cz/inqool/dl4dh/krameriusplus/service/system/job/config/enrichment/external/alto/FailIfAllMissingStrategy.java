@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.EnrichPageFromAltoDto;
 
 import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.MISSING_STREAM;
 
@@ -20,7 +20,7 @@ public class FailIfAllMissingStrategy implements MissingAltoStrategy {
     }
 
     @Override
-    public Page handleMissingAlto(Page item) {
+    public EnrichPageFromAltoDto handleMissingAlto(EnrichPageFromAltoDto item) {
         missingAltoCounter++;
 
         if (missingAltoCounter == totalNumberOfPages) {
