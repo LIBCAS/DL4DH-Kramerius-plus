@@ -31,15 +31,15 @@ public class EnrichPagesUDPipeProcessor implements ItemProcessor<EnrichPageFromA
 
     @Override
     public EnrichPageFromAltoDto process(@NonNull EnrichPageFromAltoDto item) {
-        if (!item.getParentId().equals(currentParentId)) {
-            currentParentId = item.getParentId();
+        if (!item.getPage().getParentId().equals(currentParentId)) {
+            currentParentId = item.getPage().getParentId();
             isParadataExtracted = false;
         }
         UDPipeProcessDto response = udPipeService.processPage(item);
-        item.setTokens(response.getTokens());
+        item.getPage().setTokens(response.getTokens());
 
         if (!isParadataExtracted && response.getParadata() != null) {
-            Publication publication = publicationStore.findById(item.getParentId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
+            Publication publication = publicationStore.findById(item.getPage().getParentId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
             publication.getParadata().put(response.getParadata().getExternalSystem(), response.getParadata());
             publicationStore.save(publication);
             isParadataExtracted = true;

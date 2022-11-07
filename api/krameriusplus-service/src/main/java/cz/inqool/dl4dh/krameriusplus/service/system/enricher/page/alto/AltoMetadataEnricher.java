@@ -2,12 +2,12 @@ package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto;
 
 import cz.inqool.dl4dh.alto.StringType;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.AltoTokenMetadata;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.BlockTypeDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.PageSpaceTypeDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.TextBlockTypeDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.EnrichPageFromAltoDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +18,13 @@ public class AltoMetadataEnricher {
 
     private int currentTokenIndex = 0;
 
-    private final EnrichPageFromAltoDto pageDto;
+    private final Page page;
 
-    public AltoMetadataEnricher(EnrichPageFromAltoDto pageDto) {
-        this.pageDto = pageDto;
+    private final AltoDto.LayoutDto altoLayout;
+
+    public AltoMetadataEnricher(Page page, AltoDto.LayoutDto altoLayout) {
+        this.page = page;
+        this.altoLayout = altoLayout;
     }
 
     /**
@@ -29,7 +32,7 @@ public class AltoMetadataEnricher {
      * If ALTO is {@code null}, returns.
      */
     public void enrichPage() {
-        var pageElements = Optional.ofNullable(pageDto.getAltoLayout())
+        var pageElements = Optional.ofNullable(altoLayout)
                 .map(AltoDto.LayoutDto::getPage)
                 .orElse(new ArrayList<>());
 
@@ -82,11 +85,11 @@ public class AltoMetadataEnricher {
                 // This happens only in rare cases and is usually caused by errors in OCR scan. Words in ALTO are
                 // almost always longer than words from Tokens, because a word in ALTO can contain the
                 // word + punctuation, while the punctuation in Tokens is always a separate Token.
-                if (currentTokenIndex >= pageDto.getTokens().size()) {
+                if (currentTokenIndex >= page.getTokens().size()) {
                     return;
                 }
 
-                Token currentToken = pageDto.getTokens().get(currentTokenIndex++);
+                Token currentToken = page.getTokens().get(currentTokenIndex++);
                 affectedTokens.add(currentToken);
                 tokenWord += currentToken.getContent();
             }
