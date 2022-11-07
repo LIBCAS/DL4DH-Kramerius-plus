@@ -1,9 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto;
 
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.BlockTypeDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.PageSpaceTypeDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.TextBlockTypeDto;
+import cz.inqool.dl4dh.alto.Alto;
+import cz.inqool.dl4dh.alto.BlockType;
+import cz.inqool.dl4dh.alto.PageSpaceType;
+import cz.inqool.dl4dh.alto.StringType;
+import cz.inqool.dl4dh.alto.TextBlockType;
 import lombok.NonNull;
 
 import java.util.ArrayList;
@@ -13,16 +14,16 @@ public class AltoTextContentExtractor {
 
     private final StringBuilder pageContent;
 
-    private final AltoDto alto;
+    private final Alto alto;
 
-    public AltoTextContentExtractor(@NonNull AltoDto alto) {
+    public AltoTextContentExtractor(@NonNull Alto alto) {
         this.alto = alto;
         pageContent = new StringBuilder();
     }
 
     public String extractText() {
         var pageElements = Optional.ofNullable(alto.getLayout())
-                .map(AltoDto.LayoutDto::getPage)
+                .map(Alto.Layout::getPage)
                 .orElse(new ArrayList<>());
 
         for (var pageElement : pageElements) {
@@ -36,9 +37,9 @@ public class AltoTextContentExtractor {
         return pageContent.toString();
     }
 
-    private void processPageElement(AltoDto.LayoutDto.PageDto pageElement) {
+    private void processPageElement(Alto.Layout.Page pageElement) {
         for (var block : Optional.ofNullable(pageElement.getPrintSpace())
-                .map(PageSpaceTypeDto::getBlockTypes)
+                .map(PageSpaceType::getTextBlockOrIllustrationOrGraphicalElement)
                 .orElse(new ArrayList<>())) {
             processBlockElement(block);
         }
@@ -48,25 +49,25 @@ public class AltoTextContentExtractor {
         pageContent.setLength(pageContent.length() - 1);
     }
 
-    private void processBlockElement(BlockTypeDto block) {
-        if (block instanceof TextBlockTypeDto) {
-            processTextBlockElement((TextBlockTypeDto) block);
+    private void processBlockElement(BlockType block) {
+        if (block instanceof TextBlockType) {
+            processTextBlockElement((TextBlockType) block);
         }
     }
 
-    private void processTextBlockElement(TextBlockTypeDto textBlock) {
+    private void processTextBlockElement(TextBlockType textBlock) {
         for (var line : textBlock.getTextLine()) {
             processLineElement(line);
         }
     }
 
-    private void processLineElement(TextBlockTypeDto.TextLineDto line) {
+    private void processLineElement(TextBlockType.TextLine line) {
         boolean omitSpaceAtEndOfLine = false;
 
         for (Object linePart : line.getStringAndSP()) {
-            if (linePart instanceof TextBlockTypeDto.TextLineDto.StringTypeDto) {
-                omitSpaceAtEndOfLine = processWordAndReturnOmitSpaceFlag((TextBlockTypeDto.TextLineDto.StringTypeDto) linePart);
-            } else if (linePart instanceof TextBlockTypeDto.TextLineDto.SpDto) {
+            if (linePart instanceof StringType) {
+                omitSpaceAtEndOfLine = processWordAndReturnOmitSpaceFlag((StringType) linePart);
+            } else if (linePart instanceof TextBlockType.TextLine.SP) {
                 pageContent.append(" ");
             }
         }
@@ -81,7 +82,7 @@ public class AltoTextContentExtractor {
      * divided word at the end of the line and the space after the end of the line should be omitted,
      * false otherwise
      */
-    private boolean processWordAndReturnOmitSpaceFlag(TextBlockTypeDto.TextLineDto.StringTypeDto wordElement) {
+    private boolean processWordAndReturnOmitSpaceFlag(StringType wordElement) {
         if (isWordDivided(wordElement)) {
             if (isSecondPartOfDividedWord(wordElement)) {
                 return false;
@@ -89,20 +90,20 @@ public class AltoTextContentExtractor {
             pageContent.append(getFullWord(wordElement));
             return true;
         } else {
-            pageContent.append(wordElement.getContent());
+            pageContent.append(wordElement.getCONTENT());
             return false;
         }
     }
 
-    private String getFullWord(TextBlockTypeDto.TextLineDto.StringTypeDto wordElement) {
-        return wordElement.getSubscontent();
+    private String getFullWord(StringType wordElement) {
+        return wordElement.getSUBSCONTENT();
     }
 
-    private boolean isWordDivided(TextBlockTypeDto.TextLineDto.StringTypeDto wordElement) {
+    private boolean isWordDivided(StringType wordElement) {
         return getFullWord(wordElement) != null;
     }
 
-    private boolean isSecondPartOfDividedWord(TextBlockTypeDto.TextLineDto.StringTypeDto wordElement) {
-        return wordElement.getSubstype() != null && wordElement.getSubstype().equals("HypPart2");
+    private boolean isSecondPartOfDividedWord(StringType wordElement) {
+        return wordElement.getSUBSTYPE()!= null && wordElement.getSUBSTYPE().equals("HypPart2");
     }
 }

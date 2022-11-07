@@ -1,8 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.export.text.components;
 
+import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.DigitalObjectWithPathDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.dto.PageAndAltoDto;
@@ -18,14 +17,11 @@ import java.util.List;
 @Component
 @StepScope
 public class ExportPagesTextWriter extends FileWriter<PageAndAltoDto> {
-    private final AltoMapper altoMapper;
 
     private final AltoMetadataExtractor altoMetadataExtractor;
 
     @Autowired
-    public ExportPagesTextWriter(AltoMapper altoMapper,
-                                 AltoMetadataExtractor altoMetadataExtractor) {
-        this.altoMapper = altoMapper;
+    public ExportPagesTextWriter(AltoMetadataExtractor altoMetadataExtractor) {
         this.altoMetadataExtractor = altoMetadataExtractor;
     }
 
@@ -41,7 +37,7 @@ public class ExportPagesTextWriter extends FileWriter<PageAndAltoDto> {
     @Override
     public void write(List<? extends PageAndAltoDto> items) throws Exception {
         for (PageAndAltoDto item : items) {
-            AltoDto alto = altoMapper.toAltoDto(item.getAlto());
+            Alto alto = item.getAlto();
 
             try (OutputStream out = getItemOutputStream(item)) {
                 String pageContent = altoMetadataExtractor.extractText(alto);

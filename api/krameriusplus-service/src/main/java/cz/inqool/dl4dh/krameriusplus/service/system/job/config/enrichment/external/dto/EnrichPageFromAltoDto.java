@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto;
 
+import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +17,7 @@ public class EnrichPageFromAltoDto {
     /**
      * From DownloadPageAltoProcessor
      */
-    private AltoDto.LayoutDto altoLayout;
+    private Alto.Layout altoLayout;
 
     /**
      * From DownloadPageAltoProcessor
