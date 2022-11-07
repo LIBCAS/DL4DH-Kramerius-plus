@@ -16,11 +16,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_EXTERNAL;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_FROM_ALTO;
 
 @Component
 @Slf4j
-public class EnrichPagesExternalStepFactory extends PageMongoFlowStepFactory {
+public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
 
     private final DownloadPagesAltoProcessor downloadPagesAltoProcessor;
 
@@ -33,7 +33,7 @@ public class EnrichPagesExternalStepFactory extends PageMongoFlowStepFactory {
     private final ParadataStepListener paradataStepListener;
 
     @Autowired
-    public EnrichPagesExternalStepFactory(DownloadPagesAltoProcessor downloadPagesAltoProcessor, EnrichPagesUDPipeProcessor enrichPagesUDPipeProcessor,
+    public EnrichPagesFromAltoStepFactory(DownloadPagesAltoProcessor downloadPagesAltoProcessor, EnrichPagesUDPipeProcessor enrichPagesUDPipeProcessor,
                                           EnrichPagesNameTagProcessor enrichPagesNameTagProcessor, EnrichPagesAltoItemProcessor enrichPagesAltoItemProcessor,
                                           ParadataStepListener paradataStepListener) {
         this.downloadPagesAltoProcessor = downloadPagesAltoProcessor;
@@ -64,6 +64,6 @@ public class EnrichPagesExternalStepFactory extends PageMongoFlowStepFactory {
 
     @Override
     protected String getStepName() {
-        return ENRICH_PAGES_EXTERNAL;
+        return ENRICH_PAGES_FROM_ALTO;
     }
 }
