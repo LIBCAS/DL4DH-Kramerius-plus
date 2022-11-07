@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dto for processing of pages in enrichment external
+ */
 @Getter
 @Setter
 public class EnrichPageFromAltoDto {

@@ -3,6 +3,9 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.exter
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper for enrichment external's processing of pages
+ */
 @Component
 public class PageMapper {
 
