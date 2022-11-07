@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.exter
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoFlowStepFactory;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.ParadataStepListener;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.DownloadPagesAltoProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.EnrichPagesAltoItemProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.EnrichPagesNameTagProcessor;
@@ -30,17 +29,13 @@ public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
 
     private final EnrichPagesAltoItemProcessor enrichPagesAltoItemProcessor;
 
-    private final ParadataStepListener paradataStepListener;
-
     @Autowired
     public EnrichPagesFromAltoStepFactory(DownloadPagesAltoProcessor downloadPagesAltoProcessor, EnrichPagesUDPipeProcessor enrichPagesUDPipeProcessor,
-                                          EnrichPagesNameTagProcessor enrichPagesNameTagProcessor, EnrichPagesAltoItemProcessor enrichPagesAltoItemProcessor,
-                                          ParadataStepListener paradataStepListener) {
+                                          EnrichPagesNameTagProcessor enrichPagesNameTagProcessor, EnrichPagesAltoItemProcessor enrichPagesAltoItemProcessor) {
         this.downloadPagesAltoProcessor = downloadPagesAltoProcessor;
         this.enrichPagesUDPipeProcessor = enrichPagesUDPipeProcessor;
         this.enrichPagesNameTagProcessor = enrichPagesNameTagProcessor;
         this.enrichPagesAltoItemProcessor = enrichPagesAltoItemProcessor;
-        this.paradataStepListener = paradataStepListener;
     }
 
     @Override
@@ -54,7 +49,7 @@ public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
 
     @Override
     protected List<StepExecutionListener> getStepExecutionListeners() {
-        return List.of(paradataStepListener, downloadPagesAltoProcessor, enrichPagesUDPipeProcessor, enrichPagesNameTagProcessor);
+        return List.of(downloadPagesAltoProcessor);
     }
 
     @Override

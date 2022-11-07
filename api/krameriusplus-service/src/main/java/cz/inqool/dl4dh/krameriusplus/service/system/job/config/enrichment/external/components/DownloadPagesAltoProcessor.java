@@ -5,6 +5,8 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoMapper;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCREnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
@@ -20,8 +22,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.ExecutionContextKey.PARADATA;
 
 @Component
 @StepScope
@@ -46,14 +46,17 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page>, St
 
     private Long missingAltoCounter = 0L;
 
+    private final PublicationStore publicationStore;
+
     @Autowired
     public DownloadPagesAltoProcessor(StreamProvider streamProvider, AltoMapper altoMapper,
                                       AltoMetadataExtractor altoMetadataExtractor,
-                                      MissingAltoStrategyFactory missingAltoStrategyFactory) {
+                                      MissingAltoStrategyFactory missingAltoStrategyFactory, PublicationStore publicationStore) {
         this.streamProvider = streamProvider;
         this.altoMapper = altoMapper;
         this.altoMetadataExtractor = altoMetadataExtractor;
         this.missingAltoStrategyFactory = missingAltoStrategyFactory;
+        this.publicationStore = publicationStore;
     }
 
     @Override
@@ -80,7 +83,8 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, Page>, St
                 OCREnrichmentParadata paradata = altoMetadataExtractor.extractOcrParadata(altoDto);
 
                 if (paradata != null) {
-                    stepExecution.getExecutionContext().put(PARADATA, paradata);
+                    Publication publication = publicationStore.findById(item.getParentId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
+                    publication.getParadata().put(paradata.getExternalSystem(), paradata);
                     isParadataExtracted = true;
                 }
             }
