@@ -41,6 +41,7 @@ public class EnrichPagesNameTagProcessor implements ItemProcessor<EnrichPageFrom
         if (!isParadataExtracted && response.getParadata() != null) {
             Publication publication = publicationStore.findById(item.getParentId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
             publication.getParadata().put(response.getParadata().getExternalSystem(), response.getParadata());
+            publicationStore.save(publication);
             isParadataExtracted = true;
         }
 
