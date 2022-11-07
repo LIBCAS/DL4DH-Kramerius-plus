@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class EnrichPageFromAltoDto {
+public class AltoWrappedPageDto {
 
     private Page page;
 
@@ -24,7 +24,7 @@ public class EnrichPageFromAltoDto {
      */
     private String content;
 
-    public EnrichPageFromAltoDto(Page item) {
+    public AltoWrappedPageDto(Page item) {
         this.page = item;
     }
 }

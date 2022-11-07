@@ -6,7 +6,6 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpip
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeEnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.LindatServiceResponseDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.UDPipeProcessDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.EnrichPageFromAltoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
@@ -34,15 +33,14 @@ public class UDPipeService {
     /**
      * Processes the input text content and sets tokens attribute on page.
      */
-    public UDPipeProcessDto processPage(EnrichPageFromAltoDto page) {
+    public UDPipeProcessDto processPage(String content) {
         UDPipeProcessDto result = new UDPipeProcessDto();
 
-        String pageContent = page.getContent();
-        if (pageContent == null || pageContent.isEmpty()) {
+        if (content == null || content.isEmpty()) {
             return result;
         }
 
-        LindatServiceResponseDto response = makeApiCall(pageContent);
+        LindatServiceResponseDto response = makeApiCall(content);
 
         result.setTokens(parseResponseToTokens(response));
         result.setParadata(extractParadata(response));

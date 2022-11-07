@@ -7,15 +7,12 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.extern
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.EnrichPagesNameTagProcessor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.EnrichPagesUDPipeProcessor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.support.builder.CompositeItemProcessorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_FROM_ALTO;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_ALTO;
 
 @Component
 @Slf4j
@@ -48,17 +45,12 @@ public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
     }
 
     @Override
-    protected List<StepExecutionListener> getStepExecutionListeners() {
-        return List.of(downloadPagesAltoProcessor);
-    }
-
-    @Override
     protected int getChunkSize() {
         return 10;
     }
 
     @Override
     protected String getStepName() {
-        return ENRICH_PAGES_FROM_ALTO;
+        return ENRICH_PAGES_ALTO;
     }
 }

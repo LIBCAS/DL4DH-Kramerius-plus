@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob.ENRICHMENT_EXTERNAL;
-import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_FROM_ALTO;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_ALTO;
 import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PUBLICATION_MODS;
 
 @Configuration
@@ -15,7 +15,7 @@ public class EnrichmentExternalJobDesigner extends EnrichmentJobDesigner {
     @Bean
     public Job enrichExternalJob() {
         return super.getJobBuilder()
-                .next(stepContainer.getStep(ENRICH_PAGES_FROM_ALTO))
+                .next(stepContainer.getStep(ENRICH_PAGES_ALTO))
                 .next(stepContainer.getStep(ENRICH_PUBLICATION_MODS))
                 .build();
     }

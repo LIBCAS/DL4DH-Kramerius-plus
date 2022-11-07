@@ -4,7 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publi
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.NameTagService;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat.dto.NameTagProcessDto;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.EnrichPageFromAltoDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.AltoWrappedPageDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @StepScope
-public class EnrichPagesNameTagProcessor implements ItemProcessor<EnrichPageFromAltoDto, EnrichPageFromAltoDto> {
+public class EnrichPagesNameTagProcessor implements ItemProcessor<AltoWrappedPageDto, AltoWrappedPageDto> {
 
     private final NameTagService nameTagService;
 
@@ -30,7 +30,7 @@ public class EnrichPagesNameTagProcessor implements ItemProcessor<EnrichPageFrom
     }
 
     @Override
-    public EnrichPageFromAltoDto process(@NonNull EnrichPageFromAltoDto item) {
+    public AltoWrappedPageDto process(@NonNull AltoWrappedPageDto item) {
         if (!item.getPage().getParentId().equals(currentParentId)) {
             currentParentId = item.getPage().getParentId();
             isParadataExtracted = false;
@@ -39,7 +39,7 @@ public class EnrichPagesNameTagProcessor implements ItemProcessor<EnrichPageFrom
         item.getPage().setNameTagMetadata(response.getMetadata());
 
         if (!isParadataExtracted && response.getParadata() != null) {
-            Publication publication = publicationStore.findById(item.getPage().getParentId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
+            Publication publication = publicationStore.findById(item.getPage().getParentId()).orElseThrow(() -> new IllegalStateException("Page should always have a parent in db"));
             publication.getParadata().put(response.getParadata().getExternalSystem(), response.getParadata());
             publicationStore.save(publication);
             isParadataExtracted = true;

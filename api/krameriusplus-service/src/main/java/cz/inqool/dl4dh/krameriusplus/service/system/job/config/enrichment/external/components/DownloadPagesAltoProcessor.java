@@ -5,37 +5,37 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.MissingAltoOption;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.OCREnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.service.system.dataprovider.kramerius.StreamProvider;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetadataExtractor;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto.MissingAltoStrategy;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.alto.MissingAltoStrategyFactory;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.EnrichPageFromAltoDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.dto.AltoWrappedPageDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.MISSING_ALTO_STRATEGY;
 
 @Component
 @StepScope
 @Slf4j
-public class DownloadPagesAltoProcessor implements ItemProcessor<Page, EnrichPageFromAltoDto>, StepExecutionListener {
+public class DownloadPagesAltoProcessor implements ItemProcessor<Page, AltoWrappedPageDto> {
 
     private final StreamProvider streamProvider;
 
     private final AltoMetadataExtractor altoMetadataExtractor;
 
-    private StepExecution stepExecution;
-
     private boolean isParadataExtracted = false;
 
     private final MissingAltoStrategyFactory missingAltoStrategyFactory;
+
+    private final MissingAltoOption missingAltoOption;
 
     private MissingAltoStrategy missingAltoStrategy;
 
@@ -48,38 +48,41 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, EnrichPag
     @Autowired
     public DownloadPagesAltoProcessor(StreamProvider streamProvider,
                                       AltoMetadataExtractor altoMetadataExtractor,
-                                      MissingAltoStrategyFactory missingAltoStrategyFactory, PublicationStore publicationStore) {
+                                      MissingAltoStrategyFactory missingAltoStrategyFactory,
+                                      PublicationStore publicationStore,
+                                      @Value("#{jobParameters['" + MISSING_ALTO_STRATEGY + "']}") MissingAltoOption missingAltoOption) {
         this.streamProvider = streamProvider;
         this.altoMetadataExtractor = altoMetadataExtractor;
         this.missingAltoStrategyFactory = missingAltoStrategyFactory;
         this.publicationStore = publicationStore;
+        this.missingAltoOption = missingAltoOption;
     }
 
     @Override
-    public EnrichPageFromAltoDto process(@NonNull Page item) {
-        EnrichPageFromAltoDto dto = new EnrichPageFromAltoDto(item);
-
-        if (!dto.getPage().getParentId().equals(currentParentId)) {
+    public AltoWrappedPageDto process(@NonNull Page item) {
+        if (!item.getParentId().equals(currentParentId)) {
             reportMissingAlto(currentParentId);
-            currentParentId = dto.getPage().getParentId();
-            missingAltoStrategy = missingAltoStrategyFactory.create(stepExecution, currentParentId);
+            currentParentId = item.getParentId();
+            missingAltoStrategy = missingAltoStrategyFactory.create(missingAltoOption, currentParentId);
             isParadataExtracted = false;
         }
         try {
-            Alto alto = streamProvider.getAlto(dto.getPage().getId());
+            Alto alto = streamProvider.getAlto(item.getId());
 
             if (alto == null) {
-                handleMissingAlto(dto.getPage());
+                handleMissingAlto(item);
+                return null;
             }
 
-            dto.setAltoLayout(alto == null ? null : alto.getLayout());
+            AltoWrappedPageDto dto = new AltoWrappedPageDto(item);
+            dto.setAltoLayout(alto.getLayout());
             dto.setContent(altoMetadataExtractor.extractText(alto));
 
             if (!isParadataExtracted) {
                 OCREnrichmentParadata paradata = altoMetadataExtractor.extractOcrParadata(alto);
 
                 if (paradata != null) {
-                    Publication publication = publicationStore.findById(dto.getPage().getParentId()).orElseThrow(() -> new IllegalStateException("Page always has a parent in db"));
+                    Publication publication = publicationStore.findById(item.getParentId()).orElseThrow(() -> new IllegalStateException("Page should always have a parent in db"));
                     publication.getParadata().put(paradata.getExternalSystem(), paradata);
                     publicationStore.save(publication);
                     isParadataExtracted = true;
@@ -90,11 +93,9 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, EnrichPag
         } catch (KrameriusException e) {
             missingAltoCounter++;
             if (KrameriusException.ErrorCode.NOT_FOUND.equals(e.getErrorCode())) {
-                return handleMissingAlto(dto.getPage()) == null ? null : dto;
+                handleMissingAlto(item);
             }
-            else {
-                return null;
-            }
+            return null;
         } catch (Exception e) {
             missingAltoCounter++;
             log.warn(e.getMessage(), e);
@@ -111,17 +112,7 @@ public class DownloadPagesAltoProcessor implements ItemProcessor<Page, EnrichPag
         missingAltoCounter = 0L;
     }
 
-    private Page handleMissingAlto(Page item) {
-        return missingAltoStrategy.handleMissingAlto(item);
-    }
-
-    @BeforeStep
-    public void beforeStep(StepExecution stepExecution) {
-        this.stepExecution = stepExecution;
-    }
-
-    @Override
-    public ExitStatus afterStep(StepExecution stepExecution) {
-        return null;
+    private void handleMissingAlto(Page item) {
+        missingAltoStrategy.handleMissingAlto(item);
     }
 }

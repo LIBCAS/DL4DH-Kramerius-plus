@@ -16,7 +16,7 @@ public class JobStep {
     public static final String ENRICH_PAGES_TEI = "EnrichPagesTeiBodyStep";
 
     // ENRICH PAGES PHASE
-    public static final String ENRICH_PAGES_FROM_ALTO = "EnrichPagesFromAltoStep";
+    public static final String ENRICH_PAGES_ALTO = "EnrichPagesAltoStep";
     public static final String ENRICH_PUBLICATION_MODS = "EnrichPublicationModsStep";
 
     // EXPORT COMMON
