@@ -1,12 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto;
 
+import cz.inqool.dl4dh.alto.Alto;
+import cz.inqool.dl4dh.alto.BlockType;
+import cz.inqool.dl4dh.alto.PageSpaceType;
 import cz.inqool.dl4dh.alto.StringType;
+import cz.inqool.dl4dh.alto.TextBlockType;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.AltoTokenMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.BlockTypeDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.PageSpaceTypeDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.TextBlockTypeDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
 
 import java.util.ArrayList;
@@ -20,8 +20,11 @@ public class AltoMetadataEnricher {
 
     private final Page page;
 
-    public AltoMetadataEnricher(Page page) {
+    private final Alto.Layout altoLayout;
+
+    public AltoMetadataEnricher(Page page, Alto.Layout altoLayout) {
         this.page = page;
+        this.altoLayout = altoLayout;
     }
 
     /**
@@ -29,36 +32,36 @@ public class AltoMetadataEnricher {
      * If ALTO is {@code null}, returns.
      */
     public void enrichPage() {
-        var pageElements = Optional.ofNullable(page.getAltoLayout())
-                .map(AltoDto.LayoutDto::getPage)
+        var pageElements = Optional.ofNullable(altoLayout)
+                .map(Alto.Layout::getPage)
                 .orElse(new ArrayList<>());
 
-        for (AltoDto.LayoutDto.PageDto pageElement : pageElements) {
+        for (Alto.Layout.Page pageElement : pageElements) {
             processPageElement(pageElement);
         }
     }
 
-    private void processPageElement(AltoDto.LayoutDto.PageDto pageElement) {
+    private void processPageElement(Alto.Layout.Page pageElement) {
         for (var block : Optional.ofNullable(pageElement.getPrintSpace())
-                .map(PageSpaceTypeDto::getBlockTypes)
+                .map(PageSpaceType::getTextBlockOrIllustrationOrGraphicalElement)
                 .orElse(new ArrayList<>())) {
             processBlockElement(block);
         }
     }
 
-    private void processBlockElement(BlockTypeDto block) {
-        if (block instanceof TextBlockTypeDto) {
-            processTextBlockElement((TextBlockTypeDto) block);
+    private void processBlockElement(BlockType block) {
+        if (block instanceof TextBlockType) {
+            processTextBlockElement((TextBlockType) block);
         }
     }
 
-    private void processTextBlockElement(TextBlockTypeDto block) {
+    private void processTextBlockElement(TextBlockType block) {
         for (var line : block.getTextLine()) {
             processLineElement(line);
         }
     }
 
-    private void processLineElement(TextBlockTypeDto.TextLineDto line) {
+    private void processLineElement(TextBlockType.TextLine line) {
         List<StringType> wordParts = line.getStringAndSP()
                 .stream()
                 .filter(linePart -> linePart instanceof StringType)

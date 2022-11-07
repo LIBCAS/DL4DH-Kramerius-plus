@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.lindat;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.ExternalServiceException;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.LinguisticMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
 import cz.inqool.dl4dh.krameriusplus.core.system.paradata.UDPipeEnrichmentParadata;
@@ -34,15 +33,14 @@ public class UDPipeService {
     /**
      * Processes the input text content and sets tokens attribute on page.
      */
-    public UDPipeProcessDto processPage(Page page) {
+    public UDPipeProcessDto processPage(String content) {
         UDPipeProcessDto result = new UDPipeProcessDto();
 
-        String pageContent = page.getContent();
-        if (pageContent == null || pageContent.isEmpty()) {
+        if (content == null || content.isEmpty()) {
             return result;
         }
 
-        LindatServiceResponseDto response = makeApiCall(pageContent);
+        LindatServiceResponseDto response = makeApiCall(content);
 
         result.setTokens(parseResponseToTokens(response));
         result.setParadata(extractParadata(response));

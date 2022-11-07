@@ -3,7 +3,6 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.DigitalObject;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.alto.AltoDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.nametag.NameTagMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.mets.MetsMetadata;
@@ -42,20 +41,6 @@ public class Page extends DigitalObject {
     private String title;
 
     private String pageType;
-
-    /**
-     * Content of the page in plaintext. Temporarily stored in DB so other steps
-     * in EnrichingJob can access it when needed. Should be removed after the job is finished.
-     */
-    @JsonIgnore
-    private String content;
-
-    /**
-     * Generated ALTO object. Temporarily stored in DB so other steps
-     * in EnrichingJob can access it when needed. Should be removed after the job is finished.
-     */
-    @JsonIgnore
-    private AltoDto.LayoutDto altoLayout;
 
     /**
      * Storing it as a string for page numbers like "[1a]"
