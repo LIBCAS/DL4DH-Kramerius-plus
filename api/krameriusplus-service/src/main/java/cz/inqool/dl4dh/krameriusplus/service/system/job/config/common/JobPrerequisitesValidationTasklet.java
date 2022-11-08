@@ -47,16 +47,25 @@ public class JobPrerequisitesValidationTasklet extends ValidatedTasklet {
         if (publicationId == null) {
             return RepeatStatus.FINISHED;
         }
-        List<String> relevantContext =  getRelevantContext((Publication) dataProvider.getDigitalObject(publicationId));
+        List<String> relevantContext = getRelevantContext((Publication) dataProvider.getDigitalObject(publicationId));
 
         Set<KrameriusJob> prerequisites = KrameriusJob.valueOf(jobParameters.getString(KRAMERIUS_JOB)).getDependentOn();
 
-        for (KrameriusJob prerequisite: prerequisites) {
-            Long count = jobEventStore.getDependency(relevantContext, prerequisite);
-            if (count.equals(0L))  {
-                throw new ValidationException(String.format("No completed jobs of type %s for publicationId %s", prerequisite, publicationId),
-                        ValidationException.ErrorCode.DEPENDENCY_ERROR);
+        for (KrameriusJob prerequisite : prerequisites) {
+            Long countCompleted = jobEventStore.getCompleted(relevantContext, prerequisite);
+            Long countCreated = jobEventStore.getCreated(relevantContext, prerequisite);
+
+            if (countCompleted.equals(0L)) {
+                if (countCreated > 0) {
+                    throw new ValidationException(String.format("Job of type %s for publicationId %s exists but isn't complete yet", prerequisite, publicationId),
+                            ValidationException.ErrorCode.DEPENDENCY_ERROR);
+                } else {
+                    throw new ValidationException(String.format("No completed jobs of type %s for publicationId %s", prerequisite, publicationId),
+                            ValidationException.ErrorCode.DEPENDENCY_ERROR);
+                }
             }
+
+
         }
 
         return RepeatStatus.FINISHED;
