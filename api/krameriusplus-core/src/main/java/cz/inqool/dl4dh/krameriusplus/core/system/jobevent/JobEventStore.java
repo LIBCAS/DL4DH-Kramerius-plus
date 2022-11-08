@@ -74,7 +74,7 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
         return count > 0;
     }
 
-    public Long getCreated(List<String> publicationIds, KrameriusJob prerequisite) {
+    public Long getCompleted(List<String> publicationIds, KrameriusJob prerequisite) {
         JPAQuery<Long> query = query()
                 .select(qObject.count())
                 .where(qObject.publicationId.in(publicationIds))
@@ -85,7 +85,7 @@ public class JobEventStore extends DatedStore<JobEvent, QJobEvent> {
         return query.fetchFirst();
     }
 
-    public Long getCompleted(List<String> publicationIds, KrameriusJob prerequisite){
+    public Long getCreated(List<String> publicationIds, KrameriusJob prerequisite){
         JPAQuery<Long> query = query()
                 .select(qObject.count())
                 .where(qObject.publicationId.in(publicationIds))
