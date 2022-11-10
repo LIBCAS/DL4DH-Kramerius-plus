@@ -34,7 +34,7 @@ public class UuidValidator implements JobEventValidator {
             dataProvider.getDigitalObject(publicationId);
         } catch (KrameriusException e) {
             if (e.getErrorCode() == NOT_FOUND) {
-                throw new JobParametersInvalidException("Publication with given UUID was not found");
+                throw new JobParametersInvalidException(String.format("Publication with UUID: %s was not found", publicationId));
             }
 
             throw e;
