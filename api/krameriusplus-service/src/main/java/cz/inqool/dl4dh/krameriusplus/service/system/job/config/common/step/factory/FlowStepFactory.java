@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.GeneralExceptionSkipPolicy;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepContainer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.DatedObjectWriteListener;
 import org.springframework.batch.core.Step;
@@ -20,13 +19,11 @@ public abstract class FlowStepFactory<IN, OUT>
 
     protected DatedObjectWriteListener writeListener;
 
-    protected GeneralExceptionSkipPolicy generalExceptionSkipPolicy;
-
     /**
      * There's a bug in Spring, which causes that not all subclass of this abstract
      * superclass creates a bean, when this method is annotated with @Bean. Therefore,
      * we need a different way to register beans for every subclass of this class.
-     *
+     * <p>
      * This method is called in {@link StepContainer}, which is responsible for creating and holding a collection
      * of Steps as beans
      */
@@ -37,8 +34,6 @@ public abstract class FlowStepFactory<IN, OUT>
                 .processor(getItemProcessor())
                 .writer(getItemWriter())
                 .listener(writeListener) // watch out for which method is called, do not use listener(Object listener) method
-                .faultTolerant()
-                .skipPolicy(generalExceptionSkipPolicy)
                 .build();
     }
 
@@ -57,10 +52,5 @@ public abstract class FlowStepFactory<IN, OUT>
     @Autowired
     public void setWriteListener(DatedObjectWriteListener writeListener) {
         this.writeListener = writeListener;
-    }
-
-    @Autowired
-    public void setGeneralExceptionSkipPolicy(GeneralExceptionSkipPolicy generalExceptionSkipPolicy) {
-        this.generalExceptionSkipPolicy = generalExceptionSkipPolicy;
     }
 }

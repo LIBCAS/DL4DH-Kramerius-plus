@@ -6,10 +6,10 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publi
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.mets.MetsFileFinder;
 import cz.inqool.dl4dh.krameriusplus.service.system.enricher.publication.xml.dto.MainMetsDto;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.SkippingProcessor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,7 +31,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Component
 @StepScope
 @Slf4j
-public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
+public class PreparePagesNdkProcessor extends SkippingProcessor<Page, Page> {
 
     private final MetsFileFinder metsFileFinder;
 
@@ -53,7 +53,7 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
     }
 
     @Override
-    public Page process(@NonNull Page page) {
+    protected Page doProcess(@NonNull Page page) {
         Optional<MainMetsDto.Div> matchingDiv = mainMetsPages
                 .stream()
                 .filter(div -> div.getOrderLabel().equalsIgnoreCase(page.getTitle()))

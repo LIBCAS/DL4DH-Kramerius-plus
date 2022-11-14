@@ -1,19 +1,24 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.executions.StepRunReport;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobEventConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.KRAMERIUS_JOB;
@@ -43,8 +48,8 @@ public class JobEvent extends DatedObject {
     @Embedded
     private JobEventConfig config;
 
-    @OneToOne
-    private JobEventRunReport jobEventRunReport;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "jobEvent")
+    private final Set<StepRunReport> stepRunReports = new HashSet<>();
 
     public boolean wasExecuted() {
         return details.getLastExecutionStatus() == JobStatus.COMPLETED;
