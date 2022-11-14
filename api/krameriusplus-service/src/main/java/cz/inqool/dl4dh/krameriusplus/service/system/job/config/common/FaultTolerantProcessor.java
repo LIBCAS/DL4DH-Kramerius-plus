@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 
-public abstract class SkippingProcessor<IN, OUT> implements ItemProcessor<IN, OUT> {
+public abstract class FaultTolerantProcessor<IN, OUT> implements ItemProcessor<IN, OUT> {
 
     private StepRunReportStore stepRunReportStore;
 
@@ -28,6 +28,7 @@ public abstract class SkippingProcessor<IN, OUT> implements ItemProcessor<IN, OU
 
     private Integer failureCount = 0;
 
+    // TODO: how many exceptions to persist?, skip all pages if one fails? when does the job fail?
     @Override
     public OUT process(IN item) throws SkipLimitExceededException {
         try {
