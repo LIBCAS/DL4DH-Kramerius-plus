@@ -24,6 +24,7 @@ public abstract class FaultTolerantProcessor<IN, OUT> implements ItemProcessor<I
 
     private StepRunReport stepRunReport;
 
+    //TODO: pass through job parameters
     private Integer tolerance = 2;
 
     private Integer failureCount = 0;
