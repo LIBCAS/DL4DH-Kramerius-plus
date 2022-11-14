@@ -385,4 +385,76 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="18" author="kollar">
+        <!-- JobEventRunReport -->
+        <createTable tableName="job_event_run_report">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="job_event_run_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="job_event_id" type="${id}">
+                <constraints foreignKeyName="job_event_FK"
+                             referencedTableName="job_event"
+                             referencedColumnNames="id"/>
+
+            </column>
+        </createTable>
+
+        <!-- StepRunReport -->
+        <createTable tableName="step_run_report">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="step_run_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="job_event_run_report_id" type="${id}">
+                <constraints foreignKeyName="job_event_run_FK"
+                             referencedTableName="job_event_run_report"
+                             referencedColumnNames="id"/>
+
+            </column>
+        </createTable>
+
+        <!-- PersistedError -->
+        <createTable tableName="persisted_error">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="persisted_error_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="step_run_report_id" type="${id}">
+                <constraints foreignKeyName="step_run_report_FK"
+                             referencedTableName="step_run_report"
+                             referencedColumnNames="id"/>
+
+            </column>
+            <column name="page_id" type="${id}"/>
+            <column name="short_message" type="varchar(255)"/>
+            <column name="page_index" type="varchar(255)"/>
+        </createTable>
+
+        <addColumn tableName="job_event">
+            <column name="job_event_run_report_id" type="${id}">
+                <constraints foreignKeyName="job_event_run_report_id"
+                             referencedTableName="job_event_run_report"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
