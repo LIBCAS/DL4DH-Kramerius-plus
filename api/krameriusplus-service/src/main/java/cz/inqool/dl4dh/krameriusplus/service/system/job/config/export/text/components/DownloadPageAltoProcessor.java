@@ -25,6 +25,7 @@ public class DownloadPageAltoProcessor implements ItemProcessor<DigitalObjectWit
         if (!(item.getDigitalObject() instanceof Page)) {
             return null;
         }
+
         PageAndAltoDto result = new PageAndAltoDto();
         result.setDigitalObject(item.getDigitalObject());
         result.setPath(item.getPath());

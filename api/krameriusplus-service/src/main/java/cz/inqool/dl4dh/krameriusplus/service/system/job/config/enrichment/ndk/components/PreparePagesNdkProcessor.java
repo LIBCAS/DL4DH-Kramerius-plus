@@ -89,7 +89,8 @@ public class PreparePagesNdkProcessor implements ItemProcessor<Page, Page> {
                         return page;
                     }
 
-                    throw new RuntimeException("Could not find mets file for page " + page.getId());
+                    throw new NdkEnrichmentException("Could not find mets file for page " + page.getId(),
+                            NdkEnrichmentException.ErrorCode.NDK_PAGE_FILE_NOT_FOUND);
                 } catch (IOException e) {
                     throw new UncheckedIOException("Could not list files in dir '" + pageMetsDir + "'", e);
                 }
