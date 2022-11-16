@@ -99,4 +99,14 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
 
         return mongoOperations.find(query, type);
     }
+
+    @Override
+    public List<String> findAllEditions(String publicationId) {
+        Query query = Query.query(where("pageCount").gt(0));
+        query.fields().include("_id", "_class");
+
+        return mongoOperations.find(query, type).stream().map(Publication::getId).collect(Collectors.toList());
+    }
 }
+
+
