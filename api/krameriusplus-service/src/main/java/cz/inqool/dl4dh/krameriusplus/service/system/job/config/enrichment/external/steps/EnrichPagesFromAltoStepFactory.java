@@ -8,13 +8,13 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.JobStep.ENRICH_PAGES_ALTO;
+
 @Component
 @Slf4j
 public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
 
     private final EnrichPagesFromAltoCompositeProcessor enrichPagesFromAltoCompositeProcessor;
-
-
 
     @Autowired
     public EnrichPagesFromAltoStepFactory(EnrichPagesFromAltoCompositeProcessor enrichPagesFromAltoCompositeProcessor) {
@@ -33,6 +33,6 @@ public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
 
     @Override
     protected String getStepName() {
-        return "TEMPSTEPNAME";
+        return ENRICH_PAGES_ALTO;
     }
 }
