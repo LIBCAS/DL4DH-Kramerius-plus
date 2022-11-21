@@ -1,7 +1,8 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.mods;
+package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PublicationMongoFlowStepFactory;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.EnrichPublicationModsProcessor;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

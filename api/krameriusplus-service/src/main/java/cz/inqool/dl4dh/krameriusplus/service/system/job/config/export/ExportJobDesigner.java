@@ -12,8 +12,6 @@ public abstract class ExportJobDesigner extends JobDesignerBase {
 
     private ExportCompletionListener exportCompletionListener;
 
-    public abstract String getJobName();
-
     @Override
     protected void decorateJobBuilder(JobBuilder jobBuilder) {
         jobBuilder.listener(exportCompletionListener);

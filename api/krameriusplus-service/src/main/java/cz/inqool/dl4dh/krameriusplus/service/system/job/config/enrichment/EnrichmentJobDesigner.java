@@ -12,8 +12,6 @@ public abstract class EnrichmentJobDesigner extends JobDesignerBase {
 
     private EnrichmentValidator enrichmentValidator;
 
-    public abstract String getJobName();
-
     @Override
     protected void decorateJobBuilder(JobBuilder jobBuilder) {
         jobBuilder.validator(enrichmentValidator);

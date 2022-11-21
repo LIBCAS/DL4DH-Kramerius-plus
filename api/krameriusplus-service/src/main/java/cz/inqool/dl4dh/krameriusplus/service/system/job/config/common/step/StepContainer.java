@@ -27,6 +27,10 @@ public class StepContainer {
         stepConfigurations.forEach(stepConfig -> {
             Step step = stepConfig.build();
 
+            if (steps.containsKey(step.getName())) {
+                throw new IllegalStateException("Step '" + step.getName() + "' already registered.");
+            }
+
             this.steps.put(step.getName(), step);
         });
     }

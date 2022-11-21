@@ -1,6 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.store;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.*;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.AbstractMongoStore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Repository
 public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> implements CustomPublicationStore {
@@ -32,7 +35,7 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
                     Sort.by(Sort.Direction.ASC, "index"));
         }
 
-        Query query = Query.query(where("parentId").is(parentId));
+        Query query = query(where("parentId").is(parentId));
 
         long total = mongoOperations.count(query, type);
 
@@ -43,7 +46,7 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
 
     @Override
     public List<String> findAllChildrenIds(String parentId) {
-        Query query = Query.query(where("parentId").is(parentId));
+        Query query = query(where("parentId").is(parentId));
         query.fields().include("_id", "_class");
 
         return mongoOperations.find(query, type).stream().map(DomainObject::getId).collect(Collectors.toList());
@@ -95,17 +98,22 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
 
     @Override
     public List<Publication> findAllPublishedModified(Instant publishedModifiedAfter) {
-        Query query = Query.query(where("publishInfo.publishedLastModified").gte(publishedModifiedAfter));
+        Query query = query(where("publishInfo.publishedLastModified").gte(publishedModifiedAfter));
 
         return mongoOperations.find(query, type);
     }
 
     @Override
     public List<String> findAllEditions(String publicationId) {
-        Query query = Query.query(where("pageCount").gt(0));
-        query.fields().include("_id", "_class");
+        Params params = new Params();
+        params.addFilters(new AndFilter(List.of(
+                new GtFilter("pageCount", 0),
+                new OrFilter(List.of(new EqFilter("parentId", publicationId), new EqFilter("_id", publicationId))))
+        ));
+        params.includeFields("_id", "_class");
+        params.setSorting(List.of(new Sorting("index", Sort.Direction.ASC)));
 
-        return mongoOperations.find(query, type).stream().map(Publication::getId).collect(Collectors.toList());
+        return mongoOperations.find(params.toMongoQuery(false), type).stream().map(Publication::getId).collect(Collectors.toList());
     }
 }
 
