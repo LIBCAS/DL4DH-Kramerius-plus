@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.tei;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.PartitionAggregator;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.EnrichmentSuccessDecidingAggregator;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.PublicationTaskPartitioner;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepContainer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.EnrichmentJobDesigner;
@@ -32,12 +32,12 @@ public class EnrichTeiJobDesigner extends EnrichmentJobDesigner {
     @Bean
     public Step enrichPagesTeiMaster(StepContainer stepContainer,
                                      PublicationTaskPartitioner publicationTaskPartitioner,
-                                     PartitionAggregator partitionAggregator) {
+                                     EnrichmentSuccessDecidingAggregator enrichmentSuccessDecidingAggregator) {
         return stepBuilderFactory.get(ENRICH_PAGES_TEI + "-MASTER")
                 .partitioner(ENRICH_PAGES_TEI, publicationTaskPartitioner)
                 .step(stepContainer.getStep(ENRICH_PAGES_TEI))
                 .taskExecutor(new SyncTaskExecutor())
-                .aggregator(partitionAggregator)
+                .aggregator(enrichmentSuccessDecidingAggregator)
                 .build();
     }
 

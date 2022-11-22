@@ -14,7 +14,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 
 @Component
 @JobScope
-public class PartitionAggregator implements StepExecutionAggregator {
+public class EnrichmentSuccessDecidingAggregator implements StepExecutionAggregator {
 
     @Value("#{jobParameters['" + PUBLICATION_SKIP_COUNT + "']}")
     private Integer maxFailures = 0;
