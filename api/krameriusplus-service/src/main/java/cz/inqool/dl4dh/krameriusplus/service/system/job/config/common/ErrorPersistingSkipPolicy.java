@@ -12,6 +12,7 @@ import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PAGE_SKIP_COUNT;
@@ -40,6 +41,8 @@ public class ErrorPersistingSkipPolicy extends ItemListenerSupport<Page, Page> i
 
     @Override
     public boolean shouldSkip(Throwable t, int skipCount) throws SkipLimitExceededException {
+
+        stepRunReport = skipCount == 0 ? stepRunReportStore.create(stepRunReport) : stepRunReportStore.update(stepRunReport);
         // on first error skipCount == 0
         if (skipCount >= pageSkipTolerance) {
             throw new SkipLimitExceededException(pageSkipTolerance, t);
@@ -49,15 +52,14 @@ public class ErrorPersistingSkipPolicy extends ItemListenerSupport<Page, Page> i
     }
 
     @Override
+    @Transactional
     public void onProcessError(Page item, Exception t) {
         if (stepRunReport == null) {
             this.stepRunReport = new StepRunReport();
             stepRunReport.setJobEvent(jobEvent);
             stepRunReport.addError(t, item);
-            stepRunReportStore.create(stepRunReport);
         } else {
             stepRunReport.addError(t, item);
-            stepRunReportStore.update(stepRunReport);
         }
     }
 }
