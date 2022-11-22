@@ -4,7 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ErrorPersistingSkipPolicy;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.PageMongoReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.PageMongoWriter;
-import org.springframework.batch.core.SkipListener;
+import org.springframework.batch.core.ItemProcessListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -56,7 +56,7 @@ public abstract class PageMongoFlowStepFactory extends FlowStepFactory<Page, Pag
                 .listener(writeListener)
                 .faultTolerant()
                 .skipPolicy(errorPersistingSkipPolicy)
-                .listener(((SkipListener<Page, Page>) errorPersistingSkipPolicy))
+                .listener((ItemProcessListener<? super Page, ? super Page>) errorPersistingSkipPolicy)
                 .build();
     }
 }

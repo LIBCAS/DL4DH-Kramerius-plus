@@ -25,7 +25,7 @@ public class StepRunReport extends DomainObject {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "stepRunReport")
     private Set<PersistedError> persistedErrors = new HashSet<>();
 
-    public PersistedError addError(Throwable e, Object causingObject) {
+    public PersistedError addError(Exception e, Object causingObject) {
         PersistedError persistedError = new PersistedError();
         if (causingObject instanceof Page) {
             Page page = ((Page) causingObject);

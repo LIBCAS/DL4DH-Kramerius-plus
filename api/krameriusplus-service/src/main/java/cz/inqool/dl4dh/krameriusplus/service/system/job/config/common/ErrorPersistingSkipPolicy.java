@@ -5,8 +5,8 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.executions.StepRunReport;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.executions.StepRunReportStore;
-import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.listener.ItemListenerSupport;
 import org.springframework.batch.core.step.skip.SkipLimitExceededException;
 import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 
 @Component
 @StepScope
-public class ErrorPersistingSkipPolicy implements SkipPolicy, SkipListener<Page, Page> {
+public class ErrorPersistingSkipPolicy extends ItemListenerSupport<Page, Page> implements SkipPolicy {
 
     @Value("#{jobParameters['" + PAGE_SKIP_COUNT + "']}")
     private Integer pageSkipTolerance = 0;
@@ -49,16 +49,7 @@ public class ErrorPersistingSkipPolicy implements SkipPolicy, SkipListener<Page,
     }
 
     @Override
-    public void onSkipInRead(Throwable t) {
-    }
-
-    @Override
-    public void onSkipInWrite(Page item, Throwable t) {
-
-    }
-
-    @Override
-    public void onSkipInProcess(Page item, Throwable t) {
+    public void onProcessError(Page item, Exception t) {
         if (stepRunReport == null) {
             this.stepRunReport = new StepRunReport();
             stepRunReport.setJobEvent(jobEvent);
