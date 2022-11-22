@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.ndk;
 
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.PartitionAggregator;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.PublicationTaskPartitioner;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepContainer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.EnrichmentJobDesigner;
@@ -22,11 +23,14 @@ public class EnrichNdkJobDesigner extends EnrichmentJobDesigner {
     private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Step enrichPagesNdkMaster(StepContainer stepContainer, PublicationTaskPartitioner publicationTaskPartitioner) {
+    public Step enrichPagesNdkMaster(StepContainer stepContainer,
+                                     PublicationTaskPartitioner publicationTaskPartitioner,
+                                     PartitionAggregator partitionAggregator) {
         return stepBuilderFactory.get(ENRICH_PAGES_NDK + "-MASTER")
                 .partitioner(ENRICH_PAGES_NDK, publicationTaskPartitioner)
                 .step(stepContainer.getStep(ENRICH_PAGES_NDK))
                 .taskExecutor(new SyncTaskExecutor())
+                .aggregator(partitionAggregator)
                 .build();
     }
 

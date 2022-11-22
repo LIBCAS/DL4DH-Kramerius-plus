@@ -27,8 +27,6 @@ public class PeriodicalItem extends Publication {
 
     private String partNumber;
 
-    private String rootId;
-
     @JsonProperty("details")
     public void unpackDetails(Map<String, Object> details) {
         date = (String) details.get("date");

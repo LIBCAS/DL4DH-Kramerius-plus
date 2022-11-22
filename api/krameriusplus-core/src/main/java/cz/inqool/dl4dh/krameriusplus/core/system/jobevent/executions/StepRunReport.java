@@ -25,7 +25,7 @@ public class StepRunReport extends DatedObject {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "stepRunReport")
     private final Set<PersistedError> persistedErrors = new HashSet<>();
 
-    public PersistedError addError(Exception e, Object causingObject) {
+    public PersistedError addError(Throwable e, Object causingObject) {
         PersistedError persistedError = new PersistedError();
         if (causingObject instanceof Page) {
             Page page = ((Page) causingObject);
