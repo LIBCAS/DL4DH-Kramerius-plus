@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.tei.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.CustomSkipPolicy;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ErrorPersistingSkipPolicy;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoFlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.tei.components.EnrichPagesTeiProcessor;
 import org.springframework.batch.core.step.skip.SkipPolicy;
@@ -16,12 +16,12 @@ public class EnrichPagesTeiStepFactory extends PageMongoFlowStepFactory {
 
     private final EnrichPagesTeiProcessor processor;
 
-    private final CustomSkipPolicy customSkipPolicy;
+    private final ErrorPersistingSkipPolicy errorPersistingSkipPolicy;
 
     @Autowired
-    public EnrichPagesTeiStepFactory(EnrichPagesTeiProcessor processor, CustomSkipPolicy customSkipPolicy) {
+    public EnrichPagesTeiStepFactory(EnrichPagesTeiProcessor processor, ErrorPersistingSkipPolicy errorPersistingSkipPolicy) {
         this.processor = processor;
-        this.customSkipPolicy = customSkipPolicy;
+        this.errorPersistingSkipPolicy = errorPersistingSkipPolicy;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class EnrichPagesTeiStepFactory extends PageMongoFlowStepFactory {
 
     @Override
     protected SkipPolicy getSkipPolicy() {
-        return customSkipPolicy;
+        return errorPersistingSkipPolicy;
     }
 
     @Override

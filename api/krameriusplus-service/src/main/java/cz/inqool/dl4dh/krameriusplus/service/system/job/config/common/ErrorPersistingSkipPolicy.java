@@ -18,7 +18,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 
 @Component
 @StepScope
-public class CustomSkipPolicy implements SkipPolicy, SkipListener<Page, Page> {
+public class ErrorPersistingSkipPolicy implements SkipPolicy, SkipListener<Page, Page> {
 
     @Value("#{jobParameters['" + PAGE_SKIP_COUNT + "']}")
     private Integer pageSkipTolerance = 0;
@@ -31,9 +31,9 @@ public class CustomSkipPolicy implements SkipPolicy, SkipListener<Page, Page> {
 
 
     @Autowired
-    public CustomSkipPolicy(StepRunReportStore stepRunReportStore,
-                            @Value("#{jobParameters['" + JOB_EVENT_ID+ "']}") String jobEventId,
-                            JobEventStore jobEventStore) {
+    public ErrorPersistingSkipPolicy(StepRunReportStore stepRunReportStore,
+                                     @Value("#{jobParameters['" + JOB_EVENT_ID+ "']}") String jobEventId,
+                                     JobEventStore jobEventStore) {
         this.stepRunReportStore = stepRunReportStore;
         this.jobEvent = jobEventStore.find(jobEventId);
     }

@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.CustomSkipPolicy;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ErrorPersistingSkipPolicy;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoFlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.EnrichPagesFromAltoCompositeProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +18,12 @@ public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
 
     private final EnrichPagesFromAltoCompositeProcessor enrichPagesFromAltoCompositeProcessor;
 
-    private final CustomSkipPolicy customSkipPolicy;
+    private final ErrorPersistingSkipPolicy errorPersistingSkipPolicy;
 
     @Autowired
-    public EnrichPagesFromAltoStepFactory(EnrichPagesFromAltoCompositeProcessor enrichPagesFromAltoCompositeProcessor, CustomSkipPolicy customSkipPolicy) {
+    public EnrichPagesFromAltoStepFactory(EnrichPagesFromAltoCompositeProcessor enrichPagesFromAltoCompositeProcessor, ErrorPersistingSkipPolicy errorPersistingSkipPolicy) {
         this.enrichPagesFromAltoCompositeProcessor = enrichPagesFromAltoCompositeProcessor;
-        this.customSkipPolicy = customSkipPolicy;
+        this.errorPersistingSkipPolicy = errorPersistingSkipPolicy;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
 
     @Override
     protected SkipPolicy getSkipPolicy() {
-        return customSkipPolicy;
+        return errorPersistingSkipPolicy;
     }
 
     @Override

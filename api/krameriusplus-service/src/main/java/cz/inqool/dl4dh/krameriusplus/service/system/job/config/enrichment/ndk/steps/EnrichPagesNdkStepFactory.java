@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.ndk.steps;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.CustomSkipPolicy;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ErrorPersistingSkipPolicy;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoFlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.ndk.components.EnrichPagesNdkCompositeProcessor;
 import org.springframework.batch.core.step.skip.SkipPolicy;
@@ -16,12 +16,12 @@ public class EnrichPagesNdkStepFactory extends PageMongoFlowStepFactory {
 
     private final EnrichPagesNdkCompositeProcessor enrichPagesNdkCompositeProcessor;
 
-    private final CustomSkipPolicy customSkipPolicy;
+    private final ErrorPersistingSkipPolicy errorPersistingSkipPolicy;
 
     @Autowired
-    public EnrichPagesNdkStepFactory(EnrichPagesNdkCompositeProcessor enrichPagesNdkCompositeProcessor, CustomSkipPolicy customSkipPolicy) {
+    public EnrichPagesNdkStepFactory(EnrichPagesNdkCompositeProcessor enrichPagesNdkCompositeProcessor, ErrorPersistingSkipPolicy errorPersistingSkipPolicy) {
         this.enrichPagesNdkCompositeProcessor = enrichPagesNdkCompositeProcessor;
-        this.customSkipPolicy = customSkipPolicy;
+        this.errorPersistingSkipPolicy = errorPersistingSkipPolicy;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class EnrichPagesNdkStepFactory extends PageMongoFlowStepFactory {
 
     @Override
     protected SkipPolicy getSkipPolicy() {
-        return customSkipPolicy;
+        return errorPersistingSkipPolicy;
     }
 
     @Override
