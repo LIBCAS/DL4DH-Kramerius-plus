@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ErrorPersistingSkipPolicy;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.PageMongoReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.PageMongoWriter;
 import org.springframework.batch.core.SkipListener;
@@ -17,6 +18,8 @@ public abstract class PageMongoFlowStepFactory extends FlowStepFactory<Page, Pag
     protected PageMongoReader reader;
 
     protected PageMongoWriter writer;
+
+    protected ErrorPersistingSkipPolicy errorPersistingSkipPolicy;
 
     @Override
     protected ItemReader<Page> getItemReader() {
@@ -38,6 +41,11 @@ public abstract class PageMongoFlowStepFactory extends FlowStepFactory<Page, Pag
         this.writer = writer;
     }
 
+    @Autowired
+    public void setErrorPersistingSkipPolicy(ErrorPersistingSkipPolicy errorPersistingSkipPolicy) {
+        this.errorPersistingSkipPolicy = errorPersistingSkipPolicy;
+    }
+
     @Override
     public Step build() {
         return getBuilder()
@@ -47,8 +55,8 @@ public abstract class PageMongoFlowStepFactory extends FlowStepFactory<Page, Pag
                 .writer(getItemWriter())
                 .listener(writeListener)
                 .faultTolerant()
-                .skipPolicy(getSkipPolicy())
-                .listener(((SkipListener<Page, Page>) getSkipPolicy()))
+                .skipPolicy(errorPersistingSkipPolicy)
+                .listener(((SkipListener<Page, Page>) errorPersistingSkipPolicy))
                 .build();
     }
 }

@@ -5,7 +5,6 @@ import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.ErrorPersi
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.factory.PageMongoFlowStepFactory;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.enrichment.external.components.EnrichPagesFromAltoCompositeProcessor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,8 +17,6 @@ public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
 
     private final EnrichPagesFromAltoCompositeProcessor enrichPagesFromAltoCompositeProcessor;
 
-    private final ErrorPersistingSkipPolicy errorPersistingSkipPolicy;
-
     @Autowired
     public EnrichPagesFromAltoStepFactory(EnrichPagesFromAltoCompositeProcessor enrichPagesFromAltoCompositeProcessor, ErrorPersistingSkipPolicy errorPersistingSkipPolicy) {
         this.enrichPagesFromAltoCompositeProcessor = enrichPagesFromAltoCompositeProcessor;
@@ -29,11 +26,6 @@ public class EnrichPagesFromAltoStepFactory extends PageMongoFlowStepFactory {
     @Override
     protected ItemProcessor<Page, Page> getItemProcessor() {
        return enrichPagesFromAltoCompositeProcessor;
-    }
-
-    @Override
-    protected SkipPolicy getSkipPolicy() {
-        return errorPersistingSkipPolicy;
     }
 
     @Override

@@ -3,7 +3,6 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.fact
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.StepContainer;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.listener.DatedObjectWriteListener;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -36,12 +35,7 @@ public abstract class FlowStepFactory<IN, OUT>
                 .writer(getItemWriter())
                 .listener(writeListener)
                 .faultTolerant()
-                .skipPolicy(getSkipPolicy())
                 .build();
-    }
-
-    protected SkipPolicy getSkipPolicy() {
-        return null;
     }
 
     protected int getChunkSize() {
