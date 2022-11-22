@@ -37,8 +37,8 @@ public class EnrichmentExternalJobDesigner extends EnrichmentJobDesigner {
     @Bean
     public Job enrichExternalJob(@Qualifier("enrichPagesAltoMaster") Step enrichPagesAltoStep) {
         return super.getJobBuilder()
-                .next(enrichPagesAltoStep)
                 .next(stepContainer.getStep(ENRICH_PUBLICATION_MODS))
+                .next(enrichPagesAltoStep)
                 .build();
     }
 
