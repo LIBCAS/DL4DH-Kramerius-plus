@@ -3,6 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.fact
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.reader.PageMongoReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.config.common.step.writer.PageMongoWriter;
+import org.springframework.batch.core.SkipListener;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +36,19 @@ public abstract class PageMongoFlowStepFactory extends FlowStepFactory<Page, Pag
     @Autowired
     public void setWriter(PageMongoWriter writer) {
         this.writer = writer;
+    }
+
+    @Override
+    public Step build() {
+        return getBuilder()
+                .<Page, Page>chunk(1)
+                .reader(getItemReader())
+                .processor(getItemProcessor())
+                .writer(getItemWriter())
+                .listener(writeListener)
+                .faultTolerant()
+                .skipPolicy(getSkipPolicy())
+                .listener(((SkipListener<Page, Page>) getSkipPolicy()))
+                .build();
     }
 }

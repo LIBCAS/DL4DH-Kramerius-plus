@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -48,8 +47,8 @@ public class JobEvent extends DatedObject {
     @Embedded
     private JobEventConfig config;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "jobEvent")
-    private final Set<StepRunReport> stepRunReports = new HashSet<>();
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "jobEvent")
+    private Set<StepRunReport> stepRunReports = new HashSet<>();
 
     public boolean wasExecuted() {
         return details.getLastExecutionStatus() == JobStatus.COMPLETED;

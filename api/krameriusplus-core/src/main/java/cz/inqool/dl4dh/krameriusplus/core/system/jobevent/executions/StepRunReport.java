@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobevent.executions;
 
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DatedObject;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEvent;
 import lombok.Getter;
@@ -17,13 +17,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-public class StepRunReport extends DatedObject {
+public class StepRunReport extends DomainObject {
 
     @ManyToOne
     private JobEvent jobEvent;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "stepRunReport")
-    private final Set<PersistedError> persistedErrors = new HashSet<>();
+    private Set<PersistedError> persistedErrors = new HashSet<>();
 
     public PersistedError addError(Throwable e, Object causingObject) {
         PersistedError persistedError = new PersistedError();
@@ -33,6 +33,7 @@ public class StepRunReport extends DatedObject {
             persistedError.setPageIndex(page.getIndex());
         }
 
+        persistedError.setStepRunReport(this);
         persistedError.setShortMessage(e.getMessage());
         persistedErrors.add(persistedError);
         return persistedError;

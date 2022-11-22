@@ -393,11 +393,6 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="step_run_PK"/>
             </column>
 
-            <!-- Dated Object -->
-            <column name="created" type="timestamp"/>
-            <column name="updated" type="timestamp"/>
-            <column name="deleted" type="timestamp"/>
-
             <column name="job_event_id" type="${id}">
                 <constraints foreignKeyName="job_event_FK"
                              referencedTableName="job_event"
@@ -411,11 +406,6 @@
             <column name="id" type="${id}">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="persisted_error_PK"/>
             </column>
-
-            <!-- Dated Object -->
-            <column name="created" type="timestamp"/>
-            <column name="updated" type="timestamp"/>
-            <column name="deleted" type="timestamp"/>
 
             <column name="step_run_report_id" type="${id}">
                 <constraints foreignKeyName="step_run_report_FK"
