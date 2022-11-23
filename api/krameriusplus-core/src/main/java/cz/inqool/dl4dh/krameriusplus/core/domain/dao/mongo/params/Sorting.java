@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter;
+package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

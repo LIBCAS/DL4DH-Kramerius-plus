@@ -2,7 +2,11 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.stor
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.*;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Sorting;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.AndFilter;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.EqFilter;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.GtFilter;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.InFilter;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.AbstractMongoStore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.Publication;
@@ -15,7 +19,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -105,15 +111,36 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
 
     @Override
     public List<String> findAllEditions(String publicationId) {
-        Params params = new Params();
-        params.addFilters(new AndFilter(List.of(
-                new GtFilter("pageCount", 0),
-                new OrFilter(List.of(new EqFilter("parentId", publicationId), new EqFilter("_id", publicationId))))
-        ));
-        params.includeFields("_id", "_class");
-        params.setSorting(List.of(new Sorting("index", Sort.Direction.ASC)));
+        List<String> result = mongoOperations.find(new Params() // get publication with id = publicationId if it has pages
+                .addFilters(new AndFilter(List.of(
+                        new EqFilter("_id", publicationId),
+                        new GtFilter("pageCount", 0))))
+                .includeFields("_id", "_class")
+                .toMongoQuery(false), type)
+                .stream()
+                .map(DomainObject::getId)
+                .collect(Collectors.toList());
 
-        return mongoOperations.find(params.toMongoQuery(false), type).stream().map(Publication::getId).collect(Collectors.toList());
+        Set<String> parentIds = new LinkedHashSet<>(result);
+
+        // get child publications tree
+        while (!parentIds.isEmpty()) {
+            Params params = new Params()
+                    .addFilters(new AndFilter(List.of(
+                            new GtFilter("pageCount", 0),
+                            new InFilter("parentId", parentIds))))
+                    .includeFields("_id", "_class");
+
+            params.setSorting(List.of(new Sorting("index", Sort.Direction.ASC)));
+
+            parentIds = mongoOperations.find(params.toMongoQuery(false), type)
+                    .stream()
+                    .map(Publication::getId)
+                    .collect(Collectors.toSet());
+            result.addAll(parentIds);
+        }
+
+        return result;
     }
 }
 

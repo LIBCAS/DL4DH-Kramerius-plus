@@ -27,7 +27,7 @@ public abstract class FieldValueOperation implements Filter {
 
     protected abstract String getField();
 
-    protected abstract boolean doCompare(Object object);
+    protected abstract boolean doCompare(Object fieldValue);
 
     @Override
     public boolean eval(Object object) throws Exception {
