@@ -12,6 +12,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -28,6 +29,11 @@ public class BatchConfig {
         executor.setQueueCapacity(100);
 
         return executor;
+    }
+
+    @Bean
+    public SyncTaskExecutor syncTaskExecutor() {
+        return new SyncTaskExecutor();
     }
 
     @Bean

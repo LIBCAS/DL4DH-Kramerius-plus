@@ -8,7 +8,7 @@ import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.BulkExportService;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestMapper;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
+import cz.inqool.dl4dh.krameriusplus.service.system.jobplan.JobPlanService;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;

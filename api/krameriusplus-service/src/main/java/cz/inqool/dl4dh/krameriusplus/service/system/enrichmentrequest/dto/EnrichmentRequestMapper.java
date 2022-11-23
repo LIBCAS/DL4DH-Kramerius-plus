@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.dto;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.mapper.OwnedObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.service.system.enrichmentrequest.EnrichmentRequest;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.dto.JobPlanMapper;
+import cz.inqool.dl4dh.krameriusplus.service.system.jobplan.dto.JobPlanMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
