@@ -23,6 +23,7 @@ public class EnrichingException extends GeneralException {
         SERIALIZING_ERROR,
         TYPE_ERROR,
         INVALID_OBJECT_TYPE,
-        UNSUPPORTED_DIGITAL_OBJECT
+        UNSUPPORTED_DIGITAL_OBJECT,
+        MISSING_ALTO
     }
 }

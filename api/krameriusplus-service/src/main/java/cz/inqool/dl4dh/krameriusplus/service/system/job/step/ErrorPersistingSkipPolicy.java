@@ -30,7 +30,6 @@ public class ErrorPersistingSkipPolicy extends ItemListenerSupport<Page, Page> i
 
     private final StepRunReportStore stepRunReportStore;
 
-
     @Autowired
     public ErrorPersistingSkipPolicy(StepRunReportStore stepRunReportStore,
                                      @Value("#{jobParameters['" + JOB_EVENT_ID+ "']}") String jobEventId,
