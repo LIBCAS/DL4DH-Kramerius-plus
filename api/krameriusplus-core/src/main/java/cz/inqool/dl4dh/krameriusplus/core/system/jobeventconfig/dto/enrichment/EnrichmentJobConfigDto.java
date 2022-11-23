@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.OVERRIDE;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PAGE_SKIP_COUNT;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_SKIP_COUNT;
 
 @Getter
 @Setter
@@ -28,16 +26,10 @@ public abstract class EnrichmentJobConfigDto extends JobEventConfigDto {
     @Schema(description = "If true and publications already exist, they will be overwritten. Defaults to false.")
     private boolean override = false;
 
-    private Integer publicationSkipCount = Integer.MAX_VALUE;
-
-    private Integer pageSkipCount = Integer.MAX_VALUE;
-
     @Override
     public Map<String, Object> toJobParametersMap() {
         Map<String, Object> jobParametersMap = new HashMap<>();
         jobParametersMap.put(OVERRIDE, override);
-        jobParametersMap.put(PAGE_SKIP_COUNT, pageSkipCount);
-        jobParametersMap.put(PUBLICATION_SKIP_COUNT, publicationSkipCount);
 
         return jobParametersMap;
     }

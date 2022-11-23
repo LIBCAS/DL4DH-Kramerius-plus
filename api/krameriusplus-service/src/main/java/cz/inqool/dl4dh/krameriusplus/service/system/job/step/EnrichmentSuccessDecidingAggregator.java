@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_SKIP_COUNT;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ERROR_TOLERANCE;
 
 @Component
 @JobScope
 public class EnrichmentSuccessDecidingAggregator implements StepExecutionAggregator {
 
-    @Value("#{jobParameters['" + PUBLICATION_SKIP_COUNT + "']}")
+    @Value("#{jobParameters['" + PUBLICATION_ERROR_TOLERANCE + "']}")
     private Integer maxFailures = 0;
 
     @Override

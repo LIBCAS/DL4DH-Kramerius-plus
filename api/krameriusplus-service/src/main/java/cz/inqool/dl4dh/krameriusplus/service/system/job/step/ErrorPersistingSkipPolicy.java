@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PAGE_SKIP_COUNT;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PAGE_ERROR_TOLERANCE;
 
 @Component
 @StepScope
 public class ErrorPersistingSkipPolicy extends ItemListenerSupport<Page, Page> implements SkipPolicy {
 
-    @Value("#{jobParameters['" + PAGE_SKIP_COUNT + "']}")
+    @Value("#{jobParameters['" + PAGE_ERROR_TOLERANCE + "']}")
     private Integer pageSkipTolerance = 0;
 
     private StepRunReport stepRunReport;

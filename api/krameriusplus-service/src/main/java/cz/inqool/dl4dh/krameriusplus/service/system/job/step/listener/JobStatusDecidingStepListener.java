@@ -7,13 +7,13 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_SKIP_COUNT;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.PUBLICATION_ERROR_TOLERANCE;
 
 @Component
 @JobScope
 public class JobStatusDecidingStepListener implements StepExecutionListener {
 
-    @Value("#{jobParameters['" + PUBLICATION_SKIP_COUNT + "']}")
+    @Value("#{jobParameters['" + PUBLICATION_ERROR_TOLERANCE + "']}")
     private Integer publicationSkipTolerance = Integer.MAX_VALUE;
 
     private Integer failedStepCount = 0;
