@@ -1,13 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job;
 
-import cz.inqool.dl4dh.krameriusplus.service.system.job.step.factory.ExportPagesAltoStepFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob.EXPORT_ALTO;
+import static cz.inqool.dl4dh.krameriusplus.service.system.job.step.JobStep.EXPORT_PAGES_ALTO;
 
 @Configuration
 public class AltoExportJobDesigner extends ExportJobDesigner {
@@ -32,7 +33,7 @@ public class AltoExportJobDesigner extends ExportJobDesigner {
     }
 
     @Autowired
-    public void setExportPagesAltoStep(ExportPagesAltoStepFactory stepFactory) {
-        this.exportPagesAltoStep = stepFactory.build();
+    public void setExportPagesAltoStep(@Qualifier(EXPORT_PAGES_ALTO) Step exportPagesAltoStep) {
+        this.exportPagesAltoStep = exportPagesAltoStep;
     }
 }
