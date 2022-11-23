@@ -398,6 +398,10 @@
                              referencedTableName="job_event"
                              referencedColumnNames="id"/>
             </column>
+
+            <column name="step_execution_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
         </createTable>
 
         <!-- PersistedError -->
@@ -413,9 +417,8 @@
                              referencedColumnNames="id"/>
 
             </column>
-            <column name="page_id" type="${id}"/>
             <column name="short_message" type="varchar(255)"/>
-            <column name="page_index" type="int"/>
+            <column name="stack_trace" type="clob" />
         </createTable>
     </changeSet>
 

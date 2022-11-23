@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 @Getter
@@ -17,7 +18,6 @@ public class PersistedError extends DomainObject {
 
     private String shortMessage;
 
-    private String pageId;
-
-    private Integer pageIndex;
+    @Lob
+    private String stackTrace;
 }

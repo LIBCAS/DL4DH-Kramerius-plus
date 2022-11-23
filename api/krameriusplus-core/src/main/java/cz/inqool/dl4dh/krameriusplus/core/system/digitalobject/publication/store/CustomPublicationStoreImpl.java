@@ -3,9 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.publication.stor
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Sorting;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.AndFilter;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.EqFilter;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.GtFilter;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.InFilter;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.AbstractMongoStore;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.store.QueryResults;
@@ -112,9 +110,7 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
     @Override
     public List<String> findAllEditions(String publicationId) {
         List<String> result = mongoOperations.find(new Params() // get publication with id = publicationId if it has pages
-                .addFilters(new AndFilter(List.of(
-                        new EqFilter("_id", publicationId),
-                        new GtFilter("pageCount", 0))))
+                .addFilters(new EqFilter("_id", publicationId))
                 .includeFields("_id", "_class")
                 .toMongoQuery(false), type)
                 .stream()
@@ -126,9 +122,7 @@ public class CustomPublicationStoreImpl extends AbstractMongoStore<Publication> 
         // get child publications tree
         while (!parentIds.isEmpty()) {
             Params params = new Params()
-                    .addFilters(new AndFilter(List.of(
-                            new GtFilter("pageCount", 0),
-                            new InFilter("parentId", parentIds))))
+                    .addFilters(new InFilter("parentId", parentIds))
                     .includeFields("_id", "_class");
 
             params.setSorting(List.of(new Sorting("index", Sort.Direction.ASC)));

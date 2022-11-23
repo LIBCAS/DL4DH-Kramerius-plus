@@ -1,10 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.step.factory;
 
 import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.step.ErrorPersistingSkipPolicy;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.step.CustomLimitCheckingSkipPolicy;
+import cz.inqool.dl4dh.krameriusplus.service.system.job.step.listener.ErrorPersistingSkipListener;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.step.reader.PageMongoReader;
 import cz.inqool.dl4dh.krameriusplus.service.system.job.step.writer.PageMongoWriter;
-import org.springframework.batch.core.ItemProcessListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -19,7 +19,23 @@ public abstract class PageMongoFlowStepFactory extends FlowStepFactory<Page, Pag
 
     protected PageMongoWriter writer;
 
-    protected ErrorPersistingSkipPolicy errorPersistingSkipPolicy;
+    protected CustomLimitCheckingSkipPolicy skipPolicy;
+
+    protected ErrorPersistingSkipListener skipListener;
+
+    @Override
+    public Step build() {
+        return super.getBuilder()
+                .<Page, Page>chunk(getChunkSize())
+                .reader(getItemReader())
+                .processor(getItemProcessor())
+                .writer(getItemWriter())
+                .listener(writeListener)
+                .faultTolerant()
+                .skipPolicy(skipPolicy)
+                .listener(skipListener)
+                .build();
+    }
 
     @Override
     protected ItemReader<Page> getItemReader() {
@@ -42,21 +58,12 @@ public abstract class PageMongoFlowStepFactory extends FlowStepFactory<Page, Pag
     }
 
     @Autowired
-    public void setErrorPersistingSkipPolicy(ErrorPersistingSkipPolicy errorPersistingSkipPolicy) {
-        this.errorPersistingSkipPolicy = errorPersistingSkipPolicy;
+    public void setSkipPolicy(CustomLimitCheckingSkipPolicy skipPolicy) {
+        this.skipPolicy = skipPolicy;
     }
 
-    @Override
-    public Step build() {
-        return getBuilder()
-                .<Page, Page>chunk(1)
-                .reader(getItemReader())
-                .processor(getItemProcessor())
-                .writer(getItemWriter())
-                .listener(writeListener)
-                .faultTolerant()
-                .skipPolicy(errorPersistingSkipPolicy)
-                .listener((ItemProcessListener<? super Page, ? super Page>) errorPersistingSkipPolicy)
-                .build();
+    @Autowired
+    public void setSkipListener(ErrorPersistingSkipListener skipListener) {
+        this.skipListener = skipListener;
     }
 }

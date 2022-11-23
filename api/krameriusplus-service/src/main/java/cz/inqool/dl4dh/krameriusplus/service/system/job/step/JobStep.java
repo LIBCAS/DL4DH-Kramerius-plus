@@ -19,7 +19,7 @@ public class JobStep {
 
     // ENRICH PAGES PHASE
     public static final String ENRICH_PAGES_ALTO = "EnrichPagesAltoStep";
-    public static final String ENRICH_PAGES_ALTO_MASTER = "EnrichPagesAltoMasterStep";
+    public static final String ENRICH_PAGES_ALTO_MASTER = "EnrichPagesAltoStep-MASTER";
     public static final String ENRICH_PUBLICATION_MODS = "EnrichPublicationModsStep";
 
     // EXPORT COMMON

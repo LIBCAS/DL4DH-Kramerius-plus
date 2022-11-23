@@ -17,10 +17,14 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 public class EnrichmentSuccessDecidingAggregator implements StepExecutionAggregator {
 
     @Value("#{jobParameters['" + PUBLICATION_ERROR_TOLERANCE + "']}")
-    private Integer maxFailures = 0;
+    private Integer maxFailures;
 
     @Override
     public void aggregate(StepExecution result, Collection<StepExecution> executions) {
+        if (maxFailures == null) {
+            maxFailures = 0;
+        }
+
         long failedCount  = executions.stream().filter(execution -> !execution.getExitStatus().equals(ExitStatus.COMPLETED)).count();
         BatchStatus finalStatus = failedCount > maxFailures ? BatchStatus.FAILED : BatchStatus.COMPLETED;
         ExitStatus exitCode = failedCount > maxFailures ? ExitStatus.FAILED : ExitStatus.COMPLETED;

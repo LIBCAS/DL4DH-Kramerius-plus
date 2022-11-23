@@ -13,9 +13,9 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParame
 @Setter
 public class EnrichmentExternalJobConfigDto extends EnrichmentJobConfigDto {
 
-    private Integer publicationErrorTolerance = Integer.MAX_VALUE;
+    private Integer publicationErrorTolerance = 0;
 
-    private Integer pageErrorTolerance = Integer.MAX_VALUE;
+    private Integer pageErrorTolerance = 0;
 
     @Override
     public KrameriusJob getKrameriusJob() {

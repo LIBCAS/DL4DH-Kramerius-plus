@@ -22,12 +22,6 @@ public abstract class AbstractStepFactory implements StepFactory {
 
     protected StepFailureListener stepFailureListener;
 
-//    /**
-//     * Method used to create a Step bean. This method needs to be annotated with {@link Bean} annotation
-//     * in implementing classes and given a bean name from {@link JobStep} enum.
-//     */
-//    public abstract Step build();
-
     /**
      * Base method for preparing StepBuilder with base configuration. Should be used in every implementation of
      * {@link StepFactory#build()} method.

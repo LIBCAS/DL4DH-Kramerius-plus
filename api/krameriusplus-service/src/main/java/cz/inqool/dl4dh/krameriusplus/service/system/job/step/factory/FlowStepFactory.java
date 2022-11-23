@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <IN>
  * @param <OUT>
  */
-public abstract class FlowStepFactory<IN, OUT>
-        extends AbstractStepFactory {
+public abstract class FlowStepFactory<IN, OUT> extends AbstractStepFactory {
 
     protected DatedObjectWriteListener writeListener;
 
@@ -28,7 +27,6 @@ public abstract class FlowStepFactory<IN, OUT>
                 .processor(getItemProcessor())
                 .writer(getItemWriter())
                 .listener(writeListener)
-                .faultTolerant()
                 .build();
     }
 

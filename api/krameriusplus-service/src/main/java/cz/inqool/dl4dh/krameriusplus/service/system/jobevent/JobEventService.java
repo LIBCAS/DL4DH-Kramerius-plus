@@ -10,6 +10,8 @@ import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobEventStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.JobStatus;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.executions.StepRunReport;
+import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.executions.StepRunReportStore;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.KrameriusJob;
 import cz.inqool.dl4dh.krameriusplus.service.jms.JmsProducer;
 import cz.inqool.dl4dh.krameriusplus.service.system.jobevent.dto.JobEventDetailDto;
@@ -55,6 +57,8 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
 
     private JobEventListener jobEventListener;
 
+    private StepRunReportStore stepRunReportStore;
+
     @Override
     @Transactional
     public JobEvent create(@NonNull JobEvent jobEvent) {
@@ -66,6 +70,26 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
         jobEvent.getDetails().setLastExecutionId(jobExecution.getId());
 
         return store.create(jobEvent);
+    }
+
+    @Transactional
+    public void saveError(String jobEventId, Long stepExecutionId, Throwable throwable) {
+        JobEvent jobEvent = findEntity(jobEventId);
+        StepRunReport report = jobEvent.getStepRunReports()
+                .stream()
+                .filter(r -> r.getStepExecutionId().equals(stepExecutionId))
+                .findFirst()
+                .orElseGet(() -> {
+                    StepRunReport newReport = new StepRunReport();
+                    newReport.setJobEvent(jobEvent);
+                    newReport.setStepExecutionId(stepExecutionId);
+
+                    return stepRunReportStore.create(newReport);
+                });
+
+        report.addError(throwable);
+
+        stepRunReportStore.update(report);
     }
 
     public void run(String jobEventId) {
@@ -190,5 +214,10 @@ public class JobEventService implements DatedService<JobEvent, JobEventCreateDto
     @Autowired
     public void setJobEventListener(JobEventListener jobEventListener) {
         this.jobEventListener = jobEventListener;
+    }
+
+    @Autowired
+    public void setStepRunReportStore(StepRunReportStore stepRunReportStore) {
+        this.stepRunReportStore = stepRunReportStore;
     }
 }

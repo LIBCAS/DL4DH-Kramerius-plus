@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.service.system.job.step.listener;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.exception.GeneralException;
 import cz.inqool.dl4dh.krameriusplus.core.system.jobevent.dto.JobEventDto;
-import cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.service.system.jobevent.JobEventService;
 import lombok.NonNull;
 import org.springframework.batch.core.ExitStatus;
@@ -11,9 +10,12 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.JOB_EVENT_ID;
 
 /**
  * StepExecutionListener saves failure into JobExecution for later use
@@ -27,6 +29,9 @@ public class StepFailureListener implements StepExecutionListener {
     private static final String UNEXPECTED_EXCEPTION_CODE = "UNEXPECTED_ERROR_OCCURRED";
 
     private static final String STOP_EXCEPTION_CODE = "STEP_STOPPED";
+
+    @Value("#{jobParameters['" + JOB_EVENT_ID + "']}")
+    private String jobEventId;
 
     private final JobEventService jobEventService;
 
@@ -58,7 +63,11 @@ public class StepFailureListener implements StepExecutionListener {
                 errorCode = UNEXPECTED_EXCEPTION_CODE;
             }
 
-            JobEventDto jobEvent = jobEventService.find(stepExecution.getJobParameters().getString(JobParameterKey.JOB_EVENT_ID));
+            for (Throwable throwable : failures) {
+                jobEventService.saveError(jobEventId, stepExecution.getId(), throwable);
+            }
+
+            JobEventDto jobEvent = jobEventService.find(jobEventId);
             jobEvent.getDetails().setLastExecutionExitCode(errorCode);
             jobEvent.getDetails().setLastExecutionExitDescription(exception.toString());
             jobEventService.update(jobEvent);

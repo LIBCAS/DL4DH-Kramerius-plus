@@ -1,6 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.step.factory;
 
+import cz.inqool.dl4dh.krameriusplus.service.system.job.step.JobStep;
 import org.springframework.batch.core.Step;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Interface for creating step instances.
@@ -8,7 +10,8 @@ import org.springframework.batch.core.Step;
 public interface StepFactory {
 
     /**
-     * Method used to build the Step
+     * Method used to create a Step bean. This method needs to be annotated with {@link Bean} annotation
+     * in implementing classes and given a bean name from {@link JobStep} enum.
      */
     Step build();
 }
