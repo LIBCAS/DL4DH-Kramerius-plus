@@ -29,9 +29,7 @@ public class JobEventListener {
         BatchStatus jobStatus = jobExecution.getStatus();
         updateJobEventLastExecutionStatus(jobEvent, JobStatus.from(jobStatus.name()));
 
-        if (BatchStatus.COMPLETED.equals(jobStatus)) {
-            enqueueNextJobInPlan(jobEvent);
-        }
+        enqueueNextJobInPlan(jobEvent);
     }
 
     private void enqueueNextJobInPlan(JobEvent jobEvent) {

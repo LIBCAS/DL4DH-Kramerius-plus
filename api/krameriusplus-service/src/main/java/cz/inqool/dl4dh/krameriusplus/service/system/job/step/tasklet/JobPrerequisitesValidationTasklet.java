@@ -63,8 +63,6 @@ public class JobPrerequisitesValidationTasklet extends ValidatedTasklet {
                             ValidationException.ErrorCode.DEPENDENCY_ERROR);
                 }
             }
-
-
         }
 
         return RepeatStatus.FINISHED;
