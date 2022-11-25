@@ -23,4 +23,6 @@ public interface CustomPublicationStore {
     QueryResults<Publication> findAll(Params params);
 
     List<Publication> findAll(Query buildQuery);
+
+    List<String> findAllEditions(String publicationID);
 }

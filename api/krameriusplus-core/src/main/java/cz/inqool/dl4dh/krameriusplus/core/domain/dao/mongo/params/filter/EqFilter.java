@@ -2,10 +2,8 @@ package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.Getter;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class EqFilter extends FieldValueOperation {
@@ -26,7 +24,7 @@ public class EqFilter extends FieldValueOperation {
     }
 
     @Override
-    protected boolean doCompare(Object object) {
-        return object.equals(value);
+    protected boolean doCompare(Object fieldValue) {
+        return fieldValue.equals(value);
     }
 }

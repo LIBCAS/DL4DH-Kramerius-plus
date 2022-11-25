@@ -385,4 +385,41 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="18" author="kollar">
+        <!-- StepRunReport -->
+        <createTable tableName="step_run_report">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="step_run_PK"/>
+            </column>
+
+            <column name="job_event_id" type="${id}">
+                <constraints foreignKeyName="job_event_FK"
+                             referencedTableName="job_event"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="step_execution_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <!-- PersistedError -->
+        <createTable tableName="persisted_error">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="persisted_error_PK"/>
+            </column>
+
+            <column name="step_run_report_id" type="${id}">
+                <constraints foreignKeyName="step_run_report_FK"
+                             referencedTableName="step_run_report"
+                             referencedColumnNames="id"/>
+
+            </column>
+            <column name="short_message" type="varchar(255)"/>
+            <column name="stack_trace" type="clob" />
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

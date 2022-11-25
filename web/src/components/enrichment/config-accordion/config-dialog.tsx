@@ -1,3 +1,4 @@
+import { TextField } from '@material-ui/core'
 import {
 	Dialog,
 	DialogContent,
@@ -10,6 +11,11 @@ import {
 	ListItemSecondaryAction,
 	ListItemText,
 	SelectChangeEvent,
+	Input,
+	FormGroup,
+	FormControlLabel,
+	DialogContentText,
+	Typography,
 } from '@mui/material'
 import { KrameriusJobMapping } from '../../../components/mappings/kramerius-job-mapping'
 import { MissingAltoStrategy } from '../../../enums/missing-alto-strategy'
@@ -22,7 +28,6 @@ type Props = {
 	open: boolean
 	currentConfig: CurrentConfig
 	onOverrideChange: () => void
-	onStrategyChange: (value: MissingAltoStrategy) => void
 	onSubmit: () => void
 	onClose: () => void
 }
@@ -31,24 +36,11 @@ export const ConfigDialog = ({
 	open,
 	currentConfig,
 	onOverrideChange,
-	onStrategyChange,
 	onSubmit,
 	onClose,
 }: Props) => {
-	function isNew() {
+	const isNew = () => {
 		return currentConfig?.index === undefined
-	}
-
-	function isExternalConfig(
-		config: EnrichmentJobEventConfig,
-	): config is ExternalEnrichmentJobEventConfig {
-		return 'missingAltoOption' in config
-	}
-
-	const handleStrategyChange = (
-		event: SelectChangeEvent<MissingAltoStrategy>,
-	) => {
-		onStrategyChange(event.target.value as MissingAltoStrategy)
 	}
 
 	return (
@@ -57,39 +49,20 @@ export const ConfigDialog = ({
 				{isNew() ? 'Přidat novou' : 'Upravit'} konfiguraci
 			</DialogTitle>
 			<DialogContent>
-				<List>
-					<ListItem>
-						<ListItemText primary="Typ úlohy" />
-						<ListItemSecondaryAction>
-							<ListItemText
-								primary={
-									KrameriusJobMapping[currentConfig?.config.krameriusJob]
-								}
-							/>
-						</ListItemSecondaryAction>
-					</ListItem>
-					<ListItem>
-						<ListItemText primary="Přepsat existující" />
-						<ListItemSecondaryAction>
-							<Checkbox
-								checked={currentConfig.config.override}
-								edge="end"
-								onChange={onOverrideChange}
-							/>
-						</ListItemSecondaryAction>
-					</ListItem>
-					{isExternalConfig(currentConfig.config) && (
-						<ListItem>
-							<ListItemText primary="Strategie při chybějícím ALTO" />
-							<ListItemSecondaryAction>
-								<MissingAltoStrategySelect
-									defaultValue={currentConfig.config.missingAltoOption}
-									onChange={handleStrategyChange}
-								/>
-							</ListItemSecondaryAction>
-						</ListItem>
-					)}
-				</List>
+				<Typography variant="h5">
+					{KrameriusJobMapping[currentConfig.config.krameriusJob]}
+				</Typography>
+				<FormGroup>
+					<FormControlLabel control={<Checkbox />} label="Přepsat existující" />
+					<FormControlLabel
+						control={<TextField type="number" />}
+						label="Tolerance chyb v publikacích"
+					/>
+					<FormControlLabel
+						control={<TextField type="number" />}
+						label="Tolerance chyb v stránkach"
+					/>
+				</FormGroup>
 			</DialogContent>
 			<DialogActions disableSpacing={true}>
 				<Button

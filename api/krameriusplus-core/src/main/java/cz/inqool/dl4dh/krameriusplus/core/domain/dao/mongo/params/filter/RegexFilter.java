@@ -22,7 +22,7 @@ public class RegexFilter extends FieldValueOperation {
     }
 
     @Override
-    protected boolean doCompare(Object object) {
-        return object instanceof String && ((String) object).matches(value);
+    protected boolean doCompare(Object fieldValue) {
+        return fieldValue instanceof String && ((String) fieldValue).matches(value);
     }
 }

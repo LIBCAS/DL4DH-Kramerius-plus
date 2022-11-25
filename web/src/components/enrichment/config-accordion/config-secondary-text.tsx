@@ -23,7 +23,6 @@ export const ConfigSecondaryText = ({ config }: Props) => {
 			{isExternalConfig(config) && (
 				<Typography color="text.secondary" variant="body2">
 					Stratégia při chybějícím ALTO:{' '}
-					{MissingAltoStrategyMapping[config.missingAltoOption]}
 				</Typography>
 			)}
 		</Fragment>

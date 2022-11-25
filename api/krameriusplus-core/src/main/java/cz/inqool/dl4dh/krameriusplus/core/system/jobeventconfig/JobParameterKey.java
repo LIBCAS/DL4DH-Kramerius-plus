@@ -14,4 +14,6 @@ public class JobParameterKey {
     public static final String OVERRIDE = "override";
     public static final String DELIMITER = "delimiter";
     public static final String MISSING_ALTO_STRATEGY = "missingAltoStrategy";
+    public static final String PAGE_ERROR_TOLERANCE = "pageErrorTolerance";
+    public static final String PUBLICATION_ERROR_TOLERANCE = "publicationErrorTolerance";
 }

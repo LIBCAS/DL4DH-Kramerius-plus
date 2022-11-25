@@ -2,13 +2,13 @@ package cz.inqool.dl4dh.krameriusplus.service.system.exportrequest;
 
 import com.querydsl.core.QueryResults;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Params;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
+import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.Sorting;
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.sql.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.core.system.bulkexport.BulkExportService;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.service.system.exportrequest.dto.ExportRequestMapper;
-import cz.inqool.dl4dh.krameriusplus.service.system.job.jobplan.JobPlanService;
+import cz.inqool.dl4dh.krameriusplus.service.system.jobplan.JobPlanService;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;

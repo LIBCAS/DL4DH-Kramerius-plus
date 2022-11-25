@@ -22,7 +22,7 @@ const stepColumns: GridColDef[] = [
 	{
 		field: 'stepName',
 		headerName: 'Krok',
-		width: 210,
+		width: 550,
 	},
 	{
 		field: 'status',

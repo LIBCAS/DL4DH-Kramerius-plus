@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Filter;
-import cz.inqool.dl4dh.krameriusplus.core.domain.dao.mongo.params.filter.Sorting;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;

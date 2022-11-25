@@ -29,10 +29,6 @@ public class MetsEnricher {
     public void enrich(Page page) {
         Path metsPath = Path.of(page.getNdkFilePath());
 
-        if (metsPath == null) {
-            return;
-        }
-
         Mets document = JAXB.unmarshal(metsPath.toFile(), Mets.class);
 
         MetsMetadata metsMetadata = new MetsMetadata();

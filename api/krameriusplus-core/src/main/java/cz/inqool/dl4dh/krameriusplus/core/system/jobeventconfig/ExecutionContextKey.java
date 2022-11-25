@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig;
 
 public class ExecutionContextKey {
+    public static final String PUBLICATION_ID = "publicationId";
     public static final String DIRECTORY = "directory";
     public static final String ZIPPED_FILE = "zippedFile";
     public static final String FILE_REF_ID = "fileRefId";

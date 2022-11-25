@@ -24,13 +24,13 @@ public class LtFilter extends FieldValueOperation {
     }
 
     @Override
-    protected boolean doCompare(Object objectFieldValue) {
-        // idk why it needs <= comparision arguments are probably reverse
-        if (objectFieldValue instanceof Number && value instanceof Number) {
-            return ((Number) objectFieldValue).doubleValue() <= ((Number) value).doubleValue();
+    protected boolean doCompare(Object fieldValue) {
+        // idk why it needs <= comparison arguments are probably reverse
+        if (fieldValue instanceof Number && value instanceof Number) {
+            return ((Number) fieldValue).doubleValue() <= ((Number) value).doubleValue();
         }
-        else if (objectFieldValue instanceof Instant && value instanceof Instant) {
-            return ((Instant) objectFieldValue).compareTo(((Instant) value)) <= 0;
+        else if (fieldValue instanceof Instant && value instanceof Instant) {
+            return ((Instant) fieldValue).compareTo(((Instant) value)) <= 0;
         }
         else {
             return false;

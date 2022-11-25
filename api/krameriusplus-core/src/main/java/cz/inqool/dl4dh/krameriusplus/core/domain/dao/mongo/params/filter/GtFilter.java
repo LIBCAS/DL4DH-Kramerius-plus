@@ -24,12 +24,12 @@ public class GtFilter extends FieldValueOperation {
     }
 
     @Override
-    protected boolean doCompare(Object objectFieldValue) {
+    protected boolean doCompare(Object fieldValue) {
         // same as LtFilter...
-        if (objectFieldValue instanceof Number && value instanceof Number) {
-            return ((Number) objectFieldValue).doubleValue() >= ((Number) value).doubleValue();
-        } else if (objectFieldValue instanceof Instant && value instanceof Instant) {
-            return ((Instant) objectFieldValue).compareTo(((Instant) value)) >= 0;
+        if (fieldValue instanceof Number && value instanceof Number) {
+            return ((Number) fieldValue).doubleValue() >= ((Number) value).doubleValue();
+        } else if (fieldValue instanceof Instant && value instanceof Instant) {
+            return ((Instant) fieldValue).compareTo(((Instant) value)) >= 0;
         } else {
             return false;
         }

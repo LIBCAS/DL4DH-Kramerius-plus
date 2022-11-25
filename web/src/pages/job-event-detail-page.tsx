@@ -8,7 +8,6 @@ import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { StepExecutionList } from 'components/job-event/step-execution-list'
 import { JobEventDataDisplay } from 'components/job-event/job-event-data-display'
-import { StepExecutionDetail } from 'components/job-event/step-execution-detail'
 import { CircularProgress } from '@material-ui/core'
 import { JobEventRunErrorAlert } from 'modules/jobs/job-event/job-event-run-error-alert'
 import { PageWrapper } from './page-wrapper'
@@ -17,7 +16,7 @@ export const JobEventDetailPage: FC = () => {
 	const [lastFetched, setLastFetched] = useState<number>(Date.now())
 	const [jobEvent, setJobEvent] = useState<JobEvent>()
 	const [selectedExecution, setSelectedExecution] = useState<JobExecution>()
-	const [selectedStep, setSelectedStep] = useState<StepExecution>()
+	// const [selectedStep, setSelectedStep] = useState<StepExecution>()
 	const [loading, setLoading] = useState<boolean>(true)
 	const { jobEventId } = useParams()
 
@@ -31,7 +30,7 @@ export const JobEventDetailPage: FC = () => {
 
 		fetchJobDetail()
 		setSelectedExecution(undefined)
-		setSelectedStep(undefined)
+		// setSelectedStep(undefined)
 		setLoading(false)
 	}, [jobEventId, lastFetched])
 
@@ -39,14 +38,14 @@ export const JobEventDetailPage: FC = () => {
 		setSelectedExecution(
 			jobEvent?.executions.find(execution => execution.id === executionId),
 		)
-		setSelectedStep(undefined)
+		// setSelectedStep(undefined)
 	}
 
-	const handleStepClick = (stepId: number) => {
-		setSelectedStep(
-			selectedExecution?.stepExecutions.find(step => step.id === stepId),
-		)
-	}
+	// const handleStepClick = (stepId: number) => {
+	// 	setSelectedStep(
+	// 		selectedExecution?.stepExecutions.find(step => step.id === stepId),
+	// 	)
+	// }
 
 	const onRefreshClick = () => {
 		setLoading(true)
@@ -91,7 +90,7 @@ export const JobEventDetailPage: FC = () => {
 									<Grid item xs={12}>
 										<StepExecutionList
 											steps={selectedExecution?.stepExecutions}
-											onRowClick={handleStepClick}
+											onRowClick={() => {}}
 										/>
 									</Grid>
 								)}

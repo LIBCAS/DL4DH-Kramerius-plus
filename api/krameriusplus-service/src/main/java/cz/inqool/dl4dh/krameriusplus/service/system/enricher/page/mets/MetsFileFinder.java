@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.NdkEnrichmentException.ErrorCode.NDK_DIRECTORY_NOT_CONFIGURED;
+import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.NdkEnrichmentException.ErrorCode.NDK_DIRECTORY_NOT_FOUND;
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.isTrue;
+import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Component
 @Slf4j
@@ -26,7 +29,7 @@ public class MetsFileFinder {
 
     private final XMLMetsUnmarshaller metsUnmarshaller;
 
-    private String ndkPath;
+    private String ndkDirectoryPathString;
 
     @Autowired
     public MetsFileFinder(XMLMetsUnmarshaller metsUnmarshaller) {
@@ -34,11 +37,14 @@ public class MetsFileFinder {
     }
 
     public Optional<Path> findNdkPublicationDirectory(String publicationId) {
-        if (ndkPath == null) {
-            throw new NdkEnrichmentException("NDK directory path is not configured", NDK_DIRECTORY_NOT_CONFIGURED);
-        }
+        notNull(ndkDirectoryPathString, () ->
+                new NdkEnrichmentException("NDK directory path is not configured.", NDK_DIRECTORY_NOT_CONFIGURED));
 
-        try (Stream<Path> ndkFiles = Files.list(Path.of(ndkPath))) {
+        Path ndkPath = Path.of(ndkDirectoryPathString);
+        isTrue(Files.exists(ndkPath), () ->
+                new NdkEnrichmentException("NDK directory path: " + ndkDirectoryPathString + " was not found.", NDK_DIRECTORY_NOT_FOUND));
+
+        try (Stream<Path> ndkFiles = Files.list(ndkPath)) {
             List<Path> matchingDirs = ndkFiles
                     .filter(Files::isDirectory)
                     .filter(dir -> dir.getFileName().toString().equals(publicationId.substring(5)))
@@ -107,7 +113,7 @@ public class MetsFileFinder {
     }
 
     @Autowired
-    public void setNdkPath(@Value("${system.enrichment.ndk.path:}") String path) {
-        this.ndkPath = path;
+    public void setNdkDirectoryPathString(@Value("${system.enrichment.ndk.path:}") String path) {
+        this.ndkDirectoryPathString = path;
     }
 }
