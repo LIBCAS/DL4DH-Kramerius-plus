@@ -1,19 +1,33 @@
-import { Grid, Typography, Button, Box } from '@mui/material'
+import {
+	Grid,
+	Typography,
+	Button,
+	Box,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	FormGroup,
+	Checkbox,
+	FormControlLabel,
+	TextField,
+	DialogActions,
+	FormControl,
+	Stack,
+} from '@mui/material'
 import { EnrichmentAccordion } from './enrichment-accordion'
-import { FormEvent, useState } from 'react'
+import { FormEvent, Fragment, useState } from 'react'
 import { JobPlanCreate } from '../../models/job/job-plan-create'
 import { EnrichmentKrameriusJob } from '../../enums/enrichment-kramerius-job'
 import { ExternalEnrichmentJobEventConfig } from '../../models/job/config/enrichment/external-enrichment-job-event-config'
-import { MissingAltoStrategy } from '../../enums/missing-alto-strategy'
 import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment/enrichment-job-event-config'
 import { ConfigDialog } from './config-accordion/config-dialog'
 import { toast } from 'react-toastify'
 import { enrich } from '../../api/enrichment-api'
-
-const initialCurrentConfig: EnrichmentJobEventConfig = {
-	override: true,
-	krameriusJob: EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS,
-}
+import { NdkEnrichmentJobEventConfig } from 'models/job/config/enrichment/ndk-enrichment-job-event-config'
+import { TeiEnrichmentJobEventConfig } from 'models/job/config/enrichment/tei-enrichment-job-event-config'
+import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
+import { KrameriusJob } from 'enums/kramerius-job'
+import React from 'react'
 
 export type CurrentConfig = {
 	index?: number
@@ -29,9 +43,7 @@ const initialPlan = {
 export const EnrichmentForm = () => {
 	const [plan, setPlan] = useState<JobPlanCreate>(initialPlan)
 	const [showDialog, setShowDialog] = useState<boolean>(false)
-	const [currentConfig, setCurrentConfig] = useState<CurrentConfig>({
-		config: { ...initialCurrentConfig },
-	})
+	const [currentConfig, setCurrentConfig] = useState<CurrentConfig>()
 
 	const removeUuidField = (index: number) => {
 		setPlan(plan => ({
@@ -63,6 +75,7 @@ export const EnrichmentForm = () => {
 
 	const onConfigClose = () => {
 		setShowDialog(false)
+		setCurrentConfig(undefined)
 	}
 
 	const onConfigRemove = (index: number) => {
@@ -76,30 +89,40 @@ export const EnrichmentForm = () => {
 		setCurrentConfig(currentConfig => ({
 			...currentConfig,
 			config: {
-				...currentConfig.config,
-				override: !currentConfig.config.override,
+				...currentConfig!.config,
+				override: !currentConfig!.config.override,
 			},
 		}))
 	}
 
-	const onStrategyChange = (newStrategy: MissingAltoStrategy) => {
+	const onPageErrorToleranceChange = (newValue: number) => {
 		setCurrentConfig(currentConfig => ({
 			...currentConfig,
 			config: {
-				...currentConfig.config,
-				missingAltoOption: newStrategy,
+				...currentConfig!.config,
+				pageErrorTolerance: newValue,
+			} as ExternalEnrichmentJobEventConfig,
+		}))
+	}
+
+	const onPublicationErrorToleranceChange = (newValue: number) => {
+		setCurrentConfig(currentConfig => ({
+			...currentConfig,
+			config: {
+				...currentConfig!.config,
+				publicationErrorTolerance: newValue,
 			} as ExternalEnrichmentJobEventConfig,
 		}))
 	}
 
 	const onDialogSubmit = () => {
 		setShowDialog(false)
-		if (currentConfig.index !== undefined) {
+		if (currentConfig!.index !== undefined) {
 			setPlan(plan => ({
 				...plan,
 				configs: plan.configs.map((config, i) => {
-					if (i === currentConfig.index) {
-						return { ...currentConfig.config }
+					if (i === currentConfig!.index) {
+						return { ...currentConfig!.config }
 					} else {
 						return config
 					}
@@ -108,24 +131,40 @@ export const EnrichmentForm = () => {
 		} else {
 			setPlan(plan => ({
 				...plan,
-				configs: [...plan.configs, { ...currentConfig.config }],
+				configs: [...plan.configs, { ...currentConfig!.config }],
 			}))
 		}
+
+		setCurrentConfig(undefined)
 	}
 
 	const onNewConfigClick = (krameriusJob: EnrichmentKrameriusJob) => {
 		if (krameriusJob === 'ENRICHMENT_EXTERNAL') {
 			setCurrentConfig({
 				config: {
-					krameriusJob: krameriusJob,
+					krameriusJob,
 					override: false,
-					missingAltoOption: MissingAltoStrategy.FAIL_IF_ALL_MISS,
+					// pageErrorTolerance: 0
 				} as ExternalEnrichmentJobEventConfig,
+			})
+		} else if (krameriusJob === 'ENRICHMENT_NDK') {
+			setCurrentConfig({
+				config: {
+					krameriusJob,
+					override: false,
+				} as NdkEnrichmentJobEventConfig,
+			})
+		} else if (krameriusJob === 'ENRICHMENT_TEI') {
+			setCurrentConfig({
+				config: {
+					krameriusJob,
+					override: false,
+				} as TeiEnrichmentJobEventConfig,
 			})
 		} else {
 			setCurrentConfig({
 				config: {
-					krameriusJob: krameriusJob,
+					krameriusJob,
 					override: false,
 				},
 			})
@@ -172,6 +211,143 @@ export const EnrichmentForm = () => {
 		}
 	}
 
+	const isNew = () => {
+		return currentConfig?.index === undefined
+	}
+
+	const jobTypeItem = (jobType: KrameriusJob) => (
+		<Box
+			display="flex"
+			justifyContent="space-between"
+			sx={{ height: 50, pl: 2, pr: 2 }}
+		>
+			<Box>
+				<Typography variant="body1">Typ úlohy</Typography>
+			</Box>
+			<Box>
+				<Typography variant="body1">{KrameriusJobMapping[jobType]}</Typography>
+			</Box>
+		</Box>
+	)
+
+	const overrideExistingItem = (checked: boolean) => (
+		<Box
+			display="flex"
+			justifyContent="space-between"
+			sx={{ height: 50, pl: 2, pr: 2 }}
+		>
+			<Box>
+				<Typography variant="body1">Přepsat existující</Typography>
+			</Box>
+			<Box>
+				<Checkbox checked={checked} onChange={onOverrideChange} />
+			</Box>
+		</Box>
+	)
+
+	const publicationErrorToleranceItem = (defaultValue: number) => {
+		return (
+			<Box
+				display="flex"
+				justifyContent="space-between"
+				sx={{ height: 50, pl: 2, pr: 2 }}
+			>
+				<Box>
+					<Typography variant="body1">Tolerance chyb v publikacích</Typography>
+				</Box>
+				<Box sx={{ width: 100 }}>
+					<TextField
+						defaultValue={defaultValue || 0}
+						size="small"
+						type="number"
+						onChange={e =>
+							onPublicationErrorToleranceChange(parseInt(e.target.value))
+						}
+					/>
+				</Box>
+			</Box>
+		)
+	}
+
+	const pageErrorToleranceItem = (defaultValue: number) => (
+		<Box
+			display="flex"
+			justifyContent="space-between"
+			sx={{ height: 50, pl: 2, pr: 2 }}
+		>
+			<Box>
+				<Typography variant="body1">Tolerance chyb v stránkach</Typography>
+			</Box>
+			<Box sx={{ width: 100 }}>
+				<TextField
+					defaultValue={defaultValue || 0}
+					size="small"
+					type="number"
+					onChange={e => onPageErrorToleranceChange(parseInt(e.target.value))}
+				/>
+			</Box>
+		</Box>
+	)
+
+	const enrichmentKrameriusConfig = (jobConfig: EnrichmentJobEventConfig) => (
+		<Stack>
+			{jobTypeItem(EnrichmentKrameriusJob.ENRICHMENT_KRAMERIUS)}
+			{overrideExistingItem(jobConfig.override)}
+		</Stack>
+	)
+
+	const externalKrameriusConfig = (
+		jobConfig: ExternalEnrichmentJobEventConfig,
+	) => (
+		<Stack>
+			{jobTypeItem(EnrichmentKrameriusJob.ENRICHMENT_EXTERNAL)}
+			{overrideExistingItem(jobConfig.override)}
+			{publicationErrorToleranceItem(jobConfig.publicationErrorTolerance)}
+			{pageErrorToleranceItem(jobConfig.pageErrorTolerance)}
+		</Stack>
+	)
+
+	const ndkKrameriusConfig = (jobConfig: NdkEnrichmentJobEventConfig) => (
+		<Stack>
+			{jobTypeItem(EnrichmentKrameriusJob.ENRICHMENT_NDK)}
+			{overrideExistingItem(jobConfig.override)}
+			{publicationErrorToleranceItem(jobConfig.publicationErrorTolerance)}
+			{pageErrorToleranceItem(jobConfig.pageErrorTolerance)}
+		</Stack>
+	)
+
+	const teiKrameriusConfig = (jobConfig: TeiEnrichmentJobEventConfig) => (
+		<Stack>
+			{jobTypeItem(EnrichmentKrameriusJob.ENRICHMENT_TEI)}
+			{overrideExistingItem(jobConfig.override)}
+			{publicationErrorToleranceItem(jobConfig.publicationErrorTolerance)}
+			{pageErrorToleranceItem(jobConfig.pageErrorTolerance)}
+		</Stack>
+	)
+
+	const getCurrentConfig = () => {
+		if (currentConfig) {
+			if (currentConfig.config.krameriusJob === 'ENRICHMENT_KRAMERIUS') {
+				return enrichmentKrameriusConfig(currentConfig.config)
+			}
+			if (currentConfig.config.krameriusJob === 'ENRICHMENT_EXTERNAL') {
+				return externalKrameriusConfig(
+					currentConfig.config as ExternalEnrichmentJobEventConfig,
+				)
+			}
+			if (currentConfig.config.krameriusJob === 'ENRICHMENT_NDK') {
+				return ndkKrameriusConfig(
+					currentConfig.config as NdkEnrichmentJobEventConfig,
+				)
+			}
+			if (currentConfig.config.krameriusJob === 'ENRICHMENT_TEI') {
+				return teiKrameriusConfig(
+					currentConfig.config as TeiEnrichmentJobEventConfig,
+				)
+			}
+		}
+	}
+
 	return (
 		<Box component="form" sx={{ p: 3 }} onSubmit={onFormSubmit}>
 			<Grid container spacing={2}>
@@ -206,14 +382,23 @@ export const EnrichmentForm = () => {
 					</Button>
 				</Grid>
 			</Grid>
-			<ConfigDialog
-				currentConfig={currentConfig}
-				open={showDialog}
-				onClose={onConfigClose}
-				onOverrideChange={onOverrideChange}
-				onStrategyChange={onStrategyChange}
-				onSubmit={onDialogSubmit}
-			/>
+			{currentConfig && (
+				<Dialog fullWidth open={showDialog} onClose={onConfigClose}>
+					<DialogTitle>
+						{isNew() ? 'Přidat novou' : 'Upravit'} konfiguraci
+					</DialogTitle>
+					<DialogContent>{getCurrentConfig()}</DialogContent>
+					<DialogActions disableSpacing={true}>
+						<Button
+							sx={{ marginBottom: 1, marginRight: 2 }}
+							variant="contained"
+							onClick={onDialogSubmit}
+						>
+							{isNew() ? 'Přidat' : 'Upravit'}
+						</Button>
+					</DialogActions>
+				</Dialog>
+			)}
 		</Box>
 	)
 }
