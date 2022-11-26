@@ -5,11 +5,12 @@
 
 	<modules>
 		<module>krameriusplus-core</module>
-        <module>krameriusplus-api</module>
+        <module>krameriusplus-core-v2</module>
+        <module>krameriusplus-rest</module>
 		<module>krameriusplus-app</module>
         <module>krameriusplus-service</module>
-        <module>krameriusplus-core-v2</module>
-    </modules>
+		<module>krameriusplus-api</module>
+	</modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

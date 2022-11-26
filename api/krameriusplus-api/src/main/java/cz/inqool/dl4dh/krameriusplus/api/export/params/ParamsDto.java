@@ -1,0 +1,35 @@
+package cz.inqool.dl4dh.krameriusplus.api.export.params;
+
+import cz.inqool.dl4dh.krameriusplus.api.export.params.filter.Filter;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+@Getter
+@Setter
+public class ParamsDto {
+
+    /**
+     * Paging configuration
+     * Not applying, if paging equals to null
+     */
+    protected Paging paging = null;
+
+    /**
+     * Sorting configuration
+     * Not applying, if paging equals to null
+     */
+    protected List<Sorting> sorting = new ArrayList<>();
+
+    /**
+     * List of filters that will be applied. The operator between them is by default AND
+     */
+    protected List<Filter> filters = new ArrayList<>();
+
+    protected List<String> includeFields = new ArrayList<>();
+
+    protected List<String> excludeFields = new ArrayList<>();
+}
