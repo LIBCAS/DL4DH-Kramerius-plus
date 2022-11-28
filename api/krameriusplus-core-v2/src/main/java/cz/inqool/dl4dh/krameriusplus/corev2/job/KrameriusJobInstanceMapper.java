@@ -55,6 +55,9 @@ public class KrameriusJobInstanceMapper {
     }
 
     private JobExecutionDto toJobExecutionDto(JobExecution jobExecution, Map<Long, StepRunReport> stepRunReportMap) {
+        if (jobExecution == null) {
+            return null;
+        }
         JobExecutionDto jobExecutionDto = new JobExecutionDto();
 
         jobExecutionDto.setStepExecutions(jobExecution.getStepExecutions().stream().map(
@@ -120,6 +123,10 @@ public class KrameriusJobInstanceMapper {
     }
 
     private StepRunReportDto toStepRunReportDto(StepRunReport stepRunReport) {
+        if (stepRunReport == null) {
+            return null;
+        }
+
         StepRunReportDto stepRunReportDto = new StepRunReportDto();
 
         stepRunReportDto.setErrors(stepRunReport.getError().stream().map(this::toErrorDto).collect(Collectors.toSet()));
@@ -128,6 +135,10 @@ public class KrameriusJobInstanceMapper {
     }
 
     private StepErrorDto toErrorDto(StepError stepError) {
+        if (stepError == null) {
+            return null;
+        }
+
         StepErrorDto stepErrorDto = new StepErrorDto();
 
         stepErrorDto.setShortMessage(stepError.getShortMessage());
