@@ -1,0 +1,23 @@
+package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject;
+
+import cz.inqool.dl4dh.krameriusplus.corev2.domain.document.DomainDocument;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+public abstract class DigitalObject extends DomainDocument {
+
+    private String parentId;
+
+    @Indexed
+    private Integer index;
+
+    private List<DigitalObjectContext> context = new ArrayList<>();
+}
