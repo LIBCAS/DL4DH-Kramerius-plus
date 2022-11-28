@@ -27,7 +27,7 @@ public abstract class EnrichmentJobConfig extends JobConfig {
     @Override
     public Map<String, Object> toJobParametersMap() {
         Map<String, Object> jobParametersMap = new HashMap<>();
-        jobParametersMap.put(OVERRIDE, Boolean.valueOf(override).toString());
+        jobParametersMap.put(OVERRIDE, Boolean.toString(override));
         jobParametersMap.put(PAGE_ERROR_TOLERANCE, pageErrorTolerance);
 
         return jobParametersMap;
