@@ -13,7 +13,5 @@ public abstract class RequestDto extends DatedObjectDto {
 
     private String name;
 
-    private String owner;
-
     private List<String> publicationIds = new ArrayList<>();
 }

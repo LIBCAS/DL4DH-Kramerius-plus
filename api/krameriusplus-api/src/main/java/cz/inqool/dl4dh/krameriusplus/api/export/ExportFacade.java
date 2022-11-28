@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.export;
 
-import cz.inqool.dl4dh.krameriusplus.api.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 
 public interface ExportFacade {
 
@@ -8,5 +8,5 @@ public interface ExportFacade {
 
     ExportRequestDto find(String exportRequestId);
 
-    QueryResults<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize);
+    Result<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize);
 }

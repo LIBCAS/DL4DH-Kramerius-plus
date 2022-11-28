@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
-import cz.inqool.dl4dh.krameriusplus.api.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportFacade;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestDto;
@@ -83,11 +83,11 @@ public class ExportApi {
     @Operation(summary = "List all export requests.")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping("/list")
-    public QueryResults<ExportRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                               @RequestParam(value = "page", defaultValue = "0") int page,
-                                               @RequestParam(value = "name", required = false) String name,
-                                               @RequestParam(value = "owner", required = false) String owner,
-                                               @RequestParam(value = "isFinished", required = false) Boolean isFinished) {
+    public Result<ExportRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                         @RequestParam(value = "page", defaultValue = "0") int page,
+                                         @RequestParam(value = "name", required = false) String name,
+                                         @RequestParam(value = "owner", required = false) String owner,
+                                         @RequestParam(value = "isFinished", required = false) Boolean isFinished) {
         return facade.list(name, owner, isFinished, page, pageSize);
     }
 }

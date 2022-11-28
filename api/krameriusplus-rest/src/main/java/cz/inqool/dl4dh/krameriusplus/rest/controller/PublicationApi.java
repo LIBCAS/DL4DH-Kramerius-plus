@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
-import cz.inqool.dl4dh.krameriusplus.api.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationFacade;
 import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationFilter;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.PublicationDto;
@@ -55,20 +55,20 @@ public class PublicationApi {
 
     @Operation(summary = "List publications.")
     @GetMapping("/list")
-    public QueryResults<PublicationDto> list(@RequestParam(value = "page", defaultValue = "0") int page,
-                                             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                             @RequestParam(value = "title", required = false) String title,
-                                             @RequestParam(value = "parentId", required = false) String parentId,
-                                             @RequestParam(value = "model", required = false) String model,
-                                             @RequestParam(value = "isRootEnrichment", required = false) Boolean isRootEnrichment,
-                                             @RequestParam(value = "createdBefore", required = false)
+    public Result<PublicationDto> list(@RequestParam(value = "page", defaultValue = "0") int page,
+                                       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                       @RequestParam(value = "title", required = false) String title,
+                                       @RequestParam(value = "parentId", required = false) String parentId,
+                                       @RequestParam(value = "model", required = false) String model,
+                                       @RequestParam(value = "isRootEnrichment", required = false) Boolean isRootEnrichment,
+                                       @RequestParam(value = "createdBefore", required = false)
                                              @DateTimeFormat(iso = DATE_TIME) Instant createdBefore,
-                                             @RequestParam(value = "createdAfter", required = false)
+                                       @RequestParam(value = "createdAfter", required = false)
                                              @DateTimeFormat(iso = DATE_TIME) Instant createdAfter,
-                                             @RequestParam(value = "isPublished", required = false) Boolean isPublished,
-                                             @RequestParam(value = "publishedBefore", required = false)
+                                       @RequestParam(value = "isPublished", required = false) Boolean isPublished,
+                                       @RequestParam(value = "publishedBefore", required = false)
                                              @DateTimeFormat(iso = DATE_TIME) Instant publishedBefore,
-                                             @RequestParam(value = "publishedAfter", required = false)
+                                       @RequestParam(value = "publishedAfter", required = false)
                                              @DateTimeFormat(iso = DATE_TIME) Instant publishedAfter) {
         return facade.listPublications(new PublicationFilter(
                         title, parentId, model, isRootEnrichment, createdBefore, createdAfter,

@@ -2,8 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.api.export;
 
 import cz.inqool.dl4dh.krameriusplus.api.RequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.batch.config.ExportJobConfigDto;
-import cz.inqool.dl4dh.krameriusplus.api.batch.job.BulkExportJobDto;
-import cz.inqool.dl4dh.krameriusplus.api.batch.job.CreateExportRequestJobDto;
+import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,7 @@ public class ExportRequestDto extends RequestDto {
 
     private ExportJobConfigDto config;
 
-    private BulkExportJobDto bulkExport;
+    private BulkExportDto bulkExport;
 
-    private CreateExportRequestJobDto createExportJob;
+    private KrameriusJobInstanceDto createExportJob;
 }

@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.enrichment;
 
-import cz.inqool.dl4dh.krameriusplus.api.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 
 public interface EnrichmentFacade {
 
@@ -16,5 +16,5 @@ public interface EnrichmentFacade {
 
     EnrichmentRequestDto find(String enrichmentRequestId);
 
-    QueryResults<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize);
+    Result<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize);
 }

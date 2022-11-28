@@ -10,5 +10,5 @@ import java.util.Set;
 @Setter
 public class StepRunReportDto {
 
-    private Set<PersistedErrorDto> errors = new HashSet<>();
+    private Set<StepErrorDto> errors = new HashSet<>();
 }

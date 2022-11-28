@@ -1,10 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
-import cz.inqool.dl4dh.krameriusplus.api.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
-import cz.inqool.dl4dh.krameriusplus.api.batch.job.EnrichmentJobDto;
-import cz.inqool.dl4dh.krameriusplus.api.batch.job.ExportJobDto;
+import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
 import cz.inqool.dl4dh.krameriusplus.api.job.JobEventFilter;
 import cz.inqool.dl4dh.krameriusplus.api.job.JobFacade;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,16 +32,16 @@ public class JobApi {
 
     @Operation(summary = "List enriching jobs.")
     @GetMapping("/enrichment/list")
-    public QueryResults<EnrichmentJobDto> listEnrichingJobs(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                                            @RequestParam(value = "page", defaultValue = "0") int page,
-                                                            @Schema(description = "Optional publicationId parameter. When provided, only enriching jobs for the given publication will be returned.")
+    public Result<KrameriusJobInstanceDto> listEnrichingJobs(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                                             @RequestParam(value = "page", defaultValue = "0") int page,
+                                                             @Schema(description = "Optional publicationId parameter. When provided, only enriching jobs for the given publication will be returned.")
                                                            @RequestParam(value = "publicationId", required = false) String publicationId,
-                                                            @Schema(description = "Optional krameriusJob value. When provided, only enriching jobs of this type will be returned.")
+                                                             @Schema(description = "Optional krameriusJob value. When provided, only enriching jobs of this type will be returned.")
                                                            @RequestParam(value = "jobType", required = false) KrameriusJobType jobType,
-                                                            @Schema(description = "Optional lastExecutionStatus value. When provided, only enriching jobs with this lastExecutionStatus" +
+                                                             @Schema(description = "Optional lastExecutionStatus value. When provided, only enriching jobs with this lastExecutionStatus" +
                                                                " value will be returned.")
                                                            @RequestParam(value = "lastExecutionStatus", required = false) ExecutionStatus executionStatus,
-                                                            @Schema(description = "Optional includeDeleted flag. If true, deleted instances will be included. Defaults to false.")
+                                                             @Schema(description = "Optional includeDeleted flag. If true, deleted instances will be included. Defaults to false.")
                                                            @RequestParam(value = "includeDeleted", required = false, defaultValue = "false") boolean includeDeleted) {
         return facade.listEnrichmentJobs(
                 new JobEventFilter(publicationId,  jobType == null ? Collections.emptySet() : Set.of(jobType),
@@ -51,16 +50,16 @@ public class JobApi {
 
     @Operation(summary = "List exporting jobs.")
     @GetMapping("/export/list")
-    public QueryResults<ExportJobDto> listExportingJob(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                                       @RequestParam(value = "page", defaultValue = "0") int page,
-                                                       @Schema(description = "Optional publicationId parameter. When provided, only exporting jobs for the given publication will be returned.")
+    public Result<KrameriusJobInstanceDto> listExportingJob(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                                 @RequestParam(value = "page", defaultValue = "0") int page,
+                                                 @Schema(description = "Optional publicationId parameter. When provided, only exporting jobs for the given publication will be returned.")
                                                           @RequestParam(value = "publicationId", required = false) String publicationId,
-                                                       @Schema(description = "Optional krameriusJob value. When provided, only exporting jobs of this type will be returned.")
+                                                 @Schema(description = "Optional krameriusJob value. When provided, only exporting jobs of this type will be returned.")
                                                           @RequestParam(value = "jobType", required = false) KrameriusJobType jobType,
-                                                       @Schema(description = "Optional lastExecutionStatus value. When provided, only exporting jobs with this lastExecutionStatus" +
+                                                 @Schema(description = "Optional lastExecutionStatus value. When provided, only exporting jobs with this lastExecutionStatus" +
                                                               " value will be returned.")
                                                           @RequestParam(value = "lastExecutionStatus", required = false) ExecutionStatus executionStatus,
-                                                       @Schema(description = "Optional includeDeleted flag. If true, deleted instances will be included. Defaults to false.")
+                                                 @Schema(description = "Optional includeDeleted flag. If true, deleted instances will be included. Defaults to false.")
                                                           @RequestParam(value = "includeDeleted", required = false, defaultValue = "false") boolean includeDeleted) {
         return facade.listExportJobs(
                 new JobEventFilter(publicationId, jobType == null ? Collections.emptySet() : Set.of(jobType),
@@ -70,17 +69,9 @@ public class JobApi {
     @Operation(summary = "Get detail of given Job")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Job with given ID not found.")
-    @GetMapping("/enrichment/{id}")
-    public EnrichmentJobDto findEnrichmentJob(@PathVariable("id") String id) {
-        return facade.findEnrichmentJob(id);
-    }
-
-    @Operation(summary = "Get detail of given Job")
-    @ApiResponse(responseCode = "200", description = "OK")
-    @ApiResponse(responseCode = "404", description = "Job with given ID not found.")
-    @GetMapping("/export/{id}")
-    public ExportJobDto findExportJob(@PathVariable("id") String id) {
-        return facade.findExportJob(id);
+    @GetMapping("/{id}")
+    public KrameriusJobInstanceDto findJob(@PathVariable("id") String id) {
+        return facade.findJob(id);
     }
 
     @Operation(summary = "Restart job with given ID. Job can be restarted only if the last execution of the given job ended with status FAILED.")

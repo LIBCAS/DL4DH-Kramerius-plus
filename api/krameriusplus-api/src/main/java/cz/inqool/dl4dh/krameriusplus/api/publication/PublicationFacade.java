@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication;
 
-import cz.inqool.dl4dh.krameriusplus.api.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.PageDto;
 
@@ -13,7 +13,7 @@ public interface PublicationFacade {
 
     List<PublicationDto> listPublicationChildren(String parentId);
 
-    QueryResults<PublicationDto> listPublications(PublicationFilter filter, int page, int pageSize);
+    Result<PublicationDto> listPublications(PublicationFilter filter, int page, int pageSize);
 
     List<PublicationDto> listPublishedModified(LocalDateTime modifiedAfter);
 

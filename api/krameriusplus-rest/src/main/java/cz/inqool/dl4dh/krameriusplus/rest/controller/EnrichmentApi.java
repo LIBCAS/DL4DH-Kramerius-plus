@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
-import cz.inqool.dl4dh.krameriusplus.api.QueryResults;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.enrichment.EnrichmentFacade;
 import cz.inqool.dl4dh.krameriusplus.api.enrichment.EnrichmentRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.enrichment.EnrichmentRequestDto;
@@ -44,10 +44,10 @@ public class EnrichmentApi {
 
     @Operation(summary = "List enrichment requests.")
     @GetMapping("/list")
-    public QueryResults<EnrichmentRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                                   @RequestParam(value = "page", defaultValue = "0") int page,
-                                                   @RequestParam(value = "name", required = false) String name,
-                                                   @RequestParam(value = "owner", required = false) String owner) {
+    public Result<EnrichmentRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                             @RequestParam(value = "page", defaultValue = "0") int page,
+                                             @RequestParam(value = "name", required = false) String name,
+                                             @RequestParam(value = "owner", required = false) String owner) {
         return facade.list(name, owner, page, pageSize);
     }
 }
