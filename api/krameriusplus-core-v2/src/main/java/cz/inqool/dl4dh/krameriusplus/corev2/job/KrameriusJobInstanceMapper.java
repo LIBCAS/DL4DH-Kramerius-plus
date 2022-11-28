@@ -50,7 +50,9 @@ public class KrameriusJobInstanceMapper {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
         notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(jobInstanceId)));
 
-        return jobExecutionDao.getLastJobExecution(jobInstance);
+        JobExecution lastExecution = jobExecutionDao.getLastJobExecution(jobInstance);
+        notNull(lastExecution, () -> new MissingObjectException(JobExecution.class, String.valueOf(jobInstanceId)));
+        return lastExecution;
     }
 
     private List<JobExecutionDto> mapJobExecutions(KrameriusJobInstance entity) {
