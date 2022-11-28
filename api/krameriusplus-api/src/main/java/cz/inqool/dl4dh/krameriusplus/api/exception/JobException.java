@@ -6,8 +6,8 @@ package cz.inqool.dl4dh.krameriusplus.api.exception;
  */
 public class JobException extends GeneralException {
 
-    public JobException(String message, ErrorCode errorCode) {
-        super(message, errorCode, LogLevel.ERROR);
+    public JobException(String message, ErrorCode errorCode, Throwable cause) {
+        super(message, errorCode, LogLevel.ERROR, cause);
     }
 
     public enum ErrorCode implements LogCode {
@@ -15,7 +15,7 @@ public class JobException extends GeneralException {
         NOT_RESTARTABLE,
         NOT_RUNNING,
         IS_RUNNING,
-        IS_COMPLETE,
+        IS_COMPLETED,
         UNKNOWN_STATUS
     }
 }

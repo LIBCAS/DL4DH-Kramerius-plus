@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -26,4 +27,13 @@ public class EnrichmentChain extends DomainObject {
 
     @NotNull
     private Long order;
+
+    /**
+     * Return the next jobInstance in sequence.
+     * @param jobInstance
+     * @return
+     */
+    public Optional<KrameriusJobInstance> getNextToExecute(KrameriusJobInstance jobInstance) {
+        throw new UnsupportedOperationException("Not Implemented Yet");
+    }
 }
