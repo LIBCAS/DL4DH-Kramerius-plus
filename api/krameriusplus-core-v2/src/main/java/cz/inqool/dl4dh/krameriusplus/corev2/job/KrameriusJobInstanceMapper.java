@@ -46,6 +46,14 @@ public class KrameriusJobInstanceMapper {
         return krameriusJobInstanceDto;
     }
 
+    public JobExecution toLastExecution(Long jobInstanceId) {
+        JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
+        notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(jobInstanceId)));
+        List<JobExecution> jobExecutions = jobExecutionDao.findJobExecutions(jobInstance);
+
+        return jobExecutions.isEmpty() ? null : jobExecutions.get(0);
+    }
+
     private List<JobExecutionDto> mapJobExecutions(KrameriusJobInstance entity) {
         JobInstance jobInstance = jobInstanceDao.getJobInstance(entity.getJobInstanceId());
         notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(entity.getJobInstanceId())));
@@ -61,7 +69,7 @@ public class KrameriusJobInstanceMapper {
         JobExecutionDto jobExecutionDto = new JobExecutionDto();
 
         jobExecutionDto.setStepExecutions(jobExecution.getStepExecutions().stream().map(
-                stepExecution -> toStepExecutionDto(stepExecution, stepRunReportMap)
+                stepExecution -> toStepExecutionDto(stepExecution, stepRunReportMap.get(stepExecution.getId()))
         ).collect(Collectors.toList()));
 
         jobExecutionDto.setStatus(ExecutionStatus.valueOf(jobExecution.getStatus().toString()));
@@ -96,7 +104,7 @@ public class KrameriusJobInstanceMapper {
         throw new UnsupportedOperationException("Mapping EnrichmentChainDto to EnrichmentChain is not supported.");
     }
 
-    private StepExecutionDto toStepExecutionDto(StepExecution stepExecution, Map<Long, StepRunReport> stepRunReportMap) {
+    private StepExecutionDto toStepExecutionDto(StepExecution stepExecution, StepRunReport stepRunReport) {
         if (stepExecution == null) {
             return null;
         }
@@ -117,7 +125,7 @@ public class KrameriusJobInstanceMapper {
         stepExecutionDto.setLastUpdated(stepExecution.getLastUpdated());
         stepExecutionDto.setTerminateOnly(stepExecution.isTerminateOnly());
         stepExecutionDto.setFilterCount(stepExecution.getFilterCount());
-        stepExecutionDto.setReport(toStepRunReportDto(stepRunReportMap.get(stepExecution.getId())));
+        stepExecutionDto.setReport(toStepRunReportDto(stepRunReport));
 
         return stepExecutionDto;
     }
