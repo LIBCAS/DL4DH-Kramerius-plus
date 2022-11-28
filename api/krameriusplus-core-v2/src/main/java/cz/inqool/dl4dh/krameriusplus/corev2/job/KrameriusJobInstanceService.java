@@ -1,7 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job;
 
+import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
 import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobInstance;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,14 +39,28 @@ public class KrameriusJobInstanceService {
     public KrameriusJobInstance createJob(KrameriusJobType jobType, Map<String, Object> jobParametersMap) {
         // 1. Create JobInstance from JobType + JobParameters, using mapper::toJobParameters
         // 2. Create KrameriusJobInstance with default executionStatus CREATED
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        KrameriusJobInstance krameriusJobInstance = new KrameriusJobInstance();
+        krameriusJobInstance.setExecutionStatus(ExecutionStatus.CREATED);
+        krameriusJobInstance.setJobType(jobType);
+        JobParameters jobParameters = mapper.toJobParameters(krameriusJobInstance, jobParametersMap);
+
+        krameriusJobInstance.setJobParameters(jobParameters);
+
+        JobInstance jobInstance = jobRepository.createJobInstance(jobType.getName(), jobParameters);
+
+        krameriusJobInstance.setJobInstanceId(jobInstance.getInstanceId());
+
+        return store.create(krameriusJobInstance);
     }
 
     @Transactional
     public void updateStatus(KrameriusJobInstance instance) {
         // 1. get last JobExecution from mapper
         // 2. set status and update KrameriusJobInstance
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        JobExecution lastExecution = mapper.toLastExecution(instance.getJobInstanceId());
+        instance.setExecutionStatus(ExecutionStatus.valueOf(lastExecution.getStatus().toString()));
+
+        store.update(instance);
     }
 
     @Autowired
