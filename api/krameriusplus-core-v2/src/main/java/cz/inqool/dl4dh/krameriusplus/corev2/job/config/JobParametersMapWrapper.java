@@ -11,23 +11,23 @@ public class JobParametersMapWrapper {
     @Getter
     private final Map<String, Object> jobParametersMap = new HashMap<>();
 
-    private void putDate(String key, Date date) {
+    public void putDate(String key, Date date) {
         jobParametersMap.put(key, date);
     }
 
-    private void putString(String key, String string) {
+    public void putString(String key, String string) {
         jobParametersMap.put(key, string);
     }
 
-    private void putLong(String key, Long aLong) {
+    public void putLong(String key, Long aLong) {
         jobParametersMap.put(key, aLong);
     }
 
-    private void putDouble(String key, Double aDouble) {
+    public void putDouble(String key, Double aDouble) {
         jobParametersMap.put(key, aDouble);
     }
 
-    private void putBoolean(String key, String bool) {
-        jobParametersMap.put(key, Boolean.valueOf(bool));
+    public void putBoolean(String key, Boolean bool) {
+        jobParametersMap.put(key, Boolean.toString(bool));
     }
 }

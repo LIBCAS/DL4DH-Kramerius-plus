@@ -15,5 +15,9 @@ public abstract class JobConfig extends DomainObject {
 
     public abstract KrameriusJobType getJobType();
 
-    public abstract Map<String, Object> toJobParametersMap();
+    public abstract JobParametersMapWrapper createAndFillMapWrapper();
+
+    public Map<String, Object> toJobParametersMap() {
+        return createAndFillMapWrapper().getJobParametersMap();
+    }
 }
