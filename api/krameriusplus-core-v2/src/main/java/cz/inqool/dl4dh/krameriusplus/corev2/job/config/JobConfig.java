@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.MappedSuperclass;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -13,4 +14,6 @@ import javax.persistence.MappedSuperclass;
 public abstract class JobConfig extends DomainObject {
 
     public abstract KrameriusJobType getJobType();
+
+    public abstract Map<String, Object> toJobParametersMap();
 }

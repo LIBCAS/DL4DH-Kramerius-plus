@@ -9,19 +9,19 @@ import cz.inqool.dl4dh.krameriusplus.api.batch.step.StepRunReportDto;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.report.StepError;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.report.StepRunReport;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.repository.dao.JobExecutionDao;
 import org.springframework.batch.core.repository.dao.JobInstanceDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.KRAMERIUS_JOB_INSTANCE_ID;
 import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 
 @Component
@@ -94,6 +94,27 @@ public class KrameriusJobInstanceMapper {
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public JobParameters toJobParameters(KrameriusJobInstance entity, Map<String, Object> nonIdentifyingParams) {
+        JobParametersBuilder parametersBuilder = new JobParametersBuilder();
+        parametersBuilder.addString(KRAMERIUS_JOB_INSTANCE_ID, entity.getId());
+
+        for (Map.Entry<String, Object> entry : nonIdentifyingParams.entrySet()) {
+            if (entry.getValue() instanceof String) {
+                parametersBuilder.addString(entry.getKey(), (String) entry.getValue(), false);
+            } else if (entry.getValue() instanceof Date) {
+                parametersBuilder.addDate(entry.getKey(), (Date) entry.getValue(), false);
+            } else if (entry.getValue() instanceof Long) {
+                parametersBuilder.addLong(entry.getKey(), (Long) entry.getValue(), false);
+            } else if (entry.getValue() instanceof Double) {
+                parametersBuilder.addDouble(entry.getKey(), (Double) entry.getValue(), false);
+            } else {
+                throw new IllegalArgumentException("Cannot save jobParameter of type: " + entry.getValue().getClass().getSimpleName());
+            }
+        }
+
+        return parametersBuilder.toJobParameters();
     }
 
     /**

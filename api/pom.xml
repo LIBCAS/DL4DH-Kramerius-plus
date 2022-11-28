@@ -4,11 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<modules>
-		<module>krameriusplus-core</module>
         <module>krameriusplus-core-v2</module>
         <module>krameriusplus-rest</module>
 		<module>krameriusplus-app</module>
-        <module>krameriusplus-service</module>
 		<module>krameriusplus-api</module>
 	</modules>
 
@@ -47,19 +45,19 @@
 			</dependency>
 
 			<dependency>
-				<artifactId>krameriusplus-core</artifactId>
-				<groupId>cz.inqool.dl4dh</groupId>
-				<version>${revision}</version>
-			</dependency>
-
-			<dependency>
 				<artifactId>krameriusplus-app</artifactId>
 				<groupId>cz.inqool.dl4dh</groupId>
 				<version>${revision}</version>
 			</dependency>
 
 			<dependency>
-				<artifactId>krameriusplus-service</artifactId>
+				<artifactId>krameriusplus-rest</artifactId>
+				<groupId>cz.inqool.dl4dh</groupId>
+				<version>${revision}</version>
+			</dependency>
+
+			<dependency>
+				<artifactId>krameriusplus-core-v2</artifactId>
 				<groupId>cz.inqool.dl4dh</groupId>
 				<version>${revision}</version>
 			</dependency>

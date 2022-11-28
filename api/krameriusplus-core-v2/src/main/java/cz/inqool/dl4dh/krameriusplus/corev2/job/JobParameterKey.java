@@ -1,7 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job;
 
-@Deprecated // ? will not need? dunno TODO
+/**
+ * Convenient helper class with possible JobParameter keys
+ */
 public class JobParameterKey {
+    public static final String ENRICHMENT_REQUEST_ID = "ENRICHMENT_REQUEST_ID";
     public static final String PUBLICATION_ID = "PUBLICATION_ID";
     public static final String KRAMERIUS_JOB_INSTANCE_ID = "KRAMERIUS_JOB_INSTANCE_ID";
     public static final String TIMESTAMP = "TIMESTAMP";
