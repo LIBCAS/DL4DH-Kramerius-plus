@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.MappedSuperclass;
-import java.util.Map;
+
+import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.CONFIG_ID;
 
 @Getter
 @Setter
@@ -15,9 +16,10 @@ public abstract class JobConfig extends DomainObject {
 
     public abstract KrameriusJobType getJobType();
 
-    public abstract JobParametersMapWrapper createAndFillMapWrapper();
+    public JobParametersMapWrapper toJobParametersWrapper() {
+        JobParametersMapWrapper jobParametersMapWrapper = new JobParametersMapWrapper();
+        jobParametersMapWrapper.putString(CONFIG_ID, this.getId());
 
-    public Map<String, Object> toJobParametersMap() {
-        return createAndFillMapWrapper().getJobParametersMap();
+        return jobParametersMapWrapper;
     }
 }

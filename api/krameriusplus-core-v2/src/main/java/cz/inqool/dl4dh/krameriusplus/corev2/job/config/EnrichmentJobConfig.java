@@ -23,8 +23,8 @@ public abstract class EnrichmentJobConfig extends JobConfig {
     private Long pageErrorTolerance = 0L;
 
     @Override
-    public JobParametersMapWrapper createAndFillMapWrapper() {
-        JobParametersMapWrapper jobParametersMap = new JobParametersMapWrapper();
+    public JobParametersMapWrapper toJobParametersWrapper() {
+        JobParametersMapWrapper jobParametersMap = super.toJobParametersWrapper();
         jobParametersMap.putBoolean(OVERRIDE, override);
         jobParametersMap.putLong(PAGE_ERROR_TOLERANCE, pageErrorTolerance);
 

@@ -13,4 +13,5 @@ public class JobParameterKey {
     public static final String DELIMITER = "DELIMITER";
     public static final String PAGE_ERROR_TOLERANCE = "PAGE_ERROR_TOLERANCE";
     public static final String PARAMS = "PARAMS";
+    public static final String CONFIG_ID = "CONFIG_ID";
 }
