@@ -12,7 +12,18 @@ import java.util.stream.Collectors;
 public class KrameriusJobInstanceMapper {
 
     public KrameriusJobInstanceDto toDto(KrameriusJobInstance entity) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        if (entity == null) {
+            return null;
+        }
+
+        KrameriusJobInstanceDto krameriusJobInstanceDto = new KrameriusJobInstanceDto();
+
+        krameriusJobInstanceDto.setId(entity.getId());
+        krameriusJobInstanceDto.setJobStatus(entity.getExecutionStatus());
+        krameriusJobInstanceDto.setJobType(entity.getJobType());
+//        krameriusJobInstanceDto.setExecutions(???);
+
+        return krameriusJobInstanceDto;
     }
 
     public List<KrameriusJobInstanceDto> toDtoList(Map<Long, KrameriusJobInstance> entityMap) {
