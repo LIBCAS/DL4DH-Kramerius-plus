@@ -1,0 +1,23 @@
+package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.inqool.dl4dh.krameriusplus.api.publication.DigitalObjectContext;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+public class PublicationCreateDto extends DigitalObjectCreateDto {
+
+    private List<List<DigitalObjectContext>> context = new ArrayList<>();
+
+    private List<String> collections = new ArrayList<>();
+
+    @JsonProperty("dnnt-labels")
+    private List<String> dnntLabels = new ArrayList<>();
+
+    private Boolean dnnt;
+}

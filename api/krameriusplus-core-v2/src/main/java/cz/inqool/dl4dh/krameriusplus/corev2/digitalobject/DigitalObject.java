@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.DigitalObjectContext;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.document.DomainDocument;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
