@@ -16,6 +16,8 @@ public class PublicationCreateDto extends DigitalObjectCreateDto {
 
     private List<String> collections = new ArrayList<>();
 
+    private HandleCreateDto handle;
+
     @JsonProperty("dnnt-labels")
     private List<String> dnntLabels = new ArrayList<>();
 

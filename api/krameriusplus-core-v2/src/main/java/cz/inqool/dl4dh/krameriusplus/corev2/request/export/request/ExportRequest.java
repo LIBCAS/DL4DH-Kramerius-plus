@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.request.export.bulk.BulkExport;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -17,7 +18,7 @@ import javax.persistence.Table;
 @Table(name = "kplus_export_request")
 public class ExportRequest extends Request {
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private ExportJobConfig config;
 
     @OneToOne

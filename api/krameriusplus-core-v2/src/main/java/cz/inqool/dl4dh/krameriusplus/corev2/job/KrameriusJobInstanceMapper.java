@@ -10,8 +10,7 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.report.StepError;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.report.StepRunReport;
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.repository.dao.JobExecutionDao;
-import org.springframework.batch.core.repository.dao.JobInstanceDao;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +26,7 @@ import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 @Component
 public class KrameriusJobInstanceMapper {
 
-    private JobInstanceDao jobInstanceDao;
-
-    private JobExecutionDao jobExecutionDao;
+    private JobExplorer jobExplorer;
 
     public KrameriusJobInstanceDto toDto(KrameriusJobInstance entity) {
         if (entity == null) {
@@ -47,18 +44,18 @@ public class KrameriusJobInstanceMapper {
     }
 
     public JobExecution toLastExecution(Long jobInstanceId) {
-        JobInstance jobInstance = jobInstanceDao.getJobInstance(jobInstanceId);
+        JobInstance jobInstance = jobExplorer.getJobInstance(jobInstanceId);
         notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(jobInstanceId)));
 
-        JobExecution lastExecution = jobExecutionDao.getLastJobExecution(jobInstance);
+        JobExecution lastExecution = jobExplorer.getLastJobExecution(jobInstance);
         notNull(lastExecution, () -> new MissingObjectException(JobExecution.class, String.valueOf(jobInstanceId)));
         return lastExecution;
     }
 
     private List<JobExecutionDto> mapJobExecutions(KrameriusJobInstance entity) {
-        JobInstance jobInstance = jobInstanceDao.getJobInstance(entity.getJobInstanceId());
+        JobInstance jobInstance = jobExplorer.getJobInstance(entity.getJobInstanceId());
         notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(entity.getJobInstanceId())));
-        List<JobExecution> jobExecutions = jobExecutionDao.findJobExecutions(jobInstance);
+        List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance);
 
         return jobExecutions.stream().map(jobExecution -> toJobExecutionDto(jobExecution, entity.getReports())).collect(Collectors.toList());
     }
@@ -178,12 +175,7 @@ public class KrameriusJobInstanceMapper {
     }
 
     @Autowired
-    public void setJobInstanceDao(JobInstanceDao jobInstanceDao) {
-        this.jobInstanceDao = jobInstanceDao;
-    }
-
-    @Autowired
-    public void setJobExecutionDao(JobExecutionDao jobExecutionDao) {
-        this.jobExecutionDao = jobExecutionDao;
+    public void setJobExplorer(JobExplorer jobExplorer) {
+        this.jobExplorer = jobExplorer;
     }
 }

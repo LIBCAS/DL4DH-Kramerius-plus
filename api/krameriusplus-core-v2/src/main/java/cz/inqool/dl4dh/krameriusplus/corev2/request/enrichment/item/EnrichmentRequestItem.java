@@ -5,9 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentC
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +20,10 @@ public class EnrichmentRequestItem extends DomainObject {
     private String publicationId;
 
     @OneToMany
+    @JoinColumn(name = "request_item_id")
     private List<EnrichmentChain> enrichmentChains = new ArrayList<>();
 
+    @Column(name = "item_order")
+    @NotNull
     private Long order;
 }

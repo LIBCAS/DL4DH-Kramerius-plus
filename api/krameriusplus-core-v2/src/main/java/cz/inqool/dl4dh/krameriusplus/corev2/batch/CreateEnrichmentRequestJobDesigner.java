@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch;
 
 import org.springframework.batch.core.Job;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.CREATE_ENRICHMENT_REQUEST;
@@ -14,7 +13,7 @@ public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
         return CREATE_ENRICHMENT_REQUEST;
     }
 
-    @Bean(CREATE_ENRICHMENT_REQUEST)
+//    @Bean(CREATE_ENRICHMENT_REQUEST)
     @Override
     public Job build() {
         // Step 1 - save publications

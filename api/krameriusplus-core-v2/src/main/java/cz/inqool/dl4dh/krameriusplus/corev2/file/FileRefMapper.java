@@ -1,7 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.file;
 
 import cz.inqool.dl4dh.krameriusplus.api.domain.FileRefDto;
-import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.service.mapper.DatedObjectMapper;
+import org.mapstruct.Mapper;
 
-public interface FileRefMapper extends DatedObjectMapper<FileRef, FileRefCreateDto, FileRefDto> {
+@Mapper
+public interface FileRefMapper {
+
+    FileRefDto toDto(FileRef entity);
+
+    FileRef fromDto(FileRefDto dto);
 }

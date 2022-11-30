@@ -23,7 +23,7 @@ public class JobContainer {
         return job;
     }
 
-    @Autowired
+    @Autowired(required = false) // TODO: removed required = false after at least one job is initialized
     public void setJobs(List<Job> jobs) {
         for (Job job : jobs) {
             KrameriusJobType jobType = KrameriusJobType.valueOf(job.getName());

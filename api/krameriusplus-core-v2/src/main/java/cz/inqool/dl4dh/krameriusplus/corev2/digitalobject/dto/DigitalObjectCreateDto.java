@@ -17,7 +17,7 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.*;
 
 @Getter
 @Setter
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "model", include = JsonTypeInfo.As.EXISTING_PROPERTY)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "model", include = JsonTypeInfo.As.EXISTING_PROPERTY, visible = true)
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = MonographCreateDto.class, name = MONOGRAPH),
         @JsonSubTypes.Type(value = MonographUnitCreateDto.class, name = MONOGRAPH_UNIT),

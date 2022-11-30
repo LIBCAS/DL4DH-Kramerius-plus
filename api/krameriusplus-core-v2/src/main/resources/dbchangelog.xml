@@ -1,0 +1,337 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <!-- Default property settings -->
+    <property name="id" value="varchar(255)" dbms="h2,postgresql"/>
+    <property name="now" value="CURRENT_TIMESTAMP" dbms="h2"/>
+    <property name="now" value="now()" dbms="postgresql"/>
+
+    <changeSet id="1" author="bodnar">
+        <createTable tableName="kplus_file_ref">
+            <!-- Domain Object -->
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="file_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <!-- FileRef -->
+            <column name="name" type="nvarchar(256)"/>
+            <column name="content_type" type="varchar(256)"/>
+            <column name="storage" type="varchar(256)"/>
+            <column name="size" type="bigint"/>
+            <column name="hierarchical_level" type="int"/>
+        </createTable>
+
+        <createTable tableName="kplus_kramerius_job_instance">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="kramerius_job_instance_PK"/>
+            </column>
+
+            <column name="execution_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_instance_id" type="bigint">
+                <constraints nullable="false" unique="true"
+                             uniqueConstraintName="job_instance_id_unique_constraint"/>
+            </column>
+            <column name="job_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_parameters" type="varchar(2000)"/>
+        </createTable>
+
+        <createTable tableName="kplus_step_run_report">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="step_run_report_PK"/>
+            </column>
+
+            <column name="job_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="step_run_report_job_FK"
+                             referencedTableName="kplus_kramerius_job_instance"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="step_execution_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_step_error">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="step_error_PK"/>
+            </column>
+
+            <column name="step_run_report_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="step_error_step_run_report_FK"
+                             referencedTableName="kplus_step_run_report"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="exit_code" type="varchar(255)"/>
+            <column name="short_message" type="varchar(1000)"/>
+            <column name="stack_trace" type="text"/>
+        </createTable>
+        
+        <createTable tableName="kplus_user">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="user_pk"/>
+            </column>
+            
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+            
+            <column name="username" type="varchar(255)">
+                <constraints nullable="false" unique="true" 
+                             uniqueConstraintName="user_unique_constraint"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_request">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="request_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <!-- Request -->
+            <column name="owner_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="request_user_FK"
+                             referencedTableName="kplus_user"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="name" type="varchar(1000)"/>
+        </createTable>
+
+        <createTable tableName="kplus_request_publication_id">
+            <column name="request_id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="request_publication_id_PK"/>
+            </column>
+            <column name="publication_id" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="request_publication_id_PK"/>
+            </column>
+            <column name="publication_id_order" type="bigint">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="request_publication_id_PK"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_enrichment_request">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="enrichment_request_PK"
+                             foreignKeyName="enrichment_request_FK"
+                             referencedTableName="kplus_request"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="create_request_job_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="enrichment_request_create_job_FK"
+                             referencedTableName="kplus_kramerius_job_instance"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_enrichment_request_item">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="enrichment_request_item_PK"/>
+            </column>
+
+            <column name="publication_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_order" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enrichment_request_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="enrichment_request_item_enrichment_request_FK"
+                             referencedTableName="kplus_enrichment_request"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_enrichment_chain">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="enrichment_chain_PK"/>
+            </column>
+
+            <column name="publication_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="chain_order" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_item_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="enrichment_chain_request_item_FK"
+                             referencedTableName="kplus_enrichment_request_item"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_enrichment_chain_job">
+            <column name="enrichment_chain_id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="enrichment_chain_job_PK"
+                             foreignKeyName="enrichment_chain_job_enrichment_chain_FK"
+                             referencedTableName="kplus_enrichment_chain"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="kramerius_job_instance_id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="enrichment_chain_job_PK"
+                             foreignKeyName="enrichment_chain_job_job_FK"
+                             referencedTableName="kplus_kramerius_job_instance"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="job_order" type="bigint">
+                <constraints nullable="false" primaryKey="true" 
+                             primaryKeyName="enrichment_chain_job_PK"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_enrichment_job_config">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="enrichment_job_config_PK"/>
+            </column>
+
+            <column name="override" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="page_error_tolerance" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dtype" type="varchar(255)"/>
+            <column name="enrichment_request_id" type="${id}">
+                <constraints nullable="false" foreignKeyName="enrichment_job_config_enrichment_request_FK"
+                             referencedTableName="kplus_enrichment_request"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_export_job_config">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="export_job_config_PK"/>
+            </column>
+            <column name="params" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delimiter" type="varchar(255)"/>
+            <column name="tei_params" type="text"/>
+            <column name="dtype" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="kplus_bulk_export">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="bulk_export_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="file_ref_id" type="${id}">
+                <constraints foreignKeyName="bulk_export_file_ref_FK"
+                             referencedTableName="kplus_file_ref"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="format" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="merge_job_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="bulk_export_merge_job_FK"
+                             referencedTableName="kplus_kramerius_job_instance"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_export">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="export_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="publication_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publication_title" type="varchar(2000)"/>
+            <column name="bulk_export_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="export_bulk_export_FK"
+                             referencedTableName="kplus_bulk_export"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="file_ref_id" type="${id}">
+                <constraints foreignKeyName="export_file_ref_FK"
+                             referencedTableName="kplus_file_ref"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="export_job_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="export_export_job_FK"
+                             referencedTableName="kplus_kramerius_job_instance"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_export_request">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="export_request_PK"
+                             foreignKeyName="export_request_FK"
+                             referencedTableName="kplus_request"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="config_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="export_request_config_FK"
+                             referencedTableName="kplus_export_job_config"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="bulk_export_id" type="${id}">
+                <constraints foreignKeyName="export_request_bulk_export_FK"
+                             referencedTableName="kplus_bulk_export"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="create_request_job_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="export_request_create_request_job_FK"
+                             referencedTableName="kplus_kramerius_job_instance"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

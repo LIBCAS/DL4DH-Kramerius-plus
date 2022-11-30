@@ -5,9 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +21,16 @@ public class EnrichmentChain extends DomainObject {
     private String publicationId;
 
     @OneToMany
+    @JoinTable(
+            name = "kplus_enrichment_chain_job",
+            joinColumns = @JoinColumn(name = "enrichment_chain_id"),
+            inverseJoinColumns = @JoinColumn(name = "kramerius_job_instance_id")
+    )
+    @MapKeyColumn(name = "job_order")
     private Map<Long, KrameriusJobInstance> jobs = new HashMap<>();
 
     @NotNull
+    @Column(name = "chain_order")
     private Long order;
 
     /**
