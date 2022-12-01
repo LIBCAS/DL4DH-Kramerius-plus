@@ -1,25 +1,63 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.kramerius;
 
+import cz.inqool.dl4dh.krameriusplus.corev2.CoreBaseTest;
+import cz.inqool.dl4dh.krameriusplus.corev2.TestApplication;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.Periodical;
+import okhttp3.HttpUrl;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.apache.http.HttpHeaders;
+import org.apache.http.entity.ContentType;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.reactive.function.client.WebClient;
 
-@SpringBootTest
-public class KrameriusMessengerTest {
+import java.io.IOException;
+
+import static cz.inqool.dl4dh.krameriusplus.corev2.config.WebClientConfig.KRAMERIUS_WEB_CLIENT;
+import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerResponse.PERIODICAL_RESPONSE;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ContextConfiguration(classes = {
+        TestApplication.class,
+        KrameriusMessengerTest.TestConfig.class
+})
+public class KrameriusMessengerTest extends CoreBaseTest {
+
+    public static MockWebServer mockServer;
 
     @Autowired
     private KrameriusMessenger krameriusMessenger;
 
-    //TODO: User MockWebServer for mocking webClient calls
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        mockServer = new MockWebServer();
+        mockServer.start();
+    }
 
-    @Test
-    void page() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+    @AfterAll
+    static void afterAll() throws IOException {
+        mockServer.shutdown();
     }
 
     @Test
     void periodical() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        mockServer.enqueue(
+                new MockResponse().setResponseCode(200)
+                        .setBody(PERIODICAL_RESPONSE)
+                        .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
+
+        DigitalObject digitalObject = krameriusMessenger.getDigitalObject("test");
+
+        assertThat(digitalObject.getClass()).isEqualTo(Periodical.class);
+        assertThat(digitalObject.getId()).isEqualTo("uuid:319546a0-5a42-11eb-b4d1-005056827e51");
+        assertThat(((Periodical) digitalObject).getTitle()).isEqualTo("Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne");
     }
 
     @Test
@@ -90,5 +128,14 @@ public class KrameriusMessengerTest {
     @Test
     void mods() {
         throw new UnsupportedOperationException("Not Yet Implemented.");
+    }
+
+    @Configuration
+    public static class TestConfig {
+        @Bean(name = KRAMERIUS_WEB_CLIENT)
+        WebClient webClient() {
+            HttpUrl httpUrl = mockServer.url("/");
+            return WebClient.create(httpUrl.toString());
+        }
     }
 }

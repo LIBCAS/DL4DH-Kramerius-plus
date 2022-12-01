@@ -15,9 +15,11 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalVolume;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
 
     @Override
@@ -32,7 +34,22 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
 
     @Override
     public Periodical fromCreateDto(PeriodicalCreateDto createDto) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        Periodical periodical = new Periodical();
+        periodical.setId(createDto.getPid());
+        periodical.setTitle(createDto.getTitle());
+        periodical.setRootTitle(createDto.getRootTitle());
+        periodical.setRootId(createDto.getRootPid());
+        periodical.setPolicy(createDto.getPolicy());
+
+        if (createDto.getContext().size() == 1) {
+            periodical.setContext(createDto.getContext().get(0));
+        } else {
+            log.warn("Periodical {}: expected context size=1, actual={}", createDto.getPid(), createDto.getContext().size());
+        }
+
+        periodical.setCollections(createDto.getCollections());
+
+        return periodical;
     }
 
     @Override
