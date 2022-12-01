@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.config;
 
-import cz.inqool.dl4dh.krameriusplus.core.config.KrameriusInfo;
+import cz.inqool.dl4dh.krameriusplus.api.KrameriusInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

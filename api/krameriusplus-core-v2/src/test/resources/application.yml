@@ -17,6 +17,9 @@ spring:
       table-prefix: kplus
     job:
       enabled: false
+  jms:
+    listener:
+      auto-startup: false
 
 system:
   kramerius:

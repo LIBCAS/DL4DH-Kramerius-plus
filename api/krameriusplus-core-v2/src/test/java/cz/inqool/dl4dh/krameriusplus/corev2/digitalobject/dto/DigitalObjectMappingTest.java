@@ -2,16 +2,16 @@ package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.inqool.dl4dh.krameriusplus.corev2.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.monograph.MonographCreateDto;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-@SpringBootTest //TODO: WRITE TESTS FOR OTHER MODELS!
-public class DigitalObjectMappingTest {
+//TODO: WRITE TESTS FOR OTHER MODELS!
+public class DigitalObjectMappingTest extends CoreBaseTest {
 
     @Autowired
     private ObjectMapper objectMapper;
