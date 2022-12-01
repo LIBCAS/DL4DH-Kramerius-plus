@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PublicationCreateDto extends DigitalObjectCreateDto {
+public abstract class PublicationCreateDto extends DigitalObjectCreateDto {
 
     private List<List<DigitalObjectContext>> context = new ArrayList<>();
 

@@ -17,3 +17,9 @@ spring:
       table-prefix: kplus
     job:
       enabled: false
+
+system:
+  kramerius:
+    code: nkp
+    default-url: https://www.ndk.cz
+    register-url: https://api.registr.digitalniknihovna.cz/api/libraries

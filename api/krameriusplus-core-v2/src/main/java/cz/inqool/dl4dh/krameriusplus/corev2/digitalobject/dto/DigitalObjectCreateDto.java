@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.monograph.MonographCreateDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.monograph.MonographUnitCreateDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.other.InternalPartCreateDto;
@@ -46,5 +47,7 @@ public abstract class DigitalObjectCreateDto {
     private String rootPid;
 
     private String policy;
+
+    public abstract DigitalObject accept(DigitalObjectMapperVisitor visitor);
 
 }
