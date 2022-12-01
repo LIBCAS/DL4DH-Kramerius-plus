@@ -18,6 +18,8 @@ public class StepError extends DomainObject {
     @ManyToOne
     private StepRunReport stepRunReport;
 
+    private String exitCode;
+
     private String shortMessage;
 
     @Lob

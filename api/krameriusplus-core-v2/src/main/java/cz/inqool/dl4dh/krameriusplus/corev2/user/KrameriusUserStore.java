@@ -5,18 +5,18 @@ import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.store.DatedStore;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class KrameriusUserStore extends DatedStore<KrameriusUser, QKrameriusUser> {
+public class KrameriusUserStore extends DatedStore<User, QKrameriusUser> {
 
     public KrameriusUserStore() {
-        super(KrameriusUser.class, QKrameriusUser.class);
+        super(User.class, QKrameriusUser.class);
     }
 
-    public KrameriusUser findUserByUsername(String username) {
-        JPAQuery<KrameriusUser> query = query().select(qObject)
+    public User findUserByUsername(String username) {
+        JPAQuery<User> query = query().select(qObject)
                 .where(qObject.username.eq(username))
                 .where(qObject.deleted.isNull());
 
-        KrameriusUser result = query.fetchFirst();
+        User result = query.fetchFirst();
 
         detachAll();
 

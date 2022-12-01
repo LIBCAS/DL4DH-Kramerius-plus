@@ -7,14 +7,14 @@ import lombok.Setter;
 
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Lob;
 
 @Getter
 @Setter
 @Entity
 public class ExportTeiJobConfig extends ExportJobConfig {
 
-    @NotNull
+    @Lob
     @Convert(converter = TeiParamsJsonConverter.class)
     private TeiParamsDto teiParams;
 

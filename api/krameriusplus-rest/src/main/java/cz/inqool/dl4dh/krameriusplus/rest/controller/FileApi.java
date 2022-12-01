@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
-import cz.inqool.dl4dh.krameriusplus.api.domain.File;
 import cz.inqool.dl4dh.krameriusplus.api.domain.FileRefDto;
 import cz.inqool.dl4dh.krameriusplus.api.export.FileFacade;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,14 +27,13 @@ public class FileApi {
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> download(@PathVariable("id") String fileRefId) {
-        File file = fileFacade.getFile(fileRefId);
+        FileRefDto fileRef = fileFacade.getFile(fileRefId);
 
-        FileRefDto fileRef = file.getFileRef();
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=\"" + fileRef.getName()+"\"")
                 .header("Content-Length", String.valueOf(fileRef.getSize()))
                 .contentType(MediaType.parseMediaType(fileRef.getContentType()))
-                .body(new InputStreamResource(file.getInputStream()));
+                .body(new InputStreamResource(fileFacade.getFileContent(fileRefId)));
     }
 
     @Autowired
