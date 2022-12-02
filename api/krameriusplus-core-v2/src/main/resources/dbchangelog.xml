@@ -78,6 +78,7 @@
             <column name="exit_code" type="varchar(255)"/>
             <column name="short_message" type="varchar(1000)"/>
             <column name="stack_trace" type="text"/>
+            <column name="error_order" type="bigint"/>
         </createTable>
         
         <createTable tableName="kplus_user">

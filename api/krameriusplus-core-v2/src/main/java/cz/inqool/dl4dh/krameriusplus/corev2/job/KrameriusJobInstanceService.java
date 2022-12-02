@@ -12,11 +12,19 @@ import java.util.Map;
 @Service
 public class KrameriusJobInstanceService {
 
+    private static final String UNEXPECTED_EXCEPTION_CODE = "UNEXPECTED_ERROR_OCCURRED";
+
+    private static final String STOP_EXCEPTION_CODE = "STEP_STOPPED";
+
     private KrameriusJobInstanceStore store;
 
     private KrameriusJobInstanceMapper mapper;
 
     private JobRepository jobRepository;
+
+    public KrameriusJobInstance find(String jobInstanceId) {
+        return store.find(jobInstanceId);
+    }
 
     @Transactional
     public KrameriusJobInstanceDto createJobDto(KrameriusJobType jobType, Map<String, Object> jobParametersMap) {
@@ -37,10 +45,6 @@ public class KrameriusJobInstanceService {
         throw new UnsupportedOperationException("Not Yet Implemented.");
     }
 
-    public KrameriusJobInstance find(String jobInstanceId) {
-        return store.find(jobInstanceId);
-    }
-
     @Autowired
     public void setStore(KrameriusJobInstanceStore store) {
         this.store = store;
@@ -55,5 +59,4 @@ public class KrameriusJobInstanceService {
     public void setJobRepository(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
     }
-
 }

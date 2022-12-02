@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto.AltoMetad
 import cz.inqool.dl4dh.krameriusplus.service.system.job.step.dto.AltoWrappedPageDto;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +13,16 @@ import org.springframework.stereotype.Component;
 @StepScope
 public class EnrichPagesAltoItemProcessor implements ItemProcessor<AltoWrappedPageDto, Page> {
 
+    private final AltoMetadataEnricher altoEnricher;
+
+    @Autowired
+    public EnrichPagesAltoItemProcessor(AltoMetadataEnricher altoEnricher) {
+        this.altoEnricher = altoEnricher;
+    }
+
     @Override
     public Page process(@NonNull AltoWrappedPageDto item) {
-        new AltoMetadataEnricher(item.getPage(), item.getAltoLayout()).enrichPage();
+        altoEnricher.enrichPageTokens(item.getPage(), item.getAltoLayout());
 
         return item.getPage();
     }

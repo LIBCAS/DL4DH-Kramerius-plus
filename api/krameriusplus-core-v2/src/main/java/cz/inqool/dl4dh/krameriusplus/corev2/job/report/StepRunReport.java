@@ -23,5 +23,5 @@ public class StepRunReport extends DomainObject {
     private Long stepExecutionId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "stepRunReport")
-    private Set<StepError> error = new HashSet<>();
+    private Set<StepError> errors = new HashSet<>();
 }
