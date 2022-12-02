@@ -4,6 +4,8 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItemStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequestStore;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -29,17 +31,31 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<List<Stri
 
     private final EnrichmentRequest enrichmentRequest;
 
+    private final EnrichmentRequestItemStore enrichmentRequestItemStore;
+
     @Autowired
     public EnrichmentChainCreatingProcessor(KrameriusJobInstanceService krameriusJobInstanceService,
                                             EnrichmentRequestStore enrichmentRequestStore,
-                                            @Value("#{jobparameters['"+ENRICHMENT_REQUEST_ID+"']}") String enrichmentRequestId) {
+                                            @Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
+                                            EnrichmentRequestItemStore enrichmentRequestItemStore) {
+        this.enrichmentRequestItemStore = enrichmentRequestItemStore;
         enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
         this.krameriusJobInstanceService = krameriusJobInstanceService;
     }
 
     @Override
     public List<EnrichmentChain> process(List<String> item) throws Exception {
-        return item.stream().map(this::createChain).collect(Collectors.toList());
+        List<EnrichmentChain> chains = item.stream().map(this::createChain).collect(Collectors.toList());
+
+        EnrichmentRequestItem enrichmentRequestItem = findEnrichmentItem(item.get(0));
+        enrichmentRequestItem.setEnrichmentChains(chains);
+        enrichmentRequestItemStore.update(enrichmentRequestItem);
+
+        return chains;
+    }
+
+    private EnrichmentRequestItem findEnrichmentItem(String publicationId) {
+        return enrichmentRequest.getItems().stream().filter(item -> item.getPublicationId().equals(publicationId)).findFirst().orElseThrow();
     }
 
     private EnrichmentChain createChain(String publicationId) {
