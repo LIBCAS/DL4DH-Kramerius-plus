@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication.object;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.PageDto;
 import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.EnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.ExternalSystem;

@@ -1,11 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch;
 
 import org.springframework.batch.core.Job;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.CREATE_EXPORT_REQUEST;
 
-@Component
+@Configuration
 public class CreateExportRequestJobDesigner extends AbstractJobDesigner {
 
     @Override

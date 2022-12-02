@@ -21,7 +21,7 @@ public class TokenDto {
 
     private Integer endOffset;
 
-    private LinguisticMetadata linguisticMetadata;
+    private LinguisticMetadataDto linguisticMetadata;
 
     private String nameTagMetadata;
 

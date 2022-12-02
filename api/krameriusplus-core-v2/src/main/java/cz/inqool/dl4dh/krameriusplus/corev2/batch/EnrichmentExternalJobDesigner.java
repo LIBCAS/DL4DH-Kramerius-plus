@@ -5,16 +5,18 @@ import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.ENRICHMENT_EXTERNAL;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_ALTO;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_MODS;
 
-@Component
+@Configuration
 public class EnrichmentExternalJobDesigner extends AbstractJobDesigner {
 
-    private Step enrichPublicationModsStep;
+    private Step enrichModsStep;
 
-    private Step enrichPagesAltoStep;
+    private Step enrichAltoStep;
 
     @Override
     public String getJobName() {
@@ -24,18 +26,19 @@ public class EnrichmentExternalJobDesigner extends AbstractJobDesigner {
     @Bean(ENRICHMENT_EXTERNAL)
     @Override
     public Job build() {
-        return getJobBuilder().start(enrichPublicationModsStep)
-                .next(enrichPagesAltoStep)
+        return getJobBuilder()
+                .start(enrichModsStep)
+                .next(enrichAltoStep)
                 .build();
     }
 
     @Autowired
-    public void setEnrichPagesAltoMasterStep(@Qualifier(ENRICH_PAGES_ALTO_MASTER) Step enrichPagesAltoStep) {
-        this.enrichPagesAltoStep = enrichPagesAltoStep;
+    public void setEnrichPagesAltoMasterStep(@Qualifier(ENRICH_ALTO) Step enrichAltoStep) {
+        this.enrichAltoStep = enrichAltoStep;
     }
 
     @Autowired
-    public void setEnrichPublicationModsStep(@Qualifier(ENRICH_PUBLICATION_MODS) Step enrichPublicationModsStep) {
-        this.enrichPublicationModsStep = enrichPublicationModsStep;
+    public void setEnrichModsStep(@Qualifier(ENRICH_MODS) Step enrichModsStep) {
+        this.enrichModsStep = enrichModsStep;
     }
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class LinguisticMetadata {
+public class LinguisticMetadataDto {
 
     private Integer position;
 

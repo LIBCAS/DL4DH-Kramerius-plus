@@ -1,9 +1,9 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.enricher.page.alto;
+package cz.inqool.dl4dh.krameriusplus.corev2.enricher.alto;
 
 import cz.inqool.dl4dh.alto.*;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.AltoTokenMetadata;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.system.digitalobject.page.lindat.udpipe.Token;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.AltoTokenMetadata;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Token;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,10 +15,11 @@ import java.util.stream.Collectors;
 public class AltoMetadataEnricher {
 
     /**
-     * Processes Alto.Layout object and sets metadata about token positions
+     * Processes ALTO stored in given Page and extracts metadata about token positions from it.
+     * If ALTO is {@code null}, returns.
      */
-    public void enrichPageTokens(Page page, Alto.Layout altoLayout) {
-        AltoEnricherState state = new AltoEnricherState(page, altoLayout);
+    public void enrichPageTokens(Page page, Alto.Layout alto) {
+        AltoEnricherState state = new AltoEnricherState(page, alto);
 
         state.enrichPageTokens();
     }
@@ -33,7 +34,7 @@ public class AltoMetadataEnricher {
             this.altoLayout = layout;
         }
 
-        public void enrichPageTokens() {
+        private void enrichPageTokens() {
             var pageElements = Optional.ofNullable(altoLayout)
                     .map(Alto.Layout::getPage)
                     .orElse(new ArrayList<>());

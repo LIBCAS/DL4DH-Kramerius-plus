@@ -4,10 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -24,4 +21,7 @@ public class StepError extends DomainObject {
 
     @Lob
     private String stackTrace;
+
+    @Column(name = "error_order")
+    private Long order;
 }
