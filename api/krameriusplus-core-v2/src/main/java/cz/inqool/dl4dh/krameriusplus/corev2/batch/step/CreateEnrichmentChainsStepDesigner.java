@@ -8,6 +8,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentC
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.support.builder.CompositeItemProcessorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class CreateEnrichmentChainsStepDesigner extends AbstractStepDesigner {
         return CREATE_ENRICHMENT_CHAINS_STEP;
     }
 
+    @Bean(CREATE_ENRICHMENT_CHAINS)
     @Override
     public Step build() {
         return getStepBuilder().<String, List<EnrichmentChain>>chunk(5)

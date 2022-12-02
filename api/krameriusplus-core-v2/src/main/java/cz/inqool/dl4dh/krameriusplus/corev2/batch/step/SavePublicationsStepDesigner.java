@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publicatio
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.SAVE_PUBLICATIONS_STEP;
@@ -33,6 +34,7 @@ public class SavePublicationsStepDesigner extends AbstractStepDesigner {
         return SAVE_PUBLICATIONS_STEP;
     }
 
+    @Bean(SAVE_PUBLICATIONS)
     @Override
     public Step build() {
         return getStepBuilder().

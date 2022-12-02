@@ -1,19 +1,35 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.CREATE_ENRICHMENT_REQUEST;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.CREATE_ENRICHMENT_CHAINS;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.CREATE_ENRICHMENT_ITEMS;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENQUEUE_CHAINS;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.SAVE_PUBLICATIONS;
 
 @Configuration
 public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
+
+    private Step savePublicationsStep;
+
+    private Step createEnrichmentItemsStep;
+
+    private Step createEnrichmentChainsStep;
+
+    private Step enqueueEnrichmentChainsStep;
 
     @Override
     public String getJobName() {
         return CREATE_ENRICHMENT_REQUEST;
     }
 
-//    @Bean(CREATE_ENRICHMENT_REQUEST)
+    @Bean(CREATE_ENRICHMENT_REQUEST)
     @Override
     public Job build() {
         // Step 1 - save publications
@@ -41,6 +57,30 @@ public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
         //      - for each EnrichmentRequestItem, do
         //          - for each EnrichmentChain, do
         //              - enqueue first job in chain
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        return getJobBuilder().start(savePublicationsStep)
+                .next(createEnrichmentItemsStep)
+                .next(createEnrichmentChainsStep)
+                .next(enqueueEnrichmentChainsStep)
+                .build();
+    }
+
+    @Autowired
+    public void setSavePublicationsStep(@Qualifier(SAVE_PUBLICATIONS) Step savePublicationsStep) {
+        this.savePublicationsStep = savePublicationsStep;
+    }
+
+    @Autowired
+    public void setCreateEnrichmentItemsStep(@Qualifier(CREATE_ENRICHMENT_ITEMS) Step createEnrichmentItemsStep) {
+        this.createEnrichmentItemsStep = createEnrichmentItemsStep;
+    }
+
+    @Autowired
+    public void setCreateEnrichmentChainsStep(@Qualifier(CREATE_ENRICHMENT_CHAINS) Step createEnrichmentChainsStep) {
+        this.createEnrichmentChainsStep = createEnrichmentChainsStep;
+    }
+
+    @Autowired
+    public void setEnqueueEnrichmentChainsStep(@Qualifier(ENQUEUE_CHAINS) Step enqueueEnrichmentChainsStep) {
+        this.enqueueEnrichmentChainsStep = enqueueEnrichmentChainsStep;
     }
 }

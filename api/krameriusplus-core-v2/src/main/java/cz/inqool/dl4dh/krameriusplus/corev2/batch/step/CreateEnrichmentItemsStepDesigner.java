@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer.EnrichmentItemWrit
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.CREATE_ENRICHMENT_ITEMS_STEP;
@@ -33,6 +34,7 @@ public class CreateEnrichmentItemsStepDesigner extends AbstractStepDesigner {
         return CREATE_ENRICHMENT_ITEMS_STEP;
     }
 
+    @Bean(CREATE_ENRICHMENT_ITEMS)
     @Override
     public Step build() {
         return getStepBuilder().<String, EnrichmentRequestItem>chunk(5)
