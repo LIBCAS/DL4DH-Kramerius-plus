@@ -5,7 +5,13 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,9 +42,12 @@ public class EnrichmentChain extends DomainObject {
     /**
      * Return the next jobInstance in sequence.
      * @param jobInstance
-     * @return
+     * @return Optional of next instance to execute
      */
     public Optional<KrameriusJobInstance> getNextToExecute(KrameriusJobInstance jobInstance) {
-        throw new UnsupportedOperationException("Not Implemented Yet");
+        return Optional.of(jobs.get(jobs.entrySet().stream().dropWhile(entry -> entry.getValue().equals(jobInstance))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("JobInstance not found in chain"))
+                .getKey()));
     }
 }
