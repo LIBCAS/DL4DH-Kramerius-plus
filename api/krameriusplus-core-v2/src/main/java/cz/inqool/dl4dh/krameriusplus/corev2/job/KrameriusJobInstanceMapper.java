@@ -156,7 +156,7 @@ public class KrameriusJobInstanceMapper {
 
         StepRunReportDto stepRunReportDto = new StepRunReportDto();
 
-        stepRunReportDto.setErrors(stepRunReport.getError().stream().map(this::toErrorDto).collect(Collectors.toSet()));
+        stepRunReportDto.setErrors(stepRunReport.getErrors().stream().map(this::toErrorDto).collect(Collectors.toSet()));
 
         return stepRunReportDto;
     }

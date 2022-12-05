@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.kramerius;
 
 import cz.inqool.dl4dh.alto.Alto;
-import cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException;
+import cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectCreateDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectMapperVisitor;
@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.core.domain.exception.KrameriusException.ErrorCode.*;
+import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.*;
 import static cz.inqool.dl4dh.krameriusplus.corev2.config.WebClientConfig.KRAMERIUS_WEB_CLIENT;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.SyncKrameriusMessenger.StreamType.*;
 

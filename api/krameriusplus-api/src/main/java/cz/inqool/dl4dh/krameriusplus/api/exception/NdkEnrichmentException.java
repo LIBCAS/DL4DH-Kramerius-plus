@@ -13,7 +13,9 @@ public class NdkEnrichmentException extends GeneralException {
     public enum ErrorCode implements LogCode {
         NDK_PAGE_FILE_NOT_FOUND,
         NDK_PAGE_DIV_NOT_FOUND,
-        NDK_PAGE_DIV_AMD_CHILD_NOT_FOUND,
+        NDK_PAGE_FILEID_NOT_FOUND,
+        NDK_PUBLICATION_DIRECTORY_NOT_FOUND,
+        NDK_PAGE_DIRECTORY_NOT_FOUND,
         NDK_DIRECTORY_NOT_FOUND,
         NDK_DIRECTORY_NOT_CONFIGURED,
         MAIN_METS_ERROR,

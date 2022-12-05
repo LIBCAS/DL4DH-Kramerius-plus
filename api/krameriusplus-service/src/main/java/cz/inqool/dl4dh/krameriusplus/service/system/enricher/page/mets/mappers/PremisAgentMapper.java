@@ -22,7 +22,7 @@ public class PremisAgentMapper implements MetsMapper<MetsPremisAgentElement> {
                 .collect(Collectors.toList()));
         agent.setAgentNames(agentComplexType.getAgentName());
         agent.setAgentType(agentComplexType.getAgentType());
-//        agent.setAgentNote(source.getAgentNote());
+//        agent.setAgentNote(agentComplexType.getAgentNote());
 
         return agent;
     }

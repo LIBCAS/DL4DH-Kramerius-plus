@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication.page.mets;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class MetsMixElement extends MetsElement {
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class BasicDigitalInformation {
 
         private List<Compression> compression;
@@ -29,6 +31,7 @@ public class MetsMixElement extends MetsElement {
         @Getter
         @Setter
         @NoArgsConstructor
+        @AllArgsConstructor
         public static class Compression {
             private String compressionScheme;
         }
@@ -37,6 +40,7 @@ public class MetsMixElement extends MetsElement {
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class BasicImageInformation {
 
         private BasicImageCharacteristics basicImageCharacteristics;
@@ -44,6 +48,7 @@ public class MetsMixElement extends MetsElement {
         @Getter
         @Setter
         @NoArgsConstructor
+        @AllArgsConstructor
         public static class BasicImageCharacteristics {
             private BigInteger imageWidth;
             private BigInteger imageHeight;
@@ -52,6 +57,7 @@ public class MetsMixElement extends MetsElement {
             @Getter
             @Setter
             @NoArgsConstructor
+            @AllArgsConstructor
             public static class PhotometricInterpretation {
                 private String colorSpace;
             }
@@ -61,6 +67,7 @@ public class MetsMixElement extends MetsElement {
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class ImageCaptureMetadata {
 
         private GeneralCaptureInformation generalCaptureInformation;
@@ -72,6 +79,7 @@ public class MetsMixElement extends MetsElement {
         @Getter
         @Setter
         @NoArgsConstructor
+        @AllArgsConstructor
         public static class GeneralCaptureInformation {
             private String dateTimeCreated;
             private List<String> imageProducers;
@@ -81,6 +89,7 @@ public class MetsMixElement extends MetsElement {
         @Getter
         @Setter
         @NoArgsConstructor
+        @AllArgsConstructor
         public static class ScannerCapture {
             private String scannerManufacturer;
             private ScannerModel scannerModel;
@@ -91,6 +100,7 @@ public class MetsMixElement extends MetsElement {
             @Getter
             @Setter
             @NoArgsConstructor
+            @AllArgsConstructor
             public static class ScannerModel {
                 private String scannerModelName;
                 private String scannerModelNumber;
@@ -100,6 +110,7 @@ public class MetsMixElement extends MetsElement {
             @Getter
             @Setter
             @NoArgsConstructor
+            @AllArgsConstructor
             public static class MaximumOpticalResolution {
                 private BigInteger xOpticalResolution;
                 private BigInteger yOpticalResolution;
@@ -109,6 +120,7 @@ public class MetsMixElement extends MetsElement {
             @Getter
             @Setter
             @NoArgsConstructor
+            @AllArgsConstructor
             public static class ScanningSystemSoftware {
                 private String scanningSystemSoftwareName;
                 private String scanningSystemSoftwareVersionNo;
@@ -118,6 +130,7 @@ public class MetsMixElement extends MetsElement {
         @Getter
         @Setter
         @NoArgsConstructor
+        @AllArgsConstructor
         public static class DigitalCameraCapture {
             private String digitalCameraManufacturer;
             private DigitalCameraModel digitalCameraModel;
@@ -127,6 +140,7 @@ public class MetsMixElement extends MetsElement {
             @Getter
             @Setter
             @NoArgsConstructor
+            @AllArgsConstructor
             public static class DigitalCameraModel {
                 private String digitalCameraModelName;
                 private String digitalCameraModelNumber;
@@ -135,17 +149,16 @@ public class MetsMixElement extends MetsElement {
 
             @Getter
             @Setter
-            @NoArgsConstructor
             public static class DigitalCameraCaptureSettings {
+
 //                private ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData imageData;
-                //TODO: map to own data structure
+
             }
         }
     }
 
     @Getter
     @Setter
-    @NoArgsConstructor
     public static class ImageAssessmentMetadata {
 //        private ImageAssessmentMetadataType.SpatialMetrics spatialMetrics;
 //        private ImageAssessmentMetadataType.ImageColorEncoding imageColorEncoding;
