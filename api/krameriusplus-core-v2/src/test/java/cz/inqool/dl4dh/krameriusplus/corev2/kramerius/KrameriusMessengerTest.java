@@ -27,6 +27,7 @@ import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.config.WebClientConfig.KRAMERIUS_WEB_CLIENT;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerChildrenResponse.*;
+import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerModsResponse.MODS_RESPONSE;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -136,7 +137,11 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void mods() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        mockServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(MODS_RESPONSE)
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
+
+//        ModsCollectionDefition modsCollectionDefition = krameriusMessenger.getMods("test");
     }
 
     private DigitalObject testAndGetDigitalObject(String digitalObjectResponse, Class<?> expectedClass, String expectedId) {
