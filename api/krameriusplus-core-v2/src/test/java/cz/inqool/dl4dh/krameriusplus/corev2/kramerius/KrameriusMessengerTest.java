@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.kramerius;
 
+import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.corev2.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.corev2.TestApplication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
@@ -9,6 +10,8 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalVolume;
+import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
+import cz.inqool.dl4dh.mods.TitleInfoDefinition;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -127,14 +130,22 @@ public class KrameriusMessengerTest extends CoreBaseTest {
                 .setBody(ALTO_UPPERCASE_STRING_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_TEXT));
 
-        String altoString = krameriusMessenger.getAltoString("test");
+        Alto alto = krameriusMessenger.getAlto("test");
 
-        assertThat(altoString).isEqualTo(ALTO_UPPERCASE_STRING_RESPONSE);
+        assertThat(alto.getDescription().getMeasurementUnit()).isEqualTo("Pixel");
+        assertThat(alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep()
+                .getProcessingSoftware().getSoftwareCreator()).isEqualTo("ABBYY");
     }
 
     @Test
     void altoString() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        mockServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(ALTO_UPPERCASE_STRING_RESPONSE)
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_TEXT));
+
+        String altoString = krameriusMessenger.getAltoString("test");
+
+        assertThat(altoString).isEqualTo(ALTO_UPPERCASE_STRING_RESPONSE);
     }
 
     @Test
@@ -154,7 +165,13 @@ public class KrameriusMessengerTest extends CoreBaseTest {
                 .setBody(MODS_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
 
-//        ModsCollectionDefition modsCollectionDefition = krameriusMessenger.getMods("test");
+        ModsCollectionDefinition modsCollectionDefition = krameriusMessenger.getMods("test");
+
+        // should be title info
+        TitleInfoDefinition titleInfoDefinition = (TitleInfoDefinition) modsCollectionDefition.getMods().get(0).getModsGroup().get(0);
+
+        assertThat(titleInfoDefinition.getTitle()).isEqualTo("Ve škole duchovní");
+
     }
 
     private DigitalObject testAndGetDigitalObject(String digitalObjectResponse, Class<?> expectedClass, String expectedId) {
