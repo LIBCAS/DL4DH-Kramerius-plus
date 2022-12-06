@@ -15,7 +15,7 @@ import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRI
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.KrameriusProcessor.ENRICH_NDK_COMPOSITE_PROCESSOR;
 
 @Component
-public class EnrichNdkStep extends AbstractStepDesigner {
+public class EnrichNdkStepDesigner extends AbstractStepDesigner {
 
     private MongoItemReader<Page> reader;
 

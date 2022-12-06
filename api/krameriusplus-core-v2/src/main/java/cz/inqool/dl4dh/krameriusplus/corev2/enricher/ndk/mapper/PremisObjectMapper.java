@@ -1,11 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.enricher.ndk.mapper;
 
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsPremisObjectElement;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.ObjectCharacteristics;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.ObjectCharacteristics.CreatingApplication;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.ObjectCharacteristics.Fixity;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.ObjectCharacteristics.Format;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.ObjectIdentifier;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsPremisObjectElement.ObjectCharacteristics;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsPremisObjectElement.ObjectCharacteristics.CreatingApplication;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsPremisObjectElement.ObjectCharacteristics.Fixity;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsPremisObjectElement.ObjectCharacteristics.Format;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsPremisObjectElement.ObjectCharacteristics.Format.FormatDesignation;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsPremisObjectElement.ObjectCharacteristics.Format.FormatRegistry;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsPremisObjectElement.ObjectIdentifier;
 import cz.inqool.dl4dh.krameriusplus.corev2.utils.XMLUtils;
 import cz.inqool.dl4dh.ndk.premis.*;
 import org.mapstruct.Mapper;
@@ -14,7 +16,7 @@ import javax.xml.bind.JAXBElement;
 import java.util.List;
 
 @Mapper
-public interface PremisObjectMapper extends MixMapper {
+public interface PremisObjectMapper extends MetsMapperBase {
 
     MetsPremisObjectElement convert(File xmlElement);
 
@@ -70,9 +72,9 @@ public interface PremisObjectMapper extends MixMapper {
         return result;
     }
 
-    Format.FormatDesignation mapDesignation(FormatDesignationComplexType xmlElement);
+    FormatDesignation mapDesignation(FormatDesignationComplexType xmlElement);
 
-    Format.FormatRegistry mapRegistry(FormatRegistryComplexType value);
+    FormatRegistry mapRegistry(FormatRegistryComplexType value);
 
 
     default CreatingApplication mapCreatingApp(List<CreatingApplicationComplexType> creatingApplication) {

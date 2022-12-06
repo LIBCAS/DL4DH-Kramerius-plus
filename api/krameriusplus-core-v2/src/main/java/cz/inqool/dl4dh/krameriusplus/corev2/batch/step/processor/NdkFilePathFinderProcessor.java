@@ -26,6 +26,7 @@ public class NdkFilePathFinderProcessor implements ItemProcessor<Page, NdkFilePa
     private MetsFileLocatorService metsFileLocatorService;
 
     private MetsExplorer metsExplorer;
+
     /**
      * Map from page title to the Path of the corresponding mets file
      */
