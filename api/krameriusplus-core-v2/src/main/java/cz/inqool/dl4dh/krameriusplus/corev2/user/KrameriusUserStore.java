@@ -5,10 +5,10 @@ import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.store.DatedStore;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class KrameriusUserStore extends DatedStore<User, QKrameriusUser> {
+public class KrameriusUserStore extends DatedStore<User, QUser> {
 
     public KrameriusUserStore() {
-        super(User.class, QKrameriusUser.class);
+        super(User.class, QUser.class);
     }
 
     public User findUserByUsername(String username) {

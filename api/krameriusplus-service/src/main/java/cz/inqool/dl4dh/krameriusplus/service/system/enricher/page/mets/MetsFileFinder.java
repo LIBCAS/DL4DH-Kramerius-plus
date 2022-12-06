@@ -59,7 +59,6 @@ public class MetsFileFinder {
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to list files in folder '" + ndkPath + "'", e);
         }
-
     }
 
     public Path findMainMetsFile(Path ndkDir) {

@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.ENRICHMENT_EXTERNAL;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_ALTO;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_MODS;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_ALTO_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_MODS_STEP;
 
 @Configuration
 public class EnrichmentExternalJobDesigner extends AbstractJobDesigner {
@@ -33,12 +33,12 @@ public class EnrichmentExternalJobDesigner extends AbstractJobDesigner {
     }
 
     @Autowired
-    public void setEnrichPagesAltoMasterStep(@Qualifier(ENRICH_ALTO) Step enrichAltoStep) {
+    public void setEnrichPagesAltoMasterStep(@Qualifier(ENRICH_ALTO_STEP) Step enrichAltoStep) {
         this.enrichAltoStep = enrichAltoStep;
     }
 
     @Autowired
-    public void setEnrichModsStep(@Qualifier(ENRICH_MODS) Step enrichModsStep) {
+    public void setEnrichModsStep(@Qualifier(ENRICH_MODS_STEP) Step enrichModsStep) {
         this.enrichModsStep = enrichModsStep;
     }
 }

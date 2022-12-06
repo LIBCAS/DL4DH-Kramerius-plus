@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_MODS;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_MODS_STEP;
 
 @Configuration
 public class EnrichModsStepDesigner extends AbstractStepDesigner {
@@ -15,10 +15,10 @@ public class EnrichModsStepDesigner extends AbstractStepDesigner {
 
     @Override
     protected String getStepName() {
-        return ENRICH_MODS;
+        return ENRICH_MODS_STEP;
     }
 
-    @Bean(ENRICH_MODS)
+    @Bean(ENRICH_MODS_STEP)
     @Override
     public Step build() {
         return getStepBuilder()
