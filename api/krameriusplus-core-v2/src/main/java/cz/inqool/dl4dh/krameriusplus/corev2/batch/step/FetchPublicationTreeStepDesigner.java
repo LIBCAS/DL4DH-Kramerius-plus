@@ -2,9 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.TreeBuildingProcessor;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.EnrichmentRequestReader;
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer.PublicationTreeWriter;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -18,15 +18,15 @@ public class FetchPublicationTreeStepDesigner extends AbstractStepDesigner {
 
     private final TreeBuildingProcessor treeBuildingProcessor;
 
-    private final MongoItemWriter<Publication> publicationMongoItemWriter;
+    private final PublicationTreeWriter publicationTreeWriter;
 
     @Autowired
     public FetchPublicationTreeStepDesigner(EnrichmentRequestReader enrichmentRequestReader,
                                             TreeBuildingProcessor treeBuildingProcessor,
-                                            MongoItemWriter<Publication> publicationMongoItemWriter) {
+                                            PublicationTreeWriter publicationTreeWriter) {
         this.enrichmentRequestReader = enrichmentRequestReader;
         this.treeBuildingProcessor = treeBuildingProcessor;
-        this.publicationMongoItemWriter = publicationMongoItemWriter;
+        this.publicationTreeWriter = publicationTreeWriter;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class FetchPublicationTreeStepDesigner extends AbstractStepDesigner {
                 <String, Publication>chunk(5)
                 .reader(enrichmentRequestReader)
                 .processor(treeBuildingProcessor)
-                .writer(publicationMongoItemWriter)
+                .writer(publicationTreeWriter)
                 .build();
     }
 }

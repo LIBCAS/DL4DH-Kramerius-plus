@@ -6,11 +6,9 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @StepScope
-public class PublicationTreeFindingProcessor implements ItemProcessor<String, List<String>> {
+public class PublicationTreeFindingProcessor implements ItemProcessor<String, ChainCreateDto> {
 
     private final PublicationStore publicationStore;
 
@@ -20,7 +18,10 @@ public class PublicationTreeFindingProcessor implements ItemProcessor<String, Li
     }
 
     @Override
-    public List<String> process(String item) throws Exception {
-        return publicationStore.findAllEditions(item);
+    public ChainCreateDto process(String item) throws Exception {
+        ChainCreateDto chainCreateDto = new ChainCreateDto();
+        chainCreateDto.setEnrichmentItemId(item);
+        chainCreateDto.getPublicationIds().addAll(publicationStore.findAllEditions(item));
+        return chainCreateDto;
     }
 }

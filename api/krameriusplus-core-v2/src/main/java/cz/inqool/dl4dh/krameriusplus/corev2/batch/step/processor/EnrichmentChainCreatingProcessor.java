@@ -3,10 +3,10 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.EnrichmentJobConfig;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChainStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItemStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequestStore;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -24,11 +24,9 @@ import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.ENRICHMEN
 
 @Component
 @StepScope
-public class EnrichmentChainCreatingProcessor implements ItemProcessor<List<String>, List<EnrichmentChain>> {
+public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCreateDto, List<EnrichmentChain>> {
 
     private final KrameriusJobInstanceService krameriusJobInstanceService;
-
-    private final EnrichmentRequestItemStore enrichmentRequestItemStore;
 
     private final EnrichmentChainStore enrichmentChainStore;
 
@@ -38,27 +36,29 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<List<Stri
     public EnrichmentChainCreatingProcessor(KrameriusJobInstanceService krameriusJobInstanceService,
                                             EnrichmentRequestStore enrichmentRequestStore,
                                             @Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
-                                            EnrichmentRequestItemStore enrichmentRequestItemStore, EnrichmentChainStore enrichmentChainStore) {
+                                            EnrichmentChainStore enrichmentChainStore) {
         this.krameriusJobInstanceService = krameriusJobInstanceService;
-        this.enrichmentRequestItemStore = enrichmentRequestItemStore;
         this.enrichmentChainStore = enrichmentChainStore;
         enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
     }
 
     @Override
-    public List<EnrichmentChain> process(List<String> item) throws Exception {
+    public List<EnrichmentChain> process(ChainCreateDto item) throws Exception {
         Long chainOrder = 0L;
-        List<EnrichmentChain> chains = item.stream().map(publicationId -> createChain(publicationId, chainOrder)).collect(Collectors.toList());
+        List<EnrichmentChain> chains = item.getPublicationIds().stream().map(publicationId ->
+                createChain(publicationId, chainOrder)).collect(Collectors.toList());
 
-        EnrichmentRequestItem enrichmentRequestItem = findEnrichmentItem(item.get(0));
-        enrichmentRequestItem.setEnrichmentChains(chains);
-
+        EnrichmentRequestItem enrichmentRequestItem = findEnrichmentItem(item.getEnrichmentItemId());
+        chains.forEach(chain -> chain.setEnrichmentRequestItem(enrichmentRequestItem));
+        chains.forEach(enrichmentChainStore::create);
 
         return chains;
     }
 
     private EnrichmentRequestItem findEnrichmentItem(String publicationId) {
-        return enrichmentRequest.getItems().stream().filter(item -> item.getPublicationId().equals(publicationId)).findFirst().orElseThrow();
+        return enrichmentRequest.getItems().stream()
+                .filter(item -> item.getPublicationId().equals(publicationId))
+                .findFirst().orElseThrow();
     }
 
     private EnrichmentChain createChain(String publicationId, Long chainOrder) {
@@ -72,10 +72,12 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<List<Stri
 
     private Map<Long, KrameriusJobInstance> createJobs() {
         Map<Long, KrameriusJobInstance> orderToJobMap = new HashMap<>();
+        long orderCounter = 0L;
 
-        enrichmentRequest.getConfigs()
-                .forEach(config -> orderToJobMap.put(orderCounter++,
-                        krameriusJobInstanceService.createJob(config.getJobType(), config.toJobParametersWrapper().getJobParametersMap())));
+        for (EnrichmentJobConfig config : enrichmentRequest.getConfigs()) {
+            orderToJobMap.put(orderCounter++, krameriusJobInstanceService.createJob(config.getJobType(),
+                    config.toJobParametersWrapper().getJobParametersMap()));
+        }
 
         return orderToJobMap;
     }

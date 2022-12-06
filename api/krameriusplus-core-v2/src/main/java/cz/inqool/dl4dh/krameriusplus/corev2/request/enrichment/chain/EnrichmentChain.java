@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +35,9 @@ public class EnrichmentChain extends DomainObject {
     @NotNull
     @Column(name = "chain_order")
     private Long order;
+
+    @ManyToOne
+    private EnrichmentRequestItem enrichmentRequestItem;
 
     /**
      * Return the next jobInstance in sequence.

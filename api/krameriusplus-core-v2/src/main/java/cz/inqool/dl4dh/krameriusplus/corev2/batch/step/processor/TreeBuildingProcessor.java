@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessenger;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -40,15 +41,21 @@ public class TreeBuildingProcessor implements ItemProcessor<String, Publication>
         List<DigitalObject> publicationChildren = krameriusMessenger
                 .getDigitalObjectsForParent(publication.getId());
 
-        publication.setChildren(publicationChildren);
-
-        List<Publication> publications = publicationChildren.stream()
-                .filter(digitalObject -> digitalObject instanceof Publication)
-                .map(digitalObject -> ((Publication) digitalObject))
-                .collect(Collectors.toList());
+        List<Publication> publications = filterObjects(publicationChildren, Publication.class);
+        List<Page> pages = filterObjects(publicationChildren, Page.class);
+        publication.setChildren(publications);
+        publication.setPages(pages);
 
         publications.forEach(this::fetchTree);
 
         return publication;
+    }
+
+
+    private <T extends DigitalObject>List<T> filterObjects(List<DigitalObject> objects, Class<T> targetClass) {
+        return objects.stream()
+                .filter(targetClass::isInstance)
+                .map(targetClass::cast)
+                .collect(Collectors.toList());
     }
 }
