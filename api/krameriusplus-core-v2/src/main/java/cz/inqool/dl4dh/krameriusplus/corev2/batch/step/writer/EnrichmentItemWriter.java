@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.components;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItemStore;
@@ -16,7 +16,7 @@ import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.ENRICHMEN
 
 @Component
 @StepScope
-public class EnrichmentRequestItemWriter implements ItemWriter<EnrichmentRequestItem> {
+public class EnrichmentItemWriter implements ItemWriter<EnrichmentRequestItem> {
 
     private final EnrichmentRequestItemStore enrichmentRequestItemStore;
 
@@ -25,8 +25,8 @@ public class EnrichmentRequestItemWriter implements ItemWriter<EnrichmentRequest
     private final EnrichmentRequestStore enrichmentRequestStore;
 
     @Autowired
-    public EnrichmentRequestItemWriter(@Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
-                                       EnrichmentRequestItemStore enrichmentRequestItemStore, EnrichmentRequestStore enrichmentRequestStore) {
+    public EnrichmentItemWriter(@Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
+                                EnrichmentRequestItemStore enrichmentRequestItemStore, EnrichmentRequestStore enrichmentRequestStore) {
         this.enrichmentRequestItemStore = enrichmentRequestItemStore;
         this.enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
         this.enrichmentRequestStore = enrichmentRequestStore;

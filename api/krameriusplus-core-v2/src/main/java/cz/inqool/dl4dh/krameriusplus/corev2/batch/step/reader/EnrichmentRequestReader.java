@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.components;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequestStore;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -14,7 +14,7 @@ import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.ENRICHMEN
 
 @Component
 @StepScope
-public class PublicationDownloadingReader implements ItemReader<String> {
+public class EnrichmentRequestReader implements ItemReader<String> {
 
     private final EnrichmentRequestStore enrichmentRequestStore;
 
@@ -23,8 +23,8 @@ public class PublicationDownloadingReader implements ItemReader<String> {
     private List<String> publicationIds;
 
     @Autowired
-    public PublicationDownloadingReader(@Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
-                                        EnrichmentRequestStore enrichmentRequestStore) {
+    public EnrichmentRequestReader(@Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
+                                   EnrichmentRequestStore enrichmentRequestStore) {
         this.enrichmentRequestStore = enrichmentRequestStore;
         this.enrichmentRequestId = enrichmentRequestId;
     }

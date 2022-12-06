@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.components;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.store.CustomPublicationStore;
 import org.springframework.batch.core.configuration.annotation.StepScope;

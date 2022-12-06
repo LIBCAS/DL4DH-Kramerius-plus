@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.components;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.store.PublicationStore;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 
 @StepScope
 @Component
-public class EnrichmentRequestItemCreatingProcessor implements ItemProcessor<String, EnrichmentRequestItem> {
+public class EnrichmentItemCreatingProcessor implements ItemProcessor<String, EnrichmentRequestItem> {
 
     private final PublicationStore publicationStore;
 
     private Long orderCounter = 0L;
 
     @Autowired
-    public EnrichmentRequestItemCreatingProcessor(PublicationStore publicationStore) {
+    public EnrichmentItemCreatingProcessor(PublicationStore publicationStore) {
         this.publicationStore = publicationStore;
     }
 
