@@ -924,4 +924,202 @@ public class KrameriusMessengerChildrenResponse {
             "    \"policy\": \"public\"\n" +
             "  }\n" +
             "]";
+
+    public static final String MONOGRAPH_UNIT_CHILDREN_RESPONSE = "[\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:5cb017cf-b230-4378-89bb-df573056802c\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"FrontCover\",\n" +
+            "      \"pagenumber\": \"[1a] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[1a]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:6cbfa45e-473e-4472-aa63-abc649e837ea\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"FrontEndSheet\",\n" +
+            "      \"pagenumber\": \"[1b] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[1b]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:274558bf-cf28-4d7e-9ce2-6e78f4a63334\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"[1c] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[1c]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:44e53832-62e4-44f2-b0fe-b7726932a0fa\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"[1d] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[1d]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:0a98da7f-74e6-40fe-89d7-d1b096aa42c3\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"[1] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[1]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:26da4cb1-11fb-475a-93d0-d44afbcfc628\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"[2] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[2]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:bf851b80-6aaa-4632-b360-fae5d5ce53f0\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"TitlePage\",\n" +
+            "      \"pagenumber\": \"[3] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[3]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:c7a85bb2-8ff2-4549-bf41-c0657e180056\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"[4] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[4]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:94ec7edd-7d59-4db7-b0b5-29fe13ef5ef7\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"[5] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[5]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:ae623d63-5b9b-454b-96ce-24f15787e829\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"[6] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[6]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:eaca8ec0-0079-4116-8bfb-0407d6e4a72b\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"[7] \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"[7]\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:b7a6a9a4-b96a-460d-ab34-63434dd4a775\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"8 \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"8\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:b7ad8f7e-483b-4747-839b-c73748a84a2b\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"9 \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"9\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:917714d8-2ecf-4e2e-8868-875b0d9c4eb6\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"10 \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"10\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"datanode\": true,\n" +
+            "    \"pid\": \"uuid:056fc496-2c9c-4903-8964-7de7b800fbbe\",\n" +
+            "    \"model\": \"page\",\n" +
+            "    \"details\": {\n" +
+            "      \"type\": \"NormalPage\",\n" +
+            "      \"pagenumber\": \"11 \\n                        \"\n" +
+            "    },\n" +
+            "    \"title\": \"11\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\"\n" +
+            "  }\n" +
+            "]";
 }

@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.TestApplication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.Monograph;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalVolume;
@@ -107,12 +108,12 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void monographUnit() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        testAndGetDigitalObject(MONOGRAPH_UNIT_RESPONSE, MonographUnit.class, "uuid:c29c4970-55d8-11e9-936e-005056827e52");
     }
 
     @Test
     void monographUnitChildren() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        testAndGetChildren(MONOGRAPH_UNIT_CHILDREN_RESPONSE, Page.class, 15);
     }
 
     @Test

@@ -92,4 +92,33 @@ public class KrameriusMessengerResponse {
             "    \"root_pid\": \"uuid:0af541d0-06c8-11e6-a5b6-005056827e52\",\n" +
             "    \"policy\": \"public\"\n" +
             "}";
+
+    public static final String MONOGRAPH_UNIT_RESPONSE = "{\n" +
+            "    \"datanode\": false,\n" +
+            "    \"context\": [\n" +
+            "        [\n" +
+            "            {\n" +
+            "                \"pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "                \"model\": \"monograph\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"pid\": \"uuid:c29c4970-55d8-11e9-936e-005056827e52\",\n" +
+            "                \"model\": \"monographunit\"\n" +
+            "            }\n" +
+            "        ]\n" +
+            "    ],\n" +
+            "    \"pid\": \"uuid:c29c4970-55d8-11e9-936e-005056827e52\",\n" +
+            "    \"model\": \"monographunit\",\n" +
+            "    \"handle\": {\n" +
+            "        \"href\": \"http://www.ndk.cz/search/handle/uuid:c29c4970-55d8-11e9-936e-005056827e52\"\n" +
+            "    },\n" +
+            "    \"details\": {\n" +
+            "        \"partNumber\": \"1\"\n" +
+            "    },\n" +
+            "    \"title\": \"V ohradě měst a městských zdech. 1\",\n" +
+            "    \"root_title\": \"V ohradě měst a městských zdech\",\n" +
+            "    \"root_pid\": \"uuid:29dea0f0-ea9a-11e9-8d0f-005056825209\",\n" +
+            "    \"policy\": \"public\",\n" +
+            "    \"dnnt\": false\n" +
+            "}";
 }
