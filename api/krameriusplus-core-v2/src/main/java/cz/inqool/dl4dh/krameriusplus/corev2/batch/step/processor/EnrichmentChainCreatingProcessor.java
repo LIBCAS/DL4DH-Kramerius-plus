@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.ChainCreateWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.EnrichmentJobConfig;
@@ -14,16 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.ENRICHMENT_REQUEST_ID;
 
 @Component
 @StepScope
-public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCreateDto, List<EnrichmentChain>> {
+public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCreateWrapper, List<EnrichmentChain>> {
 
     private final KrameriusJobInstanceService krameriusJobInstanceService;
 
@@ -42,13 +43,15 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
     }
 
     @Override
-    public List<EnrichmentChain> process(ChainCreateDto item) throws Exception {
-        Long chainOrder = 0L;
-        List<EnrichmentChain> chains = item.getPublicationIds().stream().map(publicationId ->
-                createChain(publicationId, chainOrder)).collect(Collectors.toList());
+    public List<EnrichmentChain> process(ChainCreateWrapper item) throws Exception {
+        long chainOrder = 0L;
+        List<EnrichmentChain> chains = new ArrayList<>();
+        for (String publicationId : item.getPublicationIds()) {
+            chains.add(createChain(publicationId, chainOrder++));
+        }
 
         EnrichmentRequestItem enrichmentRequestItem = findEnrichmentItem(item.getEnrichmentItemId());
-        chains.forEach(chain -> chain.setEnrichmentRequestItem(enrichmentRequestItem));
+        chains.forEach(chain -> chain.setRequestItem(enrichmentRequestItem));
         chains.forEach(enrichmentChainStore::create);
 
         return chains;

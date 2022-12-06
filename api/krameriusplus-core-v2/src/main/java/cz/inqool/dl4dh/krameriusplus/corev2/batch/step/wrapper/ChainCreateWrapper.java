@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ChainCreateDto {
+public class ChainCreateWrapper {
 
     private final List<String> publicationIds = new ArrayList<>();
 

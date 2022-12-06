@@ -8,11 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Getter
 @Setter
@@ -37,7 +33,7 @@ public class EnrichmentChain extends DomainObject {
     private Long order;
 
     @ManyToOne
-    private EnrichmentRequestItem enrichmentRequestItem;
+    private EnrichmentRequestItem requestItem;
 
     /**
      * Return the next jobInstance in sequence.
@@ -45,7 +41,7 @@ public class EnrichmentChain extends DomainObject {
      * @return Optional of next instance to execute
      */
     public Optional<KrameriusJobInstance> getNextToExecute(KrameriusJobInstance jobInstance) {
-        Iterator<KrameriusJobInstance> orderedJobs = sortJobsByOrder(jobs).values().iterator();
+        Iterator<KrameriusJobInstance> orderedJobs = new TreeMap<>(jobs).values().iterator();
 
         while (orderedJobs.hasNext()) {
             if (orderedJobs.next().equals(jobInstance)) {
@@ -54,12 +50,5 @@ public class EnrichmentChain extends DomainObject {
         }
 
         return Optional.empty();
-    }
-
-
-    private Map<Long, KrameriusJobInstance> sortJobsByOrder(Map<Long, KrameriusJobInstance> jobMap) {
-        return jobMap.keySet().stream().sorted()
-                .map(key -> Map.entry(key, jobMap.get(key)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

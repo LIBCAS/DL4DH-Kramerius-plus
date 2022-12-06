@@ -8,6 +8,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ public class EnrichmentChainEnqueuingTasklet implements Tasklet {
 
     private final JobEnqueueService jobEnqueueService;
 
+    @Autowired
     public EnrichmentChainEnqueuingTasklet(@Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
                                            EnrichmentRequestStore enrichmentRequestStore,
                                            JobEnqueueService jobEnqueueService) {
@@ -30,7 +32,7 @@ public class EnrichmentChainEnqueuingTasklet implements Tasklet {
 
 
     @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
         enrichmentRequest.getItems()
                 .forEach(enrichmentRequestItem -> enrichmentRequestItem.getEnrichmentChains()
                         .forEach(chain -> jobEnqueueService.enqueue(chain.getJobs().get(0L))));

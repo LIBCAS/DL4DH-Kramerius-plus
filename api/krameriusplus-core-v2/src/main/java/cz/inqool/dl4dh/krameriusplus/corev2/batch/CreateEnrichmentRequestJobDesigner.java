@@ -13,7 +13,7 @@ import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.*;
 @Configuration
 public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
 
-    private Step savePublicationsStep;
+    private Step fetchPublicationsStep;
 
     private Step createEnrichmentItemsStep;
 
@@ -54,7 +54,7 @@ public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
         //      - for each EnrichmentRequestItem, do
         //          - for each EnrichmentChain, do
         //              - enqueue first job in chain
-        return getJobBuilder().start(savePublicationsStep)
+        return getJobBuilder().start(fetchPublicationsStep)
                 .next(createEnrichmentItemsStep)
                 .next(createEnrichmentChainsStep)
                 .next(enqueueEnrichmentChainsStep)
@@ -62,8 +62,8 @@ public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
     }
 
     @Autowired
-    public void setSavePublicationsStep(@Qualifier(FETCH_PUBLICATIONS) Step savePublicationsStep) {
-        this.savePublicationsStep = savePublicationsStep;
+    public void setFetchPublicationsStep(@Qualifier(FETCH_PUBLICATIONS) Step fetchPublicationsStep) {
+        this.fetchPublicationsStep = fetchPublicationsStep;
     }
 
     @Autowired

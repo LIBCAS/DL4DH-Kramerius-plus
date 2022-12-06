@@ -22,21 +22,16 @@ public class EnrichmentItemWriter implements ItemWriter<EnrichmentRequestItem> {
 
     private final EnrichmentRequest enrichmentRequest;
 
-    private final EnrichmentRequestStore enrichmentRequestStore;
-
     @Autowired
     public EnrichmentItemWriter(@Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
                                 EnrichmentRequestItemStore enrichmentRequestItemStore, EnrichmentRequestStore enrichmentRequestStore) {
         this.enrichmentRequestItemStore = enrichmentRequestItemStore;
         this.enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
-        this.enrichmentRequestStore = enrichmentRequestStore;
     }
 
     @Override
     public void write(List<? extends EnrichmentRequestItem> items) {
-        enrichmentRequest.getItems().addAll(items);
         items.forEach(item -> item.setEnrichmentRequest(enrichmentRequest));
-        enrichmentRequestStore.update(enrichmentRequest);
         enrichmentRequestItemStore.create(items);
     }
 }
