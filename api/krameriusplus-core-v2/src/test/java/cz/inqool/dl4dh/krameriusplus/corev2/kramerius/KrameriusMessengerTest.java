@@ -3,6 +3,8 @@ package cz.inqool.dl4dh.krameriusplus.corev2.kramerius;
 import cz.inqool.dl4dh.krameriusplus.corev2.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.corev2.TestApplication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalVolume;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.config.WebClientConfig.KRAMERIUS_WEB_CLIENT;
+import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerChildrenResponse.*;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,76 +54,54 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void periodical() {
-        mockServer.enqueue(
-                new MockResponse().setResponseCode(200)
-                        .setBody(PERIODICAL_RESPONSE)
-                        .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
+        DigitalObject digitalObject = testAndGetDigitalObject(PERIODICAL_RESPONSE, Periodical.class, "uuid:319546a0-5a42-11eb-b4d1-005056827e51");
 
-        DigitalObject digitalObject = krameriusMessenger.getDigitalObject("test");
-
-        assertThat(digitalObject.getClass()).isEqualTo(Periodical.class);
-        assertThat(digitalObject.getId()).isEqualTo("uuid:319546a0-5a42-11eb-b4d1-005056827e51");
         assertThat(((Periodical) digitalObject).getTitle())
                 .isEqualTo("Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne");
     }
 
     @Test
     void periodicalChildren() {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
-                .setBody(PERIODICAL_CHILDREN_RESPONSE)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
+        List<DigitalObject> digitalObjects = testAndGetChildren(PERIODICAL_CHILDREN_RESPONSE, PeriodicalVolume.class, 2);
 
-        List<DigitalObject> digitalObjects = krameriusMessenger.getDigitalObjectsForParent("test");
-
-        assertThat(digitalObjects.size()).isEqualTo(2);
         assertThat(digitalObjects.get(0).getId()).isEqualTo("uuid:986ca2f0-5aaa-11ed-8756-005056827e51");
         assertThat(digitalObjects.get(1).getId()).isEqualTo("uuid:33b874c0-5a42-11eb-a728-5ef3fc9bb22f");
     }
 
     @Test
     void periodicalVolume() {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
-                .setBody(PERIODICAL_VOLUME_RESPONSE)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
+        DigitalObject digitalObject = testAndGetDigitalObject(PERIODICAL_VOLUME_RESPONSE, PeriodicalVolume.class, "uuid:986ca2f0-5aaa-11ed-8756-005056827e51");
 
-        DigitalObject digitalObject = krameriusMessenger.getDigitalObject("test");
-
-        assertThat(digitalObject.getClass()).isEqualTo(PeriodicalVolume.class);
-        assertThat(digitalObject.getId()).isEqualTo("uuid:986ca2f0-5aaa-11ed-8756-005056827e51");
         assertThat(((PeriodicalVolume) digitalObject).getTitle()).isEqualTo("");
     }
 
     @Test
     void periodicalVolumeChildren() {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
-                .setBody(PERIODICAL_VOLUME_CHILDREN_RESPONSE)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
+        List<DigitalObject> digitalObjects = testAndGetChildren(PERIODICAL_VOLUME_CHILDREN_RESPONSE, PeriodicalItem.class, 1);
 
-        List<DigitalObject> digitalObjects = krameriusMessenger.getDigitalObjectsForParent("test");
-
-        assertThat(digitalObjects.size()).isEqualTo(1);
-        assertThat(digitalObjects.get(0).getClass()).isEqualTo(PeriodicalItem.class);
         assertThat(digitalObjects.get(0).getId()).isEqualTo("uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f");
     }
 
     @Test
     void periodicalItem() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        DigitalObject digitalObject = testAndGetDigitalObject(PERIODICAL_ITEM_RESPONSE, PeriodicalItem.class, "uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f");
+
+        assertThat(((PeriodicalItem) digitalObject).getTitle()).isEqualTo("");
     }
 
     @Test
     void periodicalItemChildren() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        testAndGetChildren(PERIODICAL_ITEM_CHILDREN_RESPONSE, Page.class, 60);
     }
 
     @Test
     void monograph() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        testAndGetDigitalObject(MONOGRAPH_RESPONSE, Monograph.class, "uuid:0af541d0-06c8-11e6-a5b6-005056827e52");
     }
 
     @Test
     void monographChildren() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        testAndGetChildren(MONOGRAPH_CHILDREN_RESPONSE, Page.class, 6);
     }
 
     @Test
@@ -156,6 +137,32 @@ public class KrameriusMessengerTest extends CoreBaseTest {
     @Test
     void mods() {
         throw new UnsupportedOperationException("Not Yet Implemented.");
+    }
+
+    private DigitalObject testAndGetDigitalObject(String digitalObjectResponse, Class<?> expectedClass, String expectedId) {
+        mockServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(digitalObjectResponse)
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
+
+        DigitalObject digitalObject = krameriusMessenger.getDigitalObject("test");
+
+        assertThat(digitalObject.getClass()).isEqualTo(expectedClass);
+        assertThat(digitalObject.getId()).isEqualTo(expectedId);
+
+        return digitalObject;
+    }
+
+    private List<DigitalObject> testAndGetChildren(String childrenResponse, Class<?> expectedClass, int expectedCount) {
+        mockServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(childrenResponse)
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
+
+        List<DigitalObject> digitalObjects = krameriusMessenger.getDigitalObjectsForParent("test");
+
+        assertThat(digitalObjects.size()).isEqualTo(expectedCount);
+        assertThat(digitalObjects.stream().allMatch(object -> object.getClass().equals(expectedClass))).isTrue();
+
+        return digitalObjects;
     }
 
     @Configuration
