@@ -24,7 +24,6 @@ public class PublicationTreeWriter implements ItemWriter<Publication> {
         this.publicationStore = publicationStore;
     }
 
-
     @Override
     public void write(List<? extends Publication> items) {
         items.forEach(this::writeTree);

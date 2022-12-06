@@ -34,7 +34,7 @@ public class CreateEnrichmentItemsStepDesigner extends AbstractStepDesigner {
         return CREATE_ENRICHMENT_ITEMS_STEP;
     }
 
-    @Bean(CREATE_ENRICHMENT_ITEMS)
+    @Bean(CREATE_ENRICHMENT_ITEMS_STEP)
     @Override
     public Step build() {
         return getStepBuilder().<String, EnrichmentRequestItem>chunk(5)

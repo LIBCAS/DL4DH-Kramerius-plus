@@ -21,7 +21,7 @@ public class PublicationTreeFindingProcessor implements ItemProcessor<String, Ch
     public ChainCreateDto process(String item) throws Exception {
         ChainCreateDto chainCreateDto = new ChainCreateDto();
         chainCreateDto.setEnrichmentItemId(item);
-        chainCreateDto.getPublicationIds().addAll(publicationStore.findAllEditions(item));
+        chainCreateDto.getPublicationIds().addAll(publicationStore.findPublicationTree(item));
         return chainCreateDto;
     }
 }

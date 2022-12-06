@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
-
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.EnrichmentJobConfig;
@@ -39,7 +38,7 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
                                             EnrichmentChainStore enrichmentChainStore) {
         this.krameriusJobInstanceService = krameriusJobInstanceService;
         this.enrichmentChainStore = enrichmentChainStore;
-        enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
+        this.enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
     }
 
     @Override

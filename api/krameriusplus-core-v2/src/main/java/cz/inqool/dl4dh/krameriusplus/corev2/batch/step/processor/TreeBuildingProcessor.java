@@ -28,10 +28,9 @@ public class TreeBuildingProcessor implements ItemProcessor<String, Publication>
         DigitalObject root = krameriusMessenger.getDigitalObject(item);
 
         if (!(root instanceof Publication)) {
-            throw new IllegalStateException(String.format("Item with uuid:%s is a %s expected DigitalObject of type Publication",
+            throw new IllegalStateException(String.format("Item with uuid:%s is a %s, expected DigitalObject of type Publication",
                     item, root.getClass().getSimpleName()));
         }
-
 
         Publication publication = ((Publication) root);
         return fetchTree(publication);

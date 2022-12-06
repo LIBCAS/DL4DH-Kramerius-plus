@@ -67,17 +67,17 @@ public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
     }
 
     @Autowired
-    public void setCreateEnrichmentItemsStep(@Qualifier(CREATE_ENRICHMENT_ITEMS) Step createEnrichmentItemsStep) {
+    public void setCreateEnrichmentItemsStep(@Qualifier(CREATE_ENRICHMENT_ITEMS_STEP) Step createEnrichmentItemsStep) {
         this.createEnrichmentItemsStep = createEnrichmentItemsStep;
     }
 
     @Autowired
-    public void setCreateEnrichmentChainsStep(@Qualifier(CREATE_ENRICHMENT_CHAINS) Step createEnrichmentChainsStep) {
+    public void setCreateEnrichmentChainsStep(@Qualifier(CREATE_ENRICHMENT_CHAINS_STEP) Step createEnrichmentChainsStep) {
         this.createEnrichmentChainsStep = createEnrichmentChainsStep;
     }
 
     @Autowired
-    public void setEnqueueEnrichmentChainsStep(@Qualifier(ENQUEUE_CHAINS) Step enqueueEnrichmentChainsStep) {
+    public void setEnqueueEnrichmentChainsStep(@Qualifier(ENQUEUE_ENRICHMENT_CHAINS_STEP) Step enqueueEnrichmentChainsStep) {
         this.enqueueEnrichmentChainsStep = enqueueEnrichmentChainsStep;
     }
 }

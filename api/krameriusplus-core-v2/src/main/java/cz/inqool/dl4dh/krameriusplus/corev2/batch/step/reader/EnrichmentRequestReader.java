@@ -32,7 +32,6 @@ public class EnrichmentRequestReader implements ItemReader<String> {
         this.enrichmentRequestId = enrichmentRequestId;
     }
 
-
     @Override
     public String read() {
         if (publicationIds == null) {

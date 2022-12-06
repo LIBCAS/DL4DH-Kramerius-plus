@@ -23,7 +23,7 @@ public class EnqueueEnrichmentChainsStepDesigner extends AbstractStepDesigner {
         return ENQUEUE_ENRICHMENT_CHAINS_STEP;
     }
 
-    @Bean(ENQUEUE_CHAINS)
+    @Bean(ENQUEUE_ENRICHMENT_CHAINS_STEP)
     @Override
     public Step build() {
         return getStepBuilder()

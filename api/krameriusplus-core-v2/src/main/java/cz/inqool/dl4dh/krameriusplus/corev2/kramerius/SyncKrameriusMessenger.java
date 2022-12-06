@@ -157,6 +157,7 @@ public class SyncKrameriusMessenger implements KrameriusMessenger {
         int index = 0;
 
         if (result != null) {
+            // publications and pages will share indices
             for (DigitalObject child : result) {
                 child.setParentId(parentId);
                 child.setIndex(index++);

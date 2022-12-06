@@ -49,7 +49,7 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
     }
 
     @Override
-    public List<String> findAllEditions(String publicationId) {
+    public List<String> findPublicationTree(String publicationId) {
 //        List<String> result = mongoOperations.find(new Params() // get publication with id = publicationId if it has pages
 //                .addFilters(new EqFilter("_id", publicationId))
 //                .includeFields("_id", "_class")
