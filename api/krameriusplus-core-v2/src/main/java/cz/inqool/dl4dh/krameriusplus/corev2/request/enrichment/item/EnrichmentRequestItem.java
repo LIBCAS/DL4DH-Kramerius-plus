@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,4 +27,7 @@ public class EnrichmentRequestItem extends DomainObject {
     @Column(name = "item_order")
     @NotNull
     private Long order;
+
+    @ManyToOne
+    private EnrichmentRequest enrichmentRequest;
 }

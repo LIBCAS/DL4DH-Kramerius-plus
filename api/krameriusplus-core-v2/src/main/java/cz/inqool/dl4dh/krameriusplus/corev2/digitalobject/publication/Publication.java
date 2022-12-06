@@ -26,7 +26,7 @@ public abstract class Publication extends DigitalObject {
      * must be saved manually.
      */
     @Transient
-    private List<DigitalObject> children = new ArrayList<>();
+    private List<Publication> children = new ArrayList<>();
 
     /**
      * Pages can be pulled from DB based on {@code DomainObject#parentId}. Pages must be saved manually.

@@ -2,14 +2,13 @@ package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 @Setter
@@ -33,12 +32,23 @@ public class EnrichmentChain extends DomainObject {
     @Column(name = "chain_order")
     private Long order;
 
+    @ManyToOne
+    private EnrichmentRequestItem requestItem;
+
     /**
      * Return the next jobInstance in sequence.
-     * @param jobInstance
-     * @return
+     * @param jobInstance last instance
+     * @return Optional of next instance to execute
      */
     public Optional<KrameriusJobInstance> getNextToExecute(KrameriusJobInstance jobInstance) {
-        throw new UnsupportedOperationException("Not Implemented Yet");
+        Iterator<KrameriusJobInstance> orderedJobs = new TreeMap<>(jobs).values().iterator();
+
+        while (orderedJobs.hasNext()) {
+            if (orderedJobs.next().equals(jobInstance)) {
+                return orderedJobs.hasNext() ? Optional.of(orderedJobs.next()) : Optional.empty();
+            }
+        }
+
+        return Optional.empty();
     }
 }
