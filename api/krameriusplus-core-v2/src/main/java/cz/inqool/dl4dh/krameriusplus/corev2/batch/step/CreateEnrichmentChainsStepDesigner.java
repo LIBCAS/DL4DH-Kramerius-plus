@@ -1,39 +1,36 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step;
 
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.EditionFindingProcessor;
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.EnrichmentChainCreatingProcessor;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.EnrichmentRequestReader;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer.EnrichmentChainWriter;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.item.support.builder.CompositeItemProcessorBuilder;
+import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.CREATE_ENRICHMENT_CHAINS_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.KrameriusProcessor.CREATE_CHAINS_COMPOSITE_PROCESSOR;
 
 @Component
 public class CreateEnrichmentChainsStepDesigner extends AbstractStepDesigner {
 
     private final EnrichmentRequestReader enrichmentRequestReader;
 
-    private final EditionFindingProcessor editionFindingProcessor;
-
-    private final EnrichmentChainCreatingProcessor enrichmentChainCreatingProcessor;
+    private final CompositeItemProcessor<String, List<EnrichmentChain>> createChainsCompositeProcessor;
 
     private final EnrichmentChainWriter enrichmentChainWriter;
 
     @Autowired
     public CreateEnrichmentChainsStepDesigner(EnrichmentRequestReader enrichmentRequestReader,
-                                              EditionFindingProcessor editionFindingProcessor,
-                                              EnrichmentChainCreatingProcessor enrichmentChainCreatingProcessor,
+                                              @Qualifier(CREATE_CHAINS_COMPOSITE_PROCESSOR)
+                                              CompositeItemProcessor<String, List<EnrichmentChain>> createChainsCompositeProcessor,
                                               EnrichmentChainWriter enrichmentChainWriter) {
         this.enrichmentRequestReader = enrichmentRequestReader;
-        this.editionFindingProcessor = editionFindingProcessor;
-        this.enrichmentChainCreatingProcessor = enrichmentChainCreatingProcessor;
+        this.createChainsCompositeProcessor = createChainsCompositeProcessor;
         this.enrichmentChainWriter = enrichmentChainWriter;
     }
 
@@ -42,14 +39,12 @@ public class CreateEnrichmentChainsStepDesigner extends AbstractStepDesigner {
         return CREATE_ENRICHMENT_CHAINS_STEP;
     }
 
-    @Bean(CREATE_ENRICHMENT_CHAINS)
+    @Bean(CREATE_ENRICHMENT_CHAINS_STEP)
     @Override
     public Step build() {
         return getStepBuilder().<String, List<EnrichmentChain>>chunk(5)
                 .reader(enrichmentRequestReader)
-                .processor(new CompositeItemProcessorBuilder<String, List<EnrichmentChain>>()
-                        .delegates(List.of(editionFindingProcessor, enrichmentChainCreatingProcessor))
-                        .build())
+                .processor(createChainsCompositeProcessor)
                 .writer(enrichmentChainWriter)
                 .build();
     }

@@ -5,17 +5,13 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -41,13 +37,25 @@ public class EnrichmentChain extends DomainObject {
 
     /**
      * Return the next jobInstance in sequence.
-     * @param jobInstance
+     * @param jobInstance last instance
      * @return Optional of next instance to execute
      */
     public Optional<KrameriusJobInstance> getNextToExecute(KrameriusJobInstance jobInstance) {
-        return Optional.of(jobs.get(jobs.entrySet().stream().dropWhile(entry -> entry.getValue().equals(jobInstance))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("JobInstance not found in chain"))
-                .getKey()));
+        Iterator<KrameriusJobInstance> orderedJobs = sortJobsByOrder(jobs).values().iterator();
+
+        while (orderedJobs.hasNext()) {
+            if (orderedJobs.next().equals(jobInstance)) {
+                return orderedJobs.hasNext() ? Optional.of(orderedJobs.next()) : Optional.empty();
+            }
+        }
+
+        return Optional.empty();
+    }
+
+
+    private Map<Long, KrameriusJobInstance> sortJobsByOrder(Map<Long, KrameriusJobInstance> jobMap) {
+        return jobMap.keySet().stream().sorted()
+                .map(key -> Map.entry(key, jobMap.get(key)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

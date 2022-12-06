@@ -1,12 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job.config;
 
+import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.OVERRIDE;
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.PAGE_ERROR_TOLERANCE;
@@ -21,6 +19,9 @@ public abstract class EnrichmentJobConfig extends JobConfig {
     private boolean override = false;
 
     private Long pageErrorTolerance = 0L;
+
+    @ManyToOne
+    private EnrichmentRequest enrichmentRequest;
 
     @Override
     public JobParametersMapWrapper toJobParametersWrapper() {

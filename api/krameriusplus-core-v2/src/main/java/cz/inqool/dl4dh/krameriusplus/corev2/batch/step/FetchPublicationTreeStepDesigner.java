@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.SAVE_PUBLICATIONS_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.FETCH_PUBLICATIONS;
 
 @Component
-public class SavePublicationsStepDesigner extends AbstractStepDesigner {
+public class FetchPublicationTreeStepDesigner extends AbstractStepDesigner {
 
     private final EnrichmentRequestReader enrichmentRequestReader;
 
@@ -21,9 +21,9 @@ public class SavePublicationsStepDesigner extends AbstractStepDesigner {
     private final MongoItemWriter<Publication> publicationMongoItemWriter;
 
     @Autowired
-    public SavePublicationsStepDesigner(EnrichmentRequestReader enrichmentRequestReader,
-                                        TreeBuildingProcessor treeBuildingProcessor,
-                                        MongoItemWriter<Publication> publicationMongoItemWriter) {
+    public FetchPublicationTreeStepDesigner(EnrichmentRequestReader enrichmentRequestReader,
+                                            TreeBuildingProcessor treeBuildingProcessor,
+                                            MongoItemWriter<Publication> publicationMongoItemWriter) {
         this.enrichmentRequestReader = enrichmentRequestReader;
         this.treeBuildingProcessor = treeBuildingProcessor;
         this.publicationMongoItemWriter = publicationMongoItemWriter;
@@ -31,10 +31,10 @@ public class SavePublicationsStepDesigner extends AbstractStepDesigner {
 
     @Override
     protected String getStepName() {
-        return SAVE_PUBLICATIONS_STEP;
+        return FETCH_PUBLICATIONS;
     }
 
-    @Bean(SAVE_PUBLICATIONS)
+    @Bean(FETCH_PUBLICATIONS)
     @Override
     public Step build() {
         return getStepBuilder().

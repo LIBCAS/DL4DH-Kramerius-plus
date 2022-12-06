@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publicatio
 import cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessenger;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,17 +17,18 @@ public class TreeBuildingProcessor implements ItemProcessor<String, Publication>
 
     private final KrameriusMessenger krameriusMessenger;
 
+    @Autowired
     public TreeBuildingProcessor(KrameriusMessenger krameriusMessenger) {
         this.krameriusMessenger = krameriusMessenger;
     }
-
 
     @Override
     public Publication process(String item) {
         DigitalObject root = krameriusMessenger.getDigitalObject(item);
 
         if (!(root instanceof Publication)) {
-            throw new IllegalStateException(String.format("Item with uuid:%s is a %s", item, root.getClass().getSimpleName()));
+            throw new IllegalStateException(String.format("Item with uuid:%s is a %s expected DigitalObject of type Publication",
+                    item, root.getClass().getSimpleName()));
         }
 
 

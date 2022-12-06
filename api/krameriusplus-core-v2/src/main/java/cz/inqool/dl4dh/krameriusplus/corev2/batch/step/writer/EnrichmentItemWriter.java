@@ -34,7 +34,8 @@ public class EnrichmentItemWriter implements ItemWriter<EnrichmentRequestItem> {
 
     @Override
     public void write(List<? extends EnrichmentRequestItem> items) throws Exception {
-        enrichmentRequest.setItems((List<EnrichmentRequestItem>) items);
+        enrichmentRequest.getItems().addAll(items);
+        items.forEach(item -> item.setEnrichmentRequest(enrichmentRequest));
         enrichmentRequestStore.update(enrichmentRequest);
         enrichmentRequestItemStore.create(items);
     }

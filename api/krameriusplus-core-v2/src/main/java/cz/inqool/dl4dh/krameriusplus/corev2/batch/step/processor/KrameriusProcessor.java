@@ -5,4 +5,6 @@ public class KrameriusProcessor {
     public static final String ENRICH_ALTO_COMPOSITE_PROCESSOR = "ENRICH_ALTO_COMPOSITE_PROCESSOR";
 
     public static final String ENRICH_NDK_COMPOSITE_PROCESSOR = "ENRICH_NDK_COMPOSITE_PROCESSOR";
+
+    public static final String CREATE_CHAINS_COMPOSITE_PROCESSOR = "CREATE_CHAINS_COMPOSITE_PROCESSOR";
 }

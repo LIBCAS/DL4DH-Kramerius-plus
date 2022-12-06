@@ -8,10 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.CREATE_ENRICHMENT_REQUEST;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.CREATE_ENRICHMENT_CHAINS;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.CREATE_ENRICHMENT_ITEMS;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENQUEUE_CHAINS;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.SAVE_PUBLICATIONS;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.*;
 
 @Configuration
 public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
@@ -65,7 +62,7 @@ public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
     }
 
     @Autowired
-    public void setSavePublicationsStep(@Qualifier(SAVE_PUBLICATIONS) Step savePublicationsStep) {
+    public void setSavePublicationsStep(@Qualifier(FETCH_PUBLICATIONS) Step savePublicationsStep) {
         this.savePublicationsStep = savePublicationsStep;
     }
 
