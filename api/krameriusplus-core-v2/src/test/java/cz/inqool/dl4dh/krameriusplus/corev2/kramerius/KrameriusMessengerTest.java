@@ -27,8 +27,8 @@ import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.config.WebClientConfig.KRAMERIUS_WEB_CLIENT;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerChildrenResponse.*;
-import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerModsResponse.MODS_RESPONSE;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerResponse.*;
+import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerStreamsResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ContextConfiguration(classes = {
@@ -122,7 +122,13 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void altoUppercase() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        mockServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(ALTO_UPPERCASE_STRING_RESPONSE)
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_TEXT));
+
+        String altoString = krameriusMessenger.getAltoString("test");
+
+        assertThat(altoString).isEqualTo(ALTO_UPPERCASE_STRING_RESPONSE);
     }
 
     @Test
@@ -132,7 +138,13 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void ocr() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        mockServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(OCR_RESPONSE)
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_TEXT));
+
+        String ocr = krameriusMessenger.getOcr("test");
+
+        assertThat(ocr).isEqualTo(OCR_RESPONSE);
     }
 
     @Test
