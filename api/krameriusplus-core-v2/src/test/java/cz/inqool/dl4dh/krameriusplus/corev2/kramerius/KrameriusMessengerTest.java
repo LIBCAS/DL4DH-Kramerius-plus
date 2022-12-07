@@ -172,6 +172,17 @@ public class KrameriusMessengerTest extends CoreBaseTest {
     }
 
     @Test
+    void monographUnitWithPartTitle() {
+        MonographUnit monographUnit = ((MonographUnit) testAndGetDigitalObject(MONOGRAPH_UNIT_WITH_PART_TITLE_RESPONSE, MonographUnit.class, "uuid:87ee9e20-f07c-11e3-b72e-005056827e52"));
+
+        testPublication(monographUnit, "Ílias. 1. Ilias", "Ílias",
+                "uuid:ee0e12a0-f6b5-11e3-97df-5ef3fc9bb22f", "private", false);
+
+        assertThat(monographUnit.getTitle()).isEqualTo("Ilias");
+        assertThat(monographUnit.getPartNumber()).isEqualTo("1");
+    }
+
+    @Test
     void monographUnitChildren() {
         testAndGetChildren(MONOGRAPH_UNIT_CHILDREN_RESPONSE, Page.class, 15);
     }

@@ -119,4 +119,37 @@ public class KrameriusMessengerResponse {
             "    \"policy\": \"public\",\n" +
             "    \"dnnt\": false\n" +
             "}";
+
+    public static final String MONOGRAPH_UNIT_WITH_PART_TITLE_RESPONSE = "{\n" +
+            "    \"dnnt-labels\": [\n" +
+            "        \"covid\"\n" +
+            "    ],\n" +
+            "    \"datanode\": false,\n" +
+            "    \"context\": [\n" +
+            "        [\n" +
+            "            {\n" +
+            "                \"pid\": \"uuid:ee0e12a0-f6b5-11e3-97df-5ef3fc9bb22f\",\n" +
+            "                \"model\": \"monograph\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"pid\": \"uuid:87ee9e20-f07c-11e3-b72e-005056827e52\",\n" +
+            "                \"model\": \"monographunit\"\n" +
+            "            }\n" +
+            "        ]\n" +
+            "    ],\n" +
+            "    \"pid\": \"uuid:87ee9e20-f07c-11e3-b72e-005056827e52\",\n" +
+            "    \"model\": \"monographunit\",\n" +
+            "    \"handle\": {\n" +
+            "        \"href\": \"http://www.ndk.cz/search/handle/uuid:87ee9e20-f07c-11e3-b72e-005056827e52\"\n" +
+            "    },\n" +
+            "    \"details\": {\n" +
+            "        \"partNumber\": \"1\",\n" +
+            "        \"title\": \"Ilias\"\n" +
+            "    },\n" +
+            "    \"title\": \"Ílias. 1. Ilias\",\n" +
+            "    \"root_title\": \"Ílias\",\n" +
+            "    \"root_pid\": \"uuid:ee0e12a0-f6b5-11e3-97df-5ef3fc9bb22f\",\n" +
+            "    \"policy\": \"private\",\n" +
+            "    \"dnnt\": true\n" +
+            "}";
 }

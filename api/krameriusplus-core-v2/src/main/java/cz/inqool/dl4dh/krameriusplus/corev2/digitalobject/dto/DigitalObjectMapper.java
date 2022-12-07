@@ -36,7 +36,7 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         MonographUnit monographUnit = new MonographUnit();
         mapPublicationProperties(monographUnit, createDto);
         monographUnit.setPartNumber(createDto.getDetails().getPartNumber());
-        monographUnit.setPartTitle(createDto.getDetails().getPartTitle());
+        monographUnit.setTitle(createDto.getDetails().getTitle());
 
         return monographUnit;
     }
