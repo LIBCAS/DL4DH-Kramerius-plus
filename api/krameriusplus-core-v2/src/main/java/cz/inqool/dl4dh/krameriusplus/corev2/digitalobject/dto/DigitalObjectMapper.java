@@ -89,7 +89,11 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     @Override
     public InternalPart fromCreateDto(InternalPartCreateDto createDto) {
         InternalPart internalPart = new InternalPart();
-        mapPageProperties(internalPart, createDto);
+        mapPublicationProperties(internalPart, createDto);
+        internalPart.setPartTitle(createDto.getTitle());
+        internalPart.setPageNumber(createDto.getInternalPartDetails().getPageNumber());
+        internalPart.setPageRange(createDto.getInternalPartDetails().getPageRange());
+        internalPart.setPartType(createDto.getInternalPartDetails().getType());
 
         return internalPart;
     }
