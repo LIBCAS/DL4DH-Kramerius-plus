@@ -20,5 +20,5 @@ public class MonographUnit extends Publication {
 
     private String partNumber;
 
-    private String title;
+    private String partTitle;
 }
