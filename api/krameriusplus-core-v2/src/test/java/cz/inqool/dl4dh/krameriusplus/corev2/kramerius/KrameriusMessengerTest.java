@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.kramerius;
 
 import cz.inqool.dl4dh.alto.Alto;
-import cz.inqool.dl4dh.krameriusplus.api.publication.DigitalObjectContext;
 import cz.inqool.dl4dh.krameriusplus.corev2.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.corev2.TestApplication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
@@ -13,6 +12,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalVolume;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
+import cz.inqool.dl4dh.mods.StringPlusLanguage;
 import cz.inqool.dl4dh.mods.TitleInfoDefinition;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
     public static MockWebServer mockServer;
 
     @Autowired
-    private KrameriusMessenger krameriusMessenger;
+    private SyncKrameriusMessenger krameriusMessenger;
 
     @BeforeAll
     static void beforeAll() throws IOException {
@@ -176,12 +177,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
     }
 
     @Test
-    void altoLowercase() {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
-    }
-
-    @Test
-    void altoUppercase() {
+    void alto() {
         mockServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(ALTO_UPPERCASE_STRING_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
@@ -194,23 +190,12 @@ public class KrameriusMessengerTest extends CoreBaseTest {
     }
 
     @Test
-    void altoString() {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
-                .setBody(ALTO_UPPERCASE_STRING_RESPONSE)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_TEXT));
-
-        String altoString = krameriusMessenger.getAltoString("test");
-
-        assertThat(altoString).isEqualTo(ALTO_UPPERCASE_STRING_RESPONSE);
-    }
-
-    @Test
     void ocr() {
         mockServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(OCR_RESPONSE)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_TEXT));
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_BINARY));
 
-        String ocr = krameriusMessenger.getOcr("test");
+        String ocr = krameriusMessenger.getOcrRawStream("test");
 
         assertThat(ocr).isEqualTo(OCR_RESPONSE);
     }
@@ -221,12 +206,13 @@ public class KrameriusMessengerTest extends CoreBaseTest {
                 .setBody(MODS_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
 
-        ModsCollectionDefinition modsCollectionDefition = krameriusMessenger.getMods("test");
+        ModsCollectionDefinition modsCollectionDefinition = krameriusMessenger.getMods("test");
 
-        // should be title info
-        TitleInfoDefinition titleInfoDefinition = (TitleInfoDefinition) modsCollectionDefition.getMods().get(0).getModsGroup().get(0);
+        TitleInfoDefinition titleInfoDefinition = (TitleInfoDefinition) modsCollectionDefinition.getMods().get(0).getModsGroup().get(0);
 
-        assertThat(titleInfoDefinition.getTitle()).isEqualTo("Ve škole duchovní");
+        // assertThat call for title
+        assertThat(((StringPlusLanguage) ((JAXBElement) titleInfoDefinition.getTitleOrSubTitleOrPartNumber()
+                .get(0)).getValue()).getValue()).isEqualTo("Ve škole duchovní");
 
     }
 
@@ -250,14 +236,6 @@ public class KrameriusMessengerTest extends CoreBaseTest {
         assertThat(digitalObject.getId()).isEqualTo(expectedId);
 
         return digitalObject;
-    }
-
-    private void testContext(List<DigitalObjectContext> context, List<DigitalObjectContext> expectedDigitalObjectContext) {
-        assertThat(context.size()).isEqualTo(expectedDigitalObjectContext.size());
-
-        for (int i = 0; i < context.size(); i++) {
-            assertThat(context.get(i)).isEqualTo(expectedDigitalObjectContext.get(i));
-        }
     }
 
     private List<DigitalObject> testAndGetChildren(String childrenResponse, Class<?> expectedClass, int expectedCount) {
