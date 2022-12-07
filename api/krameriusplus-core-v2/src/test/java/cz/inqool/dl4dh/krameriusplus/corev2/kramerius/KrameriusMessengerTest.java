@@ -1,10 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.kramerius;
 
 import cz.inqool.dl4dh.alto.Alto;
+import cz.inqool.dl4dh.krameriusplus.api.publication.DigitalObjectContext;
 import cz.inqool.dl4dh.krameriusplus.corev2.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.corev2.TestApplication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.Periodical;
@@ -28,6 +30,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.config.WebClientConfig.KRAMERIUS_WEB_CLIENT;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerChildrenResponse.*;
@@ -60,58 +63,111 @@ public class KrameriusMessengerTest extends CoreBaseTest {
     @Test
     void periodical() {
         DigitalObject digitalObject = testAndGetDigitalObject(PERIODICAL_RESPONSE, Periodical.class, "uuid:319546a0-5a42-11eb-b4d1-005056827e51");
+        Periodical periodical = (Periodical) digitalObject;
 
-        assertThat(((Periodical) digitalObject).getTitle())
-                .isEqualTo("Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne");
+        testPublication(periodical, "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
+                "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
+                "uuid:319546a0-5a42-11eb-b4d1-005056827e51", "public", false);
     }
 
     @Test
     void periodicalChildren() {
         List<DigitalObject> digitalObjects = testAndGetChildren(PERIODICAL_CHILDREN_RESPONSE, PeriodicalVolume.class, 2);
 
-        assertThat(digitalObjects.get(0).getId()).isEqualTo("uuid:986ca2f0-5aaa-11ed-8756-005056827e51");
-        assertThat(digitalObjects.get(1).getId()).isEqualTo("uuid:33b874c0-5a42-11eb-a728-5ef3fc9bb22f");
+        List<PeriodicalVolume> periodicalVolumes = digitalObjects.stream().map(digitalObject -> ((PeriodicalVolume) digitalObject)).collect(Collectors.toList());
+
+        periodicalVolumes.forEach(periodicalVolume ->
+                testPublication(periodicalVolume, "", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
+                        "uuid:319546a0-5a42-11eb-b4d1-005056827e51", "public", false));
+
+        assertThat(periodicalVolumes.get(0).getVolumeYear()).isEqualTo("1882");
+        assertThat(periodicalVolumes.get(0).getVolumeNumber()).isEqualTo("1882");
+        assertThat(periodicalVolumes.get(1).getVolumeYear()).isEqualTo("1892");
+        assertThat(periodicalVolumes.get(1).getVolumeNumber()).isEqualTo("1892");
     }
 
     @Test
     void periodicalVolume() {
         DigitalObject digitalObject = testAndGetDigitalObject(PERIODICAL_VOLUME_RESPONSE, PeriodicalVolume.class, "uuid:986ca2f0-5aaa-11ed-8756-005056827e51");
 
-        assertThat(((PeriodicalVolume) digitalObject).getTitle()).isEqualTo("");
+        PeriodicalVolume periodicalVolume = (PeriodicalVolume) digitalObject;
+
+        testPublication(periodicalVolume, "", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
+                "uuid:319546a0-5a42-11eb-b4d1-005056827e51", "public", false);
+
+        assertThat(periodicalVolume.getVolumeNumber()).isEqualTo("1882");
+        assertThat(periodicalVolume.getVolumeYear()).isEqualTo("1882");
     }
 
     @Test
     void periodicalVolumeChildren() {
         List<DigitalObject> digitalObjects = testAndGetChildren(PERIODICAL_VOLUME_CHILDREN_RESPONSE, PeriodicalItem.class, 1);
 
-        assertThat(digitalObjects.get(0).getId()).isEqualTo("uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f");
+        PeriodicalItem periodicalItem = (PeriodicalItem) digitalObjects.get(0);
+        testPublication(periodicalItem, "", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
+                "uuid:319546a0-5a42-11eb-b4d1-005056827e51", "public", false);
+
+        assertThat(periodicalItem.getIssueNumber()).isEqualTo("");
+        assertThat(periodicalItem.getDate()).isEqualTo("1882");
+        assertThat(periodicalItem.getPartNumber()).isEqualTo("5");
     }
 
     @Test
     void periodicalItem() {
         DigitalObject digitalObject = testAndGetDigitalObject(PERIODICAL_ITEM_RESPONSE, PeriodicalItem.class, "uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f");
 
-        assertThat(((PeriodicalItem) digitalObject).getTitle()).isEqualTo("Protokol ... veřejné schůze Bratrstva sv. Michala v Praze dne. 5");
+        PeriodicalItem periodicalItem = (PeriodicalItem) digitalObject;
+        testPublication(periodicalItem, "", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
+                "uuid:319546a0-5a42-11eb-b4d1-005056827e51", "public", false);
+
+        assertThat(periodicalItem.getIssueNumber()).isEqualTo("");
+        assertThat(periodicalItem.getDate()).isEqualTo("1882");
+        assertThat(periodicalItem.getPartNumber()).isEqualTo("5");
     }
 
     @Test
     void periodicalItemChildren() {
-        testAndGetChildren(PERIODICAL_ITEM_CHILDREN_RESPONSE, Page.class, 60);
+        List<DigitalObject> digitalObjects = testAndGetChildren(PERIODICAL_ITEM_CHILDREN_RESPONSE, Page.class, 60);
+
+        Page page = ((Page) digitalObjects.get(0));
+
+        assertThat(page.getPageType()).isEqualTo("FrontCover");
+        assertThat(page.getPageNumber()).isEqualTo("[1a] \\n                        ");
+        assertThat(page.getTitle()).isEqualTo("[1a]");
     }
 
     @Test
     void monograph() {
-        testAndGetDigitalObject(MONOGRAPH_RESPONSE, Monograph.class, "uuid:0af541d0-06c8-11e6-a5b6-005056827e52");
+        DigitalObject digitalObject = testAndGetDigitalObject(MONOGRAPH_RESPONSE, Monograph.class, "uuid:0af541d0-06c8-11e6-a5b6-005056827e52");
+        Monograph monograph = (Monograph) digitalObject;
+        testPublication(monograph, "Ve škole duchovní: čisté učení spiritistické : sbírka medijních sdělení a poučení, daná od duchů všech stavů, výší a druhů",
+                "Ve škole duchovní: čisté učení spiritistické : sbírka medijních sdělení a poučení, daná od duchů všech stavů, výší a druhů",
+                "uuid:0af541d0-06c8-11e6-a5b6-005056827e52", "public", false);
+
+        assertThat(monograph.getCollections().get(0)).isEqualTo("vc:8e493b6d-0847-4c4e-9b40-49f25b550acd");
     }
 
     @Test
     void monographChildren() {
-        testAndGetChildren(MONOGRAPH_CHILDREN_RESPONSE, Page.class, 7);
+        List<DigitalObject> digitalObjects = testAndGetChildren(MONOGRAPH_CHILDREN_RESPONSE, Page.class, 7);
+
+        Page page = (Page) digitalObjects.get(4);
+        assertThat(page.getId()).isEqualTo("uuid:0ea88040-17a7-11e6-adec-001018b5eb5c");
+        assertThat(page.getRootId()).isEqualTo("uuid:0af541d0-06c8-11e6-a5b6-005056827e52");
+        assertThat(page.getPolicy()).isEqualTo("public");
+        assertThat(page.getTitle()).isEqualTo("[3]");
+        assertThat(page.getPageType()).isEqualTo("NormalPage");
+        assertThat(page.getPageNumber()).isEqualTo("[3] \\n                        ");
     }
 
     @Test
     void monographUnit() {
-        testAndGetDigitalObject(MONOGRAPH_UNIT_RESPONSE, MonographUnit.class, "uuid:c29c4970-55d8-11e9-936e-005056827e52");
+        MonographUnit monographUnit = (MonographUnit) testAndGetDigitalObject(MONOGRAPH_UNIT_RESPONSE, MonographUnit.class,
+                "uuid:c29c4970-55d8-11e9-936e-005056827e52");
+
+        testPublication(monographUnit, "V ohradě měst a městských zdech. 1", "V ohradě měst a městských zdech",
+                "uuid:29dea0f0-ea9a-11e9-8d0f-005056825209", "publc", false);
+        assertThat(monographUnit.getPartNumber()).isEqualTo("1");
     }
 
     @Test
@@ -174,6 +230,15 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     }
 
+    private void testPublication(Publication publication, String expectedTitle, String expectedRootTitle,
+                                 String expectedRootId, String expectedPolicy, boolean expectedPdf) {
+        assertThat(publication.getTitle()).isEqualTo(expectedTitle);
+        assertThat(publication.getRootTitle()).isEqualTo(expectedRootTitle);
+        assertThat(publication.getPolicy()).isEqualTo(expectedPolicy);
+        assertThat(publication.getRootId()).isEqualTo(expectedRootId);
+        assertThat(publication.isPdf()).isEqualTo(expectedPdf);
+    }
+
     private DigitalObject testAndGetDigitalObject(String digitalObjectResponse, Class<?> expectedClass, String expectedId) {
         mockServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(digitalObjectResponse)
@@ -185,6 +250,14 @@ public class KrameriusMessengerTest extends CoreBaseTest {
         assertThat(digitalObject.getId()).isEqualTo(expectedId);
 
         return digitalObject;
+    }
+
+    private void testContext(List<DigitalObjectContext> context, List<DigitalObjectContext> expectedDigitalObjectContext) {
+        assertThat(context.size()).isEqualTo(expectedDigitalObjectContext.size());
+
+        for (int i = 0; i < context.size(); i++) {
+            assertThat(context.get(i)).isEqualTo(expectedDigitalObjectContext.get(i));
+        }
     }
 
     private List<DigitalObject> testAndGetChildren(String childrenResponse, Class<?> expectedClass, int expectedCount) {
