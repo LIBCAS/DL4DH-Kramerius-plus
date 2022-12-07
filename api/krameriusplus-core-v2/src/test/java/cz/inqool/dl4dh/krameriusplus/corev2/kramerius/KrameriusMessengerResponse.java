@@ -52,8 +52,7 @@ public class KrameriusMessengerResponse {
             "    \"policy\": \"public\"\n" +
             "}";
 
-    public static final String PERIODICAL_ITEM_RESPONSE = "[\n" +
-            "    {\n" +
+    public static final String PERIODICAL_ITEM_RESPONSE = "{\n" +
             "        \"datanode\": false,\n" +
             "        \"pid\": \"uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f\",\n" +
             "        \"model\": \"periodicalitem\",\n" +
@@ -66,8 +65,7 @@ public class KrameriusMessengerResponse {
             "        \"root_title\": \"Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne\",\n" +
             "        \"root_pid\": \"uuid:319546a0-5a42-11eb-b4d1-005056827e51\",\n" +
             "        \"policy\": \"public\"\n" +
-            "    }\n" +
-            "]";
+            "    }\n";
 
     public static final String MONOGRAPH_RESPONSE = "{\n" +
             "    \"datanode\": false,\n" +

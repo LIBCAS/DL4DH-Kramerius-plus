@@ -9,6 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.periodical.Periodi
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.periodical.PeriodicalVolumeCreateDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.InternalPart;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Supplement;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph.MonographUnit;
@@ -24,56 +25,89 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
 
     @Override
     public Monograph fromCreateDto(MonographCreateDto createDto) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        Monograph monograph = new Monograph();
+        mapPublicationProperties(monograph, createDto);
+
+        return monograph;
     }
 
     @Override
     public MonographUnit fromCreateDto(MonographUnitCreateDto createDto) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        MonographUnit monographUnit = new MonographUnit();
+        mapPublicationProperties(monographUnit, createDto);
+
+        return monographUnit;
     }
 
     @Override
     public Periodical fromCreateDto(PeriodicalCreateDto createDto) {
         Periodical periodical = new Periodical();
-        periodical.setId(createDto.getPid());
-        periodical.setTitle(createDto.getTitle());
-        periodical.setRootTitle(createDto.getRootTitle());
-        periodical.setRootId(createDto.getRootPid());
-        periodical.setPolicy(createDto.getPolicy());
-
-        if (createDto.getContext().size() == 1) {
-            periodical.setContext(createDto.getContext().get(0));
-        } else {
-            log.warn("Periodical {}: expected context size=1, actual={}", createDto.getPid(), createDto.getContext().size());
-        }
-
-        periodical.setCollections(createDto.getCollections());
+        mapPublicationProperties(periodical, createDto);
 
         return periodical;
     }
 
     @Override
     public PeriodicalVolume fromCreateDto(PeriodicalVolumeCreateDto createDto) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        PeriodicalVolume periodicalVolume = new PeriodicalVolume();
+        mapPublicationProperties(periodicalVolume, createDto);
+
+        return periodicalVolume;
     }
 
     @Override
     public PeriodicalItem fromCreateDto(PeriodicalItemCreateDto createDto) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        PeriodicalItem periodicalItem = new PeriodicalItem();
+        mapPublicationProperties(periodicalItem, createDto);
+
+        return periodicalItem;
     }
 
     @Override
     public Page fromCreateDto(PageCreateDto createDto) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        Page page = new Page();
+        mapPageProperties(page, createDto);
+
+        return page;
     }
 
     @Override
     public Supplement fromCreateDto(SupplementCreateDto createDto) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        Supplement supplement = new Supplement();
+        mapPublicationProperties(supplement, createDto);
+
+        return supplement;
     }
 
     @Override
     public InternalPart fromCreateDto(InternalPartCreateDto createDto) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        InternalPart internalPart = new InternalPart();
+        mapPageProperties(internalPart, createDto);
+
+        return internalPart;
+    }
+
+    private void mapPageProperties(Page to, PageCreateDto from) {
+        to.setId(from.getPid());
+        to.setTitle(from.getTitle());
+        to.setRootId(from.getRootPid());
+        to.setPolicy(from.getPolicy());
+        to.setPageType(from.getDetails().getType());
+        to.setPageNumber(from.getDetails().getPageNumber());
+    }
+
+    private void mapPublicationProperties(Publication to, PublicationCreateDto from) {
+        to.setId(from.getPid());
+        to.setTitle(from.getTitle());
+        to.setRootTitle(from.getRootTitle());
+        to.setRootId(from.getRootPid());
+        to.setPolicy(from.getPolicy());
+        to.setCollections(from.getCollections());
+
+        if (from.getContext().size() == 1) {
+            to.setContext(from.getContext().get(0));
+        } else {
+            log.warn("{} {}: expected context size=1, actual={}", to.getClass().getSimpleName(), from.getPid(), from.getContext().size());
+        }
     }
 }

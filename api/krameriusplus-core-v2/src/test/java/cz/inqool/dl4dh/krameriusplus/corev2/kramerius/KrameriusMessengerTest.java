@@ -91,7 +91,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
     void periodicalItem() {
         DigitalObject digitalObject = testAndGetDigitalObject(PERIODICAL_ITEM_RESPONSE, PeriodicalItem.class, "uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f");
 
-        assertThat(((PeriodicalItem) digitalObject).getTitle()).isEqualTo("");
+        assertThat(((PeriodicalItem) digitalObject).getTitle()).isEqualTo("Protokol ... veřejné schůze Bratrstva sv. Michala v Praze dne. 5");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void monographChildren() {
-        testAndGetChildren(MONOGRAPH_CHILDREN_RESPONSE, Page.class, 6);
+        testAndGetChildren(MONOGRAPH_CHILDREN_RESPONSE, Page.class, 7);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
     void altoUppercase() {
         mockServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(ALTO_UPPERCASE_STRING_RESPONSE)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_TEXT));
+                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
 
         Alto alto = krameriusMessenger.getAlto("test");
 
