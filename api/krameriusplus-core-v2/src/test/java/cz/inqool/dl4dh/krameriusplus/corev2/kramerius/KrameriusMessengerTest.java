@@ -82,8 +82,8 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
         assertThat(periodicalVolumes.get(0).getVolumeYear()).isEqualTo("1882");
         assertThat(periodicalVolumes.get(0).getVolumeNumber()).isEqualTo("1882");
-        assertThat(periodicalVolumes.get(1).getVolumeYear()).isEqualTo("1892");
-        assertThat(periodicalVolumes.get(1).getVolumeNumber()).isEqualTo("1892");
+        assertThat(periodicalVolumes.get(1).getVolumeYear()).isEqualTo("1898");
+        assertThat(periodicalVolumes.get(1).getVolumeNumber()).isEqualTo("1898");
     }
 
     @Test
@@ -104,7 +104,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
         List<DigitalObject> digitalObjects = testAndGetChildren(PERIODICAL_VOLUME_CHILDREN_RESPONSE, PeriodicalItem.class, 1);
 
         PeriodicalItem periodicalItem = (PeriodicalItem) digitalObjects.get(0);
-        testPublication(periodicalItem, "", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
+        testPublication(periodicalItem, "Protokol ... veřejné schůze Bratrstva sv. Michala v Praze dne. 5", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
                 "uuid:319546a0-5a42-11eb-b4d1-005056827e51", "public", false);
 
         assertThat(periodicalItem.getIssueNumber()).isEqualTo("");
@@ -117,7 +117,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
         DigitalObject digitalObject = testAndGetDigitalObject(PERIODICAL_ITEM_RESPONSE, PeriodicalItem.class, "uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f");
 
         PeriodicalItem periodicalItem = (PeriodicalItem) digitalObject;
-        testPublication(periodicalItem, "", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
+        testPublication(periodicalItem, "Protokol ... veřejné schůze Bratrstva sv. Michala v Praze dne. 5", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
                 "uuid:319546a0-5a42-11eb-b4d1-005056827e51", "public", false);
 
         assertThat(periodicalItem.getIssueNumber()).isEqualTo("");
@@ -132,7 +132,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
         Page page = ((Page) digitalObjects.get(0));
 
         assertThat(page.getPageType()).isEqualTo("FrontCover");
-        assertThat(page.getPageNumber()).isEqualTo("[1a] \\n                        ");
+        assertThat(page.getPageNumber()).contains("[1a]");
         assertThat(page.getTitle()).isEqualTo("[1a]");
     }
 
@@ -157,7 +157,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
         assertThat(page.getPolicy()).isEqualTo("public");
         assertThat(page.getTitle()).isEqualTo("[3]");
         assertThat(page.getPageType()).isEqualTo("NormalPage");
-        assertThat(page.getPageNumber()).isEqualTo("[3] \\n                        ");
+        assertThat(page.getPageNumber()).contains("[3]");
     }
 
     @Test
@@ -166,7 +166,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
                 "uuid:c29c4970-55d8-11e9-936e-005056827e52");
 
         testPublication(monographUnit, "V ohradě měst a městských zdech. 1", "V ohradě měst a městských zdech",
-                "uuid:29dea0f0-ea9a-11e9-8d0f-005056825209", "publc", false);
+                "uuid:29dea0f0-ea9a-11e9-8d0f-005056825209", "public", false);
         assertThat(monographUnit.getPartNumber()).isEqualTo("1");
     }
 
