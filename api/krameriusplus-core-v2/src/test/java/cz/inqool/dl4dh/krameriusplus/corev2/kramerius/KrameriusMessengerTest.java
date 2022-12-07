@@ -132,7 +132,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
         Alto alto = krameriusMessenger.getAlto("test");
 
-        assertThat(alto.getDescription().getMeasurementUnit()).isEqualTo("Pixel");
+        assertThat(alto.getDescription().getMeasurementUnit()).isEqualTo("pixel");
         assertThat(alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep()
                 .getProcessingSoftware().getSoftwareCreator()).isEqualTo("ABBYY");
     }
