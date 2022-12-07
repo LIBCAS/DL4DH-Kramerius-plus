@@ -35,6 +35,7 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     public MonographUnit fromCreateDto(MonographUnitCreateDto createDto) {
         MonographUnit monographUnit = new MonographUnit();
         mapPublicationProperties(monographUnit, createDto);
+        monographUnit.setPartNumber(createDto.getDetails().getPartNumber());
 
         return monographUnit;
     }
@@ -51,6 +52,8 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     public PeriodicalVolume fromCreateDto(PeriodicalVolumeCreateDto createDto) {
         PeriodicalVolume periodicalVolume = new PeriodicalVolume();
         mapPublicationProperties(periodicalVolume, createDto);
+        periodicalVolume.setVolumeNumber(createDto.getDetails().getVolumeNumber());
+        periodicalVolume.setVolumeYear(createDto.getDetails().getYear());
 
         return periodicalVolume;
     }
@@ -59,6 +62,9 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     public PeriodicalItem fromCreateDto(PeriodicalItemCreateDto createDto) {
         PeriodicalItem periodicalItem = new PeriodicalItem();
         mapPublicationProperties(periodicalItem, createDto);
+        periodicalItem.setIssueNumber(createDto.getDetails().getIssueNumber());
+        periodicalItem.setPartNumber(createDto.getDetails().getPartNumber());
+        periodicalItem.setDate(createDto.getDetails().getDate());
 
         return periodicalItem;
     }
@@ -103,6 +109,7 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         to.setRootId(from.getRootPid());
         to.setPolicy(from.getPolicy());
         to.setCollections(from.getCollections());
+        to.setPdf(from.getPdf() != null);
 
         if (from.getContext().size() == 1) {
             to.setContext(from.getContext().get(0));
