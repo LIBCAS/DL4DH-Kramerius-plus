@@ -48,8 +48,14 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
         return mongoOperations.find(query, type).stream().map(DomainDocument::getId).collect(Collectors.toList());
     }
 
+    /**
+     * Get id and title fields
+     *
+     * @param publicationId root publication ID
+     * @return
+     */
     @Override
-    public List<String> findPublicationTree(String publicationId) {
+    public List<Publication> findPublicationTree(String publicationId) {
 //        List<String> result = mongoOperations.find(new Params() // get publication with id = publicationId if it has pages
 //                .addFilters(new EqFilter("_id", publicationId))
 //                .includeFields("_id", "_class")

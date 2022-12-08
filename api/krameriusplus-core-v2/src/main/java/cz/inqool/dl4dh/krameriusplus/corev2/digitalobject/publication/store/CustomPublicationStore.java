@@ -24,5 +24,5 @@ public interface CustomPublicationStore {
      * @param publicationID root publication ID
      * @return list of IDs of every publication in subtree
      */
-    List<String> findPublicationTree(String publicationID);
+    List<Publication> findPublicationTree(String publicationID);
 }

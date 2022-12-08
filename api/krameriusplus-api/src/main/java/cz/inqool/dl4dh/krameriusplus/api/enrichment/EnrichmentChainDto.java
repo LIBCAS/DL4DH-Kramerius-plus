@@ -14,5 +14,7 @@ public class EnrichmentChainDto extends DomainObjectDto {
 
     private String publicationId;
 
+    private String publicationTitle;
+
     private List<KrameriusJobInstanceDto> jobs = new ArrayList<>();
 }

@@ -346,4 +346,18 @@
 
     </changeSet>
 
+    <changeSet id="2" author="kollar">
+        <addColumn tableName="kplus_enrichment_chain">
+            <column name="publication_title">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="kplus_enrichment_request_item">
+            <column name="publication_title">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

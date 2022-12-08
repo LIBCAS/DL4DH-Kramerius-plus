@@ -20,6 +20,9 @@ public class EnrichmentRequestItem extends DomainObject {
     @NotNull
     private String publicationId;
 
+    @NotNull
+    private String publicationTitle;
+
     @OneToMany
     @JoinColumn(name = "request_item_id")
     private List<EnrichmentChain> enrichmentChains = new ArrayList<>();

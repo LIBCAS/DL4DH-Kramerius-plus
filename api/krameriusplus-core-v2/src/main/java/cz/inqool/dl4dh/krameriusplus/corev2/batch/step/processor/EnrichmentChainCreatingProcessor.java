@@ -48,8 +48,8 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
     public List<EnrichmentChain> process(ChainCreateWrapper item) throws Exception {
         long chainOrder = 0L;
         List<EnrichmentChain> chains = new ArrayList<>();
-        for (String publicationId : item.getPublicationIds()) {
-            chains.add(createChain(publicationId, chainOrder++));
+        for (Map.Entry<String, String> idAndTitle : item.getPublicationIdToTitle().entrySet()) {
+            chains.add(createChain(idAndTitle.getKey(), idAndTitle.getValue(), chainOrder++));
         }
 
         EnrichmentRequestItem enrichmentRequestItem = findEnrichmentItem(item.getEnrichmentItemId());
@@ -65,9 +65,10 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
                 .findFirst().orElseThrow();
     }
 
-    private EnrichmentChain createChain(String publicationId, Long chainOrder) {
+    private EnrichmentChain createChain(String publicationId, String publicationTitle, Long chainOrder) {
         EnrichmentChain enrichmentChain = new EnrichmentChain();
         enrichmentChain.setPublicationId(publicationId);
+        enrichmentChain.setPublicationTitle(publicationTitle);
         enrichmentChain.setOrder(chainOrder);
         enrichmentChain.setJobs(createJobs());
 
