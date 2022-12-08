@@ -17,8 +17,4 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.MONOG
 @Setter
 @TypeAlias(MONOGRAPH)
 public class Monograph extends Publication {
-
-    private String partNumber;
-
-    private String partTitle;
 }

@@ -91,7 +91,7 @@ public class SyncKrameriusMessenger implements KrameriusMessenger {
                 MODS_TYPE_REF);
     }
 
-    private String getOcrRawStream(String pageId) {
+    String getOcrRawStream(String pageId) {
         return callInternal(
                 buildUriPath(pageId, STREAMS_PATH_SEGMENT, TEXT_OCR.streamId),
                 STRING_TYPE_REF);

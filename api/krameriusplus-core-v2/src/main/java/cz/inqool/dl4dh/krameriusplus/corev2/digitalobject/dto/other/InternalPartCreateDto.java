@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class InternalPartCreateDto extends PublicationCreateDto {
 
-    private InternalPartDetails details;
+    private InternalPartDetails internalPartDetails;
 
     @Override
     public DigitalObject accept(DigitalObjectMapperVisitor visitor) {

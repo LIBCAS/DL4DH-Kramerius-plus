@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inqool.dl4dh.krameriusplus.api.publication.DigitalObjectContext;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.monograph.Pdf;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,4 +23,6 @@ public abstract class PublicationCreateDto extends DigitalObjectCreateDto {
     private List<String> dnntLabels = new ArrayList<>();
 
     private Boolean dnnt;
+
+    private Pdf pdf;
 }

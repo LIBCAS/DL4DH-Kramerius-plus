@@ -7,5 +7,7 @@ import lombok.Setter;
 @Setter
 public class MonographUnitDetails {
 
+    private String title;
+
     private String partNumber;
 }

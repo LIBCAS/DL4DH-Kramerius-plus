@@ -10,8 +10,6 @@ import lombok.Setter;
 @Setter
 public class MonographCreateDto extends PublicationCreateDto {
 
-    private Pdf pdf;
-
     @Override
     public DigitalObject accept(DigitalObjectMapperVisitor visitor) {
         return visitor.fromCreateDto(this);
