@@ -138,8 +138,15 @@ public class MetsEnricherTest extends CoreBaseTest {
             softly.assertThat(mix1.getBasicImageInformation().getBasicImageCharacteristics().getImageWidth()).isEqualTo("2200");
             softly.assertThat(mix1.getBasicImageInformation().getBasicImageCharacteristics().getPhotometricInterpretation().getColorSpace()).isEqualTo("RGB");
 
-            // TODO write this class
-//            softly.assertThat(mix1.getImageAssessmentMetadata()).isEqualTo();
+            softly.assertThat(mix1.getImageAssessmentMetadata().getSpatialMetrics().getSamplingFrequencyUnit()).isEqualTo("IN");
+            softly.assertThat(mix1.getImageAssessmentMetadata().getSpatialMetrics().getXSamplingFrequency().getNumerator()).isEqualTo("400");
+            softly.assertThat(mix1.getImageAssessmentMetadata().getSpatialMetrics().getXSamplingFrequency().getDenominator()).isEqualTo("1");
+            softly.assertThat(mix1.getImageAssessmentMetadata().getSpatialMetrics().getYSamplingFrequency().getNumerator()).isEqualTo("400");
+            softly.assertThat(mix1.getImageAssessmentMetadata().getSpatialMetrics().getYSamplingFrequency().getDenominator()).isEqualTo("1");
+
+            softly.assertThat(mix1.getImageAssessmentMetadata().getImageColorEncoding().getBitsPerSample().getBitsPerSampleValues().size()).isEqualTo(3);
+            softly.assertThat(mix1.getImageAssessmentMetadata().getImageColorEncoding().getBitsPerSample().getBitsPerSampleUnit()).isEqualTo("INTEGER");
+            softly.assertThat(mix1.getImageAssessmentMetadata().getImageColorEncoding().getSamplesPerPixel()).isEqualTo("3");
 
             softly.assertThat(mix1.getImageCaptureMetadata().getGeneralCaptureInformation().getCaptureDevice()).isEqualTo("REFLECTION_PRINT_SCANNER");
             softly.assertThat(mix1.getImageCaptureMetadata().getGeneralCaptureInformation().getImageProducers().get(0)).isEqualTo("KNAV");
@@ -161,9 +168,6 @@ public class MetsEnricherTest extends CoreBaseTest {
             softly.assertThat(mix2.getBasicImageInformation().getBasicImageCharacteristics().getImageHeight()).isEqualTo("3500");
             softly.assertThat(mix2.getBasicImageInformation().getBasicImageCharacteristics().getImageWidth()).isEqualTo("2200");
             softly.assertThat(mix2.getBasicImageInformation().getBasicImageCharacteristics().getPhotometricInterpretation().getColorSpace()).isEqualTo("RGB");
-
-            // TODO write this class
-//            softly.assertThat(mix1.getImageAssessmentMetadata()).isEqualTo();
         });
     }
 }

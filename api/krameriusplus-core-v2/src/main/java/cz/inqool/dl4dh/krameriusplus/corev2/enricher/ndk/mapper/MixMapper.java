@@ -25,7 +25,22 @@ public interface MixMapper extends MetsMapperBase {
 
     MetsMixElement convert(MixType xmlElement);
 
+    @Mappings(value = {
+            @Mapping(target = "spatialMetrics", source = "spatialMetrics"),
+            @Mapping(target = "imageColorEncoding", source = "imageColorEncoding"),
+    })
     ImageAssessmentMetadata map(ImageAssessmentMetadataType xmlElement);
+
+    @Mappings(value =  {
+            @Mapping(target = "samplingFrequencyUnit", source = "samplingFrequencyUnit.value")
+    })
+    ImageAssessmentMetadata.SpatialMetrics map(ImageAssessmentMetadataType.SpatialMetrics xmlElement);
+
+    @Mappings(value = {
+            @Mapping(target = "bitsPerSample.bitsPerSampleUnit", source = "bitsPerSample.bitsPerSampleUnit.value"),
+            @Mapping(target = "bitsPerSample.bitsPerSampleValues", source = "bitsPerSample.bitsPerSampleValue")
+    })
+    ImageAssessmentMetadata.ImageColorEncoding map(ImageAssessmentMetadataType.ImageColorEncoding xmlElement);
 
     DigitalCameraCaptureSettings map(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings xmlElement);
 

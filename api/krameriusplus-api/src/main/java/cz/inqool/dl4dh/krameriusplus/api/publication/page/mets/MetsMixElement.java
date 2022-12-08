@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -160,8 +161,36 @@ public class MetsMixElement extends MetsElement {
     @Getter
     @Setter
     public static class ImageAssessmentMetadata {
-//        private ImageAssessmentMetadataType.SpatialMetrics spatialMetrics;
-//        private ImageAssessmentMetadataType.ImageColorEncoding imageColorEncoding;
-        // TODO: map to own data structure
+        private SpatialMetrics spatialMetrics;
+        private ImageColorEncoding imageColorEncoding;
+
+        @Getter
+        @Setter
+        public static class SpatialMetrics {
+            private String samplingFrequencyUnit;
+            private SamplingFrequency xSamplingFrequency;
+            private SamplingFrequency ySamplingFrequency;
+
+            @Getter
+            @Setter
+            public static class SamplingFrequency {
+                private String numerator;
+                private String denominator;
+            }
+        }
+
+        @Getter
+        @Setter
+        public static class ImageColorEncoding {
+            private String samplesPerPixel;
+            private BitsPerSample bitsPerSample;
+
+            @Getter
+            @Setter
+            public static class BitsPerSample {
+                private List<String> bitsPerSampleValues = new ArrayList<>();
+                private String bitsPerSampleUnit;
+            }
+        }
     }
 }
