@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.enricher.ndk.mapper;
 
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicDigitalInformation;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicDigitalInformation.Compression;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicDigitalObjectInformation;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicDigitalObjectInformation.Compression;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicImageInformation.BasicImageCharacteristics;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicImageInformation.BasicImageCharacteristics.PhotometricInterpretation;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageAssessmentMetadata;
@@ -37,6 +37,10 @@ public interface MixMapper extends MetsMapperBase {
     })
     DigitalCameraCapture map(ImageCaptureMetadataType.DigitalCameraCapture xmlElement);
 
+    @Mappings({
+            @Mapping(target = "scanningSoftwareName", source = "scanningSoftwareName"),
+            @Mapping(target = "scanningSoftwareVersionNo", source = "scanningSoftwareVersionNo")
+    })
     ScanningSystemSoftware map(ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware xmlElement);
 
     @Mappings({
@@ -65,5 +69,5 @@ public interface MixMapper extends MetsMapperBase {
 
     Compression map(BasicDigitalObjectInformationType.Compression xmlElement);
 
-    BasicDigitalInformation map(BasicDigitalObjectInformationType xmlElement);
+    BasicDigitalObjectInformation map(BasicDigitalObjectInformationType xmlElement);
 }

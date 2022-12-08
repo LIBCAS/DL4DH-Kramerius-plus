@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class MetsMixElement extends MetsElement {
 
-    private BasicDigitalInformation basicDigitalInformation;
+    private BasicDigitalObjectInformation basicDigitalObjectInformation;
 
     private BasicImageInformation basicImageInformation;
 
@@ -24,7 +24,7 @@ public class MetsMixElement extends MetsElement {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class BasicDigitalInformation {
+    public static class BasicDigitalObjectInformation {
 
         private List<Compression> compression;
 
@@ -122,8 +122,8 @@ public class MetsMixElement extends MetsElement {
             @NoArgsConstructor
             @AllArgsConstructor
             public static class ScanningSystemSoftware {
-                private String scanningSystemSoftwareName;
-                private String scanningSystemSoftwareVersionNo;
+                private String scanningSoftwareName;
+                private String scanningSoftwareVersionNo;
             }
         }
 
