@@ -25,10 +25,6 @@ public interface MixMapper extends MetsMapperBase {
 
     MetsMixElement convert(MixType xmlElement);
 
-    @Mappings(value = {
-            @Mapping(target = "spatialMetrics", source = "spatialMetrics"),
-            @Mapping(target = "imageColorEncoding", source = "imageColorEncoding"),
-    })
     ImageAssessmentMetadata map(ImageAssessmentMetadataType xmlElement);
 
     @Mappings(value =  {
@@ -52,10 +48,6 @@ public interface MixMapper extends MetsMapperBase {
     })
     DigitalCameraCapture map(ImageCaptureMetadataType.DigitalCameraCapture xmlElement);
 
-    @Mappings({
-            @Mapping(target = "scanningSoftwareName", source = "scanningSoftwareName"),
-            @Mapping(target = "scanningSoftwareVersionNo", source = "scanningSoftwareVersionNo")
-    })
     ScanningSystemSoftware map(ImageCaptureMetadataType.ScannerCapture.ScanningSystemSoftware xmlElement);
 
     @Mappings({
