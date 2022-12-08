@@ -71,16 +71,15 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
     /**
      * Update {@link T} by dto
      *
-     * @param dto non null, all attributes must be in valid form
+     * @param entity non null, all attributes must be in valid form
      * @return updated T object
      * @throws MissingObjectException if T object was not found
      */
     @Transactional
-    default V update(@NonNull @Valid V dto) {
-        T entity = getStore().find(dto.getId());
-        Utils.notNull(entity, () -> new MissingObjectException(getStore().getType(), dto.getId()));
+    default V update(@NonNull @Valid T entity) {
+        T entityDb = getStore().find(entity.getId());
+        Utils.notNull(entity, () -> new MissingObjectException(getStore().getType(), entityDb.getId()));
 
-        entity = getMapper().fromDto(dto);
         T result = getStore().update(entity);
         return getMapper().toDto(result);
     }

@@ -1,17 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.export.export;
 
+import cz.inqool.dl4dh.krameriusplus.api.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.export.bulk.BulkExport;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Getter
 @Setter
@@ -24,14 +23,24 @@ public class Export extends DatedObject {
 
     private String publicationTitle;
 
-    @ManyToOne
-    @NotNull
-    private BulkExport bulkExport;
-
     @OneToOne
     private FileRef fileRef;
+
+    @ManyToOne
+    private Export parent;
+
+    @Enumerated(EnumType.STRING)
+    private ExportFormat format;
+
+    @NotNull
+    @Column(name = "export_order")
+    private Long order;
 
     @OneToOne
     @NotNull
     private KrameriusJobInstance exportJob;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
+    @MapKey(name = "order")
+    private Map<Long, Export> children = new TreeMap<>();
 }

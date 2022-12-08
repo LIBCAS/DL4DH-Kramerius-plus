@@ -8,8 +8,6 @@ public interface DomainObjectMapper<ENTITY extends DomainObject, CDTO extends Do
 
     ENTITY fromCreateDto(CDTO createDto);
 
-    ENTITY fromDto(DTO dto);
-
     DTO toDto(ENTITY entity);
 
 }
