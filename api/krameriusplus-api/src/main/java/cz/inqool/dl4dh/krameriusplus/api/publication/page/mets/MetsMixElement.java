@@ -168,6 +168,7 @@ public class MetsMixElement extends MetsElement {
         @Setter
         public static class SpatialMetrics {
             private String samplingFrequencyUnit;
+            private String samplingFrequencyPlane;
             private SamplingFrequency xSamplingFrequency;
             private SamplingFrequency ySamplingFrequency;
 

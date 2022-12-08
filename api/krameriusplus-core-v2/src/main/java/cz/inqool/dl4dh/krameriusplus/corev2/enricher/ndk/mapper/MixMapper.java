@@ -28,7 +28,8 @@ public interface MixMapper extends MetsMapperBase {
     ImageAssessmentMetadata map(ImageAssessmentMetadataType xmlElement);
 
     @Mappings(value =  {
-            @Mapping(target = "samplingFrequencyUnit", source = "samplingFrequencyUnit.value")
+            @Mapping(target = "samplingFrequencyUnit", source = "samplingFrequencyUnit.value"),
+            @Mapping(target = "samplingFrequencyPlane", source = "samplingFrequencyPlane.value")
     })
     ImageAssessmentMetadata.SpatialMetrics map(ImageAssessmentMetadataType.SpatialMetrics xmlElement);
 
