@@ -119,7 +119,8 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         if (from.getContext().size() == 1) {
             to.setContext(from.getContext().get(0));
         } else {
-            log.warn("{} {}: expected context size=1, actual={}", to.getClass().getSimpleName(), from.getPid(), from.getContext().size());
+            throw new IllegalStateException(String.format("%s %s: expected context size=1, actual=%s",
+                    to.getClass().getSimpleName(), from.getPid(), from.getContext().size()));
         }
     }
 }
