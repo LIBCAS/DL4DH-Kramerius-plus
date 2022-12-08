@@ -245,30 +245,40 @@
             <column name="dtype" type="varchar(255)"/>
         </createTable>
 
-        <createTable tableName="kplus_bulk_export">
+        <createTable tableName="kplus_export_request">
             <column name="id" type="${id}">
                 <constraints nullable="false" primaryKey="true"
-                             primaryKeyName="bulk_export_PK"/>
-            </column>
-
-            <!-- Dated Object -->
-            <column name="created" type="timestamp"/>
-            <column name="updated" type="timestamp"/>
-            <column name="deleted" type="timestamp"/>
-
-            <column name="file_ref_id" type="${id}">
-                <constraints foreignKeyName="bulk_export_file_ref_FK"
-                             referencedTableName="kplus_file_ref"
+                             primaryKeyName="export_request_PK"
+                             foreignKeyName="export_request_FK"
+                             referencedTableName="kplus_request"
                              referencedColumnNames="id"/>
             </column>
-            <column name="format" type="varchar(255)">
-                <constraints nullable="false"/>
+
+            <column name="config_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="export_request_config_FK"
+                             referencedTableName="kplus_export_job_config"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="create_request_job_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="export_request_create_request_job_FK"
+                             referencedTableName="kplus_kramerius_job_instance"
+                             referencedColumnNames="id"/>
             </column>
             <column name="merge_job_id" type="${id}">
                 <constraints nullable="false"
-                             foreignKeyName="bulk_export_merge_job_FK"
+                             foreignKeyName="export_request_merge_job_FK"
                              referencedTableName="kplus_kramerius_job_instance"
                              referencedColumnNames="id"/>
+            </column>
+            <column name="file_id" type="${id}">
+                <constraints foreignKeyName="export_request_file_FK"
+                             referencedTableName="kplus_file_ref"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="state" type="varchar(255)">
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
@@ -287,16 +297,18 @@
                 <constraints nullable="false"/>
             </column>
             <column name="publication_title" type="varchar(2000)"/>
-            <column name="bulk_export_id" type="${id}">
-                <constraints nullable="false"
-                             foreignKeyName="export_bulk_export_FK"
-                             referencedTableName="kplus_bulk_export"
-                             referencedColumnNames="id"/>
-            </column>
             <column name="file_ref_id" type="${id}">
                 <constraints foreignKeyName="export_file_ref_FK"
                              referencedTableName="kplus_file_ref"
                              referencedColumnNames="id"/>
+            </column>
+            <column name="parent_id" type="${id}">
+                <constraints foreignKeyName="export_parent_FK"
+                             referencedTableName="kplus_export"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="export_order" type="bigint">
+                <constraints nullable="false"/>
             </column>
             <column name="export_job_id" type="${id}">
                 <constraints nullable="false"
@@ -304,35 +316,35 @@
                              referencedTableName="kplus_kramerius_job_instance"
                              referencedColumnNames="id"/>
             </column>
+            <column name="format" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
-        <createTable tableName="kplus_export_request">
+        <createTable tableName="kplus_export_request_item">
             <column name="id" type="${id}">
                 <constraints nullable="false" primaryKey="true"
-                             primaryKeyName="export_request_PK"
-                             foreignKeyName="export_request_FK"
-                             referencedTableName="kplus_request"
-                             referencedColumnNames="id"/>
+                             primaryKeyName="export_request_item_PK"/>
             </column>
 
-            <column name="config_id" type="${id}">
+            <column name="publication_id" type="varchar(255)"/>
+            <column name="publication_title" type="varchar(2000)"/>
+            <column name="export_request_id" type="${id}">
                 <constraints nullable="false"
-                             foreignKeyName="export_request_config_FK"
-                             referencedTableName="kplus_export_job_config"
+                             foreignKeyName="export_request_item_request_FK"
+                             referencedTableName="kplus_export_request"
                              referencedColumnNames="id"/>
             </column>
-            <column name="bulk_export_id" type="${id}">
-                <constraints foreignKeyName="export_request_bulk_export_FK"
-                             referencedTableName="kplus_bulk_export"
-                             referencedColumnNames="id"/>
+            <column name="item_order" type="bigint">
+                <constraints nullable="false"/>
             </column>
-            <column name="create_request_job_id" type="${id}">
-                <constraints nullable="false"
-                             foreignKeyName="export_request_create_request_job_FK"
-                             referencedTableName="kplus_kramerius_job_instance"
+            <column name="root_export_id" type="${id}">
+                <constraints foreignKeyName="export_request_item_root_export_FK"
+                             referencedTableName="kplus_export"
                              referencedColumnNames="id"/>
             </column>
         </createTable>
+
     </changeSet>
 
 </databaseChangeLog>

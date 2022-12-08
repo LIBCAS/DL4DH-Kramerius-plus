@@ -3,14 +3,14 @@ package cz.inqool.dl4dh.krameriusplus.corev2.request.export.request;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.ExportJobConfig;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.Request;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.export.bulk.BulkExport;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,9 +21,13 @@ public class ExportRequest extends Request {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private ExportJobConfig config;
 
-    @OneToOne
-    private BulkExport bulkExport;
+    @OneToMany(mappedBy = "exportRequest", fetch = FetchType.EAGER)
+    private List<ExportRequestItem> items = new ArrayList<>();
 
     @OneToOne
+    @NotNull
     private KrameriusJobInstance createRequestJob;
+
+    @Embedded
+    private BulkExport bulkExport;
 }

@@ -6,6 +6,8 @@ import cz.inqool.dl4dh.krameriusplus.api.domain.FileRefDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ExportDto extends DatedObjectDto {
@@ -17,5 +19,9 @@ public class ExportDto extends DatedObjectDto {
     private FileRefDto fileRef;
 
     private KrameriusJobInstanceDto exportJob;
+
+    private Long order;
+
+    private List<ExportDto> children;
 
 }
