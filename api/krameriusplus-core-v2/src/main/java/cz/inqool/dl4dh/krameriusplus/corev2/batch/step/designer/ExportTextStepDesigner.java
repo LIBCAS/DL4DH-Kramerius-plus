@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.designer;
 
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.AltoPageExportProcessor;
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.TextPageExportProcessor;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.KrameriusPageReader;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.PageExport;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer.PageFileItemWriter;
@@ -10,18 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_ALTO_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_TEXT_STEP;
 
 @Component
-public class ExportAltoStepDesigner extends AbstractStepDesigner {
+public class ExportTextStepDesigner extends AbstractStepDesigner {
 
     private KrameriusPageReader reader;
 
-    private AltoPageExportProcessor processor;
+    private TextPageExportProcessor processor;
 
     private PageFileItemWriter writer;
 
-    @Bean(EXPORT_ALTO_STEP)
+    @Bean(EXPORT_TEXT_STEP)
     @Override
     public Step build() {
         return getStepBuilder()
@@ -34,7 +34,7 @@ public class ExportAltoStepDesigner extends AbstractStepDesigner {
 
     @Override
     protected String getStepName() {
-        return EXPORT_ALTO_STEP;
+        return EXPORT_TEXT_STEP;
     }
 
     @Autowired
@@ -43,7 +43,7 @@ public class ExportAltoStepDesigner extends AbstractStepDesigner {
     }
 
     @Autowired
-    public void setProcessor(AltoPageExportProcessor processor) {
+    public void setProcessor(TextPageExportProcessor processor) {
         this.processor = processor;
     }
 

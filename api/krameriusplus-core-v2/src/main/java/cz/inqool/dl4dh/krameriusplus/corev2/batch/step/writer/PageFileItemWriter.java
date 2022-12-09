@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer;
 
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.AltoStringWrappedPage;
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.PageExport;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -21,35 +21,35 @@ import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.ExecutionContextKe
 
 @Component
 @StepScope
-public class AltoFileItemWriter implements ItemWriter<AltoStringWrappedPage> {
+public class PageFileItemWriter implements ItemWriter<PageExport> {
 
-    public static final String[] HEADERS = new String[]{"UUID", "FILENAME", "INDEX", "TITLE"};
+    public static final String[] METADATA_HEADERS = new String[]{"UUID", "FILENAME", "INDEX", "TITLE"};
 
     private Path directory;
 
     @Override
-    public void write(List<? extends AltoStringWrappedPage> items) throws Exception {
+    public void write(List<? extends PageExport> items) throws Exception {
         try (CSVPrinter printer = getPrinter()) {
-            for (AltoStringWrappedPage item : items) {
-                String itemFilename = item.getPage().getId().substring(5) + ".xml";
+            for (PageExport item : items) {
+                String itemFilename = item.getFilename();
                 Path file = directory.resolve(itemFilename);
                 Files.createFile(file);
 
-                Files.write(file, item.getAlto().getBytes(StandardCharsets.UTF_8));
+                Files.write(file, item.getContent().getBytes(StandardCharsets.UTF_8));
 
                 printer.printRecord(toRecord(item, itemFilename));
             }
         }
     }
 
-    private Iterable<?> toRecord(AltoStringWrappedPage item, String itemFilename) {
+    private Iterable<?> toRecord(PageExport item, String itemFilename) {
         Page page = item.getPage();
         return List.of(page.getId(), itemFilename, page.getIndex(), page.getTitle());
     }
 
     private CSVPrinter getPrinter() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(directory.resolve("metadata.csv"));
-        return new CSVPrinter(writer, CSVFormat.Builder.create().setHeader(HEADERS).build());
+        return new CSVPrinter(writer, CSVFormat.Builder.create().setHeader(METADATA_HEADERS).build());
     }
 
     @Autowired
