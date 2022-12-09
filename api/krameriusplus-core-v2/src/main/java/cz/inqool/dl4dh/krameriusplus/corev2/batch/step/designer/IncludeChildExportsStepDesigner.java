@@ -24,6 +24,7 @@ public class IncludeChildExportsStepDesigner extends AbstractStepDesigner {
                 .<Export, Export> chunk(5)
                 .reader(reader)
                 .processor(processor)
+                .writer(items -> {}) // no-op writer because ItemWriter is mandatory
                 .build();
     }
 

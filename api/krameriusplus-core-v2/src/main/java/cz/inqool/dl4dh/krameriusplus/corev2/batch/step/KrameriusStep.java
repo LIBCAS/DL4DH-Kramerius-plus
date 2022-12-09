@@ -29,4 +29,6 @@ public class KrameriusStep {
     public static final String SAVE_EXPORT_FILE_STEP = "SAVE_EXPORT_FILE_STEP";
 
     public static final String CLEAN_UP_EXPORT_STEP = "CLEAN_UP_EXPORT_STEP";
+
+    public static final String EXPORT_ALTO_STEP = "EXPORT_ALTO_STEP";
 }

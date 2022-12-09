@@ -8,7 +8,8 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Stack;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.EXPORT_ID;
 import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
@@ -17,17 +18,14 @@ import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 @StepScope
 public class ExportChildrenReader implements ItemReader<Export> {
 
-    private final Export root;
-
-    private Stack<Export> children;
+    private final Deque<Export> children;
 
     public ExportChildrenReader(@Value("#{jobParameters['" + EXPORT_ID + "']}") String exportId,
                                 ExportStore exportStore) {
-        this.root = exportStore.find(exportId);
+        Export root = exportStore.find(exportId);
         notNull(root, () -> new MissingObjectException(Export.class, exportId));
 
-        this.children = new Stack<>();
-        this.children.addAll(root.getChildren().values());
+        this.children = new LinkedList<>(root.getChildren().values());
     }
 
     @Override
