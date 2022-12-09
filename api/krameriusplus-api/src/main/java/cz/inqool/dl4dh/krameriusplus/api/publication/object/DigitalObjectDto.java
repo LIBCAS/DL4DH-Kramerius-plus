@@ -34,5 +34,9 @@ public abstract class DigitalObjectDto extends DatedObjectDto {
 
     private Integer index;
 
+    private String rootId;
+
+    private String title;
+
     private List<DigitalObjectContext> context = new ArrayList<>();
 }

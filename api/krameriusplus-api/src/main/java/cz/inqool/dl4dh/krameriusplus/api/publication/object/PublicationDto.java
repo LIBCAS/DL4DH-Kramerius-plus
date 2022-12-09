@@ -20,8 +20,6 @@ public abstract class PublicationDto extends DigitalObjectDto {
 
     private List<PageDto> pages = new ArrayList<>();
 
-    private String title;
-
     private List<String> collections;
 
     private String policy;
@@ -35,6 +33,4 @@ public abstract class PublicationDto extends DigitalObjectDto {
     private List<String> donator = new ArrayList<>();
 
     private Long pageCount;
-
-    private String rootId;
 }

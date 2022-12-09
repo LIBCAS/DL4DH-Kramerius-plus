@@ -18,17 +18,9 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PAGE;
 @Document(collection = "pages")
 public class Page extends DigitalObject {
 
-
-    private String rootId;
-
     private List<Token> tokens = new ArrayList<>();
 
     private String policy;
-
-    /**
-     * Usually page number
-     */
-    private String title;
 
     private String pageType;
 

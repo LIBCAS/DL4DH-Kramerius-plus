@@ -36,8 +36,6 @@ public abstract class Publication extends DigitalObject {
 
     private PublishInfo publishInfo = new PublishInfo();
 
-    private String title;
-
     private String rootTitle;
 
     private List<String> collections = new ArrayList<>();
@@ -50,19 +48,15 @@ public abstract class Publication extends DigitalObject {
 
     private boolean pdf;
 
-    private String ndkDirPath;
-
     private String teiHeaderFileId;
 
     private List<String> donator = new ArrayList<>();
 
     private Long pageCount;
 
-    private String rootId;
-
     /**
      * Flag for deciding, if this publication should be shown in grid. Should be set to true
      * for publications, which don't have parentId or their parent has not yet been enriched
      */
-    private boolean isRootEnrichment = false;
+    private Boolean isRootEnrichment = false;
 }
