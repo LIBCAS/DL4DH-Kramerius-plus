@@ -5,6 +5,7 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,8 @@ import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.Execution
 @StepScope
 public class ZipExportTasklet extends ValidatedTasklet {
 
+    private ZipArchiver zipArchiver;
+
     /**
      * JobExecutionContext requires DIRECTORY key
      */
@@ -29,8 +32,7 @@ public class ZipExportTasklet extends ValidatedTasklet {
 
         Path resultPath = Files.createFile(Path.of(chunkContext.getStepContext().getJobExecutionContext().get(DIRECTORY) + ".zip"));
 
-        ZipArchiver zipArchiver = new ZipArchiver(resultPath);
-        zipArchiver.zip(directoryToZip);
+        zipArchiver.zip(directoryToZip, resultPath);
 
         chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(ZIPPED_FILE, resultPath.toString());
 
@@ -40,5 +42,10 @@ public class ZipExportTasklet extends ValidatedTasklet {
     @Override
     protected Set<String> getRequiredExecutionContextKeys() {
         return Set.of(DIRECTORY);
+    }
+
+    @Autowired
+    public void setZipArchiver(ZipArchiver zipArchiver) {
+        this.zipArchiver = zipArchiver;
     }
 }

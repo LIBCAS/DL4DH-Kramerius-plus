@@ -47,13 +47,16 @@ public class UnzipExportsTasklet extends ValidatedTasklet {
 
     private final FileService fileService;
 
+    private final ZipArchiver zipArchiver;
+
     @Autowired
     public UnzipExportsTasklet(JobPlanStore jobPlanStore,
                                ExportStore exportStore,
-                               FileService fileService) {
+                               FileService fileService, ZipArchiver zipArchiver) {
         this.jobPlanStore = jobPlanStore;
         this.exportStore = exportStore;
         this.fileService = fileService;
+        this.zipArchiver = zipArchiver;
     }
 
     @Override
@@ -84,13 +87,11 @@ public class UnzipExportsTasklet extends ValidatedTasklet {
     }
 
     private void unZipIntoDir(Path dir, List<Export> exports) throws IOException{
-        ZipArchiver zipArchiver = new ZipArchiver(dir);
-
         for (Export export : exports) {
             FileRef fileRef = export.getFileRef();
             Path exportZipPath = fileService.find(fileRef.getId()).getPath();
 
-            zipArchiver.unzip(exportZipPath, export.getPublicationId().substring(5));
+            zipArchiver.unzip(exportZipPath, exportZipPath.getParent().resolve(exportZipPath.getFileName() + ".zip"));
         }
     }
 

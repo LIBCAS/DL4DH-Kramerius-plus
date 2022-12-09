@@ -14,4 +14,5 @@ public class JobParameterKey {
     public static final String PAGE_ERROR_TOLERANCE = "PAGE_ERROR_TOLERANCE";
     public static final String PARAMS = "PARAMS";
     public static final String JOB_CONFIG_ID = "JOB_CONFIG_ID";
+    public static final String EXPORT_ID = "EXPORT_ID";
 }

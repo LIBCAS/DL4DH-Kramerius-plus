@@ -21,4 +21,9 @@ public class PeriodicalItem extends Publication {
     private String issueNumber;
 
     private String partNumber;
+
+    @Override
+    public String getModel() {
+        return PERIODICAL_ITEM;
+    }
 }

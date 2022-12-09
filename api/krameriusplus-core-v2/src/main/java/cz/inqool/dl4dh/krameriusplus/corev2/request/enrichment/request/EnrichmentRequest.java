@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
-import cz.inqool.dl4dh.krameriusplus.corev2.job.config.EnrichmentJobConfig;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.enrichment.EnrichmentJobConfig;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.Request;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
 import lombok.Getter;

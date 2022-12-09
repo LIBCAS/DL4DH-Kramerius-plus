@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.export.request;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
-import cz.inqool.dl4dh.krameriusplus.corev2.job.config.ExportJobConfig;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.export.ExportJobConfig;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.Request;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
 import lombok.Getter;

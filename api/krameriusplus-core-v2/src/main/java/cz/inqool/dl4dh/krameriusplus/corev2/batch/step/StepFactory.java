@@ -10,7 +10,7 @@ public interface StepFactory {
 
     /**
      * Method used to create a Step bean. This method needs to be annotated with {@link Bean} annotation
-     * in implementing classes and given a bean name from {@link JobStep} enum.
+     * in implementing classes and given a bean name from {@link KrameriusStep} classa.
      */
     Step build();
 }

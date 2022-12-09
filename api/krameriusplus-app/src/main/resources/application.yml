@@ -36,36 +36,6 @@ spring:
   interceptor:
     body: SHORT
 
-#logging:
-#  level:
-#    cz:
-#      inqool:
-#        dl4dh:
-#          krameriusplus:
-#            core:
-#              system:
-#                job:
-#                  jobconfig:
-#                    enriching:
-#                      common:
-#                        JobListener: DEBUG
-#    org:
-#      hibernate:
-#        SQL: DEBUG
-#        type:
-#          descriptor:
-#            sql:
-#              BasicBinder: TRACE
-#      springframework:
-#        orm:
-#          jpa: DEBUG
-#        transaction: DEBUG
-#      springframework:
-#        data:
-#          mongodb:
-#            core:
-#              MongoTemplate: DEBUG
-
 springdoc:
   swagger-ui.path: /swagger
 
@@ -74,7 +44,7 @@ system:
   kramerius:
     code: nkp
     default-url: https://www.ndk.cz
-#    default-url: https://kramerius.mzk.cz
+    register-url: https://api.registr.digitalniknihovna.cz/api/libraries
   enrichment:
   #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
   #  and ALTO processing does not make manual corrections (while OCR processing does)
@@ -91,6 +61,8 @@ system:
     serializeEmptyArrays: true
   security:
     secret: kramerius-plus
+  export:
+
 
 keycloak:
   auth-server-url: https://keycloak.sekan.eu

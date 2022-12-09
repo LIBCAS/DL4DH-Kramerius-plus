@@ -14,4 +14,8 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PERIO
 @Setter
 @TypeAlias(PERIODICAL)
 public class Periodical extends Publication {
+    @Override
+    public String getModel() {
+        return PERIODICAL;
+    }
 }

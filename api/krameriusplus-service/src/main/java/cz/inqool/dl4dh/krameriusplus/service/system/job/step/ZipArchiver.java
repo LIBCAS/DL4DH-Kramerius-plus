@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.service.system.job.step;
 
-import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -15,31 +15,30 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Filip Kollar
  */
-@AllArgsConstructor
+@Component
 public class ZipArchiver {
-
-    private final Path resultFilePath;
 
     /**
      * zips directoryToZip
      *
      * filename is preserved, entry is created under the field directory
      *
-     * @param directoryToZip Path to directory to be zipped
+     * @param source path to the directory, which should be zipped
+     * @param destination path where the final zip will be placed
      * @throws Exception IOException in case of FS issues
      */
-    public void zip(Path directoryToZip) throws Exception {
-        try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(resultFilePath))) {
-            Files.walk(directoryToZip)
+    public void zip(Path source, Path destination) throws Exception {
+        try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(destination))) {
+            Files.walk(source)
                     .filter(file -> !Files.isDirectory(file))
                     .forEach(file -> {
-                        ZipEntry zipEntry = new ZipEntry(directoryToZip.relativize(file).toString());
+                        ZipEntry zipEntry = new ZipEntry(source.relativize(file).toString());
                         try {
                             zos.putNextEntry(zipEntry);
                             Files.copy(file, zos);
                             zos.closeEntry();
                         } catch (IOException e) {
-                            throw new UncheckedIOException("Error when zipping directory '" + directoryToZip + "'.", e);
+                            throw new UncheckedIOException("Error when zipping directory '" + source + "'.", e);
                         }
                     });
         }
@@ -50,12 +49,13 @@ public class ZipArchiver {
      *
      * file name is preserved, entry is created under the field directory
      *
-     * @param zipFilePath path to zip file to be unzipped
+     * @param source path to zip file to be unzipped
+     * @param destination path to the destination directory
      * @throws IOException in case of FS issues
      */
-    public void unzip(Path zipFilePath, String publicationDirName) throws IOException {
-        try (InputStream is = Files.newInputStream(zipFilePath)) {
-            unZip(is, publicationDirName);
+    public void unzip(Path source, Path destination) throws IOException {
+        try (InputStream is = Files.newInputStream(source)) {
+            unZip(is, destination);
         }
     }
 
@@ -65,8 +65,8 @@ public class ZipArchiver {
      * @param zipFileIs input stream of file to unzip
      * @throws IOException in case of FS issues
      */
-    private void unZip(InputStream zipFileIs, String dirName) throws IOException {
-        File outDir = Files.createDirectory(Path.of(resultFilePath.toString(), dirName)).toFile();
+    private void unZip(InputStream zipFileIs, Path destination) throws IOException {
+        File outDir = Files.createDirectory(destination).toFile();
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(zipFileIs);
         ZipEntry zipEntry = zis.getNextEntry();
