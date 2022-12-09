@@ -16,7 +16,6 @@ public class CreateExportRequestJobDesigner extends AbstractJobDesigner {
 //    @Bean(CREATE_EXPORT_REQUEST)
     @Override
     public Job build() {
-        // Step 0 - create MergeJob
         // Step 1 - create ExportRequestItems
         //      - ItemReader - read UUIDs from ExportRequest
         //      - ItemProcessor<String, ExportRequestItem> - delegate ItemProcessor
@@ -28,7 +27,8 @@ public class CreateExportRequestJobDesigner extends AbstractJobDesigner {
         //      - ItemProcessor<ExportRequestItem, Export> - requestItem to Export root node processor
         //          - create Export tree (one to one tree from root publication to root Export)
         //      - ItemWriter - save Export tree (from top - down)
-        // Step 3 - enqueue exports
+        // Step 3 - create MergeJob
+        // Step 4 - enqueue exports
         //      - enqueue first export in every requestItem
         //      - first export in Export tree is the first node from the tree in PostOrder
         throw new UnsupportedOperationException("Not Yet Implemented.");
