@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.step;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.designer;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.TreeBuildingProcessor;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.EnrichmentRequestReader;

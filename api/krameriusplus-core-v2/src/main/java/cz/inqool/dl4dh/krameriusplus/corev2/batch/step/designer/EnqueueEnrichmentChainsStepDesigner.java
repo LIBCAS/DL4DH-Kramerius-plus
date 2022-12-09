@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.step;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.designer;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet.EnrichmentChainEnqueuingTasklet;
 import org.springframework.batch.core.Step;

@@ -1,5 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.step;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.designer;
 
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.PageLimitCheckingSkipPolicy;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.listener.StepSkipListener;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import org.springframework.batch.core.Step;
@@ -9,13 +10,13 @@ import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_NDK_STEP;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.KrameriusProcessor.ENRICH_NDK_COMPOSITE_PROCESSOR;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_ALTO_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.KrameriusProcessor.ENRICH_ALTO_COMPOSITE_PROCESSOR;
 
-@Component
-public class EnrichNdkStepDesigner extends AbstractStepDesigner {
+@Configuration
+public class EnrichAltoStepDesigner extends AbstractStepDesigner {
 
     private MongoItemReader<Page> reader;
 
@@ -29,14 +30,14 @@ public class EnrichNdkStepDesigner extends AbstractStepDesigner {
 
     @Override
     protected String getStepName() {
-        return ENRICH_NDK_STEP;
+        return ENRICH_ALTO_STEP;
     }
 
-    @Bean(ENRICH_NDK_STEP)
+    @Bean(ENRICH_ALTO_STEP)
     @Override
     public Step build() {
         return getStepBuilder()
-                .<Page, Page>chunk(5)
+                .<Page, Page> chunk(5)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -52,7 +53,7 @@ public class EnrichNdkStepDesigner extends AbstractStepDesigner {
     }
 
     @Autowired
-    public void setProcessor(@Qualifier(ENRICH_NDK_COMPOSITE_PROCESSOR) CompositeItemProcessor<Page, Page> processor) {
+    public void setProcessor(@Qualifier(ENRICH_ALTO_COMPOSITE_PROCESSOR) CompositeItemProcessor<Page, Page> processor) {
         this.processor = processor;
     }
 
