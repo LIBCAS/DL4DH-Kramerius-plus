@@ -1,6 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.batch.step;
+package cz.inqool.dl4dh.krameriusplus.corev2.batch;
 
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.AbstractExportJobDesigner;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.EXPORT_TEXT;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_TEXT_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_TEXT_PAGES_STEP;
 
 @Configuration
 public class ExportTextJobDesigner extends AbstractExportJobDesigner {
@@ -18,6 +18,11 @@ public class ExportTextJobDesigner extends AbstractExportJobDesigner {
     private Step exportTextStep;
 
     @Bean(EXPORT_TEXT)
+    @Override
+    public Job build() {
+        return super.build();
+    }
+
     @Override
     protected List<Step> getExportSteps() {
         return List.of(exportTextStep);
@@ -29,7 +34,7 @@ public class ExportTextJobDesigner extends AbstractExportJobDesigner {
     }
 
     @Autowired
-    public void setExportTextStep(@Qualifier(EXPORT_TEXT_STEP) Step exportTextStep) {
+    public void setExportTextStep(@Qualifier(EXPORT_TEXT_PAGES_STEP) Step exportTextStep) {
         this.exportTextStep = exportTextStep;
     }
 }

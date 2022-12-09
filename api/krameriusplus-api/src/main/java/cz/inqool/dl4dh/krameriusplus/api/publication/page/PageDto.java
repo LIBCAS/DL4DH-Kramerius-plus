@@ -18,16 +18,9 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PAGE;
 @JsonTypeName(PAGE)
 public class PageDto extends DigitalObjectDto {
 
-    private String rootId;
-
     private List<TokenDto> tokens = new ArrayList<>();
 
     private String policy;
-
-    /**
-     * Usually page number
-     */
-    private String title;
 
     private String pageType;
 

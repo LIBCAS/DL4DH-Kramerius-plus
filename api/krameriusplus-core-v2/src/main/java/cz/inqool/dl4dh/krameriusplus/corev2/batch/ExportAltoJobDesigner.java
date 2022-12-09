@@ -10,17 +10,12 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.EXPORT_ALTO;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_ALTO_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_ALTO_PAGES_STEP;
 
 @Configuration
 public class ExportAltoJobDesigner extends AbstractExportJobDesigner {
 
     private Step exportAltoStep;
-
-    @Override
-    public String getJobName() {
-        return EXPORT_ALTO;
-    }
 
     @Bean(EXPORT_ALTO)
     @Override
@@ -29,12 +24,17 @@ public class ExportAltoJobDesigner extends AbstractExportJobDesigner {
     }
 
     @Override
+    public String getJobName() {
+        return EXPORT_ALTO;
+    }
+
+    @Override
     protected List<Step> getExportSteps() {
         return List.of(exportAltoStep);
     }
 
     @Autowired
-    public void setExportAltoStep(@Qualifier(EXPORT_ALTO_STEP) Step exportAltoStep) {
+    public void setExportAltoStep(@Qualifier(EXPORT_ALTO_PAGES_STEP) Step exportAltoStep) {
         this.exportAltoStep = exportAltoStep;
     }
 }

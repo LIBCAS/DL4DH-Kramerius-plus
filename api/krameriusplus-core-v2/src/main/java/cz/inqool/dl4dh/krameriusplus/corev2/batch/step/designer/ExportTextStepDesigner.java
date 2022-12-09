@@ -2,15 +2,15 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.designer;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.TextPageExportProcessor;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.KrameriusPageReader;
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.PageExport;
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer.PageFileItemWriter;
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.DigitalObjectExport;
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer.DigitalObjectFileItemWriter;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_TEXT_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_TEXT_PAGES_STEP;
 
 @Component
 public class ExportTextStepDesigner extends AbstractStepDesigner {
@@ -19,13 +19,13 @@ public class ExportTextStepDesigner extends AbstractStepDesigner {
 
     private TextPageExportProcessor processor;
 
-    private PageFileItemWriter writer;
+    private DigitalObjectFileItemWriter writer;
 
-    @Bean(EXPORT_TEXT_STEP)
+    @Bean(EXPORT_TEXT_PAGES_STEP)
     @Override
     public Step build() {
         return getStepBuilder()
-                .<Page, PageExport>chunk(5)
+                .<Page, DigitalObjectExport>chunk(5)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -34,7 +34,7 @@ public class ExportTextStepDesigner extends AbstractStepDesigner {
 
     @Override
     protected String getStepName() {
-        return EXPORT_TEXT_STEP;
+        return EXPORT_TEXT_PAGES_STEP;
     }
 
     @Autowired
@@ -48,7 +48,7 @@ public class ExportTextStepDesigner extends AbstractStepDesigner {
     }
 
     @Autowired
-    public void setWriter(PageFileItemWriter writer) {
+    public void setWriter(DigitalObjectFileItemWriter writer) {
         this.writer = writer;
     }
 }

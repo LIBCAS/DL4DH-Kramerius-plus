@@ -1,31 +1,32 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.designer;
 
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.AltoPageExportProcessor;
-import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.KrameriusPageReader;
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.JsonPageExportProcessor;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.DigitalObjectExport;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer.DigitalObjectFileItemWriter;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.item.data.MongoItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_ALTO_PAGES_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.EXPORT_JSON_PAGES_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER_W_TOKENS;
 
 @Component
-public class ExportAltoStepDesigner extends AbstractStepDesigner {
+public class ExportJsonPagesStepDesigner extends AbstractStepDesigner {
 
-    private KrameriusPageReader reader;
+    private MongoItemReader<Page> reader;
 
-    private AltoPageExportProcessor processor;
+    private JsonPageExportProcessor processor;
 
     private DigitalObjectFileItemWriter writer;
 
-    @Bean(EXPORT_ALTO_PAGES_STEP)
+    @Bean(EXPORT_JSON_PAGES_STEP)
     @Override
     public Step build() {
-        return getStepBuilder()
-                .<Page, DigitalObjectExport>chunk(5)
+        return getStepBuilder().<Page, DigitalObjectExport>chunk(5)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -34,16 +35,16 @@ public class ExportAltoStepDesigner extends AbstractStepDesigner {
 
     @Override
     protected String getStepName() {
-        return EXPORT_ALTO_PAGES_STEP;
+        return EXPORT_JSON_PAGES_STEP;
     }
 
     @Autowired
-    public void setReader(KrameriusPageReader reader) {
+    public void setReader(@Qualifier(PAGE_MONGO_READER_W_TOKENS) MongoItemReader<Page> reader) {
         this.reader = reader;
     }
 
     @Autowired
-    public void setProcessor(AltoPageExportProcessor processor) {
+    public void setProcessor(JsonPageExportProcessor processor) {
         this.processor = processor;
     }
 

@@ -20,6 +20,10 @@ public abstract class DigitalObject extends DomainDocument {
     @Indexed
     private Integer index;
 
+    private String rootId;
+
+    private String title;
+
     private List<DigitalObjectContext> context = new ArrayList<>();
 
     public abstract String getModel();
