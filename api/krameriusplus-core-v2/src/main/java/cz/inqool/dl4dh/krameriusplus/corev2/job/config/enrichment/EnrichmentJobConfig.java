@@ -1,5 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.job.config;
+package cz.inqool.dl4dh.krameriusplus.corev2.job.config.enrichment;
 
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobConfig;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import lombok.Getter;
 import lombok.Setter;

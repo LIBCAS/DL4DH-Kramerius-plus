@@ -11,4 +11,8 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.SUPPL
 @Setter
 @TypeAlias(SUPPLEMENT)
 public class Supplement extends Publication {
+    @Override
+    public String getModel() {
+        return SUPPLEMENT;
+    }
 }

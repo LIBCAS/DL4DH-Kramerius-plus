@@ -21,4 +21,9 @@ public class MonographUnit extends Publication {
     private String partNumber;
 
     private String partTitle;
+
+    @Override
+    public String getModel() {
+        return MONOGRAPH_UNIT;
+    }
 }

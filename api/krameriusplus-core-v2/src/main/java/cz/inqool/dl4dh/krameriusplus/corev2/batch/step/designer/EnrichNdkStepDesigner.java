@@ -13,7 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_NDK_STEP;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.KrameriusProcessor.ENRICH_NDK_COMPOSITE_PROCESSOR;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.ItemProcessorsConfig.KrameriusProcessor.ENRICH_NDK_COMPOSITE_PROCESSOR;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER;
 
 @Component
 public class EnrichNdkStepDesigner extends AbstractStepDesigner {
@@ -48,7 +49,7 @@ public class EnrichNdkStepDesigner extends AbstractStepDesigner {
     }
 
     @Autowired
-    public void setReader(MongoItemReader<Page> reader) {
+    public void setReader(@Qualifier(PAGE_MONGO_READER) MongoItemReader<Page> reader) {
         this.reader = reader;
     }
 

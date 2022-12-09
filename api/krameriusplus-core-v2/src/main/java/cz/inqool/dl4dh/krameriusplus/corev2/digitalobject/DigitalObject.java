@@ -21,4 +21,6 @@ public abstract class DigitalObject extends DomainDocument {
     private Integer index;
 
     private List<DigitalObjectContext> context = new ArrayList<>();
+
+    public abstract String getModel();
 }

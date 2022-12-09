@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.KrameriusProcessor.*;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.ItemProcessorsConfig.KrameriusProcessor.*;
 
 @Configuration
 public class ItemProcessorsConfig {
@@ -43,5 +43,14 @@ public class ItemProcessorsConfig {
         return new CompositeItemProcessorBuilder<Page, Page>()
                 .delegates(filePathFinderProcessor, metsProcessor)
                 .build();
+    }
+
+    public static class KrameriusProcessor {
+
+        public static final String ENRICH_ALTO_COMPOSITE_PROCESSOR = "ENRICH_ALTO_COMPOSITE_PROCESSOR";
+
+        public static final String ENRICH_NDK_COMPOSITE_PROCESSOR = "ENRICH_NDK_COMPOSITE_PROCESSOR";
+
+        public static final String CREATE_CHAINS_COMPOSITE_PROCESSOR = "CREATE_CHAINS_COMPOSITE_PROCESSOR";
     }
 }

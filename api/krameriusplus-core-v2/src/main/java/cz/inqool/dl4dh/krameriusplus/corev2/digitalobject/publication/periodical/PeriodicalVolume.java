@@ -25,4 +25,9 @@ public class PeriodicalVolume extends Publication {
      * in these two attributes, so keeping both
      */
     private String volumeYear;
+
+    @Override
+    public String getModel() {
+        return PERIODICAL_VOLUME;
+    }
 }

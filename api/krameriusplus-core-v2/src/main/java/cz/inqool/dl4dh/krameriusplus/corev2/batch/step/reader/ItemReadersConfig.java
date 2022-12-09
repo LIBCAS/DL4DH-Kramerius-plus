@@ -11,18 +11,36 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER_W_TOKENS;
+import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Configuration
 public class ItemReadersConfig {
 
-    @Bean
+    @Bean(PAGE_MONGO_READER)
     @StepScope
-    public MongoItemReader<Page> pageMongoReader(MongoOperations mongoOperations,
-                                                 @Value("#{jobParameters['PUBLICATION_ID']}") String parentId) {
+    public MongoItemReader<Page> pageMongoReaderWithoutTokens(MongoOperations mongoOperations,
+                                                 @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String parentId) {
         Query query = query(where("parentId").is(parentId));
+        query.with(Sort.by("index").ascending());
         query.fields().exclude("tokens");
+
+        return new MongoItemReaderBuilder<Page>()
+                .template(mongoOperations)
+                .targetType(Page.class)
+                .query(query)
+                .pageSize(10)
+                .build();
+    }
+
+    @Bean(PAGE_MONGO_READER_W_TOKENS)
+    @StepScope
+    public MongoItemReader<Page> pageMongoReaderWithTokens(MongoOperations mongoOperations,
+                                                 @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String parentId) {
+        Query query = query(where("parentId").is(parentId));
         query.with(Sort.by("index").ascending());
 
         return new MongoItemReaderBuilder<Page>()
@@ -31,5 +49,12 @@ public class ItemReadersConfig {
                 .query(query)
                 .pageSize(10)
                 .build();
+    }
+
+    public static class KrameriusReader {
+
+        public static final String PAGE_MONGO_READER_W_TOKENS = "PAGE_MONGO_READER_WITH_TOKENS";
+
+        public static final String PAGE_MONGO_READER = "PAGE_MONGO_READER_WITHOUT_TOKENS";
     }
 }

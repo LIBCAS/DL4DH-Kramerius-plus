@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.job.config;
+package cz.inqool.dl4dh.krameriusplus.corev2.job.config.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.config.EnrichmentExternalJobConfigDto;
 import cz.inqool.dl4dh.krameriusplus.api.batch.config.EnrichmentJobConfigDto;

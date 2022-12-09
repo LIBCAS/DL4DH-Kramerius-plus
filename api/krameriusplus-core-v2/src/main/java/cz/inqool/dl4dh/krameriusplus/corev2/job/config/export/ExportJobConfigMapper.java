@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.job.config;
+package cz.inqool.dl4dh.krameriusplus.corev2.job.config.export;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.config.*;
 import org.mapstruct.Mapper;

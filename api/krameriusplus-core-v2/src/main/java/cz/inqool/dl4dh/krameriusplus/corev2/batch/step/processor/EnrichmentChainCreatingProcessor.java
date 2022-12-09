@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.ChainCreateWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
-import cz.inqool.dl4dh.krameriusplus.corev2.job.config.EnrichmentJobConfig;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.enrichment.EnrichmentJobConfig;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChainStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;

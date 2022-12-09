@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.service.system.job.step;
+package cz.inqool.dl4dh.krameriusplus.corev2.utils;
 
 import org.springframework.stereotype.Component;
 
@@ -45,9 +45,7 @@ public class ZipArchiver {
     }
 
     /**
-     * unzipping method
-     *
-     * file name is preserved, entry is created under the field directory
+     * Unzip given file from Path
      *
      * @param source path to zip file to be unzipped
      * @param destination path to the destination directory
@@ -55,20 +53,20 @@ public class ZipArchiver {
      */
     public void unzip(Path source, Path destination) throws IOException {
         try (InputStream is = Files.newInputStream(source)) {
-            unZip(is, destination);
+            unzip(is, destination);
         }
     }
 
     /**
-     * code from <a href="https://www.baeldung.com/java-compress-and-uncompress">baeldung</a>
+     * Unzip given file from InputStream
      *
-     * @param zipFileIs input stream of file to unzip
-     * @throws IOException in case of FS issues
+     * @param inputStream source zip stream to unzip
+     * @param destination destination of the unzipped file
      */
-    private void unZip(InputStream zipFileIs, Path destination) throws IOException {
+    public void unzip(InputStream inputStream, Path destination) throws IOException {
         File outDir = Files.createDirectory(destination).toFile();
         byte[] buffer = new byte[1024];
-        ZipInputStream zis = new ZipInputStream(zipFileIs);
+        ZipInputStream zis = new ZipInputStream(inputStream);
         ZipEntry zipEntry = zis.getNextEntry();
         while (zipEntry != null) {
             File newFile = newFile(outDir, zipEntry);

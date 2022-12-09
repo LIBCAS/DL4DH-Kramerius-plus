@@ -42,4 +42,9 @@ public class Page extends DigitalObject {
     private MetsMetadata metsMetadata;
 
     private String teiBodyFileId;
+
+    @Override
+    public String getModel() {
+        return PAGE;
+    }
 }

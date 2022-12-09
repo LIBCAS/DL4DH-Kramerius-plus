@@ -1,6 +1,9 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.job.config;
+package cz.inqool.dl4dh.krameriusplus.corev2.job.config.export;
 
+import cz.inqool.dl4dh.krameriusplus.api.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.api.export.params.ParamsDto;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobConfig;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.ParamsJsonConverter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,4 +21,6 @@ public abstract class ExportJobConfig extends JobConfig {
     @Lob
     @Convert(converter = ParamsJsonConverter.class)
     private ParamsDto params;
+
+    public abstract ExportFormat getExportFormat();
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.CREATE_ENRICHMENT_CHAINS_STEP;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.KrameriusProcessor.CREATE_CHAINS_COMPOSITE_PROCESSOR;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.ItemProcessorsConfig.KrameriusProcessor.CREATE_CHAINS_COMPOSITE_PROCESSOR;
 
 @Component
 public class CreateEnrichmentChainsStepDesigner extends AbstractStepDesigner {
