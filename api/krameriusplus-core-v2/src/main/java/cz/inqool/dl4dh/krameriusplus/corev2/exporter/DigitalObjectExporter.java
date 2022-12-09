@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class DigitalObjectExporter {
 
-    public static final String[] METADATA_HEADERS = new String[]{"UUID", "FILENAME", "INDEX", "TITLE"};
+    public static final String[] METADATA_HEADERS = new String[]{"UUID", "FILENAME", "MODEL", "INDEX", "TITLE"};
 
     public void export(List<? extends DigitalObjectExport> objectsToExport, Path destination) throws IOException {
         try (CSVPrinter printer = getPrinter(destination)) {
@@ -37,7 +37,12 @@ public class DigitalObjectExporter {
 
     private Iterable<?> toRecord(DigitalObjectExport item, String itemFilename) {
         DigitalObject digitalObject = item.getDigitalObject();
-        return List.of(digitalObject.getId(), itemFilename, digitalObject.getIndex(), digitalObject.getTitle());
+        return List.of(
+                digitalObject.getId(),
+                itemFilename,
+                item.getDigitalObject().getModel(),
+                digitalObject.getIndex(),
+                digitalObject.getTitle());
     }
 
     private CSVPrinter getPrinter(Path destination) throws IOException {
