@@ -6,10 +6,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AltoStringWrappedPage {
+public class PageExport {
 
     private final Page page;
 
-    private final String alto;
+    private final String content;
+
+    private final String filename;
 
 }
