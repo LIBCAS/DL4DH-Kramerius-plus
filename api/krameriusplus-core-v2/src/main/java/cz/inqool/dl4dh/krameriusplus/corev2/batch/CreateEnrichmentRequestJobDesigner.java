@@ -54,7 +54,8 @@ public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
         //      - for each EnrichmentRequestItem, do
         //          - for each EnrichmentChain, do
         //              - enqueue first job in chain
-        return getJobBuilder().start(fetchPublicationsStep)
+        return getJobBuilder()
+                .start(fetchPublicationsStep)
                 .next(createEnrichmentItemsStep)
                 .next(createEnrichmentChainsStep)
                 .next(enqueueEnrichmentChainsStep)
