@@ -155,8 +155,10 @@
                 <constraints nullable="false" primaryKey="true"
                              primaryKeyName="enrichment_request_item_PK"/>
             </column>
-
             <column name="publication_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publication_title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="item_order" type="bigint">
@@ -177,6 +179,9 @@
             </column>
 
             <column name="publication_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publication_title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="chain_order" type="bigint">
@@ -345,19 +350,4 @@
         </createTable>
 
     </changeSet>
-
-    <changeSet id="2" author="kollar">
-        <addColumn tableName="kplus_enrichment_chain">
-            <column name="publication_title" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-
-        <addColumn tableName="kplus_enrichment_request_item">
-            <column name="publication_title" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
-
 </databaseChangeLog>
