@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +137,7 @@ public class MetsMixElement extends MetsElement {
             private String digitalCameraManufacturer;
             private DigitalCameraModel digitalCameraModel;
             private String digitalCameraSensor;
-            private DigitalCameraCaptureSettings digitalCameraCaptureSettings;
+            private CameraCaptureSettings digitalCameraCaptureSettings;
 
             @Getter
             @Setter
@@ -150,10 +151,47 @@ public class MetsMixElement extends MetsElement {
 
             @Getter
             @Setter
-            public static class DigitalCameraCaptureSettings {
+            public static class CameraCaptureSettings {
 
-//                private ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData imageData;
+                private ImageData imageData;
 
+                @Getter
+                @Setter
+                public static class ImageData {
+                    private Float fNumber;
+                    private Float exposureTime;
+                    private BigInteger isoSpeedRatings;
+                    private RationalType shutterSpeedValue;
+                    private RationalType apertureValue;
+                    private RationalType brightnessValue;
+                    private RationalType exposureBiasValue;
+                    private RationalType maxApertureValue;
+                    private BigDecimal subjectDistance;
+                    private String meteringMode;
+                    private String lightSource;
+                    private String flash;
+                    private String focalLength;
+                    private String backLight;
+                    private Float exposureIndex;
+                    private String sensingMethod;
+                    private BigInteger cfaPattern;
+                    private String autoFocus;
+                    private PrintAspectRatio printAspectRatio;
+
+                    @Getter
+                    @Setter
+                    public static class RationalType {
+                        private BigInteger numerator;
+                        private BigInteger denominator;
+                    }
+
+                    @Getter
+                    @Setter
+                    public static class PrintAspectRatio {
+                        private Float xPrintAspectRatio;
+                        private Float yPrintAspectRatio;
+                    }
+                }
             }
         }
     }

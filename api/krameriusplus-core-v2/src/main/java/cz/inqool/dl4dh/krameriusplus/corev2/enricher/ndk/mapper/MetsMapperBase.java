@@ -1,8 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.enricher.ndk.mapper;
 
-import cz.inqool.dl4dh.ndk.mix.PositiveIntegerType;
-import cz.inqool.dl4dh.ndk.mix.StringType;
-import cz.inqool.dl4dh.ndk.mix.TypeOfDateType;
+import cz.inqool.dl4dh.ndk.mix.*;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -10,6 +8,14 @@ import java.util.List;
 public interface MetsMapperBase {
 
     default BigInteger map(PositiveIntegerType xmlElement) {
+        return xmlElement.getValue();
+    }
+
+    default Float map(TypeOfNonNegativeRealType xmlElement) {
+        return xmlElement.getValue();
+    }
+
+    default Float map(TypeOfPositiveRealType xmlElement) {
         return xmlElement.getValue();
     }
 

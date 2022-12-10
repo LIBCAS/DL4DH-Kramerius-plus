@@ -8,7 +8,6 @@ import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.Ba
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageAssessmentMetadata;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.DigitalCameraCapture;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.DigitalCameraCapture.DigitalCameraCaptureSettings;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.DigitalCameraCapture.DigitalCameraModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.GeneralCaptureInformation;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.ScannerCapture;
@@ -39,7 +38,18 @@ public interface MixMapper extends MetsMapperBase {
     })
     ImageAssessmentMetadata.ImageColorEncoding map(ImageAssessmentMetadataType.ImageColorEncoding xmlElement);
 
-    DigitalCameraCaptureSettings map(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings xmlElement);
+    @Mappings(value = {
+            @Mapping(target = "subjectDistance", source = "subjectDistance.distance.value"),
+            @Mapping(target = "meteringMode", source = "meteringMode.value"),
+            @Mapping(target = "lightSource", source = "lightSource.value"),
+            @Mapping(target = "flash", source = "flash.value"),
+            @Mapping(target = "focalLength", source = "focalLength.value"),
+            @Mapping(target = "backLight", source = "backLight.value"),
+            @Mapping(target = "sensingMethod", source = "sensingMethod.value"),
+            @Mapping(target = "cfaPattern", source = "cfaPattern.value"),
+            @Mapping(target = "autoFocus", source = "autoFocus.value")
+    })
+    DigitalCameraCapture.CameraCaptureSettings.ImageData map(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData xmlElement);
 
     DigitalCameraModel map(ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel xmlElement);
 
