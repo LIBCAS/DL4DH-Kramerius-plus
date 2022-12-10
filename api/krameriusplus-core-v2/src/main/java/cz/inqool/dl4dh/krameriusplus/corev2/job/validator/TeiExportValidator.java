@@ -1,10 +1,11 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job.validator;
 
-import cz.inqool.dl4dh.krameriusplus.api.ExportFormat;
-import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.store.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRefStore;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
+import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,31 +19,33 @@ public class TeiExportValidator implements ExportValidator {
     private FileRefStore fileRefStore;
 
     /**
-     * Returns true if every publication in given publication tree has TEI header file
-     * @param publicationId
-     * @return
+     * Validates if all publications and their children have TEI header field in MongoDB
+     * @param exportRequest to validate
+     * @throws JobParametersInvalidException if a publication or some of its children has no TEI header
      */
     @Override
-    public boolean canCreate(String publicationId) {
-        return hasTeiHeader(publicationId);
+    public void validate(ExportRequest exportRequest) throws JobParametersInvalidException {
+        if (exportRequest.getCreateRequestJob().getJobType().equals(KrameriusJobType.EXPORT_TEI)) {
+            for (String publicationId : exportRequest.getPublicationIds().values()) {
+                validateHasTeiHeader(publicationId);
+            }
+        }
     }
 
-    private boolean hasTeiHeader(String publicationId) {
+    private void validateHasTeiHeader(String publicationId) throws JobParametersInvalidException {
         Publication publication = publicationStore.findById(publicationId)
-                .orElseThrow(() -> new MissingObjectException(Publication.class, publicationId));
+                .orElseThrow(() -> new JobParametersInvalidException("Publication with ID: " + publicationId + " not found in MongoDB."));
 
         if (publication.getTeiHeaderFileId() == null || !fileRefStore.exist(publication.getTeiHeaderFileId())) {
-            return false;
+            throw new JobParametersInvalidException("Publication with ID: " + publicationId + " has no TEI header file. " +
+                    "ExportRequest with TEI format cannot be created.");
         }
 
         List<Publication> children = publicationStore.findAllChildren(publicationId);
 
-        return children.stream().allMatch(child -> hasTeiHeader(child.getTeiHeaderFileId()));
-    }
-
-    @Override
-    public boolean supports(ExportFormat exportFormat) {
-        return exportFormat.equals(ExportFormat.TEI);
+        for (Publication child : children) {
+            validateHasTeiHeader(child.getId());
+        }
     }
 
     @Autowired
