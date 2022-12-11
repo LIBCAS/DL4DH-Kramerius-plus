@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.EXPORT_REQUEST_ID;
 
@@ -52,11 +51,12 @@ public class ExportItemsEnqueuingTasklet implements Tasklet {
 
         Export current = rootExport;
         while (!isMaxDepth) {
-            Map<Long, Export> children = new TreeMap<>(current.getChildren());
-            if (children.values().isEmpty()) {
+            List<Export> children = current.getChildrenList();
+
+            if (children.isEmpty()) {
                 isMaxDepth = true;
             } else {
-                current = children.values().iterator().next(); // get first child
+                current = children.iterator().next(); // get first child
             }
         }
 

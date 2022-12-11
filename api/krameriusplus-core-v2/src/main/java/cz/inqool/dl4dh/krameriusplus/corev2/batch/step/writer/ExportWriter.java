@@ -23,7 +23,7 @@ public class ExportWriter implements ItemWriter<Export> {
     private void saveExportTree(Export export) {
         exportStore.create(export);
 
-        for (Export child : export.getChildren().values()) {
+        for (Export child : export.getChildrenList()) {
             saveExportTree(child);
         }
     }
