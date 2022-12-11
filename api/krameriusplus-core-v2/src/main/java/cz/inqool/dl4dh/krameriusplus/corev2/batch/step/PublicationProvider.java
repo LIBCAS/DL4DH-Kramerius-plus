@@ -8,6 +8,10 @@ import cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessenger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.isTrue;
 
 /**
@@ -29,6 +33,18 @@ public class PublicationProvider {
 
                     return (Publication) digitalObject;
                 });
+    }
+
+    public List<Publication> findChildren(String parentId) {
+        Optional<Publication> publication = publicationStore.findById(parentId);
+        if (publication.isPresent()) {
+            return publicationStore.findAllChildren(parentId);
+        } else {
+            return krameriusMessenger.getDigitalObjectsForParent(parentId).stream()
+                    .filter(obj -> obj instanceof Publication)
+                    .map(obj -> (Publication) obj)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Autowired

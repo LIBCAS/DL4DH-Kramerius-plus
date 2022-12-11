@@ -37,4 +37,12 @@ public class KrameriusStep {
     public static final String EXPORT_JSON_PUBLICATION_STEP = "EXPORT_JSON_PUBLICATION_STEP";
 
     public static final String EXPORT_JSON_PAGES_STEP = "EXPORT_JSON_PAGES_STEP";
+
+    public static final String CREATE_EXPORT_ITEMS_STEP = "CREATE_EXPORT_ITEMS_STEP";
+
+    public static final String CREATE_EXPORTS_STEP = "CREATE_EXPORTS_STEP";
+
+    public static final String CREATE_MERGE_JOB_STEP = "CREATE_MERGE_JOB_STEP";
+
+    public static final String ENQUEUE_EXPORT_ITEMS_STEP = "ENQUEUE_EXPORT_ITEMS_STEP";
 }

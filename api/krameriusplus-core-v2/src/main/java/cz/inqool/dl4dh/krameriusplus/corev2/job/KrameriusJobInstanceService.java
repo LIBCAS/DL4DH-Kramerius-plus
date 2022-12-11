@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.job;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
-import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
@@ -10,8 +10,6 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 @Service
 public class KrameriusJobInstanceService {
@@ -31,18 +29,13 @@ public class KrameriusJobInstanceService {
     }
 
     @Transactional
-    public KrameriusJobInstanceDto createJobDto(KrameriusJobType jobType, Map<String, Object> jobParametersMap) {
-        return mapper.toDto(createJob(jobType, jobParametersMap));
-    }
-
-    @Transactional
-    public KrameriusJobInstance createJob(KrameriusJobType jobType, Map<String, Object> jobParametersMap) {
+    public KrameriusJobInstance createJob(KrameriusJobType jobType, JobParametersMapWrapper jobParametersMap) {
         // 1. Create JobInstance from JobType + JobParameters, using mapper::toJobParameters
         // 2. Create KrameriusJobInstance with default executionStatus CREATED
         KrameriusJobInstance krameriusJobInstance = new KrameriusJobInstance();
         krameriusJobInstance.setExecutionStatus(ExecutionStatus.CREATED);
         krameriusJobInstance.setJobType(jobType);
-        JobParameters jobParameters = mapper.toJobParameters(krameriusJobInstance, jobParametersMap);
+        JobParameters jobParameters = mapper.toJobParameters(krameriusJobInstance, jobParametersMap.getJobParametersMap());
 
         krameriusJobInstance.setJobParameters(jobParameters);
 

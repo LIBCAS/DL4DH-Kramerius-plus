@@ -23,7 +23,7 @@ public class EnrichmentChainEnqueuingTasklet implements Tasklet {
     private final JobEnqueueService jobEnqueueService;
 
     @Autowired
-    public EnrichmentChainEnqueuingTasklet(@Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
+    public EnrichmentChainEnqueuingTasklet(@Value("#{jobParameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
                                            EnrichmentRequestStore enrichmentRequestStore,
                                            JobEnqueueService jobEnqueueService) {
         this.enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
@@ -35,7 +35,7 @@ public class EnrichmentChainEnqueuingTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
         enrichmentRequest.getItems()
                 .forEach(enrichmentRequestItem -> enrichmentRequestItem.getEnrichmentChains()
-                        .forEach(chain -> jobEnqueueService.enqueue(chain.getJobs().get(0L))));
+                        .forEach(chain -> jobEnqueueService.enqueue(chain.getJobs().values().iterator().next())));
 
         return RepeatStatus.FINISHED;
     }
