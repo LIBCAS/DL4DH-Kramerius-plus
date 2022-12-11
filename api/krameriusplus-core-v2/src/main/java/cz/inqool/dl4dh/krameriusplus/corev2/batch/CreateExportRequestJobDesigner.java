@@ -5,10 +5,11 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.CREATE_EXPORT_REQUEST;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.CREATE_EXPORT_ITEMS_STEP;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.*;
 
 @Configuration
 public class CreateExportRequestJobDesigner extends AbstractJobDesigner {
@@ -17,13 +18,18 @@ public class CreateExportRequestJobDesigner extends AbstractJobDesigner {
 
     private Step createExportItemsStep;
 
+    private Step createExportsStep;
+
+    private Step createMergeJobStep;
+
+    private Step enqueueExportItemsStep;
 
     @Override
     public String getJobName() {
         return CREATE_EXPORT_REQUEST;
     }
 
-//    @Bean(CREATE_EXPORT_REQUEST)
+    @Bean(CREATE_EXPORT_REQUEST)
     @Override
     public Job build() {
         // Step 1 - create ExportRequestItems
@@ -40,7 +46,12 @@ public class CreateExportRequestJobDesigner extends AbstractJobDesigner {
         // Step 4 - enqueue exports
         //      - enqueue first export in every requestItem
         //      - first export in Export tree is the first node from the tree in PostOrder
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        return getJobBuilder().validator(parametersValidator)
+                .start(createExportItemsStep)
+                .next(createExportsStep)
+                .next(createMergeJobStep)
+                .next(enqueueExportItemsStep)
+                .build();
     }
 
     @Autowired
@@ -51,5 +62,20 @@ public class CreateExportRequestJobDesigner extends AbstractJobDesigner {
     @Autowired
     public void setCreateExportItemsStep(@Qualifier(CREATE_EXPORT_ITEMS_STEP) Step createExportItemsStep) {
         this.createExportItemsStep = createExportItemsStep;
+    }
+
+    @Autowired
+    public void setCreateExportsStep(@Qualifier(CREATE_EXPORTS_STEP) Step createExportsStep) {
+        this.createExportsStep = createExportsStep;
+    }
+
+    @Autowired
+    public void setCreateMergeJobStep(@Qualifier(CREATE_MERGE_JOB_STEP) Step createMergeJobStep) {
+        this.createMergeJobStep = createMergeJobStep;
+    }
+
+    @Autowired
+    public void setEnqueueExportItemsStep(@Qualifier(ENQUEUE_EXPORT_ITEMS_STEP) Step enqueueExportItemsStep) {
+        this.enqueueExportItemsStep = enqueueExportItemsStep;
     }
 }
