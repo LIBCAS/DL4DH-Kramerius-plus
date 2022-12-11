@@ -1,10 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job.listener;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.ExportStore;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.*;
 
@@ -13,20 +18,83 @@ public class ExportJobListener implements KrameriusJobListener {
 
     private final List<KrameriusJobType> SUPPORTED_TYPES = List.of(EXPORT_ALTO, EXPORT_CSV, EXPORT_JSON, EXPORT_TEI, EXPORT_TEXT);
 
+    private ExportStore exportStore;
+
+    private ExportRequestStore exportRequestStore;
+
+    private JobEnqueueService jobEnqueueService;
+
     @Override
     public void afterJob(KrameriusJobInstance jobInstance) {
-        // TODO: Run next export in PostOrder or if no next, run mergeJob
-        // 1. Export by exportJob
-        // 2. Find next in **PostOrder**
-        // 3. If next found, enqueue, check if all items are FINISHED
-        // 3.5 If yes, run merge job
-        // DANGER!!! This block probably needs to be synchronized in case multiple items finish at the same time
-        // and none of them will call mergeJob
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        // Export jobs from one ExportRequestItem must run in sequence,
+        // because otherwise it would be hard to determine, when to run
+        // the MergeJob. There would also be some other issues with
+        // includeChildExportStep, when parent export can finish before
+        // all of it's child exports finish.
+        Export export = exportStore.findByKrameriusJob(jobInstance);
+
+        Export root = findRoot(export);
+        List<Export> exportListInPostOrder = buildPostOrderList(root);
+
+        Export nextExport = null;
+        Iterator<Export> postOrderIterator = exportListInPostOrder.iterator();
+        while (postOrderIterator.hasNext()) {
+            Export current = postOrderIterator.next();
+
+            if (current.equals(export)) {
+                nextExport = postOrderIterator.next();
+                break;
+            }
+        }
+
+        if (nextExport != null) {
+            jobEnqueueService.enqueue(nextExport.getExportJob());
+        } else {
+            jobEnqueueService.enqueue(exportRequestStore.findMergeJob(root));
+        }
+    }
+
+    private List<Export> buildPostOrderList(Export root) {
+        List<Export> result = new ArrayList<>();
+        Deque<Export> stack = new LinkedList<>();
+        stack.add(root);
+
+        while (!stack.isEmpty()) {
+            root = stack.pop();
+            result.add(root);
+            stack.addAll(root.getChildrenList());
+        }
+
+        Collections.reverse(result);
+        return result;
+    }
+
+    private Export findRoot(Export export) {
+        Export current = export;
+        while (current.getParent() != null) {
+            current = current.getParent();
+        }
+
+        return current;
     }
 
     @Override
     public boolean supports(KrameriusJobInstance jobInstance) {
         return SUPPORTED_TYPES.contains(jobInstance.getJobType());
+    }
+
+    @Autowired
+    public void setExportStore(ExportStore exportStore) {
+        this.exportStore = exportStore;
+    }
+
+    @Autowired
+    public void setJobEnqueueService(JobEnqueueService jobEnqueueService) {
+        this.jobEnqueueService = jobEnqueueService;
+    }
+
+    @Autowired
+    public void setExportRequestStore(ExportRequestStore exportRequestStore) {
+        this.exportRequestStore = exportRequestStore;
     }
 }

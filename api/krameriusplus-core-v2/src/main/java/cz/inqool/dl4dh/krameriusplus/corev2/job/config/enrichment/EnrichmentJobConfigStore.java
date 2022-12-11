@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job.config.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.store.DomainStore;
-import cz.inqool.dl4dh.krameriusplus.corev2.job.config.QEnrichmentJobConfig;
 import org.springframework.stereotype.Repository;
 
 @Repository

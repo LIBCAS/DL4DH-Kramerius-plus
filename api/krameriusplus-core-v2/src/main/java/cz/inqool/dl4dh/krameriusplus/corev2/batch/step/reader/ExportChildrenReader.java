@@ -25,7 +25,7 @@ public class ExportChildrenReader implements ItemReader<Export> {
         Export root = exportStore.find(exportId);
         notNull(root, () -> new MissingObjectException(Export.class, exportId));
 
-        this.children = new LinkedList<>(root.getChildren().values());
+        this.children = new LinkedList<>(root.getChildrenList());
     }
 
     @Override

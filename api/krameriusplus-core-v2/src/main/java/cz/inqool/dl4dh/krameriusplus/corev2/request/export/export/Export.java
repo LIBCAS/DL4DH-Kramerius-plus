@@ -4,11 +4,14 @@ import cz.inqool.dl4dh.krameriusplus.api.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -42,5 +45,18 @@ public class Export extends DatedObject {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
     @MapKey(name = "order")
+    @Getter(value = AccessLevel.NONE)
     private Map<Long, Export> children = new TreeMap<>();
+
+    public void putChild(Long order, Export export) {
+        children.put(order, export);
+    }
+
+    /**
+     * Return a list of child exports ordered by `order`
+     * @return list of children
+     */
+    public List<Export> getChildrenList() {
+        return new ArrayList<>(new TreeMap<>(children).values());
+    }
 }
