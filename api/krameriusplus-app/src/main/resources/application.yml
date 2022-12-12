@@ -61,8 +61,6 @@ system:
     serializeEmptyArrays: true
   security:
     secret: kramerius-plus
-  export:
-
 
 keycloak:
   auth-server-url: https://keycloak.sekan.eu
