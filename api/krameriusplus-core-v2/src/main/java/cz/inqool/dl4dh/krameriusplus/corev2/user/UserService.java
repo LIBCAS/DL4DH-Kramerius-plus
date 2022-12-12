@@ -10,11 +10,11 @@ public class UserService implements UserFacade {
 
     private UserMapper userMapper;
 
-    private User currentUser;
+    private UserProvider userProvider;
 
     @Override
     public UserDto getCurrent() {
-        return userMapper.toDto(currentUser);
+        return userMapper.toDto(userProvider.getCurrentUser());
     }
 
     @Autowired
@@ -23,7 +23,7 @@ public class UserService implements UserFacade {
     }
 
     @Autowired
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    public void setUserProvider(UserProvider userProvider) {
+        this.userProvider = userProvider;
     }
 }

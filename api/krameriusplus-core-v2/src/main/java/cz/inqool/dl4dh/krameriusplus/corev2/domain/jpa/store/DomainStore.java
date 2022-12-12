@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -41,6 +42,7 @@ import static java.util.Collections.emptyList;
  * @param <T> Type of entity to hold
  * @param <Q> Type of query object
  */
+@Transactional
 public abstract class DomainStore<T extends DomainObject, Q extends EntityPathBase<T>> implements Store<T, Q> {
 
     /**

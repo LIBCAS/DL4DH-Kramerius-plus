@@ -1,23 +1,26 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-@Configuration
+@Component
 @RequestScope
 public class UserProvider {
 
     private UserStore userStore;
 
-    @Bean
-    @RequestScope
-    @ConditionalOnProperty(prefix = "system.security", name = "mock", havingValue = "false", matchIfMissing = true)
+    @Value("${system.security.mock:true}")
+    private boolean mock;
+
     public User getCurrentUser() {
+        return mock ? getCurrentUserMock() : getCurrentUserNormal();
+    }
+
+    private User getCurrentUserNormal() {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         String username = principal.getUsername();
@@ -32,10 +35,7 @@ public class UserProvider {
         return user;
     }
 
-    @Bean
-    @RequestScope
-    @ConditionalOnProperty(prefix = "system.security", name = "mock", havingValue = "true")
-    public User getCurrentUserMock() {
+    private User getCurrentUserMock() {
         User user = new User();
         user.setUsername("MOCKED_USER!!!");
         userStore.create(user);

@@ -9,6 +9,7 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -28,7 +29,7 @@ public class KrameriusJobInstanceService {
         return store.find(jobInstanceId);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public KrameriusJobInstance createJob(KrameriusJobType jobType, JobParametersMapWrapper jobParametersMap) {
         // 1. Create JobInstance from JobType + JobParameters, using mapper::toJobParameters
         // 2. Create KrameriusJobInstance with default executionStatus CREATED
@@ -46,7 +47,7 @@ public class KrameriusJobInstanceService {
         return store.create(krameriusJobInstance);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void updateStatus(KrameriusJobInstance instance) {
         // 1. get last JobExecution from mapper
         // 2. set status and update KrameriusJobInstance

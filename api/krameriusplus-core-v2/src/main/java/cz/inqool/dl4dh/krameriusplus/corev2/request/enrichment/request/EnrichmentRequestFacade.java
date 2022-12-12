@@ -11,6 +11,8 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.CREATE_ENRICHMENT_REQUEST;
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.ENRICHMENT_REQUEST_ID;
 
@@ -24,18 +26,22 @@ public class EnrichmentRequestFacade implements EnrichmentFacade {
     private JobEnqueueService enqueueService;
 
     @Override
+    @Transactional
     public EnrichmentRequestDto enrich(EnrichmentRequestCreateDto createDto) {
-        EnrichmentRequestDto requestDto = service.create(createDto);
+        EnrichmentRequest enrichmentRequest = service.getMapper().fromCreateDto(createDto);
 
         JobParametersMapWrapper jobParameters = new JobParametersMapWrapper();
-        jobParameters.putString(ENRICHMENT_REQUEST_ID, requestDto.getId());
+        jobParameters.putString(ENRICHMENT_REQUEST_ID, enrichmentRequest.getId());
 
         KrameriusJobInstance createRequestJob = jobInstanceService.createJob(
                 CREATE_ENRICHMENT_REQUEST, jobParameters);
 
+        enrichmentRequest.setCreateRequestJob(createRequestJob);
+        EnrichmentRequestDto result = service.getMapper().toDto(service.create(enrichmentRequest));
+
         enqueueService.enqueue(createRequestJob);
 
-        return requestDto;
+        return result;
     }
 
     @Override

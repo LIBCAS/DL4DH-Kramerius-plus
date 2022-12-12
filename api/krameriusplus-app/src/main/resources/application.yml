@@ -29,7 +29,7 @@ spring:
     job:
       enabled: false
     jdbc:
-      initialize-schema: never
+      initialize-schema: embedded
   #    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
   main:
     allow-bean-definition-overriding: true
@@ -56,7 +56,7 @@ system:
     tei:
       api: http://localhost:5000/tei
     ndk:
-      path: ..\..\ndk
+      path: C:\Users\filip\Inqool\Kramerius-gitlab\data\ndk
   json:
     serializeEmptyArrays: true
   security:

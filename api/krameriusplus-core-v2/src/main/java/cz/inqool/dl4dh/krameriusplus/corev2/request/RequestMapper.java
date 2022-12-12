@@ -3,21 +3,17 @@ package cz.inqool.dl4dh.krameriusplus.corev2.request;
 import cz.inqool.dl4dh.krameriusplus.api.RequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.RequestDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.service.mapper.DatedObjectMapper;
-import cz.inqool.dl4dh.krameriusplus.corev2.user.User;
-import lombok.Getter;
+import cz.inqool.dl4dh.krameriusplus.corev2.user.UserProvider;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.*;
 
-@RequestScope
 public abstract class RequestMapper<ENTITY extends Request, CDTO extends RequestCreateDto, DTO extends RequestDto>
         implements DatedObjectMapper<ENTITY, CDTO, DTO> {
 
     @Autowired
-    @Getter
-    protected User user;
+    protected UserProvider userProvider;
 
     public Map<Long, String> publicationIdsFromDto(List<String> publicationIds) {
         Map<Long, String> result = new HashMap<>();
@@ -34,6 +30,6 @@ public abstract class RequestMapper<ENTITY extends Request, CDTO extends Request
         return new ArrayList<>(new TreeMap<>(publicationIds).values());
     }
 
-    @Mapping(target = "owner", expression = "java(user)")
+    @Mapping(target = "owner", expression = "java(userProvider.getCurrentUser())")
     public abstract ENTITY fromCreateDto(CDTO dto);
 }
