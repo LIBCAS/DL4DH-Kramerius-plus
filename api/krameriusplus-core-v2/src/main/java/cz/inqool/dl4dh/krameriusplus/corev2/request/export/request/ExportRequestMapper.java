@@ -11,6 +11,7 @@ import org.mapstruct.Mapper;
 @Mapper(uses = {
         ExportJobConfigMapper.class,
         ExportRequestItemMapper.class,
-        KrameriusJobInstanceMapper.class})
-public interface ExportRequestMapper extends RequestMapper<ExportRequest, ExportRequestCreateDto, ExportRequestDto> {
+        KrameriusJobInstanceMapper.class,
+}, componentModel = "spring")
+public abstract class ExportRequestMapper extends RequestMapper<ExportRequest, ExportRequestCreateDto, ExportRequestDto> {
 }

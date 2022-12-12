@@ -60,6 +60,7 @@ system:
   json:
     serializeEmptyArrays: true
   security:
+    mock: true
     secret: kramerius-plus
 
 keycloak:
