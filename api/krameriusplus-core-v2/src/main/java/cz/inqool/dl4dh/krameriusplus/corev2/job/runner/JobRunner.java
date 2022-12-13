@@ -7,13 +7,12 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.JobContainer;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.listener.KrameriusJobListenerContainer;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobLauncher;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,6 +22,7 @@ import static cz.inqool.dl4dh.krameriusplus.api.exception.JobException.ErrorCode
 import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 
 @Component
+@Slf4j
 public class JobRunner {
 
     private KrameriusJobInstanceService jobService;
@@ -31,8 +31,6 @@ public class JobRunner {
 
     private KrameriusJobListenerContainer listenerContainer;
 
-    private JobLauncher jobLauncher;
-
     private JobRepository jobRepository;
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -40,52 +38,79 @@ public class JobRunner {
         KrameriusJobInstance krameriusJobInstance = jobService.find(krameriusJobInstanceId);
         notNull(krameriusJobInstance, () -> new MissingObjectException(KrameriusJobInstance.class, krameriusJobInstanceId));
 
-        try {
-            Job job = jobContainer.getJob(krameriusJobInstance.getJobType());
+        Job job = jobContainer.getJob(krameriusJobInstance.getJobType());
+        notNull(job, () -> new IllegalArgumentException("No Job found for type: " + krameriusJobInstance.getJobType()));
 
-            // execution also creates instance
-            JobExecution jobExecution = jobRepository.createJobExecution(job.getName(), krameriusJobInstance.getJobParameters());
+        JobParameters jobParameters = krameriusJobInstance.getJobParameters();
+        JobExecution lastExecution = jobRepository.getLastJobExecution(job.getName(), jobParameters);
+
+        if (lastExecution != null) {
+            validateExistingExecution(job, lastExecution, krameriusJobInstanceId);
+        }
+        validateParameters(job, krameriusJobInstance);
+
+        JobExecution jobExecution = createNewJobExecution(krameriusJobInstance);
+        if (krameriusJobInstance.getJobInstanceId() == null) {
             jobService.assignInstance(krameriusJobInstance, jobExecution.getJobInstance());
+        }
 
-            jobExecution = jobLauncher.run(job, krameriusJobInstance.getJobParameters());
+        try {
+            log.info("Job: [" + job + "] launched with the following parameters: [" + jobParameters + "]");
+            job.execute(jobExecution);
+            log.info("Job: [" + job + "] completed with the following parameters: [" + jobParameters +
+                    "] and the following status: [" + jobExecution.getStatus() + "]");
 
-            // update status after finishing
             krameriusJobInstance.setExecutionStatus(ExecutionStatus.valueOf(jobExecution.getStatus().toString()));
             jobService.updateStatus(krameriusJobInstance);
         } catch (Exception e) {
-            throw createExceptionAndSetStatus(e, krameriusJobInstance);
+            log.info("Job: [" + job + "] failed unexpectedly and fatally with the following parameters: [" + jobParameters + "]", e);
+            krameriusJobInstance.setExecutionStatus(ExecutionStatus.FAILED_FATALLY);
+            throw e;
         } finally {
             listenerContainer.applyAfterJobListeners(krameriusJobInstance);
         }
     }
 
-    private RuntimeException createExceptionAndSetStatus(Exception e, KrameriusJobInstance krameriusJobInstance) {
-        RuntimeException exception;
-
-        if (e instanceof JobInstanceAlreadyCompleteException) {
-            exception =  new JobException(
-                    "KrameriusJobInstance with id=" + krameriusJobInstance.getId()+  " has already completed.",
-                    IS_COMPLETED,
-                    e);
-        } else if (e instanceof JobExecutionAlreadyRunningException) {
-            exception = new JobException(
-                    "KrameriusJobInstance with id=" + krameriusJobInstance.getId()+ " is already running.",
-                    IS_RUNNING,
-                    e);
-        } else if (e instanceof JobParametersInvalidException) {
-            exception = new JobException(
-                    "KrameriusJobInstance with id=" + krameriusJobInstance.getId() + " have invalid JobParameters.",
-                    INVALID_JOB_PARAMETERS,
-                    e);
-        } else {
-            exception = new JobException(
-                    "KrameriusJobInstance with id=" + krameriusJobInstance.getId() + " cannot be restarted.",
-                    NOT_RESTARTABLE,
-                    e);
+    private JobExecution createNewJobExecution(KrameriusJobInstance krameriusJobInstance) {
+        try {
+            return jobRepository.createJobExecution(krameriusJobInstance.getJobType().getName(), krameriusJobInstance.getJobParameters());
+        } catch (JobExecutionAlreadyRunningException e) {
+            throw new JobException(krameriusJobInstance.getId(), "Job already running", IS_RUNNING, e);
+        } catch (JobRestartException e) {
+            throw new JobException(krameriusJobInstance.getId(), "Job cannot be restarted", NOT_RESTARTABLE, e);
+        } catch (JobInstanceAlreadyCompleteException e) {
+            throw new JobException(krameriusJobInstance.getId(), "Job is already completed and cannot be restarted.", IS_COMPLETED);
         }
+    }
 
-        krameriusJobInstance.setExecutionStatus(ExecutionStatus.FAILED);
-        return exception;
+    private void validateParameters(Job job, KrameriusJobInstance krameriusJobInstance) {
+        try {
+            job.getJobParametersValidator().validate(krameriusJobInstance.getJobParameters());
+        } catch (JobParametersInvalidException exception) {
+            throw new JobException(krameriusJobInstance.getId(), "Invalid JobParameters", INVALID_JOB_PARAMETERS, exception);
+        }
+    }
+
+    private void validateExistingExecution(Job job, JobExecution lastExecution, String krameriusJobInstanceId) {
+        if (!job.isRestartable()) {
+            throw new JobException(krameriusJobInstanceId, "JobInstance already exists and is not restartable", NOT_RESTARTABLE);
+        }
+        /*
+         * validate here if it has stepExecutions that are UNKNOWN, STARTING, STARTED and STOPPING
+         * retrieve the previous execution and check
+         */
+        for (StepExecution execution : lastExecution.getStepExecutions()) {
+            BatchStatus status = execution.getStatus();
+            if (status.isRunning() || status == BatchStatus.STOPPING) {
+                throw new JobException(krameriusJobInstanceId, "A job execution for this job is already running: " + lastExecution, IS_RUNNING);
+            } else if (status == BatchStatus.UNKNOWN) {
+                throw new JobException(krameriusJobInstanceId,
+                        "Cannot restart step [" + execution.getStepName() + "] from UNKNOWN status. "
+                                + "The last execution ended with a failure that could not be rolled back, "
+                                + "so it may be dangerous to proceed. Manual intervention is probably necessary.",
+                        UNKNOWN_STATUS);
+            }
+        }
     }
 
     @Autowired
@@ -96,11 +121,6 @@ public class JobRunner {
     @Autowired
     public void setJobContainer(JobContainer jobContainer) {
         this.jobContainer = jobContainer;
-    }
-
-    @Autowired
-    public void setJobLauncher(JobLauncher jobLauncher) {
-        this.jobLauncher = jobLauncher;
     }
 
     @Autowired

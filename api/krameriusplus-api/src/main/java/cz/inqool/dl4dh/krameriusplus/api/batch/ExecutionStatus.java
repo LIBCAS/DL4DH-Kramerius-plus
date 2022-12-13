@@ -8,6 +8,7 @@ public enum ExecutionStatus {
     STOPPING,
     STOPPED,
     FAILED,
+    FAILED_FATALLY,
     ABANDONED,
     UNKNOWN;
 }
