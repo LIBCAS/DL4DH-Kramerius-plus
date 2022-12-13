@@ -23,7 +23,6 @@ public class KrameriusJobInstance extends DomainObject {
     @Enumerated(EnumType.STRING)
     protected ExecutionStatus executionStatus = ExecutionStatus.CREATED;
 
-    @NotNull
     protected Long jobInstanceId;
 
     @OneToMany(mappedBy = "job")

@@ -77,7 +77,7 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
         long orderCounter = 0L;
 
         for (EnrichmentJobConfig config : enrichmentRequest.getConfigs()) {
-            orderToJobMap.put(orderCounter++, krameriusJobInstanceService.createJob(
+            orderToJobMap.put(orderCounter++, krameriusJobInstanceService.createJobInstance(
                     config.getJobType(),
                     config.toJobParametersWrapper()));
         }

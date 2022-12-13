@@ -33,7 +33,7 @@ public class EnrichmentRequestFacade implements EnrichmentFacade {
         JobParametersMapWrapper jobParameters = new JobParametersMapWrapper();
         jobParameters.putString(ENRICHMENT_REQUEST_ID, enrichmentRequest.getId());
 
-        KrameriusJobInstance createRequestJob = jobInstanceService.createJob(
+        KrameriusJobInstance createRequestJob = jobInstanceService.createJobInstance(
                 CREATE_ENRICHMENT_REQUEST, jobParameters);
 
         enrichmentRequest.setCreateRequestJob(createRequestJob);

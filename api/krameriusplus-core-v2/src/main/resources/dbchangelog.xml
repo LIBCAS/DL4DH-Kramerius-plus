@@ -37,8 +37,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="job_instance_id" type="bigint">
-                <constraints nullable="false" unique="true"
-                             uniqueConstraintName="job_instance_id_unique_constraint"/>
+                <constraints unique="true" uniqueConstraintName="job_instance_id_unique_constraint"/>
             </column>
             <column name="job_type" type="varchar(255)">
                 <constraints nullable="false"/>

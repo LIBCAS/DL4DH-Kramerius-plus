@@ -53,7 +53,7 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
         export.setFormat(exportRequest.getConfig().getExportFormat());
         export.setOrder(order);
         export.setExportJob(
-                jobInstanceService.createJob(
+                jobInstanceService.createJobInstance(
                         exportRequest.getConfig().getJobType(),
                         exportRequest.getConfig().toJobParametersWrapper()));
 
