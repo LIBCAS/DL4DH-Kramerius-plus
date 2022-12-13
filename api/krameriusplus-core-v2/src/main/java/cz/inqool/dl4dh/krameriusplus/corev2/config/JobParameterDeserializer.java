@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.config;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,7 +16,7 @@ public class JobParameterDeserializer extends StdDeserializer<JobParameter> {
 
     @Override
     public JobParameter deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
-            throws IOException, JacksonException {
+            throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
         JobParameter.ParameterType parameterType = JobParameter.ParameterType.valueOf(node.get("parameterType").asText());
         boolean identifying = node.get("identifying").asBoolean();
@@ -33,6 +32,8 @@ public class JobParameterDeserializer extends StdDeserializer<JobParameter> {
             default:
                 double doubleParameter = parameter.asDouble();
                 return new JobParameter(doubleParameter, identifying);
+
+                // TODO: add Date case
         }
     }
 }

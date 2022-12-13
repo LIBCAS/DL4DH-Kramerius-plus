@@ -13,39 +13,30 @@ public class UserProvider {
 
     private UserStore userStore;
 
-    @Value("${system.security.mock:true}")
+    @Value("${system.security.mock}")
     private boolean mock;
 
     public User getCurrentUser() {
-        return mock ? getCurrentUserMock() : getCurrentUserNormal();
+        String username = getUsername(mock);
+
+        User user = userStore.findUserByUsername(username);
+        if (user == null) {
+            user = new User();
+            user.setUsername(username);
+            userStore.create(user);
+        }
+
+        return user;
     }
 
-    private User getCurrentUserNormal() {
+    private String getUsername(boolean mock) {
+        if (mock) {
+            return "MOCKED_USER!!!";
+        }
+
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        String username = principal.getUsername();
-
-        User user = userStore.findUserByUsername(username);
-        if (user == null) {
-            user = new User();
-            user.setUsername(username);
-            userStore.create(user);
-        }
-
-        return user;
-    }
-
-    private User getCurrentUserMock() {
-        String username = "MOCKED_USER!!!!";
-
-        User user = userStore.findUserByUsername(username);
-        if (user == null) {
-            user = new User();
-            user.setUsername(username);
-            userStore.create(user);
-        }
-
-        return user;
+        return principal.getUsername();
     }
 
     @Autowired

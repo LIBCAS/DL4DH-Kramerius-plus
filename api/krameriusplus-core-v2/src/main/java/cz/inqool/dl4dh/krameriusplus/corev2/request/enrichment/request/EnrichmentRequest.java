@@ -27,4 +27,9 @@ public class EnrichmentRequest extends Request {
 
     @OneToOne
     private KrameriusJobInstance createRequestJob;
+
+    public void addConfig(EnrichmentJobConfig jobConfig) {
+        configs.add(jobConfig);
+        jobConfig.setEnrichmentRequest(this);
+    }
 }

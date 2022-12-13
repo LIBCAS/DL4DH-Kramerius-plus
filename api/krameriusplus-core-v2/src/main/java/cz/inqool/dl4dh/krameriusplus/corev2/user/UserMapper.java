@@ -1,16 +1,10 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.user;
 
 import cz.inqool.dl4dh.krameriusplus.api.user.UserDto;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
-public class UserMapper {
+@Mapper
+public interface UserMapper {
 
-    public UserDto toDto(User currentUser) {
-        UserDto userDto = new UserDto();
-
-        userDto.setUsername(currentUser.getUsername());
-
-        return userDto;
-    }
+    UserDto toDto(User currentUser);
 }

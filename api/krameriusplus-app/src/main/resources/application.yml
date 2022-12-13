@@ -58,7 +58,7 @@ system:
   json:
     serializeEmptyArrays: true
   security:
-    mock: true
+    mock: false
     secret: kramerius-plus
 
 keycloak:

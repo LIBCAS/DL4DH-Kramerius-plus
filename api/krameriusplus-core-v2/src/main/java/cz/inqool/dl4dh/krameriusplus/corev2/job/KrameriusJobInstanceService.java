@@ -14,10 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class KrameriusJobInstanceService {
 
-    private static final String UNEXPECTED_EXCEPTION_CODE = "UNEXPECTED_ERROR_OCCURRED";
-
-    private static final String STOP_EXCEPTION_CODE = "STEP_STOPPED";
-
     @Getter
     private KrameriusJobInstanceStore store;
 
@@ -28,17 +24,16 @@ public class KrameriusJobInstanceService {
     }
 
     /**
-     * KrameriusJobInstance without BatchJobInstance
+     * Creates a new KrameriusJobInstance. Actual Spring Batch JobInstance is created when the job
+     * is actually launched
      */
     @Transactional
     public KrameriusJobInstance createJobInstance(KrameriusJobType jobType, JobParametersMapWrapper jobParametersMap) {
-        // 1. Create JobInstance from JobType + JobParameters, using mapper::toJobParameters
-        // 2. Create KrameriusJobInstance with default executionStatus CREATED
         KrameriusJobInstance krameriusJobInstance = new KrameriusJobInstance();
         krameriusJobInstance.setExecutionStatus(ExecutionStatus.CREATED);
         krameriusJobInstance.setJobType(jobType);
-        JobParameters jobParameters = mapper.toJobParameters(krameriusJobInstance, jobParametersMap.getJobParametersMap());
 
+        JobParameters jobParameters = mapper.toJobParameters(krameriusJobInstance, jobParametersMap.getJobParametersMap());
         krameriusJobInstance.setJobParameters(jobParameters);
 
         return store.create(krameriusJobInstance);

@@ -72,6 +72,8 @@ public class ObjectMapperConfig {
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         objectMapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
+        objectMapper.setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
+
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addDeserializer(JobParameter.class, new JobParameterDeserializer());
         objectMapper.registerModule(simpleModule);
