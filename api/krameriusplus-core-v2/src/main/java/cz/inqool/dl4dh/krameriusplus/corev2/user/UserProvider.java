@@ -36,9 +36,15 @@ public class UserProvider {
     }
 
     private User getCurrentUserMock() {
-        User user = new User();
-        user.setUsername("MOCKED_USER!!!");
-        userStore.create(user);
+        String username = "MOCKED_USER!!!!";
+
+        User user = userStore.findUserByUsername(username);
+        if (user == null) {
+            user = new User();
+            user.setUsername(username);
+            userStore.create(user);
+        }
+
         return user;
     }
 

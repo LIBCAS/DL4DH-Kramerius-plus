@@ -29,6 +29,7 @@ public class EnrichmentRequestFacade implements EnrichmentFacade {
     @Transactional
     public EnrichmentRequestDto enrich(EnrichmentRequestCreateDto createDto) {
         EnrichmentRequest enrichmentRequest = service.getMapper().fromCreateDto(createDto);
+        enrichmentRequest.getConfigs().forEach(config -> config.setEnrichmentRequest(enrichmentRequest));
 
         JobParametersMapWrapper jobParameters = new JobParametersMapWrapper();
         jobParameters.putString(ENRICHMENT_REQUEST_ID, enrichmentRequest.getId());

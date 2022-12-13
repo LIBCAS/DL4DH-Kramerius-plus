@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "kplus_enrichment_request")
 public class EnrichmentRequest extends Request {
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "enrichment_request_id")
     private List<EnrichmentJobConfig> configs = new ArrayList<>();
 

@@ -27,6 +27,9 @@ public class KrameriusJobInstanceService {
         return store.find(jobInstanceId);
     }
 
+    /**
+     * KrameriusJobInstance without BatchJobInstance
+     */
     @Transactional
     public KrameriusJobInstance createJobInstance(KrameriusJobType jobType, JobParametersMapWrapper jobParametersMap) {
         // 1. Create JobInstance from JobType + JobParameters, using mapper::toJobParameters
@@ -46,6 +49,10 @@ public class KrameriusJobInstanceService {
         // 1. get last JobExecution from mapper
         // 2. set status and update KrameriusJobInstance
         JobExecution lastExecution = mapper.toLastExecution(instance.getJobInstanceId());
+        if (lastExecution == null) {
+            return;
+        }
+
         instance.setExecutionStatus(ExecutionStatus.valueOf(lastExecution.getStatus().toString()));
 
         store.update(instance);
@@ -55,6 +62,8 @@ public class KrameriusJobInstanceService {
     public void assignInstance(KrameriusJobInstance krameriusJobInstance, JobInstance jobInstance) {
         krameriusJobInstance.setJobInstanceId(jobInstance.getInstanceId());
         krameriusJobInstance.setExecutionStatus(ExecutionStatus.CREATED);
+
+        store.update(krameriusJobInstance);
     }
 
     @Autowired

@@ -9,7 +9,6 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.listener.KrameriusJobListenerContainer;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -43,10 +42,14 @@ public class JobRunner {
 
         try {
             Job job = jobContainer.getJob(krameriusJobInstance.getJobType());
-            JobInstance jobInstance = jobRepository.createJobInstance(job.getName(), krameriusJobInstance.getJobParameters());
 
-            jobService.assignInstance(krameriusJobInstance, jobInstance);
-            JobExecution jobExecution = jobLauncher.run(job, krameriusJobInstance.getJobParameters());
+            // execution also creates instance
+            JobExecution jobExecution = jobRepository.createJobExecution(job.getName(), krameriusJobInstance.getJobParameters());
+            jobService.assignInstance(krameriusJobInstance, jobExecution.getJobInstance());
+
+            jobExecution = jobLauncher.run(job, krameriusJobInstance.getJobParameters());
+
+            // update status after finishing
             krameriusJobInstance.setExecutionStatus(ExecutionStatus.valueOf(jobExecution.getStatus().toString()));
             jobService.updateStatus(krameriusJobInstance);
         } catch (Exception e) {
