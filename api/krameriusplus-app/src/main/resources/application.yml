@@ -28,8 +28,6 @@ spring:
   batch:
     job:
       enabled: false
-    jdbc:
-      initialize-schema: never
   #    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
   main:
     allow-bean-definition-overriding: true
@@ -56,10 +54,11 @@ system:
     tei:
       api: http://localhost:5000/tei
     ndk:
-      path: ..\..\ndk
+      path: .
   json:
     serializeEmptyArrays: true
   security:
+    mock: false
     secret: kramerius-plus
 
 keycloak:

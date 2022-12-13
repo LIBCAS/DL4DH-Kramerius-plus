@@ -28,7 +28,7 @@ public class CreateMergeJobTasklet implements Tasklet {
         JobParametersMapWrapper jobParameters = new JobParametersMapWrapper();
         jobParameters.putString(EXPORT_REQUEST_ID, exportRequestId);
 
-        jobInstanceService.createJob(KrameriusJobType.MERGE_JOB, jobParameters);
+        jobInstanceService.createJobInstance(KrameriusJobType.MERGE_JOB, jobParameters);
 
         return RepeatStatus.FINISHED;
     }

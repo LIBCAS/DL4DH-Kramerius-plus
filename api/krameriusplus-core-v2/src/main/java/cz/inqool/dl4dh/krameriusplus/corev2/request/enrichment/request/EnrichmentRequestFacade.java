@@ -5,37 +5,23 @@ import cz.inqool.dl4dh.krameriusplus.api.enrichment.EnrichmentFacade;
 import cz.inqool.dl4dh.krameriusplus.api.enrichment.EnrichmentRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.enrichment.EnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
-import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
-import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
-import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.CREATE_ENRICHMENT_REQUEST;
-import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.ENRICHMENT_REQUEST_ID;
 
 @Component
 public class EnrichmentRequestFacade implements EnrichmentFacade {
 
     private EnrichmentRequestService service;
 
-    private KrameriusJobInstanceService jobInstanceService;
-
     private JobEnqueueService enqueueService;
 
     @Override
     public EnrichmentRequestDto enrich(EnrichmentRequestCreateDto createDto) {
-        EnrichmentRequestDto requestDto = service.create(createDto);
+        EnrichmentRequestDto enrichmentRequest = service.create(createDto);
 
-        JobParametersMapWrapper jobParameters = new JobParametersMapWrapper();
-        jobParameters.putString(ENRICHMENT_REQUEST_ID, requestDto.getId());
+        enqueueService.enqueue(enrichmentRequest.getCreateRequestJob());
 
-        KrameriusJobInstance createRequestJob = jobInstanceService.createJob(
-                CREATE_ENRICHMENT_REQUEST, jobParameters);
-
-        enqueueService.enqueue(createRequestJob);
-
-        return requestDto;
+        return enrichmentRequest;
     }
 
     @Override
@@ -51,11 +37,6 @@ public class EnrichmentRequestFacade implements EnrichmentFacade {
     @Autowired
     public void setService(EnrichmentRequestService service) {
         this.service = service;
-    }
-
-    @Autowired
-    public void setJobInstanceService(KrameriusJobInstanceService jobInstanceService) {
-        this.jobInstanceService = jobInstanceService;
     }
 
     @Autowired

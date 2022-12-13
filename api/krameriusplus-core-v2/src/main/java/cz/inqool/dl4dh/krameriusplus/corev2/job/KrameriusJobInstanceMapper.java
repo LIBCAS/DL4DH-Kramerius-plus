@@ -14,10 +14,7 @@ import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.KRAMERIUS_JOB_INSTANCE_ID;
@@ -45,7 +42,9 @@ public class KrameriusJobInstanceMapper {
 
     public JobExecution toLastExecution(Long jobInstanceId) {
         JobInstance jobInstance = jobExplorer.getJobInstance(jobInstanceId);
-        notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(jobInstanceId)));
+        if (jobInstance == null) {
+            return null;
+        }
 
         JobExecution lastExecution = jobExplorer.getLastJobExecution(jobInstance);
         notNull(lastExecution, () -> new MissingObjectException(JobExecution.class, String.valueOf(jobInstanceId)));
@@ -53,6 +52,10 @@ public class KrameriusJobInstanceMapper {
     }
 
     private List<JobExecutionDto> mapJobExecutions(KrameriusJobInstance entity) {
+        if (entity.getJobInstanceId() == null) {
+            return new ArrayList<>();
+        }
+
         JobInstance jobInstance = jobExplorer.getJobInstance(entity.getJobInstanceId());
         notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(entity.getJobInstanceId())));
         List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance);

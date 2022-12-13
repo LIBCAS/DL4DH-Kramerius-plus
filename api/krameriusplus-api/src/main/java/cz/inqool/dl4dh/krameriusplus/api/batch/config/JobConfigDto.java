@@ -4,5 +4,5 @@ import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
 
 public abstract class JobConfigDto {
 
-    private KrameriusJobType jobType;
+    public abstract KrameriusJobType getJobType();
 }
