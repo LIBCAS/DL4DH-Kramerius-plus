@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader;
 
 import com.querydsl.core.types.dsl.EntityPathBase;
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.store.DomainStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.Request;
 import org.springframework.batch.item.ItemReader;
@@ -21,7 +22,8 @@ public abstract class RequestPublicationIdReader<T extends Request, Q extends En
     @Override
     public String read() {
         if (publicationIds == null) {
-            T request = getRequestStore().find(getRequestId());
+            T request = getRequestStore().findById(getRequestId())
+                    .orElseThrow(() -> new MissingObjectException(getRequestStore().getType(), getRequestId()));
             publicationIds = new LinkedList<>(new TreeMap<>(request.getPublicationIds()).values());
         }
 

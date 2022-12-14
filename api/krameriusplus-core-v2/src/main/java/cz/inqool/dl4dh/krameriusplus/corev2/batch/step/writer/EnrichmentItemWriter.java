@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer;
 
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItemStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
@@ -23,15 +24,16 @@ public class EnrichmentItemWriter implements ItemWriter<EnrichmentRequestItem> {
     private final EnrichmentRequest enrichmentRequest;
 
     @Autowired
-    public EnrichmentItemWriter(@Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
+    public EnrichmentItemWriter(@Value("#{jobParameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
                                 EnrichmentRequestItemStore enrichmentRequestItemStore, EnrichmentRequestStore enrichmentRequestStore) {
         this.enrichmentRequestItemStore = enrichmentRequestItemStore;
-        this.enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
+        this.enrichmentRequest = enrichmentRequestStore.findById(enrichmentRequestId)
+                .orElseThrow(() -> new MissingObjectException(EnrichmentRequest.class, enrichmentRequestId));
     }
 
     @Override
     public void write(List<? extends EnrichmentRequestItem> items) {
         items.forEach(item -> item.setEnrichmentRequest(enrichmentRequest));
-        enrichmentRequestItemStore.create(items);
+        enrichmentRequestItemStore.saveAll(items);
     }
 }

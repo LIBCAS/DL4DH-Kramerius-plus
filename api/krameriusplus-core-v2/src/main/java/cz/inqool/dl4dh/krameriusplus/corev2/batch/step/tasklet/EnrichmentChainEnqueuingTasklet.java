@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequestStore;
@@ -26,7 +27,8 @@ public class EnrichmentChainEnqueuingTasklet implements Tasklet {
     public EnrichmentChainEnqueuingTasklet(@Value("#{jobParameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
                                            EnrichmentRequestStore enrichmentRequestStore,
                                            JobEnqueueService jobEnqueueService) {
-        this.enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
+        this.enrichmentRequest = enrichmentRequestStore.findById(enrichmentRequestId)
+                .orElseThrow(() -> new MissingObjectException(EnrichmentRequest.class, enrichmentRequestId));
         this.jobEnqueueService = jobEnqueueService;
     }
 

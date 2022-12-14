@@ -21,7 +21,7 @@ public class ExportWriter implements ItemWriter<Export> {
     }
 
     private void saveExportTree(Export export) {
-        exportStore.create(export);
+        exportStore.save(export);
 
         for (Export child : export.getChildrenList()) {
             saveExportTree(child);

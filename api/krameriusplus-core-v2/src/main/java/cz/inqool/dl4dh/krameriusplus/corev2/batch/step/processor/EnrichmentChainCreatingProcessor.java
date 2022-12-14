@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.ChainCreateWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
@@ -35,11 +36,12 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
     @Autowired
     public EnrichmentChainCreatingProcessor(KrameriusJobInstanceService krameriusJobInstanceService,
                                             EnrichmentRequestStore enrichmentRequestStore,
-                                            @Value("#{jobparameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
+                                            @Value("#{jobParameters['" + ENRICHMENT_REQUEST_ID + "']}") String enrichmentRequestId,
                                             EnrichmentChainStore enrichmentChainStore) {
         this.krameriusJobInstanceService = krameriusJobInstanceService;
         this.enrichmentChainStore = enrichmentChainStore;
-        this.enrichmentRequest = enrichmentRequestStore.find(enrichmentRequestId);
+        this.enrichmentRequest = enrichmentRequestStore.findById(enrichmentRequestId)
+                .orElseThrow(() -> new MissingObjectException(EnrichmentRequest.class, enrichmentRequestId));
     }
 
     @Override
@@ -52,7 +54,7 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
 
         EnrichmentRequestItem enrichmentRequestItem = findEnrichmentItem(item.getEnrichmentItemId());
         chains.forEach(chain -> chain.setRequestItem(enrichmentRequestItem));
-        chains.forEach(enrichmentChainStore::create);
+        enrichmentChainStore.saveAll(chains);
 
         return chains;
     }

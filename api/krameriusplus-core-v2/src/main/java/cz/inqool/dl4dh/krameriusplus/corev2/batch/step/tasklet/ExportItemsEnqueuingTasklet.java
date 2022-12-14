@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
@@ -29,7 +30,8 @@ public class ExportItemsEnqueuingTasklet implements Tasklet {
     public ExportItemsEnqueuingTasklet(@Value("#{jobParameters['" + EXPORT_REQUEST_ID + "']}") String exportRequestId,
                                            ExportRequestStore exportRequestStore,
                                            JobEnqueueService jobEnqueueService) {
-        this.exportRequest = exportRequestStore.find(exportRequestId);
+        this.exportRequest = exportRequestStore.findById(exportRequestId)
+                .orElseThrow(() -> new MissingObjectException(ExportRequest.class, exportRequestId));
         this.jobEnqueueService = jobEnqueueService;
     }
 

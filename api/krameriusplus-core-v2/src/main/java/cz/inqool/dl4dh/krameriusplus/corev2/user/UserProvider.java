@@ -23,7 +23,7 @@ public class UserProvider {
         if (user == null) {
             user = new User();
             user.setUsername(username);
-            userStore.create(user);
+            userStore.save(user);
         }
 
         return user;

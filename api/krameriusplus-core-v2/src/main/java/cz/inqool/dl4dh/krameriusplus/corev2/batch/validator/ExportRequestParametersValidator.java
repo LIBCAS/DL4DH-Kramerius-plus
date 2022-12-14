@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.EXPORT_REQUEST_ID;
-import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 
 @Component
 public class ExportRequestParametersValidator implements JobParametersValidator {
@@ -26,8 +25,8 @@ public class ExportRequestParametersValidator implements JobParametersValidator 
     public void validate(JobParameters parameters) throws JobParametersInvalidException {
         String requestId = parameters.getString(EXPORT_REQUEST_ID);
 
-        ExportRequest request = requestStore.find(requestId);
-        notNull(request, () -> new MissingObjectException(ExportRequest.class, requestId));
+        ExportRequest request = requestStore.findById(requestId)
+                .orElseThrow(() -> new MissingObjectException(ExportRequest.class, requestId));
 
         for (ExportValidator validator : exportValidators) {
             validator.validate(request);

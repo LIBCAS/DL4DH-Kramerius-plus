@@ -31,7 +31,7 @@ public class ExportJobListener implements KrameriusJobListener {
         // the MergeJob. There would also be some other issues with
         // includeChildExportStep, when parent export can finish before
         // all of it's child exports finish.
-        Export export = exportStore.findByKrameriusJob(jobInstance);
+        Export export = exportStore.findByExportJob(jobInstance);
 
         Export root = findRoot(export);
         List<Export> exportListInPostOrder = buildPostOrderList(root);

@@ -4,21 +4,19 @@ import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.store.DatedStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+
 @Repository
 public class ExportStore extends DatedStore<Export, QExport> {
 
-    public ExportStore() {
-        super(Export.class, QExport.class);
+    public ExportStore(EntityManager em) {
+        super(Export.class, QExport.class, em);
     }
 
-    public Export findByKrameriusJob(KrameriusJobInstance jobInstance) {
-        Export export = query().select(qObject)
+    public Export findByExportJob(KrameriusJobInstance jobInstance) {
+        return query().select(qObject)
                 .where(qObject.deleted.isNull())
                 .where(qObject.exportJob.eq(jobInstance))
                 .fetchOne();
-
-        detach(export);
-
-        return export;
     }
 }

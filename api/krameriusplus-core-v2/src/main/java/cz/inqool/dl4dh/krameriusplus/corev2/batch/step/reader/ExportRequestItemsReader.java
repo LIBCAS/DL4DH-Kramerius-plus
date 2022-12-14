@@ -1,6 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader;
 
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
@@ -20,7 +22,9 @@ public class ExportRequestItemsReader implements ItemReader<ExportRequestItem> {
 
     public ExportRequestItemsReader(@Value("#{jobParameters['" + EXPORT_REQUEST_ID + "']}") String exportRequestId,
                                     ExportRequestStore exportRequestStore) {
-        this.exportRequestItems = new LinkedList<>(exportRequestStore.find(exportRequestId).getItems());
+        this.exportRequestItems = new LinkedList<>(exportRequestStore.findById(exportRequestId)
+                .orElseThrow(() -> new MissingObjectException(ExportRequest.class, exportRequestId))
+                .getItems());
     }
 
     @Override

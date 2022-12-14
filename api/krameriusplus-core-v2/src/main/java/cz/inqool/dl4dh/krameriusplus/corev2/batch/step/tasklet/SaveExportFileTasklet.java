@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
@@ -35,7 +36,8 @@ public class SaveExportFileTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        Export export = exportStore.find(exportId);
+        Export export = exportStore.findById(exportId)
+                .orElseThrow(() -> new MissingObjectException(Export.class, exportId));
 
         try (InputStream inputStream = Files.newInputStream(zippedFile)) {
             FileRef fileRef = fileService.create(
@@ -44,7 +46,7 @@ public class SaveExportFileTasklet implements Tasklet {
                     zippedFile.getFileName().toString(),
                     "application/zip");
             export.setFileRef(fileRef);
-            exportStore.update(export);
+            exportStore.save(export);
         }
 
         return RepeatStatus.FINISHED;

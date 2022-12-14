@@ -6,11 +6,13 @@ import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.QExportRequestItem;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+
 @Repository
 public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest> {
 
-    public ExportRequestStore() {
-        super(ExportRequest.class, QExportRequest.class);
+    public ExportRequestStore(EntityManager em) {
+        super(ExportRequest.class, QExportRequest.class, em);
     }
 
     /**

@@ -16,8 +16,8 @@ public class ExportItemWriter implements ItemWriter<ExportRequestItem> {
     private ExportRequestItemStore requestItemStore;
 
     @Override
-    public void write(List<? extends ExportRequestItem> items) throws Exception {
-        requestItemStore.create(items);
+    public void write(List<? extends ExportRequestItem> items) {
+        requestItemStore.saveAll(items);
     }
 
     @Autowired

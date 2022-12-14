@@ -43,7 +43,8 @@ public class PrepareExportDirectoryTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws IOException {
-        ExportJobConfig jobConfig = jobConfigStore.find(jobConfigId);
+        ExportJobConfig jobConfig = jobConfigStore.findById(jobConfigId)
+                .orElseThrow(() -> new MissingObjectException(ExportJobConfig.class, jobConfigId));
         notNull(jobConfig, () -> new MissingObjectException(ExportJobConfig.class, jobConfigId));
 
         Path directory = tmpDirPath.resolve(buildDirectoryName(publicationId, jobConfig.getExportFormat()));

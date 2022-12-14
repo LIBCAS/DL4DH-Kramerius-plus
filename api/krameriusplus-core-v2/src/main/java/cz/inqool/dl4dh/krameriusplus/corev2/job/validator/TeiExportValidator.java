@@ -36,7 +36,7 @@ public class TeiExportValidator implements ExportValidator {
         Publication publication = publicationStore.findById(publicationId)
                 .orElseThrow(() -> new JobParametersInvalidException("Publication with ID: " + publicationId + " not found in MongoDB."));
 
-        if (publication.getTeiHeaderFileId() == null || !fileRefStore.exist(publication.getTeiHeaderFileId())) {
+        if (publication.getTeiHeaderFileId() == null || !fileRefStore.existsById(publication.getTeiHeaderFileId())) {
             throw new JobParametersInvalidException("Publication with ID: " + publicationId + " has no TEI header file. " +
                     "ExportRequest with TEI format cannot be created.");
         }
