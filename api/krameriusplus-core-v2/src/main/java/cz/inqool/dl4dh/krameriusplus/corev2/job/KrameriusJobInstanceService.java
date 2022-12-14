@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.job;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import lombok.Getter;
 import org.springframework.batch.core.JobExecution;
@@ -20,7 +21,8 @@ public class KrameriusJobInstanceService {
     private KrameriusJobInstanceMapper mapper;
 
     public KrameriusJobInstance find(String jobInstanceId) {
-        return store.find(jobInstanceId);
+        return store.findById(jobInstanceId)
+                .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
     }
 
     /**
@@ -36,7 +38,7 @@ public class KrameriusJobInstanceService {
         JobParameters jobParameters = mapper.toJobParameters(krameriusJobInstance, jobParametersMap.getJobParametersMap());
         krameriusJobInstance.setJobParameters(jobParameters);
 
-        return store.create(krameriusJobInstance);
+        return store.save(krameriusJobInstance);
     }
 
     @Transactional
@@ -50,7 +52,7 @@ public class KrameriusJobInstanceService {
 
         instance.setExecutionStatus(ExecutionStatus.valueOf(lastExecution.getStatus().toString()));
 
-        store.update(instance);
+        store.save(instance);
     }
 
     @Transactional
@@ -58,7 +60,7 @@ public class KrameriusJobInstanceService {
         krameriusJobInstance.setJobInstanceId(jobInstance.getInstanceId());
         krameriusJobInstance.setExecutionStatus(ExecutionStatus.CREATED);
 
-        store.update(krameriusJobInstance);
+        store.save(krameriusJobInstance);
     }
 
     @Autowired

@@ -12,7 +12,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.EXPORT_ID;
-import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 
 @Component
 @StepScope
@@ -22,8 +21,8 @@ public class ExportChildrenReader implements ItemReader<Export> {
 
     public ExportChildrenReader(@Value("#{jobParameters['" + EXPORT_ID + "']}") String exportId,
                                 ExportStore exportStore) {
-        Export root = exportStore.find(exportId);
-        notNull(root, () -> new MissingObjectException(Export.class, exportId));
+        Export root = exportStore.findById(exportId)
+                .orElseThrow(() -> new MissingObjectException(Export.class, exportId));
 
         this.children = new LinkedList<>(root.getChildrenList());
     }

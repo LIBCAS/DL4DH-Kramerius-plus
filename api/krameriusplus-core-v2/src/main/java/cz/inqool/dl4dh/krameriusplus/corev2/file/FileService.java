@@ -106,9 +106,8 @@ public class FileService {
      */
     @Transactional
     public FileRef find(@NonNull String id) {
-        FileRef fileRef = store.find(id);
-        notNull(fileRef, () -> new MissingObjectException(FileRef.class, id));
-
+        FileRef fileRef = store.findById(id)
+                .orElseThrow(() -> new MissingObjectException(FileRef.class, id));
         fileRef.setBasePath(getBasePath());
 
         if (isRegularFile(fileRef.getPath())) {
@@ -149,7 +148,7 @@ public class FileService {
             throw new IllegalStateException("Could not create file", exception);
         }
 
-        FileRef created = store.create(fileRef);
+        FileRef created = store.save(fileRef);
 
         created.setBasePath(getBasePath());
         return created;

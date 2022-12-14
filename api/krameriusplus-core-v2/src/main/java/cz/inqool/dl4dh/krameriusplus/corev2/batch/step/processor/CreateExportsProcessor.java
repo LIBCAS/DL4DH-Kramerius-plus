@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.PublicationProvider;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
@@ -30,7 +31,8 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
     @Autowired
     public CreateExportsProcessor(@Value("#{jobParameters['" + EXPORT_REQUEST_ID + "']}") String exportRequestId,
                                   ExportRequestStore exportRequestStore) {
-        this.exportRequest = exportRequestStore.find(exportRequestId);
+        this.exportRequest = exportRequestStore.findById(exportRequestId)
+                .orElseThrow(() -> new MissingObjectException(ExportRequest.class, exportRequestId));
     }
 
     @Override

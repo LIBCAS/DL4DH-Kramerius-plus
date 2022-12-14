@@ -6,7 +6,6 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.service.mapper.DomainObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.store.DomainStore;
-import cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils;
 import lombok.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +25,7 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
      * @throws MissingObjectException if specified T object was not found
      */
     default V find(@NonNull String id) {
-        T entity = getStore().find(id);
-        Utils.notNull(entity, () -> new MissingObjectException(getStore().getType(), id));
+        T entity = getStore().findById(id).orElseThrow(() -> new MissingObjectException(getStore().getType(), id));
 
         return getMapper().toDto(entity);
     }
@@ -40,10 +38,7 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
      * @throws MissingObjectException if specified T object was not found
      */
     default T findEntity(@NonNull String id) {
-        T entity = getStore().find(id);
-        Utils.notNull(entity, () -> new MissingObjectException(getStore().getType(), id));
-
-        return entity;
+        return getStore().findById(id).orElseThrow(() -> new MissingObjectException(getStore().getType(), id));
     }
 
     /**
@@ -54,7 +49,7 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
      */
     @Transactional
     default V create(@NonNull @Valid C dto) {
-        return getMapper().toDto(getStore().create(getMapper().fromCreateDto(dto)));
+        return getMapper().toDto(getStore().save(getMapper().fromCreateDto(dto)));
     }
 
     /**
@@ -65,7 +60,7 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
      */
     @Transactional
     default T create(@NonNull @Valid T entity) {
-        return getStore().create(entity);
+        return getStore().save(entity);
     }
 
     /**
@@ -77,10 +72,10 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
      */
     @Transactional
     default V update(@NonNull @Valid T entity) {
-        T entityDb = getStore().find(entity.getId());
-        Utils.notNull(entity, () -> new MissingObjectException(getStore().getType(), entityDb.getId()));
+        T entityDb = getStore().findById(entity.getId())
+                .orElseThrow(() -> new MissingObjectException(getStore().getType(), entity.getId()));
 
-        T result = getStore().update(entity);
+        T result = getStore().save(entity);
         return getMapper().toDto(result);
     }
 
@@ -91,7 +86,7 @@ public interface DomainService<T extends DomainObject, C extends DomainObjectCre
      */
     @Transactional
     default void delete(@NonNull String id) {
-        T entity = getStore().find(id);
+        T entity = getStore().findById(id).orElseThrow(() -> new MissingObjectException(getStore().getType(), id));
         getStore().delete(entity);
     }
 

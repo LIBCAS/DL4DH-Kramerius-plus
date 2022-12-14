@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job.report;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.GeneralException;
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceStore;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -24,7 +25,8 @@ public class StepRunReportService {
 
     @Transactional
     public StepRunReport saveStepErrors(String jobInstanceId, Long stepExecutionId, List<Throwable> errors) {
-        KrameriusJobInstance krameriusJobInstance = jobInstanceStore.find(jobInstanceId);
+        KrameriusJobInstance krameriusJobInstance = jobInstanceStore.findById(jobInstanceId)
+                .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
         StepRunReport report = krameriusJobInstance.getReports().get(stepExecutionId);
 
         if (report == null) {
@@ -43,7 +45,7 @@ public class StepRunReportService {
             report.getErrors().add(stepError);
         }
 
-        return store.create(report);
+        return store.save(report);
     }
 
     private String extractErrorCode(Throwable exception) {

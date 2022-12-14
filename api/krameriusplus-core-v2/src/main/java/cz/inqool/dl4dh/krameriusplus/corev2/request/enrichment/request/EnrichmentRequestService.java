@@ -32,7 +32,7 @@ public class EnrichmentRequestService implements DatedService<EnrichmentRequest,
         EnrichmentRequest entity = mapper.fromCreateDto(createDto);
         entity.setCreateRequestJob(createRequestJob(entity));
 
-        return mapper.toDto(store.create(entity));
+        return mapper.toDto(store.save(entity));
     }
 
     public Result<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize) {

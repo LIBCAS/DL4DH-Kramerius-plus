@@ -21,7 +21,7 @@ public class EnrichmentChainWriter implements ItemWriter<List<EnrichmentChain>> 
     }
 
     @Override
-    public void write(List<? extends List<EnrichmentChain>> items) throws Exception {
-        items.forEach(enrichmentChainStore::create);
+    public void write(List<? extends List<EnrichmentChain>> items) {
+        items.forEach(enrichmentChainStore::saveAll);
     }
 }
