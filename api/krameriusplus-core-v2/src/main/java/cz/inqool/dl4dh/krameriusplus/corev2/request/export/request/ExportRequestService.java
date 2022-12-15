@@ -34,7 +34,7 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
         ExportRequest exportRequest = mapper.fromCreateDto(dto);
         exportRequest.setCreateRequestJob(createRequestJob(exportRequest));
 
-        return mapper.toDto(store.create(exportRequest));
+        return mapper.toDto(store.save(exportRequest));
     }
 
     private KrameriusJobInstance createRequestJob(ExportRequest exportRequest) {
