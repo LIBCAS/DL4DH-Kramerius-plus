@@ -14,6 +14,8 @@ import java.util.Map;
 @Setter
 public class JobExecutionDto {
 
+    private Long id;
+
     private Collection<StepExecutionDto> stepExecutions;
 
     private ExecutionStatus status;

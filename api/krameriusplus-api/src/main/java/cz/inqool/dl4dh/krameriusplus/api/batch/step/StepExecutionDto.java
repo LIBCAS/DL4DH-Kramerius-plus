@@ -10,6 +10,8 @@ import java.util.Date;
 @Setter
 public class StepExecutionDto {
 
+    private Long id;
+
     private String stepName;
 
     private ExecutionStatus status;
