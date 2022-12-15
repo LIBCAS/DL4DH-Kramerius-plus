@@ -1,7 +1,7 @@
 import { EnrichmentRequest } from 'models/enrichment-request/enrichment-request'
-import { EnrichmentRequestFilterDto } from 'models/enrichment-request/enrichment-request-filter-dto'
 import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
 import { QueryResults } from 'models/query-results'
+import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
 import { customFetch } from 'utils/custom-fetch'
 
 export const enrich = async (

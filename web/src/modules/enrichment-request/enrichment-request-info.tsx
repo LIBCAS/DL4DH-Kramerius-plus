@@ -8,7 +8,7 @@ type Props = {
 	request: EnrichmentRequest
 }
 
-export const EnrichmentRequestDetail: FC<Props> = ({ request }) => {
+export const EnrichmentRequestInfo: FC<Props> = ({ request }) => {
 	return (
 		<Grid container spacing={2} sx={{ p: 2 }}>
 			<Grid item xs={12}>
