@@ -57,31 +57,35 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
      */
     @Override
     public Publication findPublicationTree(String publicationId) {
-//        List<String> result = mongoOperations.find(new Params() // get publication with id = publicationId if it has pages
-//                .addFilters(new EqFilter("_id", publicationId))
-//                .includeFields("_id", "_class")
-//                .toMongoQuery(false), type)
-//                .stream()
-//                .map(DomainObject::getId)
-//                .collect(Collectors.toList());
-//
-//        Set<String> parentIds = new LinkedHashSet<>(result);
-//
-//        // get child publications tree
-//        while (!parentIds.isEmpty()) {
-//            Params params = new Params()
-//                    .addFilters(new InFilter("parentId", parentIds))
-//                    .includeFields("_id", "_class");
-//
-//            params.setSorting(List.of(new Sorting("index", Sort.Direction.ASC)));
-//
-//            parentIds = mongoOperations.find(params.toMongoQuery(false), type)
-//                    .stream()
-//                    .map(Publication::getId)
-//                    .collect(Collectors.toSet());
-//            result.addAll(parentIds);
-//        }
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        Query query = query(where("_id").is(publicationId));
+        query.fields().include("_id", "_class", "title");
+
+        Publication root = mongoOperations.find(query, Publication.class).get(0);
+
+        getChildrenRec(root);
+
+        return root;
+    }
+
+    private void getChildrenRec(Publication parent) {
+        if (parent == null) {
+            return;
+        }
+
+        List<Publication> children = mongoOperations.find(createChildQuery(parent.getId()), Publication.class);
+
+        parent.setChildren(children);
+
+        children.forEach(this::getChildrenRec);
+    }
+
+
+    private Query createChildQuery(String parentId) {
+        Query childQuery = query(where("parentId").is(parentId));
+        childQuery.with(Sort.by(Sort.Direction.ASC, "index"));
+        childQuery.fields().include("_id", "_class", "title");
+
+        return childQuery;
     }
 }
 
