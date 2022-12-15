@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.export.request;
 
 import com.querydsl.jpa.impl.JPAQuery;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.store.DatedStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
@@ -34,9 +35,8 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
                 .fetchOne();
     }
 
-    public List<ExportRequest> findByNameOwnerAndStatus(String name, String owner, Boolean isFinished, int page, int pageSize) {
-        JPAQuery<ExportRequest> query = queryFactory.from(qObject)
-                .select(qObject);
+    public Result<ExportRequest> findByNameOwnerAndStatus(String name, String owner, Boolean isFinished, int page, int pageSize) {
+        JPAQuery<?> query = queryFactory.from(qObject);
 
         if (name != null) {
             query = query.where(qObject.name.eq(name));
@@ -49,10 +49,12 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
             query = query.where(isFinished ? qObject.bulkExport.isNotNull() : qObject.bulkExport.isNull());
 
         }
-
+        int count = query.select(qObject.count()).fetchOne().intValue();
         query.offset((long) page * pageSize);
         query.limit(pageSize);
 
-        return query.fetch();
+        List<ExportRequest> results = query.select(qObject).fetch();
+
+        return new Result<>(page, pageSize, count, results);
     }
 }

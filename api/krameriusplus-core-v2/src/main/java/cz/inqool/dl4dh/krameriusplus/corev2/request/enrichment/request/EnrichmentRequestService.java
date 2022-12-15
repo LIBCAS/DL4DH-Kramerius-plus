@@ -40,12 +40,10 @@ public class EnrichmentRequestService implements DatedService<EnrichmentRequest,
     }
 
     public Result<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize) {
-        List<EnrichmentRequestDto> results = store.findByNameAndOwner(name, owner, page, pageSize)
-                .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        Result<EnrichmentRequest> results = store.findByNameAndOwner(name, owner, page, pageSize);
+        List<EnrichmentRequestDto> dtos = results.getItems().stream().map(mapper::toDto).collect(Collectors.toList());
 
-        return new Result<>(pageSize, page, results.size(), results);
+        return new Result<>(pageSize, page, results.getTotal(), dtos);
     }
 
     private KrameriusJobInstance createRequestJob(EnrichmentRequest request) {

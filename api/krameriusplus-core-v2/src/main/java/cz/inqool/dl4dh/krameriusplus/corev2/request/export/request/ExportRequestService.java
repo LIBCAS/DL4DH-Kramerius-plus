@@ -46,12 +46,10 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
     }
 
     public Result<ExportRequestDto> list(String name, String owner, boolean isFinished, int page, int pageSize) {
-        List<ExportRequestDto> exportRequestDtos = store.findByNameOwnerAndStatus(name, owner, isFinished, page, pageSize)
-                .stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        Result<ExportRequest> requests = store.findByNameOwnerAndStatus(name, owner, isFinished, page, pageSize);
+        List<ExportRequestDto> dtos = requests.getItems().stream().map(mapper::toDto).collect(Collectors.toList());
 
-        return new Result<>(pageSize, page, exportRequestDtos.size(), exportRequestDtos);
+        return new Result<>(page, pageSize, requests.getTotal(), dtos);
     }
 
     @Autowired
