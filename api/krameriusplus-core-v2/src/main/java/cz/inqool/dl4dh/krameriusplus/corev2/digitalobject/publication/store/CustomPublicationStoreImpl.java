@@ -58,7 +58,6 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
     @Override
     public Publication findPublicationTree(String publicationId) {
         Query query = query(where("_id").is(publicationId));
-        query.fields().include("_id", "_class", "title");
 
         Publication root = mongoOperations.find(query, Publication.class).get(0);
 
@@ -83,7 +82,6 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
     private Query createChildQuery(String parentId) {
         Query childQuery = query(where("parentId").is(parentId));
         childQuery.with(Sort.by(Sort.Direction.ASC, "index"));
-        childQuery.fields().include("_id", "_class", "title");
 
         return childQuery;
     }
