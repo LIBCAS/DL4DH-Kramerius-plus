@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.ChainCreateWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.enrichment.EnrichmentJobConfig;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChainStore;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.ENRICHMENT_REQUEST_ID;
+import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.PUBLICATION_ID;
 
 @Component
 @StepScope
@@ -70,19 +72,22 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
         enrichmentChain.setPublicationTitle(publicationData.getPublicationTitle());
         enrichmentChain.setModel(publicationData.getModel());
         enrichmentChain.setOrder(chainOrder);
-        enrichmentChain.setJobs(createJobs());
+        enrichmentChain.setJobs(createJobs(publicationData.getPublicationId()));
 
         return enrichmentChain;
     }
 
-    private Map<Long, KrameriusJobInstance> createJobs() {
+    private Map<Long, KrameriusJobInstance> createJobs(String publicationId) {
         Map<Long, KrameriusJobInstance> orderToJobMap = new HashMap<>();
         long orderCounter = 0L;
 
         for (EnrichmentJobConfig config : enrichmentRequest.getConfigs()) {
+            JobParametersMapWrapper jobParametersMapWrapper = config.toJobParametersWrapper();
+            jobParametersMapWrapper.putString(PUBLICATION_ID, publicationId);
+
             orderToJobMap.put(orderCounter++, krameriusJobInstanceService.createJobInstance(
                     config.getJobType(),
-                    config.toJobParametersWrapper()));
+                    jobParametersMapWrapper));
         }
 
         return orderToJobMap;

@@ -45,6 +45,7 @@ public class PublicationTreeFindingProcessor implements ItemProcessor<String, Ch
         currentData.setPublicationId(publication.getId());
         currentData.setPublicationTitle(publication.getTitle());
         currentData.setModel(publication.getModel());
+        result.add(currentData);
 
         for (Publication child : publication.getChildren()) {
             result.addAll(extractData(child));
