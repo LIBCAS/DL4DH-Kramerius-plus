@@ -13,5 +13,9 @@ public class EnrichmentRequestItemDto extends DomainObjectDto {
 
     private String publicationId;
 
+    private String publicationTitle;
+
+    private String model;
+
     private List<EnrichmentChainDto> enrichmentChains = new ArrayList<>();
 }

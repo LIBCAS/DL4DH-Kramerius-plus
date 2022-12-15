@@ -10,7 +10,15 @@ import java.util.List;
 @Setter
 public class ChainCreateWrapper {
 
-    private final List<String> publicationIds = new ArrayList<>();
+    private List<PublicationData> publications = new ArrayList<>();
 
     private String enrichmentItemId;
+
+    @Getter
+    @Setter
+    public static class PublicationData {
+        private String publicationId;
+        private String publicationTitle;
+        private String model;
+    }
 }

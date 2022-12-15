@@ -19,6 +19,12 @@ public class EnrichmentChain extends DomainObject {
     @NotNull
     private String publicationId;
 
+    @NotNull
+    private String publicationTitle;
+
+    @NotNull
+    private String model;
+
     @OneToMany
     @JoinTable(
             name = "kplus_enrichment_chain_job",
