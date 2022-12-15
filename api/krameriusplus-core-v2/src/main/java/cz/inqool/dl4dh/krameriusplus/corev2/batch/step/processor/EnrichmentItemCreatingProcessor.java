@@ -24,11 +24,13 @@ public class EnrichmentItemCreatingProcessor implements ItemProcessor<String, En
 
     @Override
     public EnrichmentRequestItem process(@NonNull String item) throws Exception {
-        EnrichmentRequestItem enrichmentRequestItem = new EnrichmentRequestItem();
         Publication publication = publicationStore.findById(item).orElseThrow(
                 () -> new IllegalStateException("Publication with id: " + item + " has not been initialized"));
+
+        EnrichmentRequestItem enrichmentRequestItem = new EnrichmentRequestItem();
         enrichmentRequestItem.setPublicationId(publication.getId());
         enrichmentRequestItem.setPublicationTitle(publication.getTitle());
+        enrichmentRequestItem.setModel(publication.getModel());
         enrichmentRequestItem.setOrder(orderCounter++);
 
         return enrichmentRequestItem;

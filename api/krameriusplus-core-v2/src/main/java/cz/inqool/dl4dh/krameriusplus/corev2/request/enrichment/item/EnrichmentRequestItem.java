@@ -23,6 +23,9 @@ public class EnrichmentRequestItem extends DomainObject {
     @NotNull
     private String publicationTitle;
 
+    @NotNull
+    private String model;
+
     @OneToMany
     @JoinColumn(name = "request_item_id")
     private List<EnrichmentChain> enrichmentChains = new ArrayList<>();

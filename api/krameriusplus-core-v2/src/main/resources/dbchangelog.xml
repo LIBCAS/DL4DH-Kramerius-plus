@@ -161,6 +161,9 @@
             <column name="publication_title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="model" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="item_order" type="bigint">
                 <constraints nullable="false"/>
             </column>
@@ -182,6 +185,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="publication_title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="chain_order" type="bigint">

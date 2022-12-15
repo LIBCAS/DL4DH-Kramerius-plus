@@ -8,6 +8,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -25,15 +26,30 @@ public class PublicationTreeFindingProcessor implements ItemProcessor<String, Ch
     public ChainCreateWrapper process(String item) throws Exception {
         ChainCreateWrapper chainCreateWrapper = new ChainCreateWrapper();
         chainCreateWrapper.setEnrichmentItemId(item);
-        addIdTitlePairs(chainCreateWrapper, item);
+
+        Publication rootNode = publicationStore.findPublicationTree(item);
+        chainCreateWrapper.setPublications(extractData(rootNode));
+
         return chainCreateWrapper;
     }
 
-    private void addIdTitlePairs(ChainCreateWrapper chainCreateWrapper, String item) {
-        List<Publication> publications = publicationStore.findPublicationTree(item);
+    /**
+     * Recursively extract main data from publication and returns them in a flat list structure
+     * @param publication publication to extract data from, including it's children
+     * @return list of publication data
+     */
+    private List<ChainCreateWrapper.PublicationData> extractData(Publication publication) {
+        List<ChainCreateWrapper.PublicationData> result = new ArrayList<>();
 
-        for (Publication publication : publications) {
-            chainCreateWrapper.getPublicationIdToTitle().put(publication.getId(), publication.getTitle());
+        ChainCreateWrapper.PublicationData currentData = new ChainCreateWrapper.PublicationData();
+        currentData.setPublicationId(publication.getId());
+        currentData.setPublicationTitle(publication.getTitle());
+        currentData.setModel(publication.getModel());
+
+        for (Publication child : publication.getChildren()) {
+            result.addAll(extractData(child));
         }
+
+        return result;
     }
 }
