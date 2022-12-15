@@ -36,12 +36,21 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
 
     public List<ExportRequest> findByNameOwnerAndStatus(String name, String owner, Boolean isFinished, int page, int pageSize) {
         JPAQuery<ExportRequest> query = queryFactory.from(qObject)
-                .select(qObject)
-                .where(qObject.name.eq(name))
-                .where(qObject.owner.username.eq(owner))
-                .where(isFinished ? qObject.bulkExport.isNotNull() : qObject.bulkExport.isNull());
+                .select(qObject);
 
-        query.offset(page);
+        if (name != null) {
+            query = query.where(qObject.name.eq(name));
+        }
+        if (owner != null) {
+            query = query.where(qObject.owner.username.eq(owner));
+
+        }
+        if (isFinished != null) {
+            query = query.where(isFinished ? qObject.bulkExport.isNotNull() : qObject.bulkExport.isNull());
+
+        }
+
+        query.offset((long) page * pageSize);
         query.limit(pageSize);
 
         return query.fetch();

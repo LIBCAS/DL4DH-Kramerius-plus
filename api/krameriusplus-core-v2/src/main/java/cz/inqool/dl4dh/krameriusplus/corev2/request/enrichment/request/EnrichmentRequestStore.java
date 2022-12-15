@@ -18,11 +18,17 @@ public class EnrichmentRequestStore extends DatedStore<EnrichmentRequest, QEnric
 
     public List<EnrichmentRequest> findByNameAndOwner(String name, String owner, int page, int pageSize) {
         JPAQuery<EnrichmentRequest> query = queryFactory.from(qObject)
-                .select(qObject)
-                .where(qObject.name.eq(name))
-                .where(qObject.owner.username.eq(owner));
+                .select(qObject);
 
-        query.offset(page);
+        if (name != null) {
+            query = query.where(qObject.name.eq(name));
+        }
+
+        if (owner != null) {
+            query = query.where(qObject.owner.username.eq(owner));
+        }
+
+        query.offset((long) page * pageSize);
         query.limit(pageSize);
 
         return query.fetch();
