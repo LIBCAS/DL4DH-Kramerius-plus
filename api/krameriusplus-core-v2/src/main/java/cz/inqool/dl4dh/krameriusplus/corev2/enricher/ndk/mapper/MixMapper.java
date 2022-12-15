@@ -1,14 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.enricher.ndk.mapper;
 
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicDigitalInformation;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicDigitalInformation.Compression;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicDigitalObjectInformation;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicDigitalObjectInformation.Compression;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicImageInformation.BasicImageCharacteristics;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.BasicImageInformation.BasicImageCharacteristics.PhotometricInterpretation;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageAssessmentMetadata;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.DigitalCameraCapture;
-import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.DigitalCameraCapture.DigitalCameraCaptureSettings;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.DigitalCameraCapture.DigitalCameraModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.GeneralCaptureInformation;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMixElement.ImageCaptureMetadata.ScannerCapture;
@@ -27,7 +26,30 @@ public interface MixMapper extends MetsMapperBase {
 
     ImageAssessmentMetadata map(ImageAssessmentMetadataType xmlElement);
 
-    DigitalCameraCaptureSettings map(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings xmlElement);
+    @Mappings(value =  {
+            @Mapping(target = "samplingFrequencyUnit", source = "samplingFrequencyUnit.value"),
+            @Mapping(target = "samplingFrequencyPlane", source = "samplingFrequencyPlane.value")
+    })
+    ImageAssessmentMetadata.SpatialMetrics map(ImageAssessmentMetadataType.SpatialMetrics xmlElement);
+
+    @Mappings(value = {
+            @Mapping(target = "bitsPerSample.bitsPerSampleUnit", source = "bitsPerSample.bitsPerSampleUnit.value"),
+            @Mapping(target = "bitsPerSample.bitsPerSampleValues", source = "bitsPerSample.bitsPerSampleValue")
+    })
+    ImageAssessmentMetadata.ImageColorEncoding map(ImageAssessmentMetadataType.ImageColorEncoding xmlElement);
+
+    @Mappings(value = {
+            @Mapping(target = "subjectDistance", source = "subjectDistance.distance.value"),
+            @Mapping(target = "meteringMode", source = "meteringMode.value"),
+            @Mapping(target = "lightSource", source = "lightSource.value"),
+            @Mapping(target = "flash", source = "flash.value"),
+            @Mapping(target = "focalLength", source = "focalLength.value"),
+            @Mapping(target = "backLight", source = "backLight.value"),
+            @Mapping(target = "sensingMethod", source = "sensingMethod.value"),
+            @Mapping(target = "cfaPattern", source = "cfaPattern.value"),
+            @Mapping(target = "autoFocus", source = "autoFocus.value")
+    })
+    DigitalCameraCapture.CameraCaptureSettings.ImageData map(ImageCaptureMetadataType.DigitalCameraCapture.CameraCaptureSettings.ImageData xmlElement);
 
     DigitalCameraModel map(ImageCaptureMetadataType.DigitalCameraCapture.DigitalCameraModel xmlElement);
 
@@ -65,5 +87,5 @@ public interface MixMapper extends MetsMapperBase {
 
     Compression map(BasicDigitalObjectInformationType.Compression xmlElement);
 
-    BasicDigitalInformation map(BasicDigitalObjectInformationType xmlElement);
+    BasicDigitalObjectInformation map(BasicDigitalObjectInformationType xmlElement);
 }
