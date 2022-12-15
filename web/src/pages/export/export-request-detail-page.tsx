@@ -1,7 +1,7 @@
 import { Divider, Grid, Paper } from '@mui/material'
 import { getExportRequest } from 'api/export-api'
 import { Loading } from 'components/loading'
-import { ExportRequest } from 'models/export-request/export-request'
+import { ExportRequest } from 'models/request/export-request'
 import { ExportRequestDetail } from 'modules/export-request/export-request-detail'
 import { ExportRequestExportsList } from 'modules/export-request/export-request-export-list'
 import { PageWrapper } from 'pages/page-wrapper'
@@ -35,11 +35,11 @@ export const ExportRequestDetailPage: FC = () => {
 							<Divider sx={{ m: 2 }} />
 						</Grid>
 						<Grid item xs={12}>
-							{exportRequest.bulkExport && (
-								<ExportRequestExportsList
-									exports={exportRequest.bulkExport?.exports}
-								/>
-							)}
+							{/* {exportRequest.bulkExport && (
+								// <ExportRequestExportsList
+								// 	exports={exportRequest.bulkExport?.exports}
+								// />
+							)} */}
 						</Grid>
 					</Grid>
 				</Paper>

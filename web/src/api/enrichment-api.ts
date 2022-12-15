@@ -1,4 +1,4 @@
-import { EnrichmentRequest } from 'models/enrichment-request/enrichment-request'
+import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
 import { QueryResults } from 'models/query-results'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'

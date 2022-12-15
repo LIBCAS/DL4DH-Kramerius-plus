@@ -1,5 +1,5 @@
 import { DatedObject } from './dated-object'
 
-export interface KrameriusUser extends DatedObject {
+export interface User extends DatedObject {
 	username: string
 }

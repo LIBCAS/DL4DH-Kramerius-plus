@@ -1,25 +1,19 @@
-import { Button, Paper } from '@mui/material'
+import { Button, Icon, Paper } from '@mui/material'
 import {
 	DataGrid,
+	GridActionsCellItem,
 	GridRenderCellParams,
+	GridRowParams,
 	GridValueFormatterParams,
 } from '@mui/x-data-grid'
 import { listEnrichmentRequests } from 'api/enrichment-api'
-import { EnrichmentRequest } from 'models/enrichment-request/enrichment-request'
-import { JobPlan } from 'models/job-plan'
+import { User } from 'models/domain/user'
+import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { dateTimeFormatter, ownerFormatter } from 'utils/formatters'
-
-export const publicationCountFormatter = (params: GridValueFormatterParams) => {
-	if (params.value === undefined) {
-		return '-'
-	}
-
-	const jobPlans = params.value as JobPlan[]
-	return jobPlans.length.toString()
-}
+import { Icons } from 'react-toastify'
+import { dateTimeFormatter } from 'utils/formatters'
 
 export const EnrichmentRequestGrid: FC<{
 	filter: EnrichmentRequestFilterDto
@@ -36,53 +30,35 @@ export const EnrichmentRequestGrid: FC<{
 
 	const columns = [
 		{
-			field: 'id',
-			headerName: 'ID',
-			width: 400,
-			type: 'string',
-		},
-		{
 			field: 'created',
 			headerName: 'Vytvořeno',
 			width: 250,
-			type: 'string',
 			valueFormatter: dateTimeFormatter,
 		},
 		{
 			field: 'owner',
 			headerName: 'Vytvořil',
 			width: 250,
-			type: 'string',
-			valueFormatter: ownerFormatter,
+			valueFormatter: (params: GridValueFormatterParams<User>) =>
+				params.value.username,
 		},
 		{
 			field: 'name',
 			headerName: 'Název',
 			width: 350,
-			type: 'string',
 		},
 		{
-			field: 'jobPlans',
-			headerName: 'Počet publikací',
-			width: 200,
-			type: 'string',
-			valueFormatter: publicationCountFormatter,
+			field: 'publicationIds',
+			headerName: 'Publikace v žádosti',
+			width: 800,
+			flex: 4,
+			valueFormatter: (params: GridValueFormatterParams<string[]>) =>
+				params.value.join(', '),
 		},
 		{
-			field: 'action',
-			headerName: 'Akce',
-			flex: 1,
-			sortable: false,
-			renderCell: (params: GridRenderCellParams) => {
-				const onClick = () => {
-					navigate(params.row['id'])
-				}
-				return (
-					<Button color="primary" variant="contained" onClick={onClick}>
-						Detail
-					</Button>
-				)
-			},
+			field: 'state',
+			headerName: 'Stav žádosti',
+			width: 250,
 		},
 	]
 
@@ -121,6 +97,7 @@ export const EnrichmentRequestGrid: FC<{
 				rows={enrichmentRequests}
 				rowsPerPageOptions={[]}
 				onPageChange={onPageChange}
+				onRowClick={(params: GridRowParams) => navigate(params.row['id'])}
 			/>
 		</Paper>
 	)

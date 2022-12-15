@@ -7,16 +7,17 @@ import {
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
 import { BulkExport } from 'models/bulk-export'
-import { ExportRequest } from 'models/export-request/export-request'
+import { ExportRequest } from 'models/request/export-request'
 import { ExportRequestFilterDto } from 'models/export-request/export-request-filter-dto'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { dateTimeFormatter, ownerFormatter } from 'utils/formatters'
+import { dateTimeFormatter } from 'utils/formatters'
+import { User } from 'models/domain/user'
 
 const exportDoneFormatter = (params: GridValueFormatterParams) => {
-	if ((params.value as BulkExport).fileRef) {
-		return 'ANO'
-	}
+	// if ((params.value as BulkExport).fileRef) {
+	// 	return 'ANO'
+	// }
 
 	return 'NE'
 }
@@ -51,7 +52,8 @@ export const ExportRequestList: FC<{ filter: ExportRequestFilterDto }> = ({
 			headerName: 'Vytvořil',
 			width: 250,
 			type: 'string',
-			valueFormatter: ownerFormatter,
+			valueFormatter: (params: GridValueFormatterParams<User>) =>
+				params.value.username,
 		},
 		{
 			field: 'name',
@@ -66,8 +68,9 @@ export const ExportRequestList: FC<{ filter: ExportRequestFilterDto }> = ({
 			type: 'string',
 			valueGetter: (params: GridValueGetterParams) => {
 				return (
-					exportRequests.find(request => request.id === params.id)?.bulkExport
-						?.format ?? '-'
+					// exportRequests.find(request => request.id === params.id)?.bulkExport
+					// 	?.format ??
+					'-'
 				)
 			},
 		},

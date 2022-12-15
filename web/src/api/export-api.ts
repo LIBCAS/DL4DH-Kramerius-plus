@@ -2,7 +2,7 @@ import {
 	ExportFormat,
 	ExportJobConfig,
 } from 'components/publication/publication-export-dialog'
-import { ExportRequest } from 'models/export-request/export-request'
+import { ExportRequest } from 'models/request/export-request'
 import { ExportRequestFilterDto } from 'models/export-request/export-request-filter-dto'
 import { QueryResults } from 'models/query-results'
 import { customFetch } from 'utils/custom-fetch'

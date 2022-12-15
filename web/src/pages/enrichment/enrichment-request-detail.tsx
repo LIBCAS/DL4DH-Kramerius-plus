@@ -1,8 +1,7 @@
 import { Divider, Grid, Paper } from '@mui/material'
 import { getEnrichmentRequest } from 'api/enrichment-api'
-import { EnrichmentRequest } from 'models/enrichment-request/enrichment-request'
+import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { EnrichmentRequestInfo } from 'modules/enrichment-request/enrichment-request-info'
-import { EnrichmentRequestPlans } from 'modules/enrichment-request/enrichment-request-plans'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { PageWrapper } from '../page-wrapper'
@@ -36,7 +35,7 @@ export const EnrichmentRequestDetail: FC = () => {
 							<Divider sx={{ m: 2 }} />
 						</Grid>
 						<Grid item xs={12}>
-							<EnrichmentRequestPlans plans={enrichmentRequest.jobPlans} />
+							{/* <EnrichmentRequestPlans plans={enrichmentRequest.jobPlans} /> */}
 						</Grid>
 					</Grid>
 				</Paper>

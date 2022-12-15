@@ -14,6 +14,7 @@ export interface JobExecution {
 	startTime?: Date
 	createTime?: Date
 	endTime?: Date
+	lastUpdated?: Date
 	exitStatus: ExitStatus
 	jobConfigurationName: string
 	duration?: number
