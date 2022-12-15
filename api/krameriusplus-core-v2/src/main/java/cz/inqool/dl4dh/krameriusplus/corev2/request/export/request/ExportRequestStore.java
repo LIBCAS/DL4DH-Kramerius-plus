@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.store.DatedStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.QExportRequestItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,6 +14,7 @@ import java.util.List;
 @Repository
 public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest> {
 
+    @Autowired
     public ExportRequestStore(EntityManager em) {
         super(ExportRequest.class, QExportRequest.class, em);
     }
@@ -42,10 +44,6 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
         query.offset(page);
         query.limit(pageSize);
 
-        List<ExportRequest> results = query.fetch();
-
-        detachAll();
-
-        return results;
+        return query.fetch();
     }
 }
