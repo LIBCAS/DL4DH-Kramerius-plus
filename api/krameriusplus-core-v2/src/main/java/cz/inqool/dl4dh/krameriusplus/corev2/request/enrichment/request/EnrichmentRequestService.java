@@ -9,9 +9,13 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import lombok.Getter;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.ENRICHMENT_REQUEST_ID;
 
@@ -28,7 +32,7 @@ public class EnrichmentRequestService implements DatedService<EnrichmentRequest,
 
     @Transactional
     @Override
-    public EnrichmentRequestDto create(EnrichmentRequestCreateDto createDto) {
+    public EnrichmentRequestDto create(@NonNull EnrichmentRequestCreateDto createDto) {
         EnrichmentRequest entity = mapper.fromCreateDto(createDto);
         entity.setCreateRequestJob(createRequestJob(entity));
 
@@ -36,7 +40,12 @@ public class EnrichmentRequestService implements DatedService<EnrichmentRequest,
     }
 
     public Result<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize) {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        List<EnrichmentRequestDto> results = store.findByNameAndOwner(name, owner, page, pageSize)
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+
+        return new Result<>(pageSize, page, results.size(), results);
     }
 
     private KrameriusJobInstance createRequestJob(EnrichmentRequest request) {
