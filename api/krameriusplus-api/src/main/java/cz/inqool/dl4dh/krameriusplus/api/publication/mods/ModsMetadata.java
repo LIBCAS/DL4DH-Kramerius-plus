@@ -16,7 +16,7 @@ public class ModsMetadata {
 
     private ModsName name;
 
-    private String genre;
+    private ModsGenre genre;
 
     private ModsPhysicalDescription physicalDescription;
 

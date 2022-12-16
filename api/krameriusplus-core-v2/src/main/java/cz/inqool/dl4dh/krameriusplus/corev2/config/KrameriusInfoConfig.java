@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.config;
 
 import cz.inqool.dl4dh.krameriusplus.api.KrameriusInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,20 +21,13 @@ public class KrameriusInfoConfig {
     private static final ParameterizedTypeReference<Map<String, Object>> MAP_TYPE_REF = new ParameterizedTypeReference<>() {
     };
 
-    @Value("${system.kramerius.code}")
-    private String krameriusCode;
-
-    @Value("${system.kramerius.default-url:}")
-    private String krameriusDefaultUrl;
-
-    @Value("${system.kramerius.register-url}")
-    private String krameriusRegisterUrl;
+    private KrameriusProperties krameriusProperties;
 
     @Bean
     public KrameriusInfo krameriusInfo() {
         String endpoint = UriComponentsBuilder
-                .fromUriString(krameriusDefaultUrl)
-                .pathSegment(krameriusCode)
+                .fromUriString(krameriusProperties.getRegisterUrl())
+                .pathSegment(krameriusProperties.getCode())
                 .toUriString();
 
         WebClient webClient = WebClient.create(endpoint);
@@ -49,16 +42,21 @@ public class KrameriusInfoConfig {
 
             notNull(krameriusInfoMap, () -> new IllegalStateException("Request to '" + endpoint + "' did not return any results."));
         } catch (Exception e) {
-            if (krameriusDefaultUrl == null) {
-                throw new IllegalStateException("Failed to connect to " + krameriusRegisterUrl +
+            if (krameriusProperties.getDefaultUrl() == null) {
+                throw new IllegalStateException("Failed to connect to " + krameriusProperties.getRegisterUrl() +
                         " and no default URL of Kramerius is set.");
             } else {
-                krameriusInfoMap.put("url", krameriusDefaultUrl);
+                krameriusInfoMap.put("url", krameriusProperties.getDefaultUrl());
                 log.warn("Failed to connect to {} and retrieve information about Kramerius instance. " +
-                        "Default URL of Kramerius is set to {}", krameriusRegisterUrl, krameriusDefaultUrl);
+                        "Default URL of Kramerius is set to {}", krameriusProperties.getRegisterUrl(), krameriusProperties.getDefaultUrl());
             }
         }
 
         return new KrameriusInfo(krameriusInfoMap);
+    }
+
+    @Autowired
+    public void setKrameriusProperties(KrameriusProperties krameriusProperties) {
+        this.krameriusProperties = krameriusProperties;
     }
 }

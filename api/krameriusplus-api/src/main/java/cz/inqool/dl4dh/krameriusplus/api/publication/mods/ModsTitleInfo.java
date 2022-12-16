@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class ModsTitleInfo {
 
-    private List<String> title = new ArrayList<>();
+    private List<String> titles = new ArrayList<>();
 
     private String type;
 

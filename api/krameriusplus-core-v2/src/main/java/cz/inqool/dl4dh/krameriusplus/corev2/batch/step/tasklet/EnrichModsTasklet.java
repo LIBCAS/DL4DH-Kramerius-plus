@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.ModsMapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.store.PublicationStore;
+import cz.inqool.dl4dh.krameriusplus.corev2.enricher.mods.ModsMapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessenger;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import org.springframework.batch.core.StepContribution;

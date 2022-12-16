@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.corev2.kramerius;
 
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.corev2.CoreBaseTest;
-import cz.inqool.dl4dh.krameriusplus.corev2.TestApplication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
@@ -14,52 +13,31 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import cz.inqool.dl4dh.mods.StringPlusLanguage;
 import cz.inqool.dl4dh.mods.TitleInfoDefinition;
-import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.xml.bind.JAXBElement;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.config.WebClientConfig.KRAMERIUS_WEB_CLIENT;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerChildrenResponse.*;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerResponse.*;
 import static cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessengerStreamsResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ContextConfiguration(classes = {
-        TestApplication.class,
-        KrameriusMessengerTest.TestConfig.class
-})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class KrameriusMessengerTest extends CoreBaseTest {
-
-    public static MockWebServer mockServer;
 
     @Autowired
     private SyncKrameriusMessenger krameriusMessenger;
 
-    @BeforeAll
-    static void beforeAll() throws IOException {
-        mockServer = new MockWebServer();
-        mockServer.start();
-    }
-
-    @AfterAll
-    static void afterAll() throws IOException {
-        mockServer.shutdown();
-    }
+    @Autowired
+    private MockWebServer mockServer;
 
     @Test
     void periodical() {
@@ -260,14 +238,5 @@ public class KrameriusMessengerTest extends CoreBaseTest {
         assertThat(digitalObjects.stream().allMatch(object -> object.getClass().equals(expectedClass))).isTrue();
 
         return digitalObjects;
-    }
-
-    @Configuration
-    public static class TestConfig {
-        @Bean(name = KRAMERIUS_WEB_CLIENT)
-        WebClient webClient() {
-            HttpUrl httpUrl = mockServer.url("/");
-            return WebClient.create(httpUrl.toString());
-        }
     }
 }
