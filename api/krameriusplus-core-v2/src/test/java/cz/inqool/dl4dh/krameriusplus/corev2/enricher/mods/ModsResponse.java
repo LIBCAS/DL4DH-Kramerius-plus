@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.enricher.mods;
 
 public class ModsResponse {
 
+    // obtained from http://kramerius.mzk.cz/search/api/v5.0/item/uuid:6a7a9842-faff-4af7-a502-a1229611e67f/streams/BIBLIO_MODS
     public static final String MONOGRAPH_MODS = "\n" +
             "<mods:modsCollection xmlns=\"http://www.w3.org/1999/xlink\" xmlns:mods=\"http://www.loc.gov/mods/v3\">\n" +
             "    <mods:mods ID=\"MODS_VOLUME_0001\" version=\"3.6\">\n" +

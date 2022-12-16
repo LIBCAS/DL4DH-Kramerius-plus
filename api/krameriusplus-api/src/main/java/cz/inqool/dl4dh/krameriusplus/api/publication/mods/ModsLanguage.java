@@ -1,15 +1,17 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication.mods;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-public class ModsGenre {
+public class ModsLanguage {
+
+    private String objectPart;
 
     private String authority;
+
+    private String type;
 
     private String value;
 }

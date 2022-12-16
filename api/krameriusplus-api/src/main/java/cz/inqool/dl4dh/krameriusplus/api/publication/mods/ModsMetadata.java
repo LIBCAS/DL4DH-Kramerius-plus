@@ -16,11 +16,13 @@ public class ModsMetadata {
 
     private ModsName name;
 
-    private ModsGenre genre;
+    private List<ModsGenre> genres = new ArrayList<>();
+
+    private List<ModsOriginInfo> originInfo = new ArrayList<>();
+
+    private List<ModsLanguage> languages = new ArrayList<>();
 
     private ModsPhysicalDescription physicalDescription;
-
-    private ModsOriginInfo originInfo;
 
     private List<ModsIdentifier> identifiers = new ArrayList<>();
 }
