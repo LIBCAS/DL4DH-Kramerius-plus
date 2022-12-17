@@ -22,6 +22,10 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
     ModsOriginInfo map(OriginInfoDefinition element);
 
     default ModsPlace mapPlace(JAXBElement<?> element) {
+        if (element == null) {
+            return new ModsPlace();
+        }
+
         if (!(element.getValue() instanceof PlaceDefinition)) {
             throw new IllegalStateException("Found <place> element, but it is not an instance of PlaceDefinition.");
         }
@@ -45,6 +49,10 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
     }
 
     default ModsDateIssued mapDate(JAXBElement<?> element) {
+        if (element == null) {
+            return null;
+        }
+
         if (!(element.getValue() instanceof DateDefinition)) {
             throw new IllegalStateException("Found <dateIssued> element, but it is not an instance of DateDefinition.");
         }
