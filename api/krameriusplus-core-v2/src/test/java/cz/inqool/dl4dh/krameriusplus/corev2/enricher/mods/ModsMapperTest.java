@@ -1,14 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.enricher.mods;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsGenre;
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsName;
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsTitleInfo;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.*;
 import cz.inqool.dl4dh.krameriusplus.corev2.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.corev2.kramerius.KrameriusMessenger;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.apache.http.entity.ContentType;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -94,21 +92,74 @@ public class ModsMapperTest extends CoreBaseTest {
 
     @Test
     void originInfo() {
-        // TODO
+        List<ModsOriginInfo> originInfos = modsMetadata.getOriginInfo();
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(originInfos.size()).isEqualTo(2);
+
+            ModsOriginInfo originInfo1 = originInfos.get(0);
+
+            softly.assertThat(originInfo1.getDateIssued().getEncoding()).isEqualTo("marc");
+            softly.assertThat(originInfo1.getDateIssued().getValue()).isEqualTo("2016");
+
+            softly.assertThat(originInfo1.getIssuance()).isEqualTo("monographic");
+            softly.assertThat(originInfo1.getPublisher()).isNull();
+            softly.assertThat(originInfo1.getPlace().getValue()).isEqualTo("xr");
+            softly.assertThat(originInfo1.getPlace().getAuthority()).isEqualTo("marccountry");
+            softly.assertThat(originInfo1.getPlace().getType()).isEqualTo("code");
+
+            ModsOriginInfo originInfo2 = originInfos.get(1);
+            
+            softly.assertThat(originInfo2.getPublisher()).isEqualTo("CZ.NIC, z.s.p.o.,");
+            softly.assertThat(originInfo2.getPlace().getValue()).isEqualTo("Praha :");
+        });
+
     }
 
     @Test
     void languages() {
-        // TODO
+        List<ModsLanguage> languages = modsMetadata.getLanguages();
+        
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(languages.size()).isEqualTo(2);
+
+            ModsLanguage modsLanguage = languages.get(0);
+
+            softly.assertThat(modsLanguage.getAuthority()).isEqualTo("iso639-2b");
+            softly.assertThat(modsLanguage.getType()).isEqualTo("code");
+            softly.assertThat(modsLanguage.getValue()).isEqualTo("cze");
+
+            ModsLanguage modsLanguage1 = languages.get(1);
+            softly.assertThat(modsLanguage1.getObjectPart()).isEqualTo("translation");
+            softly.assertThat(modsLanguage1.getAuthority()).isEqualTo("iso639-2b");
+            softly.assertThat(modsLanguage1.getValue()).isEqualTo("eng");
+        });
     }
 
     @Test
     void physicalDescription() {
-        // TODO
+        SoftAssertions.assertSoftly(softly -> {
+            ModsPhysicalDescription physicalDescription = modsMetadata.getPhysicalDescription();
+
+            softly.assertThat(physicalDescription.getExtent()).isEqualTo("264 stran : ilustrace ; 25 cm");
+        });
     }
 
     @Test
     void identifiers() {
-        // TODO
+        List<ModsGenre> genres = modsMetadata.getGenres();
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(genres.size()).isEqualTo(3);
+
+            TriConsumer<ModsGenre, String, String> testingMethod = (modsGenre, authority, value) -> {
+                softly.assertThat(modsGenre.getAuthority()).isEqualTo(authority);
+                softly.assertThat(modsGenre.getValue()).isEqualTo(value);
+            };
+
+            testingMethod.accept(genres.get(0), "rdacontent", "text");
+            testingMethod.accept(genres.get(1), "czenas", "případové studie");
+            testingMethod.accept(genres.get(2), "eczenas", "cast studies");
+        });
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.HashMap;
+
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER;
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER_W_TOKENS;
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.PUBLICATION_ID;
@@ -32,7 +34,9 @@ public class ItemReadersConfig {
                 .template(mongoOperations)
                 .targetType(Page.class)
                 .query(query)
+                .sorts(new HashMap<>())
                 .pageSize(10)
+                .name(PAGE_MONGO_READER)
                 .build();
     }
 
@@ -47,6 +51,8 @@ public class ItemReadersConfig {
                 .template(mongoOperations)
                 .targetType(Page.class)
                 .query(query)
+                .sorts(new HashMap<>())
+                .name(PAGE_MONGO_READER_W_TOKENS)
                 .pageSize(10)
                 .build();
     }

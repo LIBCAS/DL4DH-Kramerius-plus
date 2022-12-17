@@ -16,6 +16,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
+import javax.xml.bind.JAXB;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,7 +73,9 @@ public class SyncKrameriusMessenger implements KrameriusMessenger {
 
     @Override
     public Alto getAlto(String pageId) {
-        return getAltoRawStream(pageId, ALTO_TYPE_REF);
+        String altoString = getAltoRawStream(pageId, STRING_TYPE_REF);
+
+        return JAXB.unmarshal(new StringReader(altoString), Alto.class);
     }
 
     @Override
