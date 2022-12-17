@@ -13,7 +13,10 @@ public interface ModsLanguageMapper extends ModsMapperBase {
             throw new IllegalStateException("Expected size=1 actual=" + element.getLanguageTerm().size());
         }
 
-        return map(element.getLanguageTerm().get(0));
+        ModsLanguage modsLanguage = map(element.getLanguageTerm().get(0));
+        modsLanguage.setObjectPart(element.getObjectPart());
+
+        return modsLanguage;
     }
 
     ModsLanguage map(LanguageTermDefinition element);

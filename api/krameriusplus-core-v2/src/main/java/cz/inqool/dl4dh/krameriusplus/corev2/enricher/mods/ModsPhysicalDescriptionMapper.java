@@ -6,23 +6,23 @@ import cz.inqool.dl4dh.mods.PhysicalDescriptionDefinition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Mapper
 public interface ModsPhysicalDescriptionMapper extends ModsMapperBase {
 
     default ModsPhysicalDescription map(PhysicalDescriptionDefinition element) {
-        if (element.getFormOrReformattingQualityOrInternetMediaType().size() != 1) {
-            throw new IllegalStateException("Expected size=1 actual=" + element.getFormOrReformattingQualityOrInternetMediaType().size());
+        List<Object> extentObjects = element.getFormOrReformattingQualityOrInternetMediaType().stream()
+                .filter(object -> object instanceof Extent).collect(Collectors.toList());
+
+        if (extentObjects.size() != 1) {
+            throw new IllegalStateException("Expected size=1 actual=" + extentObjects.size());
         }
 
-        Object object = element.getFormOrReformattingQualityOrInternetMediaType().get(0);
-
-        if (!(object instanceof Extent)) {
-            throw new IllegalStateException("Expected: Extent.class, Actual: " + object.getClass().getSimpleName());
-        }
-
-        return map(((Extent) object));
+        return map(((Extent) extentObjects.get(0)));
     }
 
     @Mapping(target = "extent", source = "extent.value")
-     ModsPhysicalDescription map(Extent extent);
+    ModsPhysicalDescription map(Extent extent);
 }

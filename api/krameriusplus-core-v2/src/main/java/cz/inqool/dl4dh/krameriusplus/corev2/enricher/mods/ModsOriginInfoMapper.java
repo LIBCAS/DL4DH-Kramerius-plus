@@ -3,10 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.enricher.mods;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsDateIssued;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsOriginInfo;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlace;
-import cz.inqool.dl4dh.mods.DateDefinition;
-import cz.inqool.dl4dh.mods.OriginInfoDefinition;
-import cz.inqool.dl4dh.mods.PlaceDefinition;
-import cz.inqool.dl4dh.mods.PlaceTermDefinition;
+import cz.inqool.dl4dh.mods.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -20,15 +17,11 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
             @Mapping(target = "publisher", expression = "java(mapJaxbElements(element.getPlaceOrPublisherOrDateIssued(), \"publisher\"))"),
             @Mapping(target = "dateIssued", expression = "java(mapDate(findOne(element.getPlaceOrPublisherOrDateIssued(), \"dateIssued\")))"),
             @Mapping(target = "place", expression = "java(mapPlace(findOne(element.getPlaceOrPublisherOrDateIssued(), \"place\")))"),
-            @Mapping(target = "issuance", expression = "java(mapJaxbElements(element.getPlaceOrPublisherOrDateIssued(), \"issuance\"))")
+            @Mapping(target = "issuance", expression = "java(mapIssuance(findOne(element.getPlaceOrPublisherOrDateIssued(), \"issuance\")))")
     })
     ModsOriginInfo map(OriginInfoDefinition element);
 
     default ModsPlace mapPlace(JAXBElement<?> element) {
-        if (element == null) {
-            return new ModsPlace();
-        }
-
         if (!(element.getValue() instanceof PlaceDefinition)) {
             throw new IllegalStateException("Found <place> element, but it is not an instance of PlaceDefinition.");
         }
@@ -52,10 +45,6 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
     }
 
     default ModsDateIssued mapDate(JAXBElement<?> element) {
-        if (element == null) {
-            return new ModsDateIssued();
-        }
-
         if (!(element.getValue() instanceof DateDefinition)) {
             throw new IllegalStateException("Found <dateIssued> element, but it is not an instance of DateDefinition.");
         }
@@ -67,5 +56,18 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
         dateIssued.setValue(dateDefinition.getValue());
 
         return dateIssued;
+    }
+
+    default String mapIssuance(JAXBElement<?> issuanceElement) {
+        if (issuanceElement == null) {
+            return null;
+        }
+
+        if (!(issuanceElement.getValue() instanceof IssuanceDefinition)) {
+            throw new IllegalStateException("Found <issuance> element, but it is not and instance of "
+                    + IssuanceDefinition.class.getSimpleName());
+        }
+
+        return ((IssuanceDefinition) issuanceElement.getValue()).value();
     }
 }

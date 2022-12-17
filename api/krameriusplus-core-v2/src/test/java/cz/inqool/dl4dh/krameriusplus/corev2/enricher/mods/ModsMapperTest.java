@@ -126,7 +126,7 @@ public class ModsMapperTest extends CoreBaseTest {
             ModsLanguage modsLanguage = languages.get(0);
 
             softly.assertThat(modsLanguage.getAuthority()).isEqualTo("iso639-2b");
-            softly.assertThat(modsLanguage.getType()).isEqualTo("code");
+            softly.assertThat(modsLanguage.getType()).isEqualTo("CODE");
             softly.assertThat(modsLanguage.getValue()).isEqualTo("cze");
 
             ModsLanguage modsLanguage1 = languages.get(1);
@@ -159,7 +159,7 @@ public class ModsMapperTest extends CoreBaseTest {
 
             testingMethod.accept(genres.get(0), "rdacontent", "text");
             testingMethod.accept(genres.get(1), "czenas", "případové studie");
-            testingMethod.accept(genres.get(2), "eczenas", "cast studies");
+            testingMethod.accept(genres.get(2), "eczenas", "case studies");
         });
     }
 }
