@@ -9,8 +9,12 @@ import org.mapstruct.Mapper;
 public interface ModsLanguageMapper extends ModsMapperBase {
 
     default ModsLanguage map(LanguageDefinition element) {
-        if (element.getLanguageTerm().size() != 1) {
-            throw new IllegalStateException("Expected size=1 actual=" + element.getLanguageTerm().size());
+        if (element.getLanguageTerm().isEmpty()) {
+            return null;
+        }
+
+        if (element.getLanguageTerm().size() > 1) {
+            throw new IllegalStateException("Expected at most 1 element <languageTerm>, but found:" + element.getLanguageTerm().size());
         }
 
         ModsLanguage modsLanguage = map(element.getLanguageTerm().get(0));

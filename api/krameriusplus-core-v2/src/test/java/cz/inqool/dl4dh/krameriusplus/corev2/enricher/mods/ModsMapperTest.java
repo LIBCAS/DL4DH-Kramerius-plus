@@ -64,7 +64,8 @@ public class ModsMapperTest extends CoreBaseTest {
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(modsName.getType()).isEqualTo("personal");
-            softly.assertThat(modsName.getNamePart()).isEqualTo("Armstrong, Tavish");
+            softly.assertThat(modsName.getNameParts().size()).isEqualTo(1);
+            softly.assertThat(modsName.getNameParts().get(0).getValue()).isEqualTo("Armstrong, Tavish");
             softly.assertThat(modsName.getNameIdentifier()).isNull();
         });
     }
@@ -104,14 +105,20 @@ public class ModsMapperTest extends CoreBaseTest {
 
             softly.assertThat(originInfo1.getIssuance()).isEqualTo("monographic");
             softly.assertThat(originInfo1.getPublisher()).isNull();
-            softly.assertThat(originInfo1.getPlace().getValue()).isEqualTo("xr");
-            softly.assertThat(originInfo1.getPlace().getAuthority()).isEqualTo("marccountry");
-            softly.assertThat(originInfo1.getPlace().getType()).isEqualTo("code");
+
+            softly.assertThat(originInfo1.getPlaces().size()).isEqualTo(1);
+
+            ModsPlace modsPlace = originInfo1.getPlaces().get(0);
+            softly.assertThat(modsPlace.getValue()).isEqualTo("xr");
+            softly.assertThat(modsPlace.getAuthority()).isEqualTo("marccountry");
+            softly.assertThat(modsPlace.getType()).isEqualTo("code");
 
             ModsOriginInfo originInfo2 = originInfos.get(1);
             
             softly.assertThat(originInfo2.getPublisher()).isEqualTo("CZ.NIC, z.s.p.o.,");
-            softly.assertThat(originInfo2.getPlace().getValue()).isEqualTo("Praha :");
+
+            ModsPlace modsPlace2 = originInfo2.getPlaces().get(0);
+            softly.assertThat(modsPlace2.getValue()).isEqualTo("Praha :");
         });
 
     }

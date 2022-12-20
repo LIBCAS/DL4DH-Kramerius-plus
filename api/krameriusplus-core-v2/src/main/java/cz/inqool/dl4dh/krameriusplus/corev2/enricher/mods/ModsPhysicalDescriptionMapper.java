@@ -13,14 +13,20 @@ import java.util.stream.Collectors;
 public interface ModsPhysicalDescriptionMapper extends ModsMapperBase {
 
     default ModsPhysicalDescription map(PhysicalDescriptionDefinition element) {
-        List<Object> extentObjects = element.getFormOrReformattingQualityOrInternetMediaType().stream()
-                .filter(object -> object instanceof Extent).collect(Collectors.toList());
+        List<Extent> extentObjects = element.getFormOrReformattingQualityOrInternetMediaType()
+                .stream()
+                .filter(object -> object instanceof Extent)
+                .map(object -> (Extent) object)
+                .collect(Collectors.toList());
 
-        if (extentObjects.size() != 1) {
+        if (extentObjects.isEmpty()) {
+            return null;
+        }
+        if (extentObjects.size() > 1) {
             throw new IllegalStateException("Expected size=1 actual=" + extentObjects.size());
         }
 
-        return map(((Extent) extentObjects.get(0)));
+        return map(extentObjects.get(0));
     }
 
     @Mapping(target = "extent", source = "extent.value")
