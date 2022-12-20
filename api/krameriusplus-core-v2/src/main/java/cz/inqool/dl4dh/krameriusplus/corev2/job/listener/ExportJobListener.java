@@ -41,8 +41,8 @@ public class ExportJobListener implements KrameriusJobListener {
         while (postOrderIterator.hasNext()) {
             Export current = postOrderIterator.next();
 
-            if (current.equals(export)) {
-                nextExport = postOrderIterator.hasNext() ? postOrderIterator.next() : null;
+            if (current.equals(export) && postOrderIterator.hasNext()) {
+                nextExport = postOrderIterator.next();
                 break;
             }
         }
@@ -50,6 +50,7 @@ public class ExportJobListener implements KrameriusJobListener {
         if (nextExport != null) {
             jobEnqueueService.enqueue(nextExport.getExportJob());
         } else {
+            // TODO create new instance of merge job every time
             jobEnqueueService.enqueue(exportRequestStore.findMergeJob(root));
         }
     }

@@ -44,7 +44,7 @@ public class MergeExportsTasklet implements Tasklet {
         ExportRequest exportRequest = exportRequestStore.findById(exportRequestId).orElseThrow();
 
         String tmpName = buildTmpName(exportRequest);
-        Path tmpUnzipDirectory = tmpDirPath.resolve(tmpName);
+        Path tmpUnzipDirectory = Files.createDirectory(tmpDirPath.resolve(tmpName));
         Path resultPath = tmpDirPath.resolve(tmpName + ".zip");
 
         boolean isComplete = true;
@@ -54,7 +54,7 @@ public class MergeExportsTasklet implements Tasklet {
             FileRef fileRef = export.getFileRef();
             if (fileRef != null) {
                 try (InputStream inputStream = fileService.find(fileRef.getId()).open()){
-                    zipArchiver.unzip(inputStream, tmpUnzipDirectory);
+                    zipArchiver.unzip(inputStream, tmpUnzipDirectory.resolve(export.getPublicationId().substring(5)));
                 }
             }
             else {
