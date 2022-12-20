@@ -43,8 +43,9 @@ public class MergeExportsTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         ExportRequest exportRequest = exportRequestStore.findById(exportRequestId).orElseThrow();
 
-        Path tmpUnzipDirectory = tmpDirPath.resolve(buildTmpName(exportRequest));
-        Files.createDirectory(tmpUnzipDirectory);
+        String tmpName = buildTmpName(exportRequest);
+        Path tmpUnzipDirectory = tmpDirPath.resolve(tmpName);
+        Path resultPath = tmpDirPath.resolve(tmpName + ".zip");
 
         boolean isComplete = true;
         for (Export export : exportRequest.getItems().stream()
@@ -52,23 +53,22 @@ public class MergeExportsTasklet implements Tasklet {
                 .collect(Collectors.toList())) {
             FileRef fileRef = export.getFileRef();
             if (fileRef != null) {
-                zipArchiver.unzip(fileService.find(fileRef.getId()).open(), tmpUnzipDirectory);
+                try (InputStream inputStream = fileService.find(fileRef.getId()).open()){
+                    zipArchiver.unzip(inputStream, tmpUnzipDirectory);
+                }
             }
             else {
                 isComplete = false;
             }
         }
 
-
-        String zipName = buildTmpName(exportRequest) + ".zip";
-        Path resultPath = tmpDirPath.resolve(zipName);
         zipArchiver.zip(tmpUnzipDirectory, resultPath);
 
         try (InputStream inputStream = Files.newInputStream(resultPath)) {
             FileRef fileRef = fileService.create(
                     inputStream,
                     Files.size(resultPath),
-                    zipName,
+                    tmpName + ".zip",
                     "application/zip");
             exportRequest.getBulkExport().setFile(fileRef);
             exportRequest.getBulkExport().setState(isComplete ? BulkExportState.PARTIAL : BulkExportState.SUCCESSFUL);
