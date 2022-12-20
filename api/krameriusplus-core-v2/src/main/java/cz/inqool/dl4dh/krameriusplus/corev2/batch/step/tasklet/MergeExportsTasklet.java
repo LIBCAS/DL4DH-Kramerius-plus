@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
+import cz.inqool.dl4dh.krameriusplus.api.export.BulkExportState;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
@@ -42,17 +43,25 @@ public class MergeExportsTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         ExportRequest exportRequest = exportRequestStore.findById(exportRequestId).orElseThrow();
 
-        Path tmpUnzipDirectory = Path.of(tmpDirPath.toString(), buildTmpName(exportRequest));
+        Path tmpUnzipDirectory = tmpDirPath.resolve(buildTmpName(exportRequest));
+        Files.createDirectory(tmpUnzipDirectory);
 
+        boolean isComplete = true;
         for (Export export : exportRequest.getItems().stream()
                 .map(ExportRequestItem::getRootExport)
                 .collect(Collectors.toList())) {
-            zipArchiver.unzip(fileService.find(export.getFileRef().getId()).open(), tmpUnzipDirectory);
+            FileRef fileRef = export.getFileRef();
+            if (fileRef != null) {
+                zipArchiver.unzip(fileService.find(fileRef.getId()).open(), tmpUnzipDirectory);
+            }
+            else {
+                isComplete = false;
+            }
         }
 
 
         String zipName = buildTmpName(exportRequest) + ".zip";
-        Path resultPath = Path.of(tmpDirPath.toString(), zipName);
+        Path resultPath = tmpDirPath.resolve(zipName);
         zipArchiver.zip(tmpUnzipDirectory, resultPath);
 
         try (InputStream inputStream = Files.newInputStream(resultPath)) {
@@ -62,6 +71,7 @@ public class MergeExportsTasklet implements Tasklet {
                     zipName,
                     "application/zip");
             exportRequest.getBulkExport().setFile(fileRef);
+            exportRequest.getBulkExport().setState(isComplete ? BulkExportState.PARTIAL : BulkExportState.SUCCESSFUL);
             exportRequestStore.save(exportRequest);
         }
 
