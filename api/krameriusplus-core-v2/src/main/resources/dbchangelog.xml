@@ -277,8 +277,7 @@
                              referencedColumnNames="id"/>
             </column>
             <column name="merge_job_id" type="${id}">
-                <constraints nullable="false"
-                             foreignKeyName="export_request_merge_job_FK"
+                <constraints foreignKeyName="export_request_merge_job_FK"
                              referencedTableName="kplus_kramerius_job_instance"
                              referencedColumnNames="id"/>
             </column>

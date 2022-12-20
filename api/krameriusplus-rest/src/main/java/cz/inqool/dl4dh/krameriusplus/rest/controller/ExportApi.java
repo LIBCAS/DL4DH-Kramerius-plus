@@ -29,6 +29,9 @@ public class ExportApi {
         this.facade = facade;
     }
 
+    @Operation(summary = "Creates and starts a export of specified export type over a set of publication ids")
+    @ApiResponse(responseCode = "200", description = "Job successfully created")
+    @PostMapping("/export")
     public ExportRequestDto export(@Valid @RequestBody ExportRequestCreateDto requestDto) {
         return facade.export(requestDto);
     }

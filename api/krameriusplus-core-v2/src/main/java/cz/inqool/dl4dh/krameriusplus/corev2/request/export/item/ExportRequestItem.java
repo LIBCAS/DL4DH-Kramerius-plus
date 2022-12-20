@@ -28,6 +28,6 @@ public class ExportRequestItem extends DomainObject {
     @Column(name = "item_order")
     private Long order;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Export rootExport;
 }

@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.PublicationProvider;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
+import cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -27,6 +28,8 @@ public class PrepareExportMetadataTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
+        Utils.notNull(publicationId, () -> new IllegalStateException("Publication ID not in jobParameters"));
+
         Publication publication = publicationProvider.find(publicationId);
 
         ExecutionContext stepContext = chunkContext.getStepContext().getStepExecution().getExecutionContext();
