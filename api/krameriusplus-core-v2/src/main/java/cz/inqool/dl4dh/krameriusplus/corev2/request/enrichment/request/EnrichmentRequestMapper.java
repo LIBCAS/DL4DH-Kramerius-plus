@@ -9,8 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRe
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring",
-        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
+@Mapper(collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         uses = {
                 EnrichmentJobConfigMapper.class,
                 EnrichmentRequestItemMapper.class,

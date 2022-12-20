@@ -8,8 +8,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.request.RequestMapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItemMapper;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring",
-        uses = {
+@Mapper(uses = {
                 ExportJobConfigMapper.class,
                 ExportRequestItemMapper.class,
                 KrameriusJobInstanceMapper.class,

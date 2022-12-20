@@ -30,6 +30,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+<!--        &lt;!&ndash; Needed so Mapstruct can work with lombok getters from this package correctly&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.mapstruct</groupId>-->
+<!--            <artifactId>mapstruct</artifactId>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>

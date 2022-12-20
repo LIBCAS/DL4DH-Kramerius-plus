@@ -10,9 +10,13 @@ import java.util.List;
 @Setter
 public class ModsOriginInfo {
 
+    private String eventType;
+
     private String publisher;
 
-    private List<ModsDateIssued> dateIssued = new ArrayList<>();
+    private ModsDateIssued dateIssued;
 
     private List<ModsPlace> places = new ArrayList<>();
+
+    private String issuance;
 }

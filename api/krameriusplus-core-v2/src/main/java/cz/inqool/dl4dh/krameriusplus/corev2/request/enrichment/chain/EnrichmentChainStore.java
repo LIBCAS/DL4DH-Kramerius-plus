@@ -14,6 +14,9 @@ public class EnrichmentChainStore extends DomainStore<EnrichmentChain, QEnrichme
     }
 
     public EnrichmentChain findByKrameriusJobInstance(KrameriusJobInstance jobInstance) {
-        throw new UnsupportedOperationException("Not Implemented Yet");
+        return query()
+                .select(qObject)
+                .where(qObject.jobs.containsValue(jobInstance))
+                .fetchOne();
     }
 }

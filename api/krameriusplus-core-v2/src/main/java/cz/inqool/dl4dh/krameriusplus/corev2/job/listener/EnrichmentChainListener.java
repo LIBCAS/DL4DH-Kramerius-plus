@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentC
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChainStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class EnrichmentChainListener implements KrameriusJobListener {
     private JobEnqueueService enqueueService;
 
     @Override
+    @Transactional
     public void afterJob(KrameriusJobInstance jobInstance) {
         EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
 

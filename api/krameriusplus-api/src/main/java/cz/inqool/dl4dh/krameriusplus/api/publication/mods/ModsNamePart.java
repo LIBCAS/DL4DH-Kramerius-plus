@@ -5,13 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ModsTitleInfo {
-
-    private String title;
-
-    private String subTitle;
+public class ModsNamePart {
 
     private String type;
 
-    private String displayLabel;
+    private String value;
 }
