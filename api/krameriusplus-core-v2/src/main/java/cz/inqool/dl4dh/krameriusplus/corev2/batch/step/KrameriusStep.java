@@ -45,4 +45,6 @@ public class KrameriusStep {
     public static final String CREATE_MERGE_JOB_STEP = "CREATE_MERGE_JOB_STEP";
 
     public static final String ENQUEUE_EXPORT_ITEMS_STEP = "ENQUEUE_EXPORT_ITEMS_STEP";
+
+    public static final String MERGE_EXPORTS_STEP = "MERGE_EXPORTS_STEP";
 }
