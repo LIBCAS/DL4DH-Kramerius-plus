@@ -42,7 +42,7 @@ public class IncludeChildExportsProcessor implements ItemProcessor<Export, Expor
     }
 
     @Autowired
-    public void setDirectory(@Value("#{jobExecution['" + DIRECTORY + "']}") String directory) {
+    public void setDirectory(@Value("#{jobExecutionContext['" + DIRECTORY + "']}") String directory) {
         this.directory = Path.of(directory);
     }
 

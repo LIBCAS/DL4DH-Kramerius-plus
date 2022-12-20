@@ -29,5 +29,6 @@ public class ExportRequest extends Request {
     private KrameriusJobInstance createRequestJob;
 
     @Embedded
+    @NotNull
     private BulkExport bulkExport;
 }

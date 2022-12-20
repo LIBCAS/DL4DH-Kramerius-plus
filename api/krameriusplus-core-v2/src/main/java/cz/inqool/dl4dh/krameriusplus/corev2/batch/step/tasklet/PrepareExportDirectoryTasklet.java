@@ -51,7 +51,7 @@ public class PrepareExportDirectoryTasklet implements Tasklet {
         Files.createDirectories(directory);
 
         ExecutionContext stepContext = chunkContext.getStepContext().getStepExecution().getExecutionContext();
-        stepContext.put(DIRECTORY, directory.toString());
+        contribution.getStepExecution().getJobExecution().getExecutionContext().putString(DIRECTORY, directory.toString());
 
         return RepeatStatus.FINISHED;
     }

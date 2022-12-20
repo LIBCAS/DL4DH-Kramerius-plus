@@ -42,7 +42,7 @@ public class ExportJobListener implements KrameriusJobListener {
             Export current = postOrderIterator.next();
 
             if (current.equals(export)) {
-                nextExport = postOrderIterator.next();
+                nextExport = postOrderIterator.hasNext() ? postOrderIterator.next() : null;
                 break;
             }
         }
