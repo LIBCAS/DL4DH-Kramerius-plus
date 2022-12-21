@@ -21,7 +21,7 @@ public class ExportRequest extends Request {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private ExportJobConfig config;
 
-    @OneToMany(mappedBy = "exportRequest", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "exportRequest")
     private List<ExportRequestItem> items = new ArrayList<>();
 
     @OneToOne

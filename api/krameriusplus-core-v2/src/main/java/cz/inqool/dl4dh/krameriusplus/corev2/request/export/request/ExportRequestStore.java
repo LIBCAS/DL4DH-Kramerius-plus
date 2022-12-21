@@ -61,4 +61,14 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
 
         return new Result<>(page, pageSize, count, results);
     }
+
+    public ExportRequest findByRootExport(Export root) {
+        ExportRequest exportRequest = query()
+                .from(qObject)
+                .select(qObject)
+                .where(qObject.items.any().rootExport.eq(root))
+                .fetchOne();
+
+        return exportRequest;
+    }
 }

@@ -1,5 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.batch;
 
+import java.util.List;
+
 public enum ExecutionStatus {
     // custom values
     CREATED,
@@ -15,4 +17,8 @@ public enum ExecutionStatus {
     FAILED,
     ABANDONED,
     UNKNOWN;
+
+    public boolean finished() {
+        return List.of(COMPLETED, FAILED, FAILED_FATALLY, ABANDONED).contains(this);
+    }
 }

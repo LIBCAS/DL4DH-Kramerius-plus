@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.ExportStore;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,8 +51,11 @@ public class ExportJobListener implements KrameriusJobListener {
         if (nextExport != null) {
             jobEnqueueService.enqueue(nextExport.getExportJob());
         } else {
-            // TODO create new instance of merge job every time
-            jobEnqueueService.enqueue(exportRequestStore.findMergeJob(root));
+            ExportRequest exportRequest = exportRequestStore.findByRootExport(root);
+            if (exportRequest.getItems().stream().allMatch(exportRequestItem ->
+                    exportRequestItem.getRootExport().getExportJob().getExecutionStatus().finished())) {
+                jobEnqueueService.enqueue(exportRequestStore.findMergeJob(root));
+            }
         }
     }
 
