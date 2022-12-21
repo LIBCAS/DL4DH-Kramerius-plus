@@ -9,8 +9,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,8 +21,8 @@ public class ExportRequest extends Request {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private ExportJobConfig config;
 
-    @OneToMany(mappedBy = "exportRequest")
-    private List<ExportRequestItem> items = new ArrayList<>();
+    @OneToMany(mappedBy = "exportRequest", fetch = FetchType.EAGER)
+    private Set<ExportRequestItem> items = new HashSet<>();
 
     @OneToOne
     @NotNull
