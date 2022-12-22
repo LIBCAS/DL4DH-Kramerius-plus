@@ -37,11 +37,25 @@ public class DigitalObjectExporter {
 
     private Iterable<?> toRecord(DigitalObjectExport item, String itemFilename) {
         DigitalObject digitalObject = item.getDigitalObject();
+        return digitalObject.getIndex() == null ?
+                objectRecord(digitalObject, itemFilename) : indexedObjectRecord(digitalObject, itemFilename);
+
+    }
+
+    private Iterable<?> indexedObjectRecord(DigitalObject indexed, String itemFilename) {
+        return List.of(
+                indexed.getId(),
+                itemFilename,
+                indexed.getModel(),
+                indexed.getIndex(),
+                indexed.getTitle());
+    }
+
+    private Iterable<?> objectRecord(DigitalObject digitalObject, String itemFilename) {
         return List.of(
                 digitalObject.getId(),
                 itemFilename,
-                item.getDigitalObject().getModel(),
-                digitalObject.getIndex(),
+                digitalObject.getModel(),
                 digitalObject.getTitle());
     }
 
