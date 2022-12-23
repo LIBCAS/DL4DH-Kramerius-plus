@@ -8,7 +8,6 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +49,6 @@ public class PrepareExportDirectoryTasklet implements Tasklet {
         Path directory = tmpDirPath.resolve(buildDirectoryName(publicationId, jobConfig.getExportFormat()));
         Files.createDirectories(directory);
 
-        ExecutionContext stepContext = chunkContext.getStepContext().getStepExecution().getExecutionContext();
         contribution.getStepExecution().getJobExecution().getExecutionContext().putString(DIRECTORY, directory.toString());
 
         return RepeatStatus.FINISHED;

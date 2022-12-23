@@ -55,6 +55,7 @@ public class DigitalObjectExporter {
         return List.of(
                 digitalObject.getId(),
                 itemFilename,
+                "",
                 digitalObject.getModel(),
                 digitalObject.getTitle());
     }

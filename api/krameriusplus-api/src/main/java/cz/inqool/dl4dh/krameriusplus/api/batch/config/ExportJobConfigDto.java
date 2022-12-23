@@ -11,7 +11,7 @@ import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.Kramerius
 
 @Getter
 @Setter
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "exportType")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "jobType")
 @JsonSubTypes({
         @JsonSubTypes.Type(name = EXPORT_ALTO, value = ExportAltoJobConfigDto.class),
         @JsonSubTypes.Type(name = EXPORT_TEXT, value = ExportTextJobConfigDto.class),

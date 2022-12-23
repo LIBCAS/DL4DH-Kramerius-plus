@@ -66,8 +66,7 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
                         jobParametersMapWrapper));
 
         List<Publication> children = publicationProvider.findChildren(publication.getId());
-        // start at 1, when root is created it has order 0 already assigned
-        Long childrenOrder = 1L;
+        Long childrenOrder = 0L;
         for (Publication child : children) {
             export.putChild(childrenOrder, createExport(child, export, childrenOrder));
 

@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItemStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.utils.ZipArchiver;
@@ -38,6 +39,11 @@ public class MergeExportsTasklet implements Tasklet {
     private ExportRequestStore exportRequestStore;
 
     private FileService fileService;
+    private final ExportRequestItemStore exportRequestItemStore;
+
+    public MergeExportsTasklet(ExportRequestItemStore exportRequestItemStore) {
+        this.exportRequestItemStore = exportRequestItemStore;
+    }
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
@@ -48,6 +54,10 @@ public class MergeExportsTasklet implements Tasklet {
         Path resultPath = tmpDirPath.resolve(tmpName + ".zip");
 
         boolean isComplete = true;
+        if (allIncomplete(exportRequest)) {
+            exportRequest.getBulkExport().setState(BulkExportState.FAILED);
+            return RepeatStatus.FINISHED;
+        }
         for (Export export : exportRequest.getItems().stream()
                 .map(ExportRequestItem::getRootExport)
                 .collect(Collectors.toList())) {
@@ -71,7 +81,7 @@ public class MergeExportsTasklet implements Tasklet {
                     tmpName + ".zip",
                     "application/zip");
             exportRequest.getBulkExport().setFile(fileRef);
-            exportRequest.getBulkExport().setState(isComplete ? BulkExportState.PARTIAL : BulkExportState.SUCCESSFUL);
+            exportRequest.getBulkExport().setState(isComplete ? BulkExportState.SUCCESSFUL : BulkExportState.PARTIAL);
             exportRequestStore.save(exportRequest);
         }
 
@@ -79,6 +89,12 @@ public class MergeExportsTasklet implements Tasklet {
         Files.delete(resultPath);
 
         return RepeatStatus.FINISHED;
+    }
+
+    private boolean allIncomplete(ExportRequest exportRequest) {
+        return exportRequest.getItems().stream()
+                .map(ExportRequestItem::getRootExport)
+                .allMatch(export -> export.getFileRef() == null);
     }
 
     private String buildTmpName(ExportRequest exportRequest) {
