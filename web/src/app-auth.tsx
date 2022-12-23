@@ -20,6 +20,7 @@ import { ExportRequestListPage } from 'pages/export/export-request-list-page'
 import { ExportRequestDetailPage } from 'pages/export/export-request-detail-page'
 import { PublicationDetailPage } from 'pages/publication/publication-detail-page'
 import { EnrichmentRequestDetail } from 'pages/enrichment/enrichment-request-detail'
+import { KrameriusJobInstanceDetailPage } from 'pages/job/kramerius-job-instance-detail-page'
 
 export const AppAuth: FC = () => {
 	const { setAuth } = useAuth()
@@ -47,9 +48,12 @@ export const AppAuth: FC = () => {
 								path=":publicationId"
 							/>
 						</Route>
-						<Route path="jobs/:jobType">
+						<Route path="jobs">
 							<Route element={<JobEventListPage />} index />
-							<Route element={<JobEventDetailPage />} path=":jobEventId" />
+							<Route
+								element={<KrameriusJobInstanceDetailPage />}
+								path=":krameriusJobInstanceId"
+							/>
 						</Route>
 						<Route path="enrichment">
 							<Route element={<EnrichmentRequestList />} index />

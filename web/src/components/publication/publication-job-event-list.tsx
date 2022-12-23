@@ -53,7 +53,7 @@ export const PublicationJobEventList = ({
 			})
 
 			if (response) {
-				setJobEvents(response.results)
+				setJobEvents(response.items)
 				setRowCount(response.total)
 			}
 		}

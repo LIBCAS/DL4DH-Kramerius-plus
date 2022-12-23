@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { useState } from 'react'
-import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment-job-event-config'
 import { EnrichmentKrameriusJob } from '../../enums/enrichment-kramerius-job'
 import { UuidAccordion } from './uuid-accordion/uuid-accordion'
 import { ConfigAccordion } from './config-accordion/config-accordion'

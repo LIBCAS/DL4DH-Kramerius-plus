@@ -35,7 +35,7 @@ public class JobRunner {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void run(String krameriusJobInstanceId) {
-        KrameriusJobInstance krameriusJobInstance = jobService.find(krameriusJobInstanceId);
+        KrameriusJobInstance krameriusJobInstance = jobService.findEntity(krameriusJobInstanceId);
         notNull(krameriusJobInstance, () -> new MissingObjectException(KrameriusJobInstance.class, krameriusJobInstanceId));
 
         Job job = jobContainer.getJob(krameriusJobInstance.getJobType());

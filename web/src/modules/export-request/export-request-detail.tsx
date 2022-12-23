@@ -1,6 +1,6 @@
 import { Button, Divider, Grid, Typography } from '@mui/material'
 import { download } from 'api/file-ref-api'
-import { JobEventDataRow } from 'components/job-event/job-event-data-row'
+import { DataRow } from 'components/job-event/data-row'
 import { ExportRequest } from 'models/request/export-request'
 import { FC } from 'react'
 import { formatDateTime } from 'utils/formatters'

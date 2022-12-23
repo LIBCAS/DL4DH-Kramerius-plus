@@ -18,12 +18,12 @@ export const JobEventDetailPage: FC = () => {
 	const [selectedExecution, setSelectedExecution] = useState<JobExecution>()
 	// const [selectedStep, setSelectedStep] = useState<StepExecution>()
 	const [loading, setLoading] = useState<boolean>(true)
-	const { jobEventId } = useParams()
+	const { krameriusJobInstanceId } = useParams()
 
 	useEffect(() => {
 		async function fetchJobDetail() {
-			if (jobEventId) {
-				const jobEvent = await getJobEvent(jobEventId)
+			if (krameriusJobInstanceId) {
+				const jobEvent = await getJobEvent(krameriusJobInstanceId)
 				setJobEvent(jobEvent)
 			}
 		}
@@ -32,7 +32,7 @@ export const JobEventDetailPage: FC = () => {
 		setSelectedExecution(undefined)
 		// setSelectedStep(undefined)
 		setLoading(false)
-	}, [jobEventId, lastFetched])
+	}, [krameriusJobInstanceId, lastFetched])
 
 	const handleExecutionClick = (executionId: number) => {
 		setSelectedExecution(
@@ -94,7 +94,7 @@ export const JobEventDetailPage: FC = () => {
 										/>
 									</Grid>
 								)}
-							{selectedExecution?.exitStatus.exitDescription && (
+							{/* {selectedExecution?.exitStatus.exitDescription && (
 								<Grid item xs={12}>
 									<Paper sx={{ p: 5 }}>
 										<Grid container>
@@ -113,7 +113,7 @@ export const JobEventDetailPage: FC = () => {
 										</Grid>
 									</Paper>
 								</Grid>
-							)}
+							)} */}
 						</Grid>
 					</Paper>
 				)}

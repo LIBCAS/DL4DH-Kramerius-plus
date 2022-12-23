@@ -1,5 +1,5 @@
 import { EnrichmentRequest } from 'models/request/enrichment-request'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentJobEventConfig } from 'models/job/config/enrichment-job-event-config'
 import { QueryResults } from 'models/query-results'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
 import { customFetch } from 'utils/custom-fetch'

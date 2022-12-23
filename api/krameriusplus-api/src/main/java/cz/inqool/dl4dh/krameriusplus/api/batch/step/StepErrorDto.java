@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class StepErrorDto {
 
+    private String exitCode;
+
     private String shortMessage;
 
     private String stackTrace;

@@ -28,7 +28,9 @@ public class JobExecutionDto {
 
     private Date lastUpdated;
 
-    private String exitStatus;
+    private String exitCode;
+
+    private String exitDescription;
 
     private String jobConfigurationName;
 

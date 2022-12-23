@@ -6,7 +6,7 @@ import { FC, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { formatDateTime } from 'utils/formatters'
-import { JobEventDataRow } from './job-event-data-row'
+import { DataRow } from './data-row'
 
 type Props = {
 	jobEvent: JobEvent
@@ -118,20 +118,14 @@ export const JobEventDataDisplay: FC<Props> = ({
 				<Divider />
 			</Grid>
 			<Grid container spacing={1} sx={{ p: 2 }}>
-				<JobEventDataRow label="ID" value={jobEvent.id} />
-				<JobEventDataRow
+				<DataRow label="ID" value={jobEvent.id} />
+				<DataRow
 					label="Úloha vytvořená"
 					value={formatDateTime(jobEvent.created.toString())}
 				/>
-				<JobEventDataRow
-					label="UUID Publikace"
-					value={jobEvent.publicationId}
-				/>
-				<JobEventDataRow
-					label="Typ úlohy"
-					value={jobEvent.config.krameriusJob}
-				/>
-				<JobEventDataRow
+				<DataRow label="UUID Publikace" value={jobEvent.publicationId} />
+				<DataRow label="Typ úlohy" value={jobEvent.config.krameriusJob} />
+				<DataRow
 					label="Parametre úlohy (JSON)"
 					value={JSON.stringify(jobEvent.config.parameters, null, 4)}
 				/>

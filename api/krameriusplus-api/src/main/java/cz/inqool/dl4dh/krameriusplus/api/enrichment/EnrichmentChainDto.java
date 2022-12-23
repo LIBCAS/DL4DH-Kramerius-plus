@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
+import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceGridDto;
 import cz.inqool.dl4dh.krameriusplus.api.domain.DomainObjectDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,5 +19,5 @@ public class EnrichmentChainDto extends DomainObjectDto {
 
     private String model;
 
-    private List<KrameriusJobInstanceDto> jobs = new ArrayList<>();
+    private List<KrameriusJobInstanceGridDto> jobs = new ArrayList<>();
 }

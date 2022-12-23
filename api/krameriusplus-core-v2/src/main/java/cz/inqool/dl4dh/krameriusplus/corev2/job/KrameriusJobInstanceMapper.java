@@ -3,16 +3,18 @@ package cz.inqool.dl4dh.krameriusplus.corev2.job;
 import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.job.JobExecutionDto;
 import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
+import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceGridDto;
 import cz.inqool.dl4dh.krameriusplus.api.batch.step.StepErrorDto;
 import cz.inqool.dl4dh.krameriusplus.api.batch.step.StepExecutionDto;
-import cz.inqool.dl4dh.krameriusplus.api.batch.step.StepRunReportDto;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.report.StepError;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.report.StepRunReport;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,79 +22,29 @@ import java.util.stream.Collectors;
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.KRAMERIUS_JOB_INSTANCE_ID;
 import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 
-@Component
-public class KrameriusJobInstanceMapper {
+@Mapper(uses = {
+        JobExplorer.class
+})
+public abstract class KrameriusJobInstanceMapper {
 
     private JobExplorer jobExplorer;
 
-    public KrameriusJobInstanceDto toDto(KrameriusJobInstance entity) {
-        if (entity == null) {
-            return null;
-        }
+    public abstract KrameriusJobInstanceGridDto toGridDto(KrameriusJobInstance entity);
 
-        KrameriusJobInstanceDto krameriusJobInstanceDto = new KrameriusJobInstanceDto();
+    @Mapping(target = "executions", expression = "java(getJobExecutions(entity))")
+    public abstract KrameriusJobInstanceDto toDto(KrameriusJobInstance entity);
 
-        krameriusJobInstanceDto.setId(entity.getId());
-        krameriusJobInstanceDto.setJobStatus(entity.getExecutionStatus());
-        krameriusJobInstanceDto.setJobType(entity.getJobType());
-        krameriusJobInstanceDto.setExecutions(mapJobExecutions(entity));
+    @Mappings({
+            @Mapping(target = "stepExecutions", expression = "java(mapStepExecutions(jobExecution.getStepExecutions(), stepRunReportMap))"),
+            @Mapping(target = "exitCode", source = "jobExecution.exitStatus.exitCode"),
+            @Mapping(target = "exitDescription", source = "jobExecution.exitStatus.exitDescription")
+    })
+    public abstract JobExecutionDto mapJobExecution(JobExecution jobExecution, Map<Long, StepRunReport> stepRunReportMap);
 
-        return krameriusJobInstanceDto;
-    }
-
-    public JobExecution toLastExecution(Long jobInstanceId) {
-        JobInstance jobInstance = jobExplorer.getJobInstance(jobInstanceId);
-        if (jobInstance == null) {
-            return null;
-        }
-
-        JobExecution lastExecution = jobExplorer.getLastJobExecution(jobInstance);
-        notNull(lastExecution, () -> new MissingObjectException(JobExecution.class, String.valueOf(jobInstanceId)));
-        return lastExecution;
-    }
-
-    private List<JobExecutionDto> mapJobExecutions(KrameriusJobInstance entity) {
-        if (entity.getJobInstanceId() == null) {
-            return new ArrayList<>();
-        }
-
-        JobInstance jobInstance = jobExplorer.getJobInstance(entity.getJobInstanceId());
-        notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(entity.getJobInstanceId())));
-        List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance);
-
-        return jobExecutions.stream().map(jobExecution -> toJobExecutionDto(jobExecution, entity.getReports())).collect(Collectors.toList());
-    }
-
-    private JobExecutionDto toJobExecutionDto(JobExecution jobExecution, Map<Long, StepRunReport> stepRunReportMap) {
-        if (jobExecution == null) {
-            return null;
-        }
-        JobExecutionDto jobExecutionDto = new JobExecutionDto();
-
-        jobExecutionDto.setStepExecutions(jobExecution.getStepExecutions().stream().map(
-                stepExecution -> toStepExecutionDto(stepExecution, stepRunReportMap.get(stepExecution.getId()))
-        ).collect(Collectors.toList()));
-
-        jobExecutionDto.setStatus(ExecutionStatus.valueOf(jobExecution.getStatus().toString()));
-        jobExecutionDto.setStartTime(jobExecution.getStartTime());
-        jobExecutionDto.setCreateTime(jobExecution.getCreateTime());
-        jobExecutionDto.setEndTime(jobExecution.getEndTime());
-        jobExecutionDto.setLastUpdated(jobExecution.getLastUpdated());
-        jobExecutionDto.setExitStatus(jobExecution.getExitStatus().toString());
-        jobExecutionDto.setJobConfigurationName(jobExecution.getJobConfigurationName());
-        jobExecutionDto.setJobParameters(jobExecution
-                .getJobParameters().getParameters().entrySet().stream()
-                .map(stringJobParameterEntry -> Map.entry(stringJobParameterEntry.getKey(), stringJobParameterEntry.getValue().getValue()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-
-
-        return jobExecutionDto;
-    }
-
-    public List<KrameriusJobInstanceDto> toDtoList(Map<Long, KrameriusJobInstance> entityMap) {
+    public List<KrameriusJobInstanceGridDto> toGridDtoList(Map<Long, KrameriusJobInstance> entityMap) {
         return new TreeMap<>(entityMap).values()
                 .stream()
-                .map(this::toDto)
+                .map(this::toGridDto)
                 .collect(Collectors.toList());
     }
 
@@ -117,64 +69,57 @@ public class KrameriusJobInstanceMapper {
         return parametersBuilder.toJobParameters();
     }
 
-    /**
-     * This method should never be used, because we should not need to map DTO to ENTITY for EnrichmentRequest.
-     * However, it needs to be declared if we want to use the generic DomainService interface so mapstruct can
-     * generate it's mapping implementation for EnrichmentRequest. Otherwise, the project would not compile.
-     */
-    public Map<Long, KrameriusJobInstance> fromDtoList(List<KrameriusJobInstanceDto> dtos) {
-        throw new UnsupportedOperationException("Mapping EnrichmentChainDto to EnrichmentChain is not supported.");
-    }
+    @Mappings({
+            @Mapping(target = "errors", expression = "java(mapStepRunReport(stepRunReport))"),
+            @Mapping(target = "id", source = "stepExecution.id"),
+            @Mapping(target = "exitCode", source = "stepExecution.exitStatus.exitCode"),
+            @Mapping(target = "exitDescription", source = "stepExecution.exitStatus.exitDescription")
+    })
+    public abstract StepExecutionDto mapStepExecution(StepExecution stepExecution, StepRunReport stepRunReport);
 
-    private StepExecutionDto toStepExecutionDto(StepExecution stepExecution, StepRunReport stepRunReport) {
-        if (stepExecution == null) {
-            return null;
+    public abstract StepErrorDto toErrorDto(StepError stepError);
+
+    protected List<JobExecutionDto> getJobExecutions(KrameriusJobInstance entity) {
+        if (entity.getJobInstanceId() == null) {
+            return new ArrayList<>();
         }
 
-        StepExecutionDto stepExecutionDto = new StepExecutionDto();
+        JobInstance jobInstance = jobExplorer.getJobInstance(entity.getJobInstanceId());
+        notNull(jobInstance, () -> new MissingObjectException(JobInstance.class, String.valueOf(entity.getJobInstanceId())));
+        List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance);
 
-        stepExecutionDto.setStepName(stepExecution.getStepName());
-        stepExecutionDto.setExitStatus(stepExecution.getExitStatus().toString());
-        stepExecutionDto.setReadCount(stepExecution.getReadCount());
-        stepExecutionDto.setWriteCount(stepExecution.getWriteCount());
-        stepExecutionDto.setCommitCount(stepExecution.getCommitCount());
-        stepExecutionDto.setRollbackCount(stepExecution.getRollbackCount());
-        stepExecutionDto.setReadSkipCount(stepExecution.getReadSkipCount());
-        stepExecutionDto.setProcessSkipCount(stepExecution.getProcessSkipCount());
-        stepExecutionDto.setWriteSkipCount(stepExecution.getWriteSkipCount());
-        stepExecutionDto.setEndTime(stepExecution.getEndTime());
-        stepExecutionDto.setStartTime(stepExecution.getStartTime());
-        stepExecutionDto.setLastUpdated(stepExecution.getLastUpdated());
-        stepExecutionDto.setTerminateOnly(stepExecution.isTerminateOnly());
-        stepExecutionDto.setFilterCount(stepExecution.getFilterCount());
-        stepExecutionDto.setReport(toStepRunReportDto(stepRunReport));
-
-        return stepExecutionDto;
+        return jobExecutions.stream()
+                .map(jobExecution -> mapJobExecution(jobExecution, entity.getReports()))
+                .collect(Collectors.toList());
     }
 
-    private StepRunReportDto toStepRunReportDto(StepRunReport stepRunReport) {
+    protected List<StepExecutionDto> mapStepExecutions(Collection<StepExecution> stepExecutions, Map<Long, StepRunReport> stepRunReportMap) {
+        return stepExecutions.stream()
+                .map(stepExecution -> mapStepExecution(stepExecution, stepRunReportMap.get(stepExecution.getId())))
+                .collect(Collectors.toList());
+    }
+
+    protected ExecutionStatus mapBatchStatus(BatchStatus status) {
+        return ExecutionStatus.valueOf(status.toString());
+    }
+
+    protected Map<String, Object> mapParameters(JobParameters jobParameters) {
+        return jobParameters.getParameters().entrySet()
+                .stream()
+                .map(stringJobParameterEntry -> Map.entry(stringJobParameterEntry.getKey(), stringJobParameterEntry.getValue().getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    protected List<StepErrorDto> mapStepRunReport(StepRunReport stepRunReport) {
         if (stepRunReport == null) {
-            return null;
+            return new ArrayList<>();
         }
 
-        StepRunReportDto stepRunReportDto = new StepRunReportDto();
-
-        stepRunReportDto.setErrors(stepRunReport.getErrors().stream().map(this::toErrorDto).collect(Collectors.toSet()));
-
-        return stepRunReportDto;
-    }
-
-    private StepErrorDto toErrorDto(StepError stepError) {
-        if (stepError == null) {
-            return null;
-        }
-
-        StepErrorDto stepErrorDto = new StepErrorDto();
-
-        stepErrorDto.setShortMessage(stepError.getShortMessage());
-        stepErrorDto.setStackTrace(stepError.getStackTrace());
-
-        return stepErrorDto;
+        return stepRunReport.getErrors()
+                .stream()
+                .sorted(Comparator.comparing(StepError::getOrder))
+                .map(this::toErrorDto)
+                .collect(Collectors.toList());
     }
 
     @Autowired

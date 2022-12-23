@@ -104,7 +104,7 @@ export const ExportRequestList: FC<{ filter: ExportRequestFilterDto }> = ({
 			const response = await listExportRequests(page, 10, filter)
 
 			if (response) {
-				setExportRequests(response.results)
+				setExportRequests(response.items)
 				setRowCount(response.total)
 			}
 		}

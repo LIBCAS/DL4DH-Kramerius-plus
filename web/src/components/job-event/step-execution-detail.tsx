@@ -14,7 +14,7 @@ export const StepExecutionDetail: FC<Props> = ({ stepExecution }) => {
 			</Grid>
 			<Grid container item xs={12}>
 				<Grid container spacing={1}>
-					<Grid item lg={2} xs={4}>
+					{/* <Grid item lg={2} xs={4}>
 						<Typography variant="body2">Konečný stav</Typography>
 					</Grid>
 					<Grid item lg={10} xs={8}>
@@ -37,7 +37,7 @@ export const StepExecutionDetail: FC<Props> = ({ stepExecution }) => {
 								</Typography>
 							</Grid>
 						</>
-					)}
+					)} */}
 				</Grid>
 			</Grid>
 		</Grid>

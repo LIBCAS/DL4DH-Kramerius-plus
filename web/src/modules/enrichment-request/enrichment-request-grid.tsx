@@ -1,8 +1,6 @@
-import { Button, Icon, Paper } from '@mui/material'
+import { Paper } from '@mui/material'
 import {
 	DataGrid,
-	GridActionsCellItem,
-	GridRenderCellParams,
 	GridRowParams,
 	GridValueFormatterParams,
 } from '@mui/x-data-grid'
@@ -12,7 +10,6 @@ import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Icons } from 'react-toastify'
 import { dateTimeFormatter } from 'utils/formatters'
 
 export const EnrichmentRequestGrid: FC<{
@@ -67,7 +64,7 @@ export const EnrichmentRequestGrid: FC<{
 			const response = await listEnrichmentRequests(page, 10, filter)
 
 			if (response) {
-				setEnrichmentRequests(response.results)
+				setEnrichmentRequests(response.items)
 				setRowCount(response.total)
 			}
 		}
@@ -91,11 +88,13 @@ export const EnrichmentRequestGrid: FC<{
 				disableColumnFilter
 				disableColumnMenu
 				disableSelectionOnClick
+				getRowClassName={() => 'data-grid-row'}
 				pageSize={10}
 				paginationMode="server"
 				rowCount={rowCountState}
 				rows={enrichmentRequests}
 				rowsPerPageOptions={[]}
+				sortingMode="server"
 				onPageChange={onPageChange}
 				onRowClick={(params: GridRowParams) => navigate(params.row['id'])}
 			/>
