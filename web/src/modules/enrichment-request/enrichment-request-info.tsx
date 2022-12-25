@@ -1,10 +1,9 @@
-import { Button, Divider, Grid, Typography } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import { DataRow } from 'components/job-event/data-row'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
 import { formatDateTime } from 'utils/formatters'
 
 type Props = {
@@ -12,8 +11,6 @@ type Props = {
 }
 
 export const EnrichmentRequestInfo: FC<Props> = ({ request }) => {
-	const navigate = useNavigate()
-
 	return (
 		<Grid container spacing={2} sx={{ p: 1 }}>
 			<Grid alignContent="flex-start" container item lg={4} spacing={2} xs={12}>

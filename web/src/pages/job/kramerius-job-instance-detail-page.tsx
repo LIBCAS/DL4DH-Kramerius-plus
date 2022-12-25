@@ -10,9 +10,8 @@ import {
 	Paper,
 	Typography,
 } from '@mui/material'
-import { styled } from '@mui/system'
-import { getJob, getJobEvent } from 'api/job-api'
-import { StepExecution } from 'models'
+import { getJob, restartJob, stopJob } from 'api/job-api'
+import { ApiError, StepExecution } from 'models'
 import { JobExecution } from 'models/job/job-execution'
 import { KrameriusJobInstance } from 'models/job/kramerius-job-instance'
 import { JobExecutions } from 'modules/jobs/job-executions'
@@ -22,6 +21,7 @@ import { StepExecutions } from 'modules/jobs/step-executions'
 import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { toast } from 'react-toastify'
 
 export const KrameriusJobInstanceDetailPage: FC = () => {
 	const [job, setJob] = useState<KrameriusJobInstance>()
@@ -30,16 +30,17 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 	const [loading, setLoading] = useState<boolean>(true)
 	const { krameriusJobInstanceId } = useParams()
 
-	useEffect(() => {
-		const fetchJob = async () => {
-			if (krameriusJobInstanceId) {
-				const job = await getJob(krameriusJobInstanceId)
-				setJob(job)
-			}
+	const fetchJob = async () => {
+		if (krameriusJobInstanceId) {
+			const job = await getJob(krameriusJobInstanceId)
+			setJob(job)
 		}
+	}
 
+	useEffect(() => {
 		fetchJob()
 		setLoading(false)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	const onJobExecutionClick = (executionId: number) => {
@@ -56,6 +57,58 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 
 	const onDialogClose = () => {
 		setStepExecution(undefined)
+	}
+
+	const isRestartable = (): boolean => {
+		return ['FAILED_FATALLY', 'STOPPED', 'FAILED'].includes(
+			job ? job.executionStatus : '',
+		)
+	}
+
+	const onRestart = () => {
+		const callRestart = async () => {
+			const response = await restartJob(job!.id)
+
+			if (response.ok) {
+				toast('Úloha úspěšně restartována', {
+					type: 'success',
+				})
+			} else {
+				const body = await response.json()
+				toast(`Nastala chyba: ${(body as ApiError).message}`, {
+					type: 'error',
+				})
+			}
+
+			fetchJob()
+		}
+
+		callRestart()
+	}
+
+	const isStoppable = () => {
+		return job?.executionStatus === 'STARTED'
+	}
+
+	const onStop = () => {
+		const callStop = async () => {
+			const response = await stopJob(job!.id)
+
+			if (response.ok) {
+				toast('Úloha úspěšně restartována', {
+					type: 'success',
+				})
+			} else {
+				const body = await response.json()
+				toast(`Nastala chyba: ${(body as ApiError).message}`, {
+					type: 'error',
+				})
+			}
+
+			fetchJob()
+		}
+
+		callStop()
 	}
 
 	return (
@@ -80,13 +133,23 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 						</Box>
 						<Box display="flex" justifyContent="space-between" width="20%">
 							<Box width="45%">
-								<Button fullWidth variant="contained">
+								<Button
+									disabled={!isRestartable()}
+									fullWidth
+									variant="contained"
+									onClick={onRestart}
+								>
 									Restartovat
 								</Button>
 							</Box>
 							<Box width="10%"></Box>
 							<Box width="45%">
-								<Button fullWidth variant="contained">
+								<Button
+									disabled={!isStoppable()}
+									fullWidth
+									variant="contained"
+									onClick={onStop}
+								>
 									Zastavit
 								</Button>
 							</Box>
