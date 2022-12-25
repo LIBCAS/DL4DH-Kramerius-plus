@@ -2,15 +2,19 @@ package cz.inqool.dl4dh.krameriusplus.corev2.job;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import lombok.Getter;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 
 @Service
 public class KrameriusJobInstanceService {
@@ -20,9 +24,15 @@ public class KrameriusJobInstanceService {
 
     private KrameriusJobInstanceMapper mapper;
 
-    public KrameriusJobInstance find(String jobInstanceId) {
+    private JobExplorer jobExplorer;
+
+    public KrameriusJobInstance findEntity(String jobInstanceId) {
         return store.findById(jobInstanceId)
                 .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
+    }
+
+    public KrameriusJobInstanceDto find(String id) {
+        return mapper.toDto(findEntity(id));
     }
 
     /**
@@ -45,7 +55,7 @@ public class KrameriusJobInstanceService {
     public void updateStatus(KrameriusJobInstance instance) {
         // 1. get last JobExecution from mapper
         // 2. set status and update KrameriusJobInstance
-        JobExecution lastExecution = mapper.toLastExecution(instance.getJobInstanceId());
+        JobExecution lastExecution = getLastExecution(instance.getJobInstanceId());
         if (lastExecution == null) {
             return;
         }
@@ -63,6 +73,18 @@ public class KrameriusJobInstanceService {
         store.save(krameriusJobInstance);
     }
 
+    private JobExecution getLastExecution(Long jobInstanceId) {
+        JobInstance jobInstance = jobExplorer.getJobInstance(jobInstanceId);
+        if (jobInstance == null) {
+            return null;
+        }
+
+        JobExecution lastExecution = jobExplorer.getLastJobExecution(jobInstance);
+        notNull(lastExecution, () -> new MissingObjectException(JobExecution.class, String.valueOf(jobInstanceId)));
+
+        return lastExecution;
+    }
+
     @Autowired
     public void setStore(KrameriusJobInstanceStore store) {
         this.store = store;
@@ -71,5 +93,10 @@ public class KrameriusJobInstanceService {
     @Autowired
     public void setMapper(KrameriusJobInstanceMapper mapper) {
         this.mapper = mapper;
+    }
+
+    @Autowired
+    public void setJobExplorer(JobExplorer jobExplorer) {
+        this.jobExplorer = jobExplorer;
     }
 }

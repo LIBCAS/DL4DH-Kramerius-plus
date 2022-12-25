@@ -80,7 +80,7 @@ export const PublicationGrid: FC<{
 			const response = await listPublications(page, 10, filter)
 
 			if (response) {
-				setPublications(response.results)
+				setPublications(response.items)
 				setRowCount(response.total)
 			}
 		}

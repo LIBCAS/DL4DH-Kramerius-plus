@@ -1,11 +1,17 @@
 import { Grid } from '@mui/material'
-import { EnrichmentRequestFilterDto } from 'models/enrichment-request/enrichment-request-filter-dto'
 import { EnrichmentRequestFilter } from 'modules/enrichment-request/enrichment-request-filter'
-import { EnrichmentRequestGrid } from 'modules/enrichment-request/enrichment-request-list'
+import { EnrichmentRequestGrid } from 'modules/enrichment-request/enrichment-request-grid'
 import { FC, useState } from 'react'
 import { PageWrapper } from '../page-wrapper'
 
-export const EnrichmentRequestListPage: FC = () => {
+export type EnrichmentRequestFilterDto = {
+	name?: string
+	owner?: string
+	isFinished?: boolean
+	publicationId?: string
+}
+
+export const EnrichmentRequestList: FC = () => {
 	const [filter, setFilter] = useState<EnrichmentRequestFilterDto>({})
 
 	const onFilterSubmit = (filter: EnrichmentRequestFilterDto) => {

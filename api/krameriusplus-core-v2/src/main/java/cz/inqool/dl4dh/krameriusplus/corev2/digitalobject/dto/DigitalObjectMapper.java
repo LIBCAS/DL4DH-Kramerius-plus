@@ -116,11 +116,13 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         to.setCollections(from.getCollections());
         to.setPdf(from.getPdf() != null);
 
-        if (from.getContext().size() == 1) {
-            to.setContext(from.getContext().get(0));
-        } else {
-            log.warn(String.format("%s %s: expected context size=1, actual=%s",
-                    to.getClass().getSimpleName(), from.getPid(), from.getContext().size()));
+        if (!from.getContext().isEmpty()) {
+            if (from.getContext().size() == 1) {
+                to.setContext(from.getContext().get(0));
+            } else {
+                log.warn(String.format("%s %s: expected context size=1, actual=%s",
+                        to.getClass().getSimpleName(), from.getPid(), from.getContext().size()));
+            }
         }
     }
 }

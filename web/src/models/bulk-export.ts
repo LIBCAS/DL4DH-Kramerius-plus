@@ -1,8 +1,9 @@
 import { Export, FileRef } from 'models'
 import { DatedObject } from './domain/dated-object'
+import { KrameriusJobInstance } from './job/kramerius-job-instance'
 
 export interface BulkExport extends DatedObject {
-	fileRef?: FileRef
-	exports: Export[]
-	format: string
+	mergeJob: KrameriusJobInstance
+	file?: FileRef
+	state: string
 }

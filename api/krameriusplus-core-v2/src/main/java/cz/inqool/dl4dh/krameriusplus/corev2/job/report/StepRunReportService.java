@@ -6,11 +6,14 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceStore;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.batch.core.JobInterruptedException;
+import org.springframework.batch.core.step.skip.SkipLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils.notNull;
 
 @Service
 public class StepRunReportService {
@@ -25,6 +28,9 @@ public class StepRunReportService {
 
     @Transactional
     public StepRunReport saveStepErrors(String jobInstanceId, Long stepExecutionId, List<Throwable> errors) {
+        notNull(jobInstanceId, () -> new IllegalArgumentException("jobInstanceId"));
+        notNull(stepExecutionId, () -> new IllegalArgumentException("stepExecutionId"));
+
         KrameriusJobInstance krameriusJobInstance = jobInstanceStore.findById(jobInstanceId)
                 .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
         StepRunReport report = krameriusJobInstance.getReports().get(stepExecutionId);
@@ -36,16 +42,25 @@ public class StepRunReportService {
         }
 
         for (Throwable error : errors) {
+            Throwable unwrapped = unwrapThrowable(error);
             StepError stepError = new StepError();
             stepError.setStepRunReport(report);
-            stepError.setExitCode(extractErrorCode(error));
-            stepError.setShortMessage(error.getMessage());
-            stepError.setStackTrace(ExceptionUtils.getStackTrace(error));
+            stepError.setExitCode(extractErrorCode(unwrapped));
+            stepError.setShortMessage(unwrapped.getMessage());
+            stepError.setStackTrace(ExceptionUtils.getStackTrace(unwrapped));
 
             report.getErrors().add(stepError);
         }
 
         return store.save(report);
+    }
+
+    private Throwable unwrapThrowable(Throwable error) {
+        if (error instanceof SkipLimitExceededException) {
+            return unwrapThrowable(error.getCause());
+        }
+
+        return error;
     }
 
     private String extractErrorCode(Throwable exception) {

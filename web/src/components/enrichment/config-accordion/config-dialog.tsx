@@ -19,8 +19,7 @@ import {
 } from '@mui/material'
 import { KrameriusJobMapping } from '../../../components/mappings/kramerius-job-mapping'
 import { MissingAltoStrategy } from '../../../enums/missing-alto-strategy'
-import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment/enrichment-job-event-config'
-import { ExternalEnrichmentJobEventConfig } from '../../../models/job/config/enrichment/external-enrichment-job-event-config'
+import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment-job-event-config'
 import { CurrentConfig } from '../enrichment-form'
 import { MissingAltoStrategySelect } from './missing-alto-strategy-select'
 
@@ -45,7 +44,7 @@ export const ConfigDialog = ({
 
 	return (
 		<Dialog fullWidth open={open} sx={{ p: 20 }} onClose={onClose}>
-			<DialogTitle>
+			{/* <DialogTitle>
 				{isNew() ? 'Přidat novou' : 'Upravit'} konfiguraci
 			</DialogTitle>
 			<DialogContent>
@@ -72,7 +71,7 @@ export const ConfigDialog = ({
 				>
 					{isNew() ? 'Přidat' : 'Upravit'}
 				</Button>
-			</DialogActions>
+			</DialogActions> */}
 		</Dialog>
 	)
 }

@@ -1,5 +1,5 @@
 import { List } from '@mui/material'
-import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment-job-event-config'
 import { ConfigListItem } from './config-list-item'
 
 type Props = {

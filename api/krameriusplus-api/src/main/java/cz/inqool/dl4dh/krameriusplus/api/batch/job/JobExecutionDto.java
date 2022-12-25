@@ -14,6 +14,8 @@ import java.util.Map;
 @Setter
 public class JobExecutionDto {
 
+    private Long id;
+
     private Collection<StepExecutionDto> stepExecutions;
 
     private ExecutionStatus status;
@@ -26,7 +28,9 @@ public class JobExecutionDto {
 
     private Date lastUpdated;
 
-    private String exitStatus;
+    private String exitCode;
+
+    private String exitDescription;
 
     private String jobConfigurationName;
 

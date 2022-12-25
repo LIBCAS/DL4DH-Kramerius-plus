@@ -5,7 +5,7 @@ import {
 	ListItemAvatar,
 	ListItemSecondaryAction,
 } from '@mui/material'
-import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment-job-event-config'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Avatar } from '@material-ui/core'
 import { ConfigPrimaryText } from './config-primary-text'
@@ -21,7 +21,7 @@ type Props = {
 export const ConfigListItem = ({ config, index, onClick, onRemove }: Props) => {
 	return (
 		<ListItem button onClick={onClick}>
-			<ListItemAvatar>
+			{/* <ListItemAvatar>
 				<Avatar>{index + 1}</Avatar>
 			</ListItemAvatar>
 			<ListItemText
@@ -32,7 +32,7 @@ export const ConfigListItem = ({ config, index, onClick, onRemove }: Props) => {
 				<IconButton aria-label="delete" edge="end" onClick={onRemove}>
 					<DeleteIcon />
 				</IconButton>
-			</ListItemSecondaryAction>
+			</ListItemSecondaryAction> */}
 		</ListItem>
 	)
 }

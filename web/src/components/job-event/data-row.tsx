@@ -7,19 +7,15 @@ type Props = {
 	valueComponent?: React.ElementType
 }
 
-export const JobEventDataRow: FC<Props> = ({
-	label,
-	value,
-	valueComponent,
-}) => {
+export const DataRow: FC<Props> = ({ label, value, valueComponent }) => {
 	return (
-		<>
-			<Grid item lg={2} md={4} xs={4}>
+		<Grid container item justifyContent="space-between" xs={12}>
+			<Grid item xs={6}>
 				<Typography color="text.primary" variant="body2">
 					{label}
 				</Typography>
 			</Grid>
-			<Grid item lg={10} md={8} xs={8}>
+			<Grid item xs={6}>
 				<Typography
 					color="primary"
 					component={valueComponent || 'div'}
@@ -28,6 +24,6 @@ export const JobEventDataRow: FC<Props> = ({
 					{value}
 				</Typography>
 			</Grid>
-		</>
+		</Grid>
 	)
 }

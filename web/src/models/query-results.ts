@@ -1,6 +1,6 @@
 export interface QueryResults<T> {
-	limit: number
-	offset: number
+	pageSize: number
+	page: number
 	total: number
-	results: T[]
+	items: T[]
 }

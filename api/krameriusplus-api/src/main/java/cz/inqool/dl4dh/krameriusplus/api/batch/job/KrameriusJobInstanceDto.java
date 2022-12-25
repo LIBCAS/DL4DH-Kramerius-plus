@@ -7,15 +7,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public class KrameriusJobInstanceDto extends DomainObjectDto {
 
-    private ExecutionStatus jobStatus;
+    private ExecutionStatus executionStatus;
 
     private List<JobExecutionDto> executions = new ArrayList<>();
 
     private KrameriusJobType jobType;
+
+    private Map<String, Object> jobParameters = new HashMap<>();
 }

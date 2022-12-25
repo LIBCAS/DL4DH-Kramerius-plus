@@ -86,8 +86,8 @@ export const Navbar: FC<{ info: InstanceInfo | null }> = ({ info }) => {
 					<NavbarInfo
 						lgWidth="25%"
 						props={{
-							instance: info?.kramerius.name,
-							url: info?.kramerius.url,
+							instance: info?.kramerius.name as string,
+							url: info?.kramerius.url as string,
 							version: info?.krameriusPlus.version,
 						}}
 						xsWidth="60%"
