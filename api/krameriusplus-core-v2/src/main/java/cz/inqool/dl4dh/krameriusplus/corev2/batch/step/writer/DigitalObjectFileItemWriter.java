@@ -27,7 +27,7 @@ public class DigitalObjectFileItemWriter implements ItemWriter<DigitalObjectExpo
     }
 
     @Autowired
-    public void setDirectory(@Value("#{jobContext['" + DIRECTORY + "']}") String directory) {
+    public void setDirectory(@Value("#{jobExecutionContext['" + DIRECTORY + "']}") String directory) {
         this.directory = Path.of(directory);
     }
 

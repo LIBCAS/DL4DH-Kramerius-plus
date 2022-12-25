@@ -63,7 +63,7 @@ public class SaveExportFileTasklet implements Tasklet {
     }
 
     @Autowired
-    public void setZippedFile(@Value("#{jobExecution['" + ZIPPED_FILE + "']}") String zippedFilePath) {
+    public void setZippedFile(@Value("#{jobExecutionContext['" + ZIPPED_FILE + "']}") String zippedFilePath) {
         this.zippedFile = Path.of(zippedFilePath);
     }
 }

@@ -96,9 +96,11 @@ public class SyncKrameriusMessenger implements KrameriusMessenger {
     }
 
     String getOcrRawStream(String pageId) {
-        return callInternal(
+        String raw = callInternal(
                 buildUriPath(pageId, STREAMS_PATH_SEGMENT, TEXT_OCR.streamId),
                 STRING_TYPE_REF);
+
+        return raw == null ? "" : raw;
     }
 
     private <T> T getAltoRawStream(String pageId, ParameterizedTypeReference<T> typeReference) {

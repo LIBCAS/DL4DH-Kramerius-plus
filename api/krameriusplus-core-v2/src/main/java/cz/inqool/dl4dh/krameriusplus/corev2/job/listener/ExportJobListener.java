@@ -5,11 +5,14 @@ import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.ExportStore;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.*;
 
@@ -41,7 +44,7 @@ public class ExportJobListener implements KrameriusJobListener {
         while (postOrderIterator.hasNext()) {
             Export current = postOrderIterator.next();
 
-            if (current.equals(export)) {
+            if (current.equals(export) && postOrderIterator.hasNext()) {
                 nextExport = postOrderIterator.next();
                 break;
             }
@@ -50,23 +53,28 @@ public class ExportJobListener implements KrameriusJobListener {
         if (nextExport != null) {
             jobEnqueueService.enqueue(nextExport.getExportJob());
         } else {
-            jobEnqueueService.enqueue(exportRequestStore.findMergeJob(root));
+            ExportRequest exportRequest = exportRequestStore.findByRootExport(root);
+            //TODO: Can this condition ever by false, if nextExport == null ?
+            if (exportRequest.getItems().stream().allMatch(exportRequestItem ->
+                    exportRequestItem.getRootExport().getExportJob().getExecutionStatus().finished())) {
+                jobEnqueueService.enqueue(exportRequestStore.findMergeJob(root));
+            }
         }
     }
 
     private List<Export> buildPostOrderList(Export root) {
         List<Export> result = new ArrayList<>();
-        Deque<Export> stack = new LinkedList<>();
-        stack.add(root);
+        buildPostOrderList(root, result);
 
-        while (!stack.isEmpty()) {
-            root = stack.pop();
-            result.add(root);
-            stack.addAll(root.getChildrenList());
+        return result;
+    }
+
+    private void buildPostOrderList(Export root, List<Export> resultList) {
+        for (Export export : root.getChildrenList()) {
+            buildPostOrderList(export, resultList);
         }
 
-        Collections.reverse(result);
-        return result;
+        resultList.add(root);
     }
 
     private Export findRoot(Export export) {

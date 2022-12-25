@@ -5,7 +5,6 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +29,7 @@ public class ZipDirectoryTasklet implements Tasklet {
 
         zipArchiver.zip(directory, zippedFilePath);
 
-        ExecutionContext stepContext = chunkContext.getStepContext().getStepExecution().getExecutionContext();
-        stepContext.put(ZIPPED_FILE, zippedFilePath);
+        chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().putString(ZIPPED_FILE, zippedFilePath.toString());
 
         return RepeatStatus.FINISHED;
     }
@@ -42,7 +40,7 @@ public class ZipDirectoryTasklet implements Tasklet {
     }
 
     @Autowired
-    public void setDirectory(@Value("#{jobExecution['" + DIRECTORY + "']}") String directory) {
+    public void setDirectory(@Value("#{jobExecutionContext['" + DIRECTORY + "']}") String directory) {
         this.directory = Path.of(directory);
     }
 }

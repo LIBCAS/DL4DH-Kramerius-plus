@@ -104,7 +104,7 @@ public class ModsMapperTest extends CoreBaseTest {
             softly.assertThat(originInfo1.getDateIssued().getValue()).isEqualTo("2016");
 
             softly.assertThat(originInfo1.getIssuance()).isEqualTo("monographic");
-            softly.assertThat(originInfo1.getPublisher()).isNull();
+            softly.assertThat(originInfo1.getPublishers()).isEmpty();
 
             softly.assertThat(originInfo1.getPlaces().size()).isEqualTo(1);
 
@@ -115,7 +115,7 @@ public class ModsMapperTest extends CoreBaseTest {
 
             ModsOriginInfo originInfo2 = originInfos.get(1);
             
-            softly.assertThat(originInfo2.getPublisher()).isEqualTo("CZ.NIC, z.s.p.o.,");
+            softly.assertThat(originInfo2.getPublishers().get(0)).isEqualTo("CZ.NIC, z.s.p.o.,");
 
             ModsPlace modsPlace2 = originInfo2.getPlaces().get(0);
             softly.assertThat(modsPlace2.getValue()).isEqualTo("Praha :");

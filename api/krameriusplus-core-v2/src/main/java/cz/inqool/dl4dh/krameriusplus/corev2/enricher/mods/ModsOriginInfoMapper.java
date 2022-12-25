@@ -16,12 +16,30 @@ import java.util.List;
 public interface ModsOriginInfoMapper extends ModsMapperBase {
 
     @Mappings({
-            @Mapping(target = "publisher", expression = "java(mapJaxbElements(element.getPlaceOrPublisherOrDateIssued(), \"publisher\"))"),
+            @Mapping(target = "publishers", expression = "java(mapPublishInfo(element.getPlaceOrPublisherOrDateIssued()))"),
             @Mapping(target = "dateIssued", expression = "java(mapDate(findOne(element.getPlaceOrPublisherOrDateIssued(), \"dateIssued\")))"),
             @Mapping(target = "places", expression = "java(mapPlaces(element.getPlaceOrPublisherOrDateIssued()))"),
             @Mapping(target = "issuance", expression = "java(mapIssuance(findOne(element.getPlaceOrPublisherOrDateIssued(), \"issuance\")))")
     })
     ModsOriginInfo map(OriginInfoDefinition element);
+
+    default List<String> mapPublishInfo(List<JAXBElement<?>> elements) {
+        if (elements == null || elements.isEmpty()) {
+            return null;
+        }
+
+        List<String> result = new ArrayList<>();
+
+        for (JAXBElement<?> element : elements) {
+            if (element.getValue() instanceof PublisherDefinition) {
+                PublisherDefinition publisherDefinition = (PublisherDefinition) element.getValue();
+                result.add(publisherDefinition.getValue());
+            }
+        }
+
+        return result;
+
+    }
 
     default List<ModsPlace> mapPlaces(List<JAXBElement<?>> elements) {
         if (elements == null || elements.isEmpty()) {
@@ -43,7 +61,7 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
 
                 ModsPlace modsPlace = new ModsPlace();
                 modsPlace.setAuthority(placeTermDefinition.getAuthority());
-                modsPlace.setType(placeTermDefinition.getType().value());
+                modsPlace.setType(placeTermDefinition.getType() == null ? null : placeTermDefinition.getType().value());
                 modsPlace.setValue(placeTermDefinition.getValue());
 
                 result.add(modsPlace);

@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.ExportStore;
+import cz.inqool.dl4dh.krameriusplus.corev2.utils.Utils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,8 @@ public class ExportChildrenReader implements ItemReader<Export> {
 
     public ExportChildrenReader(@Value("#{jobParameters['" + EXPORT_ID + "']}") String exportId,
                                 ExportStore exportStore) {
+        Utils.notNull(exportId, () -> new IllegalStateException("ExportId not in jobParameters"));
+
         Export root = exportStore.findById(exportId)
                 .orElseThrow(() -> new MissingObjectException(Export.class, exportId));
 

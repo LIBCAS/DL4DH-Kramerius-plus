@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.corev2.request.export.request;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.api.export.BulkExportState;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.service.DatedService;
@@ -33,8 +34,16 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
     public ExportRequestDto create(@NonNull ExportRequestCreateDto dto) {
         ExportRequest exportRequest = mapper.fromCreateDto(dto);
         exportRequest.setCreateRequestJob(createRequestJob(exportRequest));
+        exportRequest.setBulkExport(createBulkExport());
 
         return mapper.toDto(store.save(exportRequest));
+    }
+
+    private BulkExport createBulkExport() {
+        BulkExport bulkExport = new BulkExport();
+        bulkExport.setState(BulkExportState.CREATED);
+
+        return bulkExport;
     }
 
     private KrameriusJobInstance createRequestJob(ExportRequest exportRequest) {
@@ -45,7 +54,7 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
                 jobParametersMapWrapper);
     }
 
-    public Result<ExportRequestDto> list(String name, String owner, boolean isFinished, int page, int pageSize) {
+    public Result<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize) {
         Result<ExportRequest> requests = store.findByNameOwnerAndStatus(name, owner, isFinished, page, pageSize);
         List<ExportRequestDto> dtos = requests.getItems().stream().map(mapper::toDto).collect(Collectors.toList());
 

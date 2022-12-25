@@ -3,7 +3,6 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.designer;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.CreateExportsProcessor;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ExportRequestItemsReader;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer.ExportWriter;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class CreateExportsStepDesigner extends AbstractStepDesigner {
     @Override
     public Step build() {
         return getStepBuilder()
-                .<ExportRequestItem, Export>chunk(5)
+                .<ExportRequestItem, ExportRequestItem>chunk(5)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)

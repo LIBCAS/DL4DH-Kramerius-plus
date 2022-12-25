@@ -12,7 +12,7 @@ public class ModsOriginInfo {
 
     private String eventType;
 
-    private String publisher;
+    private List<String> publishers = new ArrayList<>();
 
     private ModsDateIssued dateIssued;
 

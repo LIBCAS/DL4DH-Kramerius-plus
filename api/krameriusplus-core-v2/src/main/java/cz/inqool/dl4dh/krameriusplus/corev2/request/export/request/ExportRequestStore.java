@@ -29,10 +29,14 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
     public KrameriusJobInstance findMergeJob(Export export) {
         QExportRequestItem qExportRequestItem = QExportRequestItem.exportRequestItem;
 
+        // TODO: rewrite with a join query
         return queryFactory.from(qExportRequestItem)
-                .select(qExportRequestItem.exportRequest.bulkExport.mergeJob)
+                .select(qExportRequestItem)
                 .where(qExportRequestItem.rootExport.eq(export))
-                .fetchOne();
+                .fetchOne()
+                .getExportRequest()
+                .getBulkExport()
+                .getMergeJob();
     }
 
     public Result<ExportRequest> findByNameOwnerAndStatus(String name, String owner, Boolean isFinished, int page, int pageSize) {
@@ -56,5 +60,15 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
         List<ExportRequest> results = query.select(qObject).fetch();
 
         return new Result<>(page, pageSize, count, results);
+    }
+
+    public ExportRequest findByRootExport(Export root) {
+        ExportRequest exportRequest = query()
+                .from(qObject)
+                .select(qObject)
+                .where(qObject.items.any().rootExport.eq(root))
+                .fetchOne();
+
+        return exportRequest;
     }
 }

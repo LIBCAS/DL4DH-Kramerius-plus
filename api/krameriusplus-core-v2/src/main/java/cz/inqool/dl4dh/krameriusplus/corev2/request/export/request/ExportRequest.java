@@ -9,8 +9,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,12 +22,13 @@ public class ExportRequest extends Request {
     private ExportJobConfig config;
 
     @OneToMany(mappedBy = "exportRequest", fetch = FetchType.EAGER)
-    private List<ExportRequestItem> items = new ArrayList<>();
+    private Set<ExportRequestItem> items = new HashSet<>();
 
     @OneToOne
     @NotNull
     private KrameriusJobInstance createRequestJob;
 
     @Embedded
+    @NotNull
     private BulkExport bulkExport;
 }

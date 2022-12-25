@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.PublicationProvider;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
@@ -16,11 +17,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.EXPORT_REQUEST_ID;
+import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.*;
 
 @Component
 @StepScope
-public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, Export> {
+public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, ExportRequestItem> {
 
     private final ExportRequest exportRequest;
 
@@ -36,10 +37,11 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
     }
 
     @Override
-    public Export process(ExportRequestItem item) throws Exception {
+    public ExportRequestItem process(ExportRequestItem item) throws Exception {
         Publication publication = publicationProvider.find(item.getPublicationId());
 
-        return createExport(publication, null, 0L);
+        item.setRootExport(createExport(publication, null, 0L));
+        return item;
     }
 
     /**
@@ -54,10 +56,14 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
         export.setParent(parent);
         export.setFormat(exportRequest.getConfig().getExportFormat());
         export.setOrder(order);
+        JobParametersMapWrapper jobParametersMapWrapper = exportRequest.getConfig().toJobParametersWrapper();
+        jobParametersMapWrapper.putString(PUBLICATION_ID, publication.getId());
+        jobParametersMapWrapper.putString(EXPORT_ID, export.getId());
+
         export.setExportJob(
                 jobInstanceService.createJobInstance(
                         exportRequest.getConfig().getJobType(),
-                        exportRequest.getConfig().toJobParametersWrapper()));
+                        jobParametersMapWrapper));
 
         List<Publication> children = publicationProvider.findChildren(publication.getId());
         Long childrenOrder = 0L;

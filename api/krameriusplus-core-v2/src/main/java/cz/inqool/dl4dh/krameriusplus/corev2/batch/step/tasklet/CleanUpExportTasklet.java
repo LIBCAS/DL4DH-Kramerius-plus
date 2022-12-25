@@ -33,12 +33,12 @@ public class CleanUpExportTasklet implements Tasklet {
     }
 
     @Autowired
-    public void setDirectory(@Value("#{jobContext['" + DIRECTORY + "']}") String directory) {
+    public void setDirectory(@Value("#{jobExecutionContext['" + DIRECTORY + "']}") String directory) {
         this.directory = Path.of(directory);
     }
 
     @Autowired
-    public void setZippedFile(@Value("#{jobContext['" + ZIPPED_FILE + "']}") String zippedFile) {
+    public void setZippedFile(@Value("#{jobExecutionContext['" + ZIPPED_FILE + "']}") String zippedFile) {
         this.zippedFile = Path.of(zippedFile);
     }
 }

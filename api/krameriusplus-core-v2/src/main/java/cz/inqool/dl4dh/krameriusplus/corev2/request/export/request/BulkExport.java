@@ -17,7 +17,6 @@ import javax.validation.constraints.NotNull;
 @Embeddable
 public class BulkExport {
 
-    @NotNull
     @OneToOne
     private KrameriusJobInstance mergeJob;
 
