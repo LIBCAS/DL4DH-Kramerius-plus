@@ -43,7 +43,7 @@ public class Export extends DatedObject {
     @NotNull
     private KrameriusJobInstance exportJob;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
     @MapKey(name = "order")
     @Getter(value = AccessLevel.NONE)
     private Map<Long, Export> children = new TreeMap<>();

@@ -21,16 +21,21 @@ public class ExportWriter implements ItemWriter<ExportRequestItem> {
 
     @Override
     public void write(List<? extends ExportRequestItem> items) {
-        items.stream().map(ExportRequestItem::getRootExport).forEach(this::saveExportTree);
-        items.forEach(exportRequestItemStore::save);
+        for (ExportRequestItem item : items) {
+            item.setRootExport(saveExportTree(item.getRootExport()));
+
+            exportRequestItemStore.save(item);
+        }
     }
 
-    private void saveExportTree(Export export) {
-        exportStore.save(export);
+    private Export saveExportTree(Export export) {
+        Export savedExport = exportStore.save(export);
 
         for (Export child : export.getChildrenList()) {
             saveExportTree(child);
         }
+
+        return savedExport;
     }
 
     @Autowired

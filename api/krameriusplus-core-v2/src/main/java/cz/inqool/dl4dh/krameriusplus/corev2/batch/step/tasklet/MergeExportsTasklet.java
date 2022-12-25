@@ -5,7 +5,6 @@ import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItemStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.utils.ZipArchiver;
@@ -39,11 +38,6 @@ public class MergeExportsTasklet implements Tasklet {
     private ExportRequestStore exportRequestStore;
 
     private FileService fileService;
-    private final ExportRequestItemStore exportRequestItemStore;
-
-    public MergeExportsTasklet(ExportRequestItemStore exportRequestItemStore) {
-        this.exportRequestItemStore = exportRequestItemStore;
-    }
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
@@ -58,6 +52,7 @@ public class MergeExportsTasklet implements Tasklet {
             exportRequest.getBulkExport().setState(BulkExportState.FAILED);
             return RepeatStatus.FINISHED;
         }
+
         for (Export export : exportRequest.getItems().stream()
                 .map(ExportRequestItem::getRootExport)
                 .collect(Collectors.toList())) {
@@ -102,7 +97,7 @@ public class MergeExportsTasklet implements Tasklet {
     }
 
     @Autowired
-    public void setTmpDirPath(@Value("${export.tmp-dir}") String tmpDirPath) {
+    public void setTmpDirPath(@Value("${system.export.tmp-dir}") String tmpDirPath) {
         this.tmpDirPath = Path.of(tmpDirPath);
     }
 

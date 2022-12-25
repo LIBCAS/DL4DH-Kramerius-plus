@@ -54,7 +54,7 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
                 jobParametersMapWrapper);
     }
 
-    public Result<ExportRequestDto> list(String name, String owner, boolean isFinished, int page, int pageSize) {
+    public Result<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize) {
         Result<ExportRequest> requests = store.findByNameOwnerAndStatus(name, owner, isFinished, page, pageSize);
         List<ExportRequestDto> dtos = requests.getItems().stream().map(mapper::toDto).collect(Collectors.toList());
 

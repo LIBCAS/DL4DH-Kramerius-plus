@@ -61,7 +61,7 @@ public class PrepareExportDirectoryTasklet implements Tasklet {
     }
 
     @Autowired
-    public void setTmpDirPath(@Value("${export.tmp-dir}") String tmpDirPath) {
+    public void setTmpDirPath(@Value("${system.export.tmp-dir}") String tmpDirPath) {
         this.tmpDirPath = Path.of(tmpDirPath);
     }
 
