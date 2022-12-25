@@ -54,6 +54,7 @@ public class ExportJobListener implements KrameriusJobListener {
             jobEnqueueService.enqueue(nextExport.getExportJob());
         } else {
             ExportRequest exportRequest = exportRequestStore.findByRootExport(root);
+            //TODO: Can this condition ever by false, if nextExport == null ?
             if (exportRequest.getItems().stream().allMatch(exportRequestItem ->
                     exportRequestItem.getRootExport().getExportJob().getExecutionStatus().finished())) {
                 jobEnqueueService.enqueue(exportRequestStore.findMergeJob(root));
