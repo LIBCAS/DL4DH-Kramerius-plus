@@ -1,13 +1,11 @@
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import {
-	Box,
-	Paper,
+	IconButton,
 	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
-	TableHead,
 	TableRow,
-	Typography,
 } from '@mui/material'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { KrameriusJobInstance } from 'models/job/kramerius-job-instance'
@@ -22,32 +20,30 @@ export const KrameriusJobTable: FC<Props> = ({ jobs }) => {
 	const navigate = useNavigate()
 
 	return (
-		<Box sx={{ margin: 1 }}>
-			<Typography component="div" gutterBottom variant="h6">
-				Úlohy
-			</Typography>
-			<TableContainer component={Paper} variant="outlined">
-				<Table size="small">
-					<TableHead>
-						<TableRow>
-							<TableCell>Typ úlohy</TableCell>
-							<TableCell>Stav</TableCell>
+		<TableContainer>
+			<Table size="small">
+				<TableBody>
+					{jobs.map(job => (
+						<TableRow
+							key={job.id}
+							hover
+							sx={{ height: 20 }}
+							onClick={() => navigate(`/jobs/${job.id}`)}
+						>
+							<TableCell sx={{ padding: '0px 16px' }}>
+								<IconButton
+									size="small"
+									onClick={() => navigate(`/jobs/${job.id}`)}
+								>
+									<OpenInNewIcon />
+								</IconButton>
+							</TableCell>
+							<TableCell>{KrameriusJobMapping[job.jobType]}</TableCell>
+							<TableCell>{job.executionStatus}</TableCell>
 						</TableRow>
-					</TableHead>
-					<TableBody>
-						{jobs.map(job => (
-							<TableRow
-								key={job.id}
-								hover
-								onClick={() => navigate(`/jobs/${job.id}`)}
-							>
-								<TableCell>{KrameriusJobMapping[job.jobType]}</TableCell>
-								<TableCell>{job.executionStatus}</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
-		</Box>
+					))}
+				</TableBody>
+			</Table>
+		</TableContainer>
 	)
 }

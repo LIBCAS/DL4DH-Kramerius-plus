@@ -1,7 +1,6 @@
 import {
 	Box,
 	Button,
-	CircularProgress,
 	Dialog,
 	DialogContent,
 	DialogTitle,
@@ -11,6 +10,7 @@ import {
 	Typography,
 } from '@mui/material'
 import { getJob, restartJob, stopJob } from 'api/job-api'
+import { Loading } from 'components/loading'
 import { ApiError, StepExecution } from 'models'
 import { JobExecution } from 'models/job/job-execution'
 import { KrameriusJobInstance } from 'models/job/kramerius-job-instance'
@@ -114,17 +114,7 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 	return (
 		<PageWrapper requireAuth>
 			{loading || !job ? (
-				<Box
-					alignContent="center"
-					alignItems="center"
-					display="flex"
-					flexDirection="column"
-					justifyContent="center"
-				>
-					<Box m="auto">
-						<CircularProgress />
-					</Box>
-				</Box>
+				<Loading />
 			) : (
 				<Box>
 					<Box display="flex" justifyContent="space-between" p={2} pb={3}>
@@ -184,7 +174,7 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 						</Grid>
 					</Grid>
 					<Dialog maxWidth="xl" open={!!stepExecution} onClose={onDialogClose}>
-						<DialogTitle>Chyby v zvoleném kroku</DialogTitle>
+						<DialogTitle>Chyby ve vybraném kroku</DialogTitle>
 						<DialogContent>
 							{stepExecution?.errors.map((error, i) => (
 								<Grid key={i} container item spacing={2}>

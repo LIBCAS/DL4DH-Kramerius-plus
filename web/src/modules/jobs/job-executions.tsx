@@ -1,6 +1,5 @@
-import { Typography } from '@mui/material'
-import { Box } from '@mui/system'
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid'
+import { PageBlock } from 'components/page-block'
 import { JobExecution } from 'models/job/job-execution'
 import { FC } from 'react'
 import { dateTimeFormatter, durationFormatter } from 'utils/formatters'
@@ -46,26 +45,22 @@ export const JobExecutions: FC<{
 	}
 
 	return (
-		<Box p={1}>
-			<Box pb={3}>
-				<Typography variant="h6">Běhy úlohy</Typography>
-			</Box>
-			<Box height="220px">
-				<DataGrid
-					columns={columns}
-					density="compact"
-					disableColumnFilter
-					disableColumnMenu
-					getRowClassName={() => 'data-grid-row'}
-					getRowId={row => row.id}
-					headerHeight={50}
-					hideFooter
-					rowHeight={50}
-					rows={executions}
-					sx={{ flexGrow: 1 }}
-					onRowClick={onRowClick}
-				/>
-			</Box>
-		</Box>
+		<PageBlock title="Běhy úlohy">
+			<DataGrid
+				autoHeight
+				columns={columns}
+				density="compact"
+				disableColumnFilter
+				disableColumnMenu
+				getRowClassName={() => 'data-grid-row'}
+				getRowId={row => row.id}
+				headerHeight={50}
+				hideFooter
+				rowHeight={50}
+				rows={executions}
+				sx={{ flexGrow: 1 }}
+				onRowClick={onRowClick}
+			/>
+		</PageBlock>
 	)
 }

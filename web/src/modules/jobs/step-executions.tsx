@@ -1,10 +1,11 @@
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import { Box, Button, Typography } from '@mui/material'
+import { Button } from '@mui/material'
 import {
 	DataGrid,
 	GridRenderCellParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
+import { PageBlock } from 'components/page-block'
 import { StepExecution } from 'models'
 import { StepError } from 'models/job/step-error'
 import { FC } from 'react'
@@ -112,25 +113,21 @@ export const StepExecutions: FC<{
 	]
 
 	return (
-		<Box p={1}>
-			<Box pb={3}>
-				<Typography variant="h6">Kroky zvolené úlohy</Typography>
-			</Box>
-			<Box height="280px">
-				<DataGrid
-					columns={columns}
-					density="compact"
-					disableColumnFilter
-					disableColumnMenu
-					getRowClassName={() => 'data-grid-row'}
-					getRowId={row => row.id}
-					headerHeight={50}
-					hideFooter
-					rowHeight={50}
-					rows={executions ? executions : []}
-					sx={{ flexGrow: 1 }}
-				/>
-			</Box>
-		</Box>
+		<PageBlock title="Kroky zvoleného běhu">
+			<DataGrid
+				autoHeight
+				columns={columns}
+				density="compact"
+				disableColumnFilter
+				disableColumnMenu
+				getRowClassName={() => 'data-grid-row'}
+				getRowId={row => row.id}
+				headerHeight={50}
+				hideFooter
+				rowHeight={50}
+				rows={executions ? executions : []}
+				sx={{ flexGrow: 1 }}
+			/>
+		</PageBlock>
 	)
 }
