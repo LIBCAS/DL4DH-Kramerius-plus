@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 /**
@@ -61,7 +62,12 @@ public class DigitalObjectExporter {
     }
 
     private CSVPrinter getPrinter(Path destination) throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(destination.resolve("metadata.csv"));
-        return new CSVPrinter(writer, CSVFormat.Builder.create().setHeader(METADATA_HEADERS).build());
+        CSVFormat csvFormat = Files.exists(destination.resolve("metadata.csv")) ?
+                CSVFormat.Builder.create().setHeader(METADATA_HEADERS).setSkipHeaderRecord(true).build() :
+                CSVFormat.Builder.create().setHeader(METADATA_HEADERS).build();
+
+
+        BufferedWriter writer = Files.newBufferedWriter(destination.resolve("metadata.csv"), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        return new CSVPrinter(writer, csvFormat);
     }
 }
