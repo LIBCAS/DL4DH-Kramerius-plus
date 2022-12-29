@@ -13,5 +13,5 @@ public class BulkExportDto {
 
     private FileRefDto file;
 
-    private BulkExportState state;
+    private ExportState state;
 }

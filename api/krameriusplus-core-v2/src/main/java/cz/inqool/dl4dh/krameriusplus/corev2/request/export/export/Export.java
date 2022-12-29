@@ -35,7 +35,7 @@ public class Export extends DatedObject {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private ExportState exportState = ExportState.INCOMPLETE;
+    private ExportState exportState = ExportState.CREATED;
 
     @Enumerated(EnumType.STRING)
     private ExportFormat format;

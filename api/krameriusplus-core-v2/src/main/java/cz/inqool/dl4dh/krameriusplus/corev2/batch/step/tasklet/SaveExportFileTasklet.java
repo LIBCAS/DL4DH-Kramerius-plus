@@ -47,7 +47,7 @@ public class SaveExportFileTasklet implements Tasklet {
                     zippedFile.getFileName().toString(),
                     "application/zip");
             export.setFileRef(fileRef);
-            export.setExportState(ExportState.COMPLETE);
+            export.setExportState(ExportState.SUCCESSFUL);
             exportStore.save(export);
         }
 
