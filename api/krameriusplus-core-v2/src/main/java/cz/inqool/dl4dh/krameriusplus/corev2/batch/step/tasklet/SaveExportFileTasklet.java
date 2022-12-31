@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
@@ -46,6 +47,7 @@ public class SaveExportFileTasklet implements Tasklet {
                     zippedFile.getFileName().toString(),
                     "application/zip");
             export.setFileRef(fileRef);
+            export.setExportState(ExportState.COMPLETE);
             exportStore.save(export);
         }
 

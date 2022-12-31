@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.OVERRIDE;
+import static cz.inqool.dl4dh.krameriusplus.core.system.jobeventconfig.JobParameterKey.*;
 
 @Getter
 @Setter
@@ -26,10 +26,16 @@ public abstract class EnrichmentJobConfigDto extends JobEventConfigDto {
     @Schema(description = "If true and publications already exist, they will be overwritten. Defaults to false.")
     private boolean override = false;
 
+    private Integer publicationErrorTolerance = 0;
+
+    private Integer pageErrorTolerance = 0;
+
     @Override
     public Map<String, Object> toJobParametersMap() {
         Map<String, Object> jobParametersMap = new HashMap<>();
         jobParametersMap.put(OVERRIDE, override);
+        jobParametersMap.put(PUBLICATION_ERROR_TOLERANCE, publicationErrorTolerance);
+        jobParametersMap.put(PAGE_ERROR_TOLERANCE, pageErrorTolerance);
 
         return jobParametersMap;
     }

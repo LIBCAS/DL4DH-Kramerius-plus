@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.ExportStore;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItemStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,11 @@ public class ExportJobListener implements KrameriusJobListener {
     private ExportRequestStore exportRequestStore;
 
     private JobEnqueueService jobEnqueueService;
+    private final ExportRequestItemStore exportRequestItemStore;
+
+    public ExportJobListener(ExportRequestItemStore exportRequestItemStore) {
+        this.exportRequestItemStore = exportRequestItemStore;
+    }
 
     @Override
     public void afterJob(KrameriusJobInstance jobInstance) {

@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
+import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.export.BulkExportState;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileService;
@@ -62,7 +63,8 @@ public class MergeExportsTasklet implements Tasklet {
                     zipArchiver.unzip(inputStream, tmpUnzipDirectory.resolve(export.getPublicationId().substring(5)));
                 }
             }
-            else {
+            // either entire export tree is missing, or some part of it was incomplete
+            else if (fileRef == null || export.getExportJob().getExecutionStatus().equals(ExecutionStatus.FAILED)){
                 isComplete = false;
             }
         }

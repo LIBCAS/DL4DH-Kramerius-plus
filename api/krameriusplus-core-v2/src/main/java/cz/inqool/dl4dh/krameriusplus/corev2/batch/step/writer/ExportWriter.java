@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.writer;
 
-import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.ExportStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItemStore;
