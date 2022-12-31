@@ -1,9 +1,9 @@
 import { List } from '@mui/material'
-import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment-job-event-config'
+import { EnrichmentJobConfig } from '../../../models/job/config/enrichment-job-config'
 import { ConfigListItem } from './config-list-item'
 
 type Props = {
-	configs: EnrichmentJobEventConfig[]
+	configs: EnrichmentJobConfig[]
 	onClick: (index: number) => void
 	onRemove: (index: number) => void
 }

@@ -1,14 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.api.export.params.filter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class AndFilter extends Filter {
 
-    private final List<Filter> filters;
-
-    public AndFilter(@JsonProperty("filters") List<Filter> filters) {
-        this.filters = filters;
-    }
+    private List<Filter> filters;
 }

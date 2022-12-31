@@ -4,6 +4,8 @@ import cz.inqool.dl4dh.krameriusplus.api.export.ExportDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRefMapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 import java.util.Map;
@@ -16,12 +18,7 @@ import java.util.stream.Collectors;
 })
 public interface ExportMapper {
 
+    @Mapping(target = "children", source = "childrenList")
     ExportDto toDto(Export export);
 
-    default List<ExportDto> toListDto(Map<Long, Export> entityMap) {
-        return new TreeMap<>(entityMap).values()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
 }

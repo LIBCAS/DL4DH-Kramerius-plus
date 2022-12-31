@@ -5,14 +5,14 @@ import {
 	ListItemAvatar,
 	ListItemSecondaryAction,
 } from '@mui/material'
-import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment-job-event-config'
+import { EnrichmentJobConfig } from '../../../models/job/config/enrichment-job-config'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Avatar } from '@material-ui/core'
 import { ConfigPrimaryText } from './config-primary-text'
 import { ConfigSecondaryText } from './config-secondary-text'
 
 type Props = {
-	config: EnrichmentJobEventConfig
+	config: EnrichmentJobConfig
 	index: number
 	onClick: () => void
 	onRemove: () => void

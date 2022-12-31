@@ -20,8 +20,4 @@ public class Paging {
      * Paging size
      */
     private int pageSize = 10;
-
-    public static Paging of(int page, int pageSize) {
-        return new Paging(page, pageSize);
-    }
 }

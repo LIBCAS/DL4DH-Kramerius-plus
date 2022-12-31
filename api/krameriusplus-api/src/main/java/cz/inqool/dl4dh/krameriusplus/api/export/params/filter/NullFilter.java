@@ -1,12 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.api.export.params.filter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class NullFilter extends Filter {
 
-    private final String field;
-
-    public NullFilter(@JsonProperty("field") String field) {
-        this.field = field;
-    }
+    private String field;
 }

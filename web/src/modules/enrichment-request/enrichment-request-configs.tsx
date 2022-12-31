@@ -3,11 +3,11 @@ import { KeyGridItem } from 'components/key-grid-item'
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { PageBlock } from 'components/page-block'
 import { ValueGridItem } from 'components/value-grid-item'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment-job-event-config'
+import { EnrichmentJobConfig } from 'models/job/config/enrichment-job-config'
 import { FC } from 'react'
 
 export const EnrichmentRequestConfigs: FC<{
-	configs: EnrichmentJobEventConfig[]
+	configs: EnrichmentJobConfig[]
 }> = ({ configs }) => {
 	return (
 		<PageBlock title="Konfigurace úloh žádosti">

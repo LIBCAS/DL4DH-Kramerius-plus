@@ -1,12 +1,12 @@
 import { EnrichmentRequest } from 'models/request/enrichment-request'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment-job-event-config'
+import { EnrichmentJobConfig } from 'models/job/config/enrichment-job-config'
 import { QueryResults } from 'models/query-results'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
 import { customFetch } from 'utils/custom-fetch'
 
 export const enrich = async (
 	publicationIds: string[],
-	configs: EnrichmentJobEventConfig[],
+	configs: EnrichmentJobConfig[],
 	name?: string,
 ): Promise<Response> => {
 	const trimmedIds = publicationIds.map(id => id.trim())

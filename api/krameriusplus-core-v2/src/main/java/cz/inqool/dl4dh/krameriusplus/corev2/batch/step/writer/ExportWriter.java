@@ -22,20 +22,10 @@ public class ExportWriter implements ItemWriter<ExportRequestItem> {
     @Override
     public void write(List<? extends ExportRequestItem> items) {
         for (ExportRequestItem item : items) {
-            item.setRootExport(saveExportTree(item.getRootExport()));
+            item.setRootExport(exportStore.save(item.getRootExport()));
 
             exportRequestItemStore.save(item);
         }
-    }
-
-    private Export saveExportTree(Export export) {
-        Export savedExport = exportStore.save(export);
-
-        for (Export child : export.getChildrenList()) {
-            saveExportTree(child);
-        }
-
-        return savedExport;
     }
 
     @Autowired

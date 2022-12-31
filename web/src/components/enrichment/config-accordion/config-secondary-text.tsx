@@ -1,9 +1,9 @@
 import { Typography } from '@mui/material'
 import { Fragment } from 'react'
-import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment-job-event-config'
+import { EnrichmentJobConfig } from '../../../models/job/config/enrichment-job-config'
 
 type Props = {
-	config: EnrichmentJobEventConfig
+	config: EnrichmentJobConfig
 }
 
 export const ConfigSecondaryText = ({ config }: Props) => {
