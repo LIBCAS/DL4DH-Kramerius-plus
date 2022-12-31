@@ -302,7 +302,7 @@
             <column name="updated" type="timestamp"/>
             <column name="deleted" type="timestamp"/>
 
-            <column name="export_state" type="varchar(255)">
+            <column name="state" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
 

@@ -76,12 +76,12 @@ public class ExportJobListener implements KrameriusJobListener {
     private void updateExportState(Export export) {
         // absence of fileref means failure in job
         if (export.getFileRef() == null) {
-            export.setExportState(ExportState.FAILED);
+            export.setState(ExportState.FAILED);
         }
         // if fileref exists check if it's complete and set to successful accordingly
         else {
-            export.setExportState(!export.getExportState().isIncomplete() ?
-                    ExportState.SUCCESSFUL :  export.getExportState());
+            export.setState(!export.getState().isIncomplete() ?
+                    ExportState.SUCCESSFUL :  export.getState());
         }
     }
 

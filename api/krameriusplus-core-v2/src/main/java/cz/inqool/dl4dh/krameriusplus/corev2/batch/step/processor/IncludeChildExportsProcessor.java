@@ -34,8 +34,8 @@ public class IncludeChildExportsProcessor implements ItemProcessor<Export, Expor
         }
 
         // propagate state up to indicate export is not full
-        if (item.getExportState().isIncomplete()) {
-            item.getParent().setExportState(ExportState.PARTIAL);
+        if (item.getState().isIncomplete()) {
+            item.getParent().setState(ExportState.PARTIAL);
         }
 
         return item;
