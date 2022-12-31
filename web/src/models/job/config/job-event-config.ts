@@ -1,6 +1,6 @@
 import { KrameriusJob } from 'enums/kramerius-job'
 import { DomainObject } from 'models/domain/domain-object'
 
-export interface JobEventConfig extends DomainObject {
+export interface JobConfig extends DomainObject {
 	jobType: KrameriusJob
 }

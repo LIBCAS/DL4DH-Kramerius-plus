@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { useState } from 'react'
-import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment-job-event-config'
+import { EnrichmentJobConfig } from '../../models/job/config/enrichment-job-config'
 import { EnrichmentKrameriusJob } from '../../enums/enrichment-kramerius-job'
 import { UuidAccordion } from './uuid-accordion/uuid-accordion'
 import { ConfigAccordion } from './config-accordion/config-accordion'
@@ -16,7 +16,7 @@ export type UuidAccordionProps = {
 }
 
 export type ConfigAccordionProps = {
-	configs: EnrichmentJobEventConfig[]
+	configs: EnrichmentJobConfig[]
 	onConfigClick: (index: number) => void
 	onConfigRemove: (index: number) => void
 	onNewConfigClick: (krameriusJob: EnrichmentKrameriusJob) => void

@@ -24,7 +24,9 @@ type Delimiter = '\t' | ','
 
 const defaultParams: Params = {
 	filters: [],
+	sorting: [],
 	includeFields: [],
+	excludeFields: [],
 }
 
 const defaultTeiParams: TeiExportParams = {

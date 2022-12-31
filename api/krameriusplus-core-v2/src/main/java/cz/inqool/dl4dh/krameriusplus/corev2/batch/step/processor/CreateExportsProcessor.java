@@ -68,7 +68,7 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
         List<Publication> children = publicationProvider.findChildren(publication.getId());
         Long childrenOrder = 0L;
         for (Publication child : children) {
-            export.putChild(childrenOrder, createExport(child, export, childrenOrder));
+            export.addChild(childrenOrder, createExport(child, export, childrenOrder));
 
             childrenOrder++;
         }

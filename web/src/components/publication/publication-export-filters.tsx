@@ -1,13 +1,12 @@
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import CloseIcon from '@material-ui/icons/Close'
+import { Button, Grid, IconButton, TextField, Typography } from '@mui/material'
 import { v4 } from 'uuid'
-import { Grid, Button, IconButton, Typography, TextField } from '@mui/material'
-
-import { TeiParams, Params } from '../../models'
-import { Filter } from '../../models/filter'
+import { Params, TeiParams } from '../../models'
+import { EqFilter } from '../../models/filter'
 
 type Props = {
-	filters: Filter[]
+	filters: EqFilter[]
 	setParams: React.Dispatch<React.SetStateAction<Params | TeiParams>>
 }
 

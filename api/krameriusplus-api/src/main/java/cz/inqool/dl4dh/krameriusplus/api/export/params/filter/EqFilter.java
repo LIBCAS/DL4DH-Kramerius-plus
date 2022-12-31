@@ -2,16 +2,13 @@ package cz.inqool.dl4dh.krameriusplus.api.export.params.filter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class EqFilter extends Filter {
 
-    @Getter
-    private final String field;
+    private String field;
 
-    private final Object value;
-
-    public EqFilter(@JsonProperty("field") String field, @JsonProperty("value") Object value) {
-        this.field = field;
-        this.value = value;
-    }
+    private Object value;
 }

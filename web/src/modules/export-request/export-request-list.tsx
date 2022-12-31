@@ -8,11 +8,11 @@ import {
 import { listExportRequests } from 'api/export-api'
 import { BulkExport } from 'models/bulk-export'
 import { ExportRequest } from 'models/request/export-request'
-import { ExportRequestFilterDto } from 'models/export-request/export-request-filter-dto'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter } from 'utils/formatters'
 import { User } from 'models/domain/user'
+import { ExportRequestFilterDto } from 'pages/export/export-request-list'
 
 const exportDoneFormatter = (params: GridValueFormatterParams) => {
 	// if ((params.value as BulkExport).fileRef) {

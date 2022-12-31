@@ -1,9 +1,14 @@
 import { Grid } from '@mui/material'
-import { ExportRequestFilterDto } from 'models/export-request/export-request-filter-dto'
 import { ExportRequestFilter } from 'modules/export-request/export-request-filter'
 import { ExportRequestList } from 'modules/export-request/export-request-list'
 import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useState } from 'react'
+
+export interface ExportRequestFilterDto {
+	name?: string
+	owner?: string
+	isFinished?: boolean
+}
 
 export const ExportRequestListPage: FC = () => {
 	const [filter, setFilter] = useState<ExportRequestFilterDto>({})

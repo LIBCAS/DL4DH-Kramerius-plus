@@ -1,11 +1,11 @@
 import { Grid } from '@mui/material'
 import { EnrichmentKrameriusJob } from '../../../enums/enrichment-kramerius-job'
-import { EnrichmentJobEventConfig } from '../../../models/job/config/enrichment-job-event-config'
+import { EnrichmentJobConfig } from '../../../models/job/config/enrichment-job-config'
 import { ConfigButtons } from './config-buttons'
 import { ConfigList } from './config-list'
 
 type Props = {
-	configs: EnrichmentJobEventConfig[]
+	configs: EnrichmentJobConfig[]
 	onConfigClick: (index: number) => void
 	onConfigRemove: (index: number) => void
 	onNewConfigClick: (KrameriusJob: EnrichmentKrameriusJob) => void

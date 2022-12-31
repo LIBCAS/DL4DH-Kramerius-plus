@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Paper, TextField, Typography } from '@mui/material'
-import { ExportRequestFilterDto } from 'models/export-request/export-request-filter-dto'
+import { ExportRequestFilterDto } from 'pages/export/export-request-list'
 import { ChangeEvent, FC, useState } from 'react'
 
 type Props = {

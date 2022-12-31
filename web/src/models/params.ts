@@ -4,8 +4,8 @@ import { Paging } from './paging'
 
 export interface Params {
 	paging?: Paging
-	sort?: Sort
-	filters?: Filter[]
-	includeFields?: string[]
-	excludeFields?: string[]
+	sorting: Sort[]
+	filters: Filter[]
+	includeFields: string[]
+	excludeFields: string[]
 }

@@ -1,34 +1,10 @@
-import {
-	Grid,
-	Typography,
-	Button,
-	Box,
-	Dialog,
-	DialogTitle,
-	DialogContent,
-	FormGroup,
-	Checkbox,
-	FormControlLabel,
-	TextField,
-	DialogActions,
-	FormControl,
-	Stack,
-} from '@mui/material'
-import { EnrichmentAccordion } from './enrichment-accordion'
-import { FormEvent, Fragment, useState } from 'react'
-import { JobPlanCreate } from '../../models/job/job-plan-create'
-import { EnrichmentKrameriusJob } from '../../enums/enrichment-kramerius-job'
-import { EnrichmentJobEventConfig } from '../../models/job/config/enrichment-job-event-config'
-import { ConfigDialog } from './config-accordion/config-dialog'
-import { toast } from 'react-toastify'
-import { enrich } from '../../api/enrichment-api'
-import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
-import { KrameriusJob } from 'enums/kramerius-job'
-import React from 'react'
+import { Box } from '@mui/material'
+import React, { FormEvent } from 'react'
+import { EnrichmentJobConfig } from '../../models/job/config/enrichment-job-config'
 
 export type CurrentConfig = {
 	index?: number
-	config: EnrichmentJobEventConfig
+	config: EnrichmentJobConfig
 }
 
 const initialPlan = {
