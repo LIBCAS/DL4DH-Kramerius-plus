@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
+import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.utils.ZipArchiver;
@@ -30,6 +31,11 @@ public class IncludeChildExportsProcessor implements ItemProcessor<Export, Expor
 
         try (InputStream is = fileService.find(item.getFileRef().getId()).open()) {
             zipArchiver.unzip(is, childPath);
+        }
+
+        // propagate state up to indicate export is not full
+        if (item.getState().isIncomplete()) {
+            item.getParent().setState(ExportState.PARTIAL);
         }
 
         return item;

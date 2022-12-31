@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.export.export;
 
 import cz.inqool.dl4dh.krameriusplus.api.ExportFormat;
+import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
@@ -31,6 +32,10 @@ public class Export extends DatedObject {
 
     @ManyToOne
     private Export parent;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private ExportState state = ExportState.CREATED;
 
     @Enumerated(EnumType.STRING)
     private ExportFormat format;

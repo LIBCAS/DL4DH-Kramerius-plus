@@ -302,6 +302,10 @@
             <column name="updated" type="timestamp"/>
             <column name="deleted" type="timestamp"/>
 
+            <column name="state" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="publication_id" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>

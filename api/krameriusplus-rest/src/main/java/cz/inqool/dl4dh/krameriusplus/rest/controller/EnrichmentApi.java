@@ -31,7 +31,7 @@ public class EnrichmentApi {
     @Operation(summary = "Create an Enrichment request. An EnrichmentRequest consists of a collection of JobPlans, " +
             "where each JobPlan is a sequence of JobEvents for a given publication.")
     @ApiResponse(responseCode = "200", description = "OK")
-    @PostMapping(produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/enrich", produces = APPLICATION_JSON_VALUE)
     public EnrichmentRequestDto enrich(@Valid @RequestBody EnrichmentRequestCreateDto requestDto) {
         return facade.enrich(requestDto);
     }

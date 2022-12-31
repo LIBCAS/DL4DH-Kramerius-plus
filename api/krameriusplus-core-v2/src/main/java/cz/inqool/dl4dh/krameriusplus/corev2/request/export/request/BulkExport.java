@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.export.request;
 
-import cz.inqool.dl4dh.krameriusplus.api.export.BulkExportState;
+import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import lombok.Getter;
@@ -25,6 +25,6 @@ public class BulkExport {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private BulkExportState state;
+    private ExportState state;
 
 }

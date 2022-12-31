@@ -2,9 +2,9 @@ package cz.inqool.dl4dh.krameriusplus.corev2.request.export.request;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
-import cz.inqool.dl4dh.krameriusplus.api.export.BulkExportState;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.service.DatedService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
@@ -41,7 +41,7 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
 
     private BulkExport createBulkExport() {
         BulkExport bulkExport = new BulkExport();
-        bulkExport.setState(BulkExportState.CREATED);
+        bulkExport.setState(ExportState.CREATED);
 
         return bulkExport;
     }

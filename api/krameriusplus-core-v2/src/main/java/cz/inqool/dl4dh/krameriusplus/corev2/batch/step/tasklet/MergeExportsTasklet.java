@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.tasklet;
 
-import cz.inqool.dl4dh.krameriusplus.api.export.BulkExportState;
+import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
+import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.corev2.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
@@ -49,7 +50,7 @@ public class MergeExportsTasklet implements Tasklet {
 
         boolean isComplete = true;
         if (allIncomplete(exportRequest)) {
-            exportRequest.getBulkExport().setState(BulkExportState.FAILED);
+            exportRequest.getBulkExport().setState(ExportState.FAILED);
             return RepeatStatus.FINISHED;
         }
 
@@ -62,7 +63,8 @@ public class MergeExportsTasklet implements Tasklet {
                     zipArchiver.unzip(inputStream, tmpUnzipDirectory.resolve(export.getPublicationId().substring(5)));
                 }
             }
-            else {
+            // either entire export tree is missing, or some part of it was incomplete
+            else if (fileRef == null || export.getExportJob().getExecutionStatus().equals(ExecutionStatus.FAILED)){
                 isComplete = false;
             }
         }
@@ -76,7 +78,7 @@ public class MergeExportsTasklet implements Tasklet {
                     tmpName + ".zip",
                     "application/zip");
             exportRequest.getBulkExport().setFile(fileRef);
-            exportRequest.getBulkExport().setState(isComplete ? BulkExportState.SUCCESSFUL : BulkExportState.PARTIAL);
+            exportRequest.getBulkExport().setState(isComplete ? ExportState.SUCCESSFUL : ExportState.PARTIAL);
             exportRequestStore.save(exportRequest);
         }
 
