@@ -21,10 +21,7 @@ public class FileRefFacade implements FileFacade {
 
     @Override
     public InputStream getFileContent(String id) {
-        FileRef fileRef = service.find(id);
-        throw new UnsupportedOperationException("Not Yet Implemented.");
-        // check if stream closing is handled properly
-        // return fileRef.open();
+        return service.find(id).open();
     }
 
     @Autowired
