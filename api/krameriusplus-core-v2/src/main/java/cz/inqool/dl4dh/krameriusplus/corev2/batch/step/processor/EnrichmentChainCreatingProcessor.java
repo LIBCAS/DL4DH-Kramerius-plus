@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.config.enrichment.EnrichmentJobConfig;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChainStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
@@ -70,7 +71,7 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
         EnrichmentChain enrichmentChain = new EnrichmentChain();
         enrichmentChain.setPublicationId(publicationData.getPublicationId());
         enrichmentChain.setPublicationTitle(publicationData.getPublicationTitle());
-        enrichmentChain.setModel(publicationData.getModel());
+        enrichmentChain.setModel(PublicationModel.fromString(publicationData.getModel()));
         enrichmentChain.setOrder(chainOrder);
         enrichmentChain.setJobs(createJobs(publicationData.getPublicationId()));
 

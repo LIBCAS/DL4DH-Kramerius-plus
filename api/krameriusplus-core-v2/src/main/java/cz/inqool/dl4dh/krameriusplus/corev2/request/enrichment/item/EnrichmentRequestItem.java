@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import lombok.Getter;
@@ -24,7 +25,8 @@ public class EnrichmentRequestItem extends DomainObject {
     private String publicationTitle;
 
     @NotNull
-    private String model;
+    @Enumerated(EnumType.STRING)
+    private PublicationModel model;
 
     @OneToMany
     @JoinColumn(name = "request_item_id")

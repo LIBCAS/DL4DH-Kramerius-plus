@@ -332,6 +332,9 @@
             <column name="format" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="model" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createTable tableName="kplus_export_request_item">
@@ -355,6 +358,9 @@
                 <constraints foreignKeyName="export_request_item_root_export_FK"
                              referencedTableName="kplus_export"
                              referencedColumnNames="id"/>
+            </column>
+            <column name="model" type="varchar(255)">
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
