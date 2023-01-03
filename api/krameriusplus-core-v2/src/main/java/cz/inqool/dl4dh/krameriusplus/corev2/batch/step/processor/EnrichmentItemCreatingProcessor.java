@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.store.PublicationStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
@@ -31,7 +31,7 @@ public class EnrichmentItemCreatingProcessor implements ItemProcessor<String, En
         EnrichmentRequestItem enrichmentRequestItem = new EnrichmentRequestItem();
         enrichmentRequestItem.setPublicationId(publication.getId());
         enrichmentRequestItem.setPublicationTitle(publication.getTitle());
-        enrichmentRequestItem.setModel(PublicationModel.fromString(publication.getModel()));
+        enrichmentRequestItem.setModel(KrameriusModel.fromString(publication.getModel()));
         enrichmentRequestItem.setOrder(orderCounter++);
 
         return enrichmentRequestItem;

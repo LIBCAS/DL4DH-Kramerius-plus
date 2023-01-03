@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
@@ -25,7 +25,7 @@ public class EnrichmentChain extends DomainObject {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private PublicationModel model;
+    private KrameriusModel model;
 
     @OneToMany
     @JoinTable(

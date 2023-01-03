@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
 
-import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PERIODICAL_VOLUME;
+import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PublicationModelName.PERIODICAL_VOLUME;
+
 
 /**
  * Represents a volume for a periodical. One periodical can have multiple volumes. Volumes are mostly identified

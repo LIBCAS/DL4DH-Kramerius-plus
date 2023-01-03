@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.api.export;
 import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
 import cz.inqool.dl4dh.krameriusplus.api.domain.DatedObjectDto;
 import cz.inqool.dl4dh.krameriusplus.api.domain.FileRefDto;
-import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +24,7 @@ public class ExportDto extends DatedObjectDto {
 
     private Long order;
 
-    private PublicationModel model;
+    private KrameriusModel model;
 
     private List<ExportDto> children = new ArrayList<>();
 

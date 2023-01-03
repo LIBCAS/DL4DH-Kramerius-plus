@@ -1,23 +1,42 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication;
 
-/**
- * @author Norbert Bodnar
- */
-public class KrameriusModel {
+import lombok.Getter;
 
-    public static final String MONOGRAPH = "monograph";
+public enum KrameriusModel {
+    MONOGRAPH(PublicationModelName.MONOGRAPH),
+    MONOGRAPH_UNIT(PublicationModelName.MONOGRAPH_UNIT),
+    PERIODICAL(PublicationModelName.PERIODICAL),
+    PERIODICAL_VOLUME(PublicationModelName.PERIODICAL_VOLUME),
+    PERIODICAL_ITEM(PublicationModelName.PERIODICAL_ITEM),
+    INTERNAL_PART(PublicationModelName.INTERNAL_PART),
+    SUPPLEMENT(PublicationModelName.SUPPLEMENT),
+    PAGE(PublicationModelName.PAGE);
 
-    public static final String MONOGRAPH_UNIT = "monographunit";
+    @Getter
+    private final String name;
 
-    public static final String PERIODICAL = "periodical";
+    KrameriusModel(String name) {
+        this.name = name;
+    }
 
-    public static final String PERIODICAL_VOLUME = "periodicalvolume";
+    public static KrameriusModel fromString(String name) {
+        for (KrameriusModel value : KrameriusModel.values()) {
+            if (value.name.equals(name)) {
+                return value;
+            }
+        }
 
-    public static final String PERIODICAL_ITEM = "periodicalitem";
+        throw new IllegalArgumentException("name: " + name + " not allowed in PublicationModel");
+    }
 
-    public static final String SUPPLEMENT = "supplement";
-
-    public static final String PAGE = "page";
-
-    public static final String INTERNAL_PART = "internalpart";
+    public static class PublicationModelName {
+        public static final String MONOGRAPH = "monograph";
+        public static final String MONOGRAPH_UNIT = "monographunit";
+        public static final String PERIODICAL = "periodical";
+        public static final String PERIODICAL_VOLUME = "periodicalvolume";
+        public static final String PERIODICAL_ITEM = "periodicalitem";
+        public static final String INTERNAL_PART = "internalpart";
+        public static final String SUPPLEMENT = "supplement";
+        public static final String PAGE = "page";
+    }
 }
