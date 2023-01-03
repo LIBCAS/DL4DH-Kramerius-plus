@@ -116,6 +116,7 @@
                              referencedColumnNames="id"/>
             </column>
             <column name="name" type="varchar(1000)"/>
+            <column name="state" type="varchar(255)"/>
         </createTable>
 
         <createTable tableName="kplus_request_publication_id">
@@ -173,6 +174,7 @@
                              referencedTableName="kplus_enrichment_request"
                              referencedColumnNames="id"/>
             </column>
+            <column name="state" type="varchar(255)"/>
         </createTable>
 
         <createTable tableName="kplus_enrichment_chain">

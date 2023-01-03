@@ -30,7 +30,7 @@ public class JobApi {
         this.facade = facade;
     }
 
-    @Operation(summary = "List enriching jobs.")
+    @Operation(summary = "List enrichment jobs.")
     @GetMapping("/enrichment/list")
     public Result<KrameriusJobInstanceDto> listEnrichingJobs(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                                              @RequestParam(value = "page", defaultValue = "0") int page,
@@ -48,7 +48,7 @@ public class JobApi {
                         executionStatus, includeDeleted), page, pageSize);
     }
 
-    @Operation(summary = "List exporting jobs.")
+    @Operation(summary = "List export jobs.")
     @GetMapping("/export/list")
     public Result<KrameriusJobInstanceDto> listExportingJob(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                                  @RequestParam(value = "page", defaultValue = "0") int page,

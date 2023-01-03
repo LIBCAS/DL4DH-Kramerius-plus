@@ -40,12 +40,12 @@ const pages: NavbarItem[] = [
 				link: '/enrichment',
 				onlyAuthenticated: true,
 			},
-			{
-				name: 'Enrichment jobs',
-				label: 'Úlohy obohacení',
-				link: '/jobs/enriching',
-				onlyAuthenticated: true,
-			},
+			// {
+			// 	name: 'Enrichment jobs',
+			// 	label: 'Úlohy obohacení',
+			// 	link: '/jobs/enrichment',
+			// 	onlyAuthenticated: true,
+			// },
 		],
 	},
 	{
@@ -65,12 +65,12 @@ const pages: NavbarItem[] = [
 				link: '/exports',
 				onlyAuthenticated: true,
 			},
-			{
-				name: 'Export jobs',
-				label: 'Úlohy exportování',
-				link: '/jobs/exporting',
-				onlyAuthenticated: true,
-			},
+			// {
+			// 	name: 'Export jobs',
+			// 	label: 'Úlohy exportování',
+			// 	link: '/jobs/export',
+			// 	onlyAuthenticated: true,
+			// },
 		],
 	},
 ]

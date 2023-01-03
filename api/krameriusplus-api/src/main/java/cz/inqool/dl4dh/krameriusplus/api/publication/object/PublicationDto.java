@@ -36,6 +36,4 @@ public abstract class PublicationDto extends DigitalObjectDto {
     private List<String> donator = new ArrayList<>();
 
     private Long pageCount;
-
-    public abstract String getModel();
 }

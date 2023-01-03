@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.PeriodicalVolumeDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
@@ -30,8 +31,8 @@ public class PeriodicalVolume extends Publication {
     private String volumeYear;
 
     @Override
-    public String getModel() {
-        return PERIODICAL_VOLUME;
+    public KrameriusModel getModel() {
+        return KrameriusModel.PERIODICAL_VOLUME;
     }
 
     @Override

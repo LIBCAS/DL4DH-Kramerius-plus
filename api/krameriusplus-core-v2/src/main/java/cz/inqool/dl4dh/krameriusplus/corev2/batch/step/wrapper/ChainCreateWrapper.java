@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,6 @@ public class ChainCreateWrapper {
     public static class PublicationData {
         private String publicationId;
         private String publicationTitle;
-        private String model;
+        private KrameriusModel model;
     }
 }

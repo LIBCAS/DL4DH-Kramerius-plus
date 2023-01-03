@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.MonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
@@ -25,8 +26,8 @@ public class MonographUnit extends Publication {
     private String partTitle;
 
     @Override
-    public String getModel() {
-        return MONOGRAPH_UNIT;
+    public KrameriusModel getModel() {
+        return KrameriusModel.MONOGRAPH_UNIT;
     }
 
     @Override

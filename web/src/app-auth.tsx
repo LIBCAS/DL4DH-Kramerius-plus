@@ -47,7 +47,10 @@ export const AppAuth: FC = () => {
 							/>
 						</Route>
 						<Route path="jobs">
-							<Route element={<JobEventListPage />} index />
+							{/* <Route
+								element={<JobEventListPage />}
+								path="enrichment/:jobType"
+							/> */}
 							<Route
 								element={<KrameriusJobInstanceDetailPage />}
 								path=":krameriusJobInstanceId"

@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.wrapper.ChainCreateWrapper;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
@@ -71,7 +70,7 @@ public class EnrichmentChainCreatingProcessor implements ItemProcessor<ChainCrea
         EnrichmentChain enrichmentChain = new EnrichmentChain();
         enrichmentChain.setPublicationId(publicationData.getPublicationId());
         enrichmentChain.setPublicationTitle(publicationData.getPublicationTitle());
-        enrichmentChain.setModel(KrameriusModel.fromString(publicationData.getModel()));
+        enrichmentChain.setModel(publicationData.getModel());
         enrichmentChain.setOrder(chainOrder);
         enrichmentChain.setJobs(createJobs(publicationData.getPublicationId()));
 

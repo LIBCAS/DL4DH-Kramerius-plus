@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain;
 
+import cz.inqool.dl4dh.krameriusplus.api.RequestState;
 import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
@@ -10,6 +11,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+
+import static cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus.*;
 
 @Getter
 @Setter
@@ -58,5 +61,21 @@ public class EnrichmentChain extends DomainObject {
         }
 
         return Optional.empty();
+    }
+
+    public RequestState getState() {
+        if (jobs.values().stream().anyMatch(job -> STARTED.equals(job.getExecutionStatus()))) {
+            return RequestState.RUNNING;
+        }
+
+        if (jobs.values().stream().allMatch(job -> FAILED.equals(job.getExecutionStatus()))) {
+            return RequestState.FAILED;
+        }
+
+        if (jobs.values().stream().allMatch(job -> COMPLETED.equals(job.getExecutionStatus()))) {
+            return RequestState.COMPLETED;
+        }
+
+        return RequestState.PARTIAL;
     }
 }

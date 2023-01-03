@@ -17,4 +17,6 @@ public abstract class RequestDto extends DatedObjectDto {
     private List<String> publicationIds = new ArrayList<>();
 
     private UserDto owner;
+
+    private RequestState state;
 }

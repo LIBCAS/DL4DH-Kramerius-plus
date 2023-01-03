@@ -12,7 +12,15 @@ public class KrameriusJobListenerContainer {
 
     private List<KrameriusJobListener> listeners = new ArrayList<>();
 
-    public void applyAfterJobListeners(KrameriusJobInstance job) {
+    public synchronized void applyBeforeJobListeners(KrameriusJobInstance job) {
+        for (KrameriusJobListener listener : listeners) {
+            if (listener.supports(job)) {
+                listener.beforeJob(job);
+            }
+        }
+    }
+
+    public synchronized void applyAfterJobListeners(KrameriusJobInstance job) {
         for (KrameriusJobListener listener : listeners) {
             if (listener.supports(job)) {
                 listener.afterJob(job);

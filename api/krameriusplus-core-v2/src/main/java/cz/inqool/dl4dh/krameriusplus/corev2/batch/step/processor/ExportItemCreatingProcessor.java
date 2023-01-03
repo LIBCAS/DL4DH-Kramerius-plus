@@ -1,7 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.PublicationProvider;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
@@ -39,7 +38,7 @@ public class ExportItemCreatingProcessor implements ItemProcessor<String, Export
         ExportRequestItem requestItem = new ExportRequestItem();
         requestItem.setPublicationId(publication.getId());
         requestItem.setPublicationTitle(publication.getTitle());
-        requestItem.setModel(KrameriusModel.fromString(publication.getModel()));
+        requestItem.setModel(publication.getModel());
         requestItem.setExportRequest(exportRequest);
         requestItem.setOrder(counter++);
 

@@ -242,6 +242,7 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         dto.setIndex(entity.getIndex());
         dto.setRootId(entity.getRootId());
         dto.setTitle(entity.getTitle());
+        dto.setModel(entity.getModel());
 
         dto.setCreated(entity.getCreated());
         dto.setUpdated(entity.getUpdated());

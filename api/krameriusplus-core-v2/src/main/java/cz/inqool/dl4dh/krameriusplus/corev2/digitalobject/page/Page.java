@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.PageDto;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMetadata;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
@@ -39,8 +40,8 @@ public class Page extends DigitalObject {
     private String teiBodyFileId;
 
     @Override
-    public String getModel() {
-        return PAGE;
+    public KrameriusModel getModel() {
+        return KrameriusModel.PAGE;
     }
 
     public PageDto accept(DigitalObjectMapperVisitor visitor) {

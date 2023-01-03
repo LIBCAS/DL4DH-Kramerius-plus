@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.PeriodicalItemDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
@@ -25,8 +26,8 @@ public class PeriodicalItem extends Publication {
     private String partNumber;
 
     @Override
-    public String getModel() {
-        return PERIODICAL_ITEM;
+    public KrameriusModel getModel() {
+        return KrameriusModel.PERIODICAL_ITEM;
     }
 
     @Override

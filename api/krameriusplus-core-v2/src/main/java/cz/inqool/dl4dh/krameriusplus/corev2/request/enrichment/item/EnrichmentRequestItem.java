@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item;
 
+import cz.inqool.dl4dh.krameriusplus.api.RequestState;
 import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
@@ -38,4 +39,7 @@ public class EnrichmentRequestItem extends DomainObject {
 
     @ManyToOne
     private EnrichmentRequest enrichmentRequest;
+
+    @Enumerated(EnumType.STRING)
+    private RequestState state = RequestState.CREATED;
 }

@@ -29,6 +29,11 @@ public class ExportJobListener implements KrameriusJobListener {
     private JobEnqueueService jobEnqueueService;
 
     @Override
+    public void beforeJob(KrameriusJobInstance jobInstance) {
+        // TODO: set request state
+    }
+
+    @Override
     public void afterJob(KrameriusJobInstance jobInstance) {
         // Export jobs from one ExportRequestItem must run in sequence,
         // because otherwise it would be hard to determine, when to run

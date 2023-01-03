@@ -1,17 +1,23 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job.listener;
 
+import cz.inqool.dl4dh.krameriusplus.api.RequestState;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
 import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChainStore;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
+import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static cz.inqool.dl4dh.krameriusplus.api.RequestState.CREATED;
+import static cz.inqool.dl4dh.krameriusplus.api.RequestState.RUNNING;
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.*;
 
 @Component
@@ -25,12 +31,47 @@ public class EnrichmentChainListener implements KrameriusJobListener {
 
     @Override
     @Transactional
+    public void beforeJob(KrameriusJobInstance jobInstance) {
+        EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
+        EnrichmentRequestItem requestItem = chain.getRequestItem();
+        EnrichmentRequest request = requestItem.getEnrichmentRequest();
+
+        if (CREATED.equals(requestItem.getState())) {
+            requestItem.setState(RUNNING);
+        }
+
+        if (CREATED.equals(request.getState())) {
+            request.setState(RUNNING);
+        }
+    }
+
+    @Override
+    @Transactional
     public void afterJob(KrameriusJobInstance jobInstance) {
         EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
 
         Optional<KrameriusJobInstance> nextInstance = chain.getNextToExecute(jobInstance);
 
-        nextInstance.ifPresent(krameriusJobInstance -> enqueueService.enqueue(krameriusJobInstance));
+        if (nextInstance.isPresent()) {
+            enqueueService.enqueue(nextInstance.get());
+        } else {
+            // after last job in chain
+            EnrichmentRequestItem requestItem = chain.getRequestItem();
+
+            List<RequestState> requestChainsStates = requestItem.getEnrichmentChains().stream().map(EnrichmentChain::getState).collect(Collectors.toList());
+            // if all chains in requestItem finished
+            if (requestChainsStates.stream().allMatch(chainState -> !RUNNING.equals(chainState) && !CREATED.equals(chainState))) {
+                requestItem.setState(RequestState.from(requestChainsStates));
+            }
+
+            EnrichmentRequest request = requestItem.getEnrichmentRequest();
+
+            List<RequestState> requestItemsStates = request.getItems().stream().map(EnrichmentRequestItem::getState).collect(Collectors.toList());
+            // if all items in request finished
+            if (requestItemsStates.stream().allMatch(itemState -> !RUNNING.equals(itemState) && !CREATED.equals(itemState))) {
+                request.setState(RequestState.from(requestItemsStates));
+            }
+        }
     }
 
     @Override

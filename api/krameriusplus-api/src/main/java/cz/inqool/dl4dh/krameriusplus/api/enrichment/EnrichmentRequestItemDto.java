@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.enrichment;
 
+import cz.inqool.dl4dh.krameriusplus.api.RequestState;
 import cz.inqool.dl4dh.krameriusplus.api.domain.DomainObjectDto;
 import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import lombok.Getter;
@@ -19,4 +20,6 @@ public class EnrichmentRequestItemDto extends DomainObjectDto {
     private KrameriusModel model;
 
     private List<EnrichmentChainDto> enrichmentChains = new ArrayList<>();
+
+    private RequestState state;
 }

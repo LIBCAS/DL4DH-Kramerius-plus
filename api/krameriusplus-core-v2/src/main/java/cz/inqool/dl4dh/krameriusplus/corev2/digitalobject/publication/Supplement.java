@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.SupplementDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectMapperVisitor;
 import lombok.Getter;
@@ -17,8 +18,8 @@ public class Supplement extends Publication {
     private String date;
 
     @Override
-    public String getModel() {
-        return SUPPLEMENT;
+    public KrameriusModel getModel() {
+        return KrameriusModel.SUPPLEMENT;
     }
 
     @Override

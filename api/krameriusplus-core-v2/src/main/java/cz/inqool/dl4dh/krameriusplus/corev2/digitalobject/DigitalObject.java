@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject;
 
 import cz.inqool.dl4dh.krameriusplus.api.publication.DigitalObjectContext;
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.document.DomainDocument;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,5 +27,5 @@ public abstract class DigitalObject extends DomainDocument {
 
     private List<DigitalObjectContext> context = new ArrayList<>();
 
-    public abstract String getModel();
+    public abstract KrameriusModel getModel();
 }

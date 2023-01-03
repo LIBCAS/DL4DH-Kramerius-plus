@@ -55,6 +55,8 @@ public class JobRunner {
         }
 
         try {
+            listenerContainer.applyBeforeJobListeners(krameriusJobInstance);
+
             log.info("Job: [" + job + "] launched with the following parameters: [" + jobParameters + "]");
             job.execute(jobExecution);
             log.info("Job: [" + job + "] completed with the following parameters: [" + jobParameters +

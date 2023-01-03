@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.InternalPartDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectMapperVisitor;
 import lombok.Getter;
@@ -23,8 +24,8 @@ public class InternalPart extends Publication {
     private String pageNumber;
 
     @Override
-    public String getModel() {
-        return INTERNAL_PART;
+    public KrameriusModel getModel() {
+        return KrameriusModel.INTERNAL_PART;
     }
 
     @Override

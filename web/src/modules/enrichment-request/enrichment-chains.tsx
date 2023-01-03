@@ -28,7 +28,7 @@ export const EnrichmentChains: FC<{ chains: EnrichmentChain[] }> = ({
 									<TableCell>Pořadí</TableCell>
 									<TableCell>UUID Publikace</TableCell>
 									<TableCell>Název publikace</TableCell>
-									<TableCell>Typ publikace</TableCell>
+									<TableCell>Model</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
