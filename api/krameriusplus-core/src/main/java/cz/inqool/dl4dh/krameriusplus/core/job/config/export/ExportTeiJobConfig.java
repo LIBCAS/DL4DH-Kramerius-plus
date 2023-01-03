@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.core.job.config.TeiParamsJsonConverter;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -17,6 +18,7 @@ import javax.persistence.Lob;
 public class ExportTeiJobConfig extends ExportJobConfig {
 
     @Lob
+    @Column(columnDefinition = "text")
     @Convert(converter = TeiParamsJsonConverter.class)
     private TeiParams teiParams;
 

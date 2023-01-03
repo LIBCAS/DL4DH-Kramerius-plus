@@ -20,6 +20,7 @@ public class StepError extends DomainObject {
     private String shortMessage;
 
     @Lob
+    @Column(columnDefinition = "text")
     private String stackTrace;
 
     @Column(name = "error_order")

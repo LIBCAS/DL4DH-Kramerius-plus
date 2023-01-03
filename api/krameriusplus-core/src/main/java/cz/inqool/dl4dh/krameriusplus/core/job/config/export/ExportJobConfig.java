@@ -19,6 +19,7 @@ public abstract class ExportJobConfig extends JobConfig {
 
     @NotNull
     @Lob
+    @Column(columnDefinition = "text")
     @Convert(converter = ParamsJsonConverter.class)
     private ParamsDto params;
 
