@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <name>Kramerius+ - core v2</name>
+    <name>Kramerius+ - core</name>
     <version>${revision}</version>
 
-    <artifactId>krameriusplus-core-v2</artifactId>
+    <artifactId>krameriusplus-core</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
