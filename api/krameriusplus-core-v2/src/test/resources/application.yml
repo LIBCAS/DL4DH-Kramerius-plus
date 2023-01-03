@@ -29,3 +29,5 @@ system:
   enrichment:
     ndk:
       path: .
+  security:
+    secret: placeholder
