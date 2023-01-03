@@ -101,9 +101,12 @@ public class SyncTeiMessenger implements TeiMessenger {
     public String finishMerge(String sessionId, TeiParams teiParams) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
-            builder.part("NameTag", teiParams.getNameTagParams());
-            builder.part("UDPipe", teiParams.getUdPipeParams());
-            builder.part("ALTO", teiParams.getAltoParams());
+
+            if (teiParams != null) {
+                builder.part("NameTag", teiParams.getNameTagParams());
+                builder.part("UDPipe", teiParams.getUdPipeParams());
+                builder.part("ALTO", teiParams.getAltoParams());
+            }
 
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/finish")
                     .queryParam("session", sessionId)

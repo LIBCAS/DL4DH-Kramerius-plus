@@ -7,4 +7,5 @@ public class ExecutionContextKey {
     public static final String NUMBER_OF_ITEMS = "NUMBER_OF_ITEMS";
     public static final String PUBLICATION_TITLE = "PUBLICATION_TITLE";
     public static final String PUBLICATION_MODEL = "PUBLICATION_MODEL";
+    public static final String TEI_SESSION_ID = "TEI_SESSION_ID";
 }

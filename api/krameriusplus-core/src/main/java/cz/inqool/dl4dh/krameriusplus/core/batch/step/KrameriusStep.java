@@ -46,6 +46,12 @@ public class KrameriusStep {
 
     public static final String EXPORT_CSV_PUBLICATION_STEP = "EXPORT_CSV_PUBLICATION_STEP";
 
+    public static final String EXPORT_TEI_PREPARE_STEP = "EXPORT_TEI_PREPARE_STEP";
+
+    public static final String EXPORT_TEI_MERGE_PAGES_STEP = "EXPORT_TEI_MERGE_PAGES_STEP";
+
+    public static final String EXPORT_TEI_FINISH_STEP = "EXPORT_TEI_FINISH_STEP";
+
     public static final String CREATE_EXPORT_ITEMS_STEP = "CREATE_EXPORT_ITEMS_STEP";
 
     public static final String CREATE_EXPORTS_STEP = "CREATE_EXPORTS_STEP";

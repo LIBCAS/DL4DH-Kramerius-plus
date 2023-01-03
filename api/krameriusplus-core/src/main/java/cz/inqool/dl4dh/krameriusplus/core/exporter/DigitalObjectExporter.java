@@ -31,13 +31,14 @@ public class DigitalObjectExporter {
 
                 Files.write(file, item.getContent().getBytes(StandardCharsets.UTF_8));
 
-                printer.printRecord(toRecord(item, itemFilename));
+                if (item.getDigitalObject() != null) {
+                    printer.printRecord(toRecord(item.getDigitalObject(), itemFilename));
+                }
             }
         }
     }
 
-    private Iterable<?> toRecord(DigitalObjectExport item, String itemFilename) {
-        DigitalObject digitalObject = item.getDigitalObject();
+    private Iterable<?> toRecord(DigitalObject digitalObject, String itemFilename) {
         return digitalObject.getIndex() == null ?
                 objectRecord(digitalObject, itemFilename) : indexedObjectRecord(digitalObject, itemFilename);
 
