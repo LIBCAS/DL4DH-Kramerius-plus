@@ -57,7 +57,7 @@
 			</dependency>
 
 			<dependency>
-				<artifactId>krameriusplus-core-v2</artifactId>
+				<artifactId>krameriusplus-core</artifactId>
 				<groupId>cz.inqool.dl4dh</groupId>
 				<version>${revision}</version>
 			</dependency>
