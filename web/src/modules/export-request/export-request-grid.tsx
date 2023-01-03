@@ -6,13 +6,12 @@ import {
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
-import { BulkExport } from 'models/bulk-export'
+import { User } from 'models/domain/user'
 import { ExportRequest } from 'models/request/export-request'
+import { ExportRequestFilterDto } from 'pages/export/export-request-list'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter } from 'utils/formatters'
-import { User } from 'models/domain/user'
-import { ExportRequestFilterDto } from 'pages/export/export-request-list'
 
 const exportDoneFormatter = (params: GridValueFormatterParams) => {
 	// if ((params.value as BulkExport).fileRef) {
@@ -22,7 +21,7 @@ const exportDoneFormatter = (params: GridValueFormatterParams) => {
 	return 'NE'
 }
 
-export const ExportRequestList: FC<{ filter: ExportRequestFilterDto }> = ({
+export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 	filter,
 }) => {
 	const [rowCount, setRowCount] = useState<number>()

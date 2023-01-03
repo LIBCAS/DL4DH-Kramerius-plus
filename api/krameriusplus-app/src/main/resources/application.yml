@@ -16,7 +16,7 @@ spring:
     console:
       enabled: true
   liquibase:
-    changeLog: classpath:/dbchangelog.xml
+    change-log: classpath:/dbchangelog.xml
   data:
     mongodb:
       auto-index-creation: true

@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
 import { ExportRequestFilter } from 'modules/export-request/export-request-filter'
-import { ExportRequestList } from 'modules/export-request/export-request-list'
+import { ExportRequestGrid } from 'modules/export-request/export-request-grid'
 import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useState } from 'react'
 
@@ -24,7 +24,7 @@ export const ExportRequestListPage: FC = () => {
 					<ExportRequestFilter onSubmit={onFilterSubmit} />
 				</Grid>
 				<Grid item xs={12}>
-					<ExportRequestList filter={filter} />
+					<ExportRequestGrid filter={filter} />
 				</Grid>
 			</Grid>
 		</PageWrapper>
