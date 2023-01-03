@@ -1,16 +1,16 @@
-import { EnrichmentRequest } from 'models/enrichment-request/enrichment-request'
-import { EnrichmentRequestFilterDto } from 'models/enrichment-request/enrichment-request-filter-dto'
-import { EnrichmentJobEventConfig } from 'models/job/config/enrichment/enrichment-job-event-config'
+import { EnrichmentRequest } from 'models/request/enrichment-request'
+import { EnrichmentJobConfig } from 'models/job/config/enrichment-job-config'
 import { QueryResults } from 'models/query-results'
+import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
 import { customFetch } from 'utils/custom-fetch'
 
 export const enrich = async (
 	publicationIds: string[],
-	configs: EnrichmentJobEventConfig[],
+	configs: EnrichmentJobConfig[],
 	name?: string,
 ): Promise<Response> => {
 	const trimmedIds = publicationIds.map(id => id.trim())
-	return await customFetch('/api/enrichment', {
+	return await customFetch('/api/enrichment/enrich', {
 		method: 'POST',
 		body: JSON.stringify({ publicationIds: trimmedIds, name, configs }),
 	})

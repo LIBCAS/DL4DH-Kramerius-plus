@@ -19,12 +19,12 @@ export type DigitalObjectModel =
 	| 'supplement'
 
 export const DigitalObjectModelMapping: Record<string, string> = {
-	monograph: 'Monografia',
-	monographunit: 'Časť monografie',
-	periodical: 'Periodikum',
-	periodicalvolume: 'Ročník periodika',
-	periodicalitem: 'Číslo periodika',
-	page: 'Stránka',
-	internalpart: 'Interná časť',
-	supplement: 'Príloha',
+	MONOGRAPH: 'Monografia',
+	MONOGRAPH_UNIT: 'Časť monografie',
+	PERIODICAL: 'Periodikum',
+	PERIODICAL_VOLUME: 'Ročník periodika',
+	PERIODICAL_ITEM: 'Číslo periodika',
+	PAGE: 'Stránka',
+	INTERNAL_PART: 'Interná časť',
+	SUPPLEMENT: 'Príloha',
 }

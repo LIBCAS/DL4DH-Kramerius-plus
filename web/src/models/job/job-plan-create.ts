@@ -1,7 +1,7 @@
-import { EnrichmentJobEventConfig } from './config/enrichment/enrichment-job-event-config'
+import { EnrichmentJobConfig } from './config/enrichment-job-config'
 
 export interface JobPlanCreate {
 	name?: string
 	publicationIds: string[]
-	configs: EnrichmentJobEventConfig[]
+	configs: EnrichmentJobConfig[]
 }

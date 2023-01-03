@@ -1,9 +1,18 @@
+import { Box, CircularProgress } from '@mui/material'
 import { FC } from 'react'
 
 export const Loading: FC = () => {
 	return (
-		<div className="spinner-container">
-			<div className="loading-spinner"></div>
-		</div>
+		<Box
+			alignContent="center"
+			alignItems="center"
+			display="flex"
+			flexDirection="column"
+			justifyContent="center"
+		>
+			<Box m="auto">
+				<CircularProgress />
+			</Box>
+		</Box>
 	)
 }

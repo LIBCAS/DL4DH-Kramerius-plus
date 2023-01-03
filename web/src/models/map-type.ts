@@ -1,3 +1,3 @@
 export interface MapType {
-	[key: string]: any
+	[key: string]: Date | string | number
 }

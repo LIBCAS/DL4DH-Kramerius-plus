@@ -1,5 +1,4 @@
 import { StepExecution } from 'models'
-import { ExitStatus } from 'models/exit-status'
 import { MapType } from 'models/map-type'
 import { JobParameter } from './job-parameter'
 
@@ -14,7 +13,9 @@ export interface JobExecution {
 	startTime?: Date
 	createTime?: Date
 	endTime?: Date
-	exitStatus: ExitStatus
+	lastUpdated?: Date
+	exitCode: string
+	exitDescription: string
 	jobConfigurationName: string
 	duration?: number
 	jobParameters: MapType

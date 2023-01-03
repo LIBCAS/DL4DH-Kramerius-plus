@@ -1,1 +1,1 @@
-export type JobType = 'enriching' | 'exporting'
+export type JobType = 'enrichment' | 'export'

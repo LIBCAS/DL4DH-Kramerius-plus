@@ -96,7 +96,7 @@ export const JobEventList = ({ jobType, filter }: Props) => {
 			const response = await listJobEvents(jobType, page, 10, filter)
 
 			if (response) {
-				setJobEvents(response.results)
+				setJobEvents(response.items)
 				setRowCount(response.total)
 			}
 		}

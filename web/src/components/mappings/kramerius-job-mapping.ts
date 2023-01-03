@@ -1,5 +1,5 @@
 export const KrameriusJobMapping: Record<string, string> = {
-	ENRICHMENT_KRAMERIUS: 'Inicializace dat',
+	CREATE_ENRICHMENT_REQUEST: 'Vytvoření žádosti o obohacení',
 	ENRICHMENT_EXTERNAL: 'Obohacení externími nástroji',
 	ENRICHMENT_NDK: 'Obohacení NDK',
 	ENRICHMENT_TEI: 'Obohacení TEI',

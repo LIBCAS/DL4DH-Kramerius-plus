@@ -8,7 +8,7 @@ export const PageWrapper: FC<{
 }> = ({ requireAuth, children }) => {
 	const token = localStorage.getItem('token')
 
-	const wrapped = <Box sx={{ p: 5 }}>{children}</Box>
+	const wrapped = <Box sx={{ p: 3 }}>{children}</Box>
 
 	return token || !requireAuth ? wrapped : <Navigate to={'/'} />
 }

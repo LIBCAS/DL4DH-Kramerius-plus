@@ -24,6 +24,14 @@
             <groupId>cz.inqool.dl4dh</groupId>
             <artifactId>krameriusplus-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cz.inqool.dl4dh</groupId>
+            <artifactId>krameriusplus-core-v2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cz.inqool.dl4dh</groupId>
+            <artifactId>krameriusplus-rest</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

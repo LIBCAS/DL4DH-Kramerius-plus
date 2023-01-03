@@ -1,25 +1,24 @@
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { Routes, Route, BrowserRouter } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-
-import { Navbar } from './components/navbar/navbar'
-import { PublicationListPage } from 'pages/publication/publication-list-page'
-import { HomePage } from 'pages/home-page'
-import { EnrichmentPage } from 'pages/enrichment/enrichment-page'
-import { JobEventListPage } from 'pages/job-event-list-page'
-import { JobEventDetailPage } from 'pages/job-event-detail-page'
-import { NotFoundPage } from 'pages/not-found-page'
-import { ReactKeycloakProvider } from '@react-keycloak/web'
-import keycloak from 'keycloak'
 import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { ReactKeycloakProvider } from '@react-keycloak/web'
 import { useAuth } from 'components/auth/auth-context'
-import { FC } from 'react'
 import { useInfo } from 'components/navbar/info/info-context'
-import { EnrichmentRequestListPage } from 'pages/enrichment/enrichment-request-list-page'
-import { EnrichmentRequestDetailPage } from 'pages/enrichment/enrichment-request-detail-page'
-import { ExportRequestListPage } from 'pages/export/export-request-list-page'
-import { ExportRequestDetailPage } from 'pages/export/export-request-detail-page'
+import keycloak from 'keycloak'
+import { EnrichmentPage } from 'pages/enrichment/enrichment-page'
+import { EnrichmentRequestDetail } from 'pages/enrichment/enrichment-request-detail'
+import { EnrichmentRequestList } from 'pages/enrichment/enrichment-request-list'
+import { ExportRequestDetailPage } from 'pages/export/export-request-detail'
+import { ExportRequestListPage } from 'pages/export/export-request-list'
+import { HomePage } from 'pages/home-page'
+import { JobEventListPage } from 'pages/job-event-list-page'
+import { KrameriusJobInstanceDetailPage } from 'pages/job/kramerius-job-instance-detail-page'
+import { NotFoundPage } from 'pages/not-found-page'
 import { PublicationDetailPage } from 'pages/publication/publication-detail-page'
+import { PublicationListPage } from 'pages/publication/publication-list-page'
+import { FC } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import { Navbar } from './components/navbar/navbar'
 
 export const AppAuth: FC = () => {
 	const { setAuth } = useAuth()
@@ -47,17 +46,20 @@ export const AppAuth: FC = () => {
 								path=":publicationId"
 							/>
 						</Route>
-						<Route path="jobs/:jobType">
-							<Route element={<JobEventListPage />} index />
-							<Route element={<JobEventDetailPage />} path=":jobEventId" />
+						<Route path="jobs">
+							{/* <Route
+								element={<JobEventListPage />}
+								path="enrichment/:jobType"
+							/> */}
+							<Route
+								element={<KrameriusJobInstanceDetailPage />}
+								path=":krameriusJobInstanceId"
+							/>
 						</Route>
 						<Route path="enrichment">
-							<Route element={<EnrichmentRequestListPage />} index />
+							<Route element={<EnrichmentRequestList />} index />
 							<Route element={<EnrichmentPage />} path="new" />
-							<Route
-								element={<EnrichmentRequestDetailPage />}
-								path=":requestId"
-							/>
+							<Route element={<EnrichmentRequestDetail />} path=":requestId" />
 						</Route>
 						<Route path="exports">
 							<Route element={<ExportRequestListPage />} index />
