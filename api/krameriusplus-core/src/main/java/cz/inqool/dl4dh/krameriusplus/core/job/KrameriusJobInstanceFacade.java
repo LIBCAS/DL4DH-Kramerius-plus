@@ -52,7 +52,7 @@ public class KrameriusJobInstanceFacade implements JobFacade {
 
     @Override
     public void stopJob(String id) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        service.stopJob(id);
     }
 
     @Autowired
