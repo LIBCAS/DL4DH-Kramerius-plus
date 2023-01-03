@@ -2,10 +2,13 @@ package cz.inqool.dl4dh.krameriusplus.corev2.job.config.export;
 
 import cz.inqool.dl4dh.krameriusplus.api.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.corev2.job.config.JobParametersMapWrapper;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+
+import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.DELIMITER;
 
 @Getter
 @Setter
@@ -13,6 +16,15 @@ import javax.persistence.Entity;
 public class ExportCsvJobConfig extends ExportJobConfig {
 
     private String delimiter = ",";
+
+    @Override
+    public JobParametersMapWrapper toJobParametersWrapper() {
+        JobParametersMapWrapper jobParametersMapWrapper = super.toJobParametersWrapper();
+
+        jobParametersMapWrapper.putString(DELIMITER, delimiter);
+
+        return jobParametersMapWrapper;
+    }
 
     @Override
     public KrameriusJobType getJobType() {

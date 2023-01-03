@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.ExecutionContextKey.DIRECTORY;
+import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.DELIMITER;
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.PUBLICATION_ID;
 
 @Component
@@ -31,8 +32,7 @@ public class ExportCsvPublicationTasklet implements Tasklet {
 
     private DigitalObjectExporter exporter;
 
-    // todo: inject delim from context
-    private CsvExporter csvExporter = new CsvExporter(',');
+    private CsvExporter csvExporter;
 
     private Path directory;
 
@@ -74,5 +74,14 @@ public class ExportCsvPublicationTasklet implements Tasklet {
     @Autowired
     public void setDirectory(@Value("#{jobExecutionContext['" + DIRECTORY + "']}") String directory) {
         this.directory = Path.of(directory);
+    }
+
+    @Autowired
+    public void setCsvExporter(@Value("#{jobParameters['" + DELIMITER + "']}") String delimiter) {
+        if (delimiter.length() != 1) {
+            throw new IllegalArgumentException("Delimiter: " + delimiter + "is not of required length 1");
+        }
+
+        this.csvExporter = new CsvExporter(delimiter.charAt(0));
     }
 }
