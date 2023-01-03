@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.corev2.request;
+package cz.inqool.dl4dh.krameriusplus.api.publication;
 
 public enum PublicationModel {
     MONOGRAPH("monograph"),

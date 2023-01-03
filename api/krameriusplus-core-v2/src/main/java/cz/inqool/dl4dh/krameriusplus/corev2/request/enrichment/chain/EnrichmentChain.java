@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.export;
 
 import cz.inqool.dl4dh.krameriusplus.api.domain.DomainObjectDto;
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,8 @@ public class ExportRequestItemDto extends DomainObjectDto {
     private String publicationTitle;
 
     private Long order;
+
+    private PublicationModel model;
 
     private ExportDto rootExport;
 }

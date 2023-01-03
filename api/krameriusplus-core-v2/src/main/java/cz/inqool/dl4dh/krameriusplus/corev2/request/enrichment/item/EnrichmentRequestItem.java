@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.chain.EnrichmentChain;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.request.EnrichmentRequest;
 import lombok.Getter;

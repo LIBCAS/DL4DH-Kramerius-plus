@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.enrichment;
 
 import cz.inqool.dl4dh.krameriusplus.api.domain.DomainObjectDto;
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,7 @@ public class EnrichmentRequestItemDto extends DomainObjectDto {
 
     private String publicationTitle;
 
-    private String model;
+    private PublicationModel model;
 
     private List<EnrichmentChainDto> enrichmentChains = new ArrayList<>();
 }

@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.store.PublicationStore;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.enrichment.item.EnrichmentRequestItem;
 import lombok.NonNull;
 import org.springframework.batch.core.configuration.annotation.StepScope;

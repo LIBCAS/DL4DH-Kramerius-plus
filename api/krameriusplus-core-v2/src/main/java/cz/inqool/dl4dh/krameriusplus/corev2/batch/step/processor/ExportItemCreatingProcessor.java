@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.PublicationProvider;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;

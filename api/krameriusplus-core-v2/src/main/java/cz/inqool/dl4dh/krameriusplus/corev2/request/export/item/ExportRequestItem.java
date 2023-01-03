@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.export.item;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.PublicationModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import lombok.Getter;
