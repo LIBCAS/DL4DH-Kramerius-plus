@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication.object;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +7,6 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PERIO
 
 @Getter
 @Setter
-@JsonTypeName(PERIODICAL_ITEM)
 public class PeriodicalItemDto extends PublicationDto {
 
     private String date;
@@ -16,4 +14,9 @@ public class PeriodicalItemDto extends PublicationDto {
     private String issueNumber;
 
     private String partNumber;
+
+    @Override
+    public String getModel() {
+        return PERIODICAL_ITEM;
+    }
 }

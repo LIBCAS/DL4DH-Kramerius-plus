@@ -33,6 +33,8 @@ public class TreeBuildingProcessor implements ItemProcessor<String, Publication>
         }
 
         Publication publication = ((Publication) root);
+        publication.setIsRootEnrichment(true);
+
         return fetchTree(publication);
     }
 

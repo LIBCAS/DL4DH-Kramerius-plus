@@ -13,6 +13,8 @@ import java.time.Instant;
 @AllArgsConstructor
 public class PublicationFilter {
 
+    private String uuid;
+
     private String title;
 
     private String parentId;

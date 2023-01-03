@@ -2,9 +2,11 @@ package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication;
 
 import cz.inqool.dl4dh.krameriusplus.api.publication.PublishInfo;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.api.publication.object.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.EnrichmentParadata;
 import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.ExternalSystem;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,4 +61,6 @@ public abstract class Publication extends DigitalObject {
      * for publications, which don't have parentId or their parent has not yet been enriched
      */
     private Boolean isRootEnrichment = false;
+
+    public abstract PublicationDto accept(DigitalObjectMapperVisitor visitor);
 }

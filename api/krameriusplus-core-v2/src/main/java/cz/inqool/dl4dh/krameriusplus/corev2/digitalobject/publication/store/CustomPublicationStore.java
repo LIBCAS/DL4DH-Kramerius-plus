@@ -1,13 +1,12 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.store;
 
+import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationFilter;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 
-import java.time.Instant;
 import java.util.List;
 
 public interface CustomPublicationStore {
-
-    List<Publication> findAllPublishedModified(Instant publishedModifiedAfter);
 
     /**
      * List all child publications. Only includes one level deep children, no nesting. Does not include
@@ -17,12 +16,12 @@ public interface CustomPublicationStore {
      */
     List<Publication> findAllChildren(String parentId);
 
-    List<String> findAllChildrenIds(String parentId);
-
     /**
      * Returns a list of complete publication subtree IDs, including root, not including pages
      * @param publicationID root publication ID
      * @return list of IDs of every publication in subtree
      */
     Publication findPublicationTree(String publicationID);
+
+    Result<Publication> list(PublicationFilter filter, int page, int pageSize);
 }

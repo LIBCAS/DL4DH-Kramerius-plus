@@ -59,6 +59,10 @@ export const EnrichmentPage: FC = () => {
 		setState(prev => ({ ...prev, publicationIds: event.target.value }))
 	}
 
+	const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setState(prev => ({ ...prev, name: event.target.value }))
+	}
+
 	useEffect(() => {
 		console.log(state)
 	}, [state])
@@ -76,6 +80,7 @@ export const EnrichmentPage: FC = () => {
 										label="Název žádosti"
 										size="small"
 										value={state.name}
+										onChange={onNameChange}
 									/>
 								</Grid>
 								<Grid item xs={12}>

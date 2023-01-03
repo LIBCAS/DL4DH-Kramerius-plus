@@ -1,17 +1,17 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.store;
 
+import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationFilter;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.corev2.domain.document.DomainDocument;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.document.DomainDocumentStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -25,27 +25,11 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
     }
 
     @Override
-    public List<Publication> findAllPublishedModified(Instant publishedModifiedAfter) {
-        Query query = query(where("publishInfo.publishedLastModified").gte(publishedModifiedAfter));
-
-        return mongoOperations.find(query, type);
-    }
-
-    @Override
     public List<Publication> findAllChildren(String parentId) {
         Query query = query(where("parentId").is(parentId));
         query.with(Sort.by(Sort.Direction.ASC, "index"));
 
         return mongoOperations.find(query, type);
-    }
-
-    @Override
-    public List<String> findAllChildrenIds(String parentId) {
-        Query query = query(where("parentId").is(parentId));
-        query.fields().include("_id", "_class");
-        query.with(Sort.by(Sort.Direction.ASC, "index"));
-
-        return mongoOperations.find(query, type).stream().map(DomainDocument::getId).collect(Collectors.toList());
     }
 
     /**
@@ -64,6 +48,41 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
         getChildrenRec(root);
 
         return root;
+    }
+
+    @Override
+    public Result<Publication> list(PublicationFilter filter, int page, int pageSize) {
+        Query query = new Query();
+
+        if (filter.getUuid() != null) {
+          query.addCriteria(where("_id").regex(filter.getUuid()));
+        } if (filter.getTitle() != null) {
+            query.addCriteria(where("title").regex(filter.getTitle()));
+        } if (filter.getIsRootEnrichment() != null) {
+            query.addCriteria(where("isRootEnrichment").is(filter.getIsRootEnrichment()));
+        } if (filter.getParentId() != null) {
+            query.addCriteria(where("parentId").is(filter.getParentId()));
+        } if (filter.getModel() != null) {
+            query.addCriteria(where("_class").is(filter.getModel()));
+        } if (filter.getCreatedBefore() != null) {
+            query.addCriteria(where("created").lte(filter.getCreatedBefore()));
+        } if (filter.getCreatedAfter() != null) {
+            query.addCriteria(where("created").gte(filter.getCreatedAfter()));
+        } if (filter.getIsPublished() != null) {
+            query.addCriteria(where("publishInfo.isPublished").is(filter.getIsPublished()));
+        } if (filter.getPublishedBefore() != null) {
+            query.addCriteria(where("publishInfo.publishedLastModified").lte(filter.getPublishedBefore()));
+        } if (filter.getPublishedAfter() != null) {
+            query.addCriteria(where("publishInfo.publishedLastModified").gte(filter.getPublishedAfter()));
+        }
+
+        long total = mongoOperations.count(query, Publication.class);
+
+        query.with(PageRequest.of(page, pageSize));
+
+        List<Publication> publications = mongoOperations.find(query, Publication.class);
+
+        return new Result<>(pageSize, page, total, publications);
     }
 
     private void getChildrenRec(Publication parent) {

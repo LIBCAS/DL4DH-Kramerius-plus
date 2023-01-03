@@ -1,5 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.object.*;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.PageDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.monograph.MonographCreateDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.monograph.MonographUnitCreateDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.other.InternalPartCreateDto;
@@ -36,4 +38,20 @@ public interface DigitalObjectMapperVisitor {
     Supplement fromCreateDto(SupplementCreateDto createDto);
 
     InternalPart fromCreateDto(InternalPartCreateDto createDto);
+
+    MonographDto toDto(Monograph entity);
+
+    MonographUnitDto toDto(MonographUnit entity);
+
+    PeriodicalDto toDto(Periodical entity);
+
+    PeriodicalVolumeDto toDto(PeriodicalVolume entity);
+
+    PeriodicalItemDto toDto(PeriodicalItem entity);
+
+    PageDto toDto(Page entity);
+
+    SupplementDto toDto(Supplement entity);
+
+    InternalPartDto toDto(InternalPart entity);
 }

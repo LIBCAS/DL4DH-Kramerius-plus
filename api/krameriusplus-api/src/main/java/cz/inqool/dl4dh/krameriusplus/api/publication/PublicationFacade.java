@@ -15,7 +15,7 @@ public interface PublicationFacade {
 
     Result<PublicationDto> listPublications(PublicationFilter filter, int page, int pageSize);
 
-    List<PublicationDto> listPublishedModified(LocalDateTime modifiedAfter);
+    Result<PublicationDto> listPublishedModified(LocalDateTime modifiedAfter, int page, int pageSize);
 
     PageDto findPage(String id);
 

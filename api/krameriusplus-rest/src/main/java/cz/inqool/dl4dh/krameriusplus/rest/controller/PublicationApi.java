@@ -57,6 +57,7 @@ public class PublicationApi {
     @GetMapping("/list")
     public Result<PublicationDto> list(@RequestParam(value = "page", defaultValue = "0") int page,
                                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                       @RequestParam(value = "uuid", required = false) String uuid,
                                        @RequestParam(value = "title", required = false) String title,
                                        @RequestParam(value = "parentId", required = false) String parentId,
                                        @RequestParam(value = "model", required = false) String model,
@@ -71,18 +72,20 @@ public class PublicationApi {
                                        @RequestParam(value = "publishedAfter", required = false)
                                              @DateTimeFormat(iso = DATE_TIME) Instant publishedAfter) {
         return facade.listPublications(new PublicationFilter(
-                        title, parentId, model, isRootEnrichment, createdBefore, createdAfter,
+                        uuid, title, parentId, model, isRootEnrichment, createdBefore, createdAfter,
                         isPublished, publishedBefore, publishedAfter),
                 page, pageSize);
     }
 
     @Operation(summary = "List publications, which has changed its published status after the given date.")
     @GetMapping("/list/published")
-    public List<PublicationDto> listPublishedModified(@RequestParam("modifiedAfter")
+    public Result<PublicationDto> listPublishedModified(@RequestParam("modifiedAfter")
                                                       @DateTimeFormat(iso = DATE_TIME)
-                                                      @Schema(description = "DateTime in ISO format") LocalDateTime publishedModifiedAfter) {
+                                                      @Schema(description = "DateTime in ISO format") LocalDateTime publishedModifiedAfter,
+                                                      @RequestParam(value = "page", defaultValue = "0") int page,
+                                                      @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 
-        return facade.listPublishedModified(publishedModifiedAfter);
+        return facade.listPublishedModified(publishedModifiedAfter, page, pageSize);
     }
 
     @Operation(summary = "List pages for given publication. Pages do not contain tokens and nameTagMetadata.")

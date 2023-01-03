@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class SupplementCreateDto extends PublicationCreateDto {
 
-    private SupplementDetails details;
+    private SupplementDetails details = new SupplementDetails();
 
     @Override
     public DigitalObject accept(DigitalObjectMapperVisitor visitor) {
