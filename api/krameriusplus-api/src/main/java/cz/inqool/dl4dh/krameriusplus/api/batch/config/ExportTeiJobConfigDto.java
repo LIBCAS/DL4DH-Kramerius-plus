@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.api.batch.config;
 
 import cz.inqool.dl4dh.krameriusplus.api.ExportFormat;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
-import cz.inqool.dl4dh.krameriusplus.api.export.params.TeiParamsDto;
+import cz.inqool.dl4dh.krameriusplus.api.export.params.TeiParams;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +14,7 @@ public class ExportTeiJobConfigDto extends ExportJobConfigDto {
 
     private final KrameriusJobType jobType = EXPORT_TEI;
 
-    private TeiParamsDto teiParams = new TeiParamsDto();
+    private TeiParams teiParams = new TeiParams();
 
     @Override
     public ExportFormat getExportFormat() {

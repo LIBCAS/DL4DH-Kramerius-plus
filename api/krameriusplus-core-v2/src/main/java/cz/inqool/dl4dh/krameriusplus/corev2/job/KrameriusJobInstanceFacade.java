@@ -1,16 +1,25 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.job;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
+import cz.inqool.dl4dh.krameriusplus.api.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.api.job.JobEventFilter;
 import cz.inqool.dl4dh.krameriusplus.api.job.JobFacade;
+import cz.inqool.dl4dh.krameriusplus.corev2.jms.JmsProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+import static cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus.*;
 
 @Component
 public class KrameriusJobInstanceFacade implements JobFacade {
 
     private KrameriusJobInstanceService service;
+
+    private JmsProducer jmsProducer;
 
     @Override
     public Result<KrameriusJobInstanceDto> listEnrichmentJobs(JobEventFilter filter, int page, int pageSize) {
@@ -29,7 +38,16 @@ public class KrameriusJobInstanceFacade implements JobFacade {
 
     @Override
     public void restartJob(String id) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
+        KrameriusJobInstanceDto jobInstance = service.find(id);
+
+        List<ExecutionStatus> restartableStatuses = List.of(FAILED_FATALLY, FAILED, STOPPED);
+
+        if (restartableStatuses.contains(jobInstance.getExecutionStatus())) {
+            jmsProducer.enqueue(jobInstance);
+        } else {
+            throw new JobException(id, "Cannot restart job with executionStatus: " + jobInstance.getExecutionStatus(),
+                    JobException.ErrorCode.NOT_RESTARTABLE);
+        }
     }
 
     @Override
@@ -40,5 +58,10 @@ public class KrameriusJobInstanceFacade implements JobFacade {
     @Autowired
     public void setService(KrameriusJobInstanceService service) {
         this.service = service;
+    }
+
+    @Autowired
+    public void setJmsProducer(JmsProducer jmsProducer) {
+        this.jmsProducer = jmsProducer;
     }
 }

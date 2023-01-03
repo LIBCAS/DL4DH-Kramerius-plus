@@ -78,6 +78,7 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
 
         long total = mongoOperations.count(query, Publication.class);
 
+        query.with(Sort.by(Sort.Direction.DESC, "created"));
         query.with(PageRequest.of(page, pageSize));
 
         List<Publication> publications = mongoOperations.find(query, Publication.class);

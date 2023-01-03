@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.FETCH_PUBLICATIONS;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.FETCH_PUBLICATIONS_STEP;
 
 @Component
 public class FetchPublicationTreeStepDesigner extends AbstractStepDesigner {
@@ -31,10 +31,10 @@ public class FetchPublicationTreeStepDesigner extends AbstractStepDesigner {
 
     @Override
     protected String getStepName() {
-        return FETCH_PUBLICATIONS;
+        return FETCH_PUBLICATIONS_STEP;
     }
 
-    @Bean(FETCH_PUBLICATIONS)
+    @Bean(FETCH_PUBLICATIONS_STEP)
     @Override
     public Step build() {
         return getStepBuilder().

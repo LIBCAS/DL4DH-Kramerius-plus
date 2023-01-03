@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.HashMap;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER;
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER_W_TOKENS;
 import static cz.inqool.dl4dh.krameriusplus.corev2.job.JobParameterKey.PUBLICATION_ID;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -22,8 +21,8 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Configuration
 public class ItemReadersConfig {
 
-    @Bean(PAGE_MONGO_READER)
-    @StepScope
+//    @Bean(PAGE_MONGO_READER)
+//    @StepScope
     public MongoItemReader<Page> pageMongoReaderWithoutTokens(MongoOperations mongoOperations,
                                                  @Value("#{jobParameters['" + PUBLICATION_ID + "']}") String parentId) {
         Query query = query(where("parentId").is(parentId));
@@ -36,7 +35,7 @@ public class ItemReadersConfig {
                 .query(query)
                 .sorts(new HashMap<>())
                 .pageSize(10)
-                .name(PAGE_MONGO_READER)
+//                .name(PAGE_MONGO_READER)
                 .build();
     }
 
@@ -61,6 +60,8 @@ public class ItemReadersConfig {
 
         public static final String PAGE_MONGO_READER_W_TOKENS = "PAGE_MONGO_READER_WITH_TOKENS";
 
-        public static final String PAGE_MONGO_READER = "PAGE_MONGO_READER_WITHOUT_TOKENS";
+        // TODO: Do not use reader without tokens, because it will override existing tokens in DB on save, causing
+        // tokens to get deleted
+//        public static final String PAGE_MONGO_READER = "PAGE_MONGO_READER_WITHOUT_TOKENS";
     }
 }

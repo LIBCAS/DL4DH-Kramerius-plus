@@ -33,7 +33,7 @@ public class EnrichmentExternalJobDesigner extends AbstractJobDesigner {
     }
 
     @Autowired
-    public void setEnrichPagesAltoMasterStep(@Qualifier(ENRICH_ALTO_STEP) Step enrichAltoStep) {
+    public void setEnrichAltoStep(@Qualifier(ENRICH_ALTO_STEP) Step enrichAltoStep) {
         this.enrichAltoStep = enrichAltoStep;
     }
 
