@@ -64,6 +64,10 @@ public class EnrichmentChain extends DomainObject {
     }
 
     public RequestState getState() {
+        if (jobs.values().stream().allMatch(job -> CREATED.equals(job.getExecutionStatus()))) {
+            return RequestState.CREATED;
+        }
+
         if (jobs.values().stream().anyMatch(job -> STARTED.equals(job.getExecutionStatus()))) {
             return RequestState.RUNNING;
         }

@@ -34,7 +34,7 @@ public class PrepareExportMetadataTasklet implements Tasklet {
 
         ExecutionContext stepContext = chunkContext.getStepContext().getStepExecution().getExecutionContext();
         stepContext.put(PUBLICATION_TITLE, publication.getTitle());
-        stepContext.put(PUBLICATION_MODEL, publication.getModel());
+        stepContext.put(PUBLICATION_MODEL, publication.getModel().getName());
 
         return RepeatStatus.FINISHED;
     }
