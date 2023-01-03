@@ -38,6 +38,7 @@ public class EnrichmentRequestService implements DatedService<EnrichmentRequest,
         return mapper.toDto(store.save(entity));
     }
 
+    @Transactional(readOnly = true)
     public Result<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize) {
         Result<EnrichmentRequest> results = store.findByNameAndOwner(name, owner, page, pageSize);
         List<EnrichmentRequestDto> dtos = results.getItems().stream().map(mapper::toDto).collect(Collectors.toList());

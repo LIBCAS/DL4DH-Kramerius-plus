@@ -26,11 +26,13 @@ public class KrameriusJobInstanceService {
 
     private JobExplorer jobExplorer;
 
+    @Transactional(readOnly = true)
     public KrameriusJobInstance findEntity(String jobInstanceId) {
         return store.findById(jobInstanceId)
                 .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
     }
 
+    @Transactional(readOnly = true)
     public KrameriusJobInstanceDto find(String id) {
         return mapper.toDto(findEntity(id));
     }
