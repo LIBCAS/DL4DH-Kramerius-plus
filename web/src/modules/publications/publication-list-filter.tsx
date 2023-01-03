@@ -78,7 +78,16 @@ export const PublicationListFilter: FC<Props> = ({
 					<Grid item xs={12}>
 						<Typography variant="h5">Filtrování</Typography>
 					</Grid>
-					<Grid item lg={3} xs={12}>
+					<Grid item xs={3}>
+						<TextField
+							fullWidth
+							label="UUID"
+							size="small"
+							value={filter.uuid}
+							onChange={handleFieldChange('uuid')}
+						/>
+					</Grid>
+					<Grid item xs={3}>
 						<TextField
 							fullWidth
 							label="Název"
@@ -87,7 +96,7 @@ export const PublicationListFilter: FC<Props> = ({
 							onChange={handleFieldChange('title')}
 						/>
 					</Grid>
-					<Grid item lg={3} xs={12}>
+					<Grid item xs={2}>
 						<FormControl fullWidth size="small">
 							<InputLabel id="demo-simple-select-label">Model</InputLabel>
 							<Select
@@ -105,21 +114,24 @@ export const PublicationListFilter: FC<Props> = ({
 							</Select>
 						</FormControl>
 					</Grid>
-					<Grid item lg={3} xs={12}>
+					<Grid item lg={2} xs={12}>
 						<CustomDateTimePicker
 							label="Vytvořeno před"
 							value={filter.createdBefore || null}
 							onChange={onDateChange('createdBefore')}
 						/>
 					</Grid>
-					<Grid item lg={3} xs={12}>
+					<Grid item lg={2} xs={12}>
 						<CustomDateTimePicker
 							label="Vytvořeno po"
 							value={filter.createdAfter || null}
 							onChange={onDateChange('createdAfter')}
 						/>
 					</Grid>
-					<Grid item lg={6} md={12} xs={12}>
+					<Grid item lg={2}>
+						<Typography variant="h6">Zobrazit jenom:</Typography>
+					</Grid>
+					<Grid item lg={6} md={12}>
 						<ToggleButtonGroup
 							color="primary"
 							exclusive
@@ -132,7 +144,7 @@ export const PublicationListFilter: FC<Props> = ({
 							<ToggleButton value={false}>Nepublikované</ToggleButton>
 						</ToggleButtonGroup>
 					</Grid>
-					<Grid item lg={3} xs={12}>
+					<Grid item lg={2} xs={12}>
 						<CustomDateTimePicker
 							disabled={!filter.isPublished}
 							label="Publikováno před"
@@ -140,7 +152,7 @@ export const PublicationListFilter: FC<Props> = ({
 							onChange={onDateChange('publishedBefore')}
 						/>
 					</Grid>
-					<Grid item lg={3} xs={12}>
+					<Grid item lg={2} xs={12}>
 						<CustomDateTimePicker
 							disabled={!filter.isPublished}
 							label="Publikováno po"

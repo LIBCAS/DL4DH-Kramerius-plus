@@ -4,6 +4,7 @@ import { QueryResults } from 'models/query-results'
 import { customFetch } from 'utils/custom-fetch'
 
 export type PublicationFilter = {
+	uuid?: string
 	title?: string
 	parentId?: string
 	model?: DigitalObjectModel

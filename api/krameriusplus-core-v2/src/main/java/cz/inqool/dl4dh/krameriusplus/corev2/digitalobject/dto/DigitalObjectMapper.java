@@ -1,5 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.object.*;
+import cz.inqool.dl4dh.krameriusplus.api.publication.page.PageDto;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.monograph.MonographCreateDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.monograph.MonographUnitCreateDto;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.other.InternalPartCreateDto;
@@ -17,11 +20,16 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.periodical.PeriodicalVolume;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
+
+    private PageMapper pageMapper;
 
     @Override
     public Monograph fromCreateDto(MonographCreateDto createDto) {
@@ -82,6 +90,7 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     public Supplement fromCreateDto(SupplementCreateDto createDto) {
         Supplement supplement = new Supplement();
         mapPublicationProperties(supplement, createDto);
+        supplement.setDate(createDto.getDetails().getDate());
 
         return supplement;
     }
@@ -96,6 +105,89 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         internalPart.setPartType(createDto.getInternalPartDetails().getType());
 
         return internalPart;
+    }
+
+    @Override
+    public MonographDto toDto(Monograph entity) {
+        MonographDto dto = new MonographDto();
+        mapPublicationDtoProperties(dto, entity);
+
+        return dto;
+    }
+
+
+    @Override
+    public MonographUnitDto toDto(MonographUnit entity) {
+        MonographUnitDto dto = new MonographUnitDto();
+        mapPublicationDtoProperties(dto, entity);
+        dto.setPartTitle(entity.getPartTitle());
+        dto.setPartNumber(entity.getPartNumber());
+
+        return dto;
+    }
+
+    @Override
+    public PeriodicalDto toDto(Periodical entity) {
+        PeriodicalDto dto = new PeriodicalDto();
+        mapPublicationDtoProperties(dto, entity);
+
+        return dto;
+    }
+
+    @Override
+    public PeriodicalVolumeDto toDto(PeriodicalVolume entity) {
+        PeriodicalVolumeDto dto = new PeriodicalVolumeDto();
+        mapPublicationDtoProperties(dto, entity);
+        dto.setVolumeNumber(entity.getVolumeNumber());
+        dto.setVolumeYear(entity.getVolumeYear());
+
+        return dto;
+    }
+
+    @Override
+    public PeriodicalItemDto toDto(PeriodicalItem entity) {
+        PeriodicalItemDto dto = new PeriodicalItemDto();
+        mapPublicationDtoProperties(dto, entity);
+        dto.setDate(entity.getDate());
+        dto.setIssueNumber(entity.getIssueNumber());
+        dto.setPartNumber(entity.getPartNumber());
+
+        return dto;
+    }
+
+    @Override
+    public PageDto toDto(Page entity) {
+        PageDto pageDto = new PageDto();
+        mapDigitalObjectDtoProperties(pageDto, entity);
+        pageDto.setTokens(entity.getTokens().stream().map(token -> pageMapper.toDto(token)).collect(Collectors.toList()));
+        pageDto.setPolicy(entity.getPolicy());
+        pageDto.setPageNumber(entity.getPageNumber());
+        pageDto.setNameTagMetadata(pageMapper.toDto(entity.getNameTagMetadata()));
+        pageDto.setMetsMetadata(entity.getMetsMetadata());
+
+        return pageDto;
+    }
+
+    @Override
+    public SupplementDto toDto(Supplement entity) {
+        SupplementDto dto = new SupplementDto();
+        mapPublicationDtoProperties(dto, entity);
+        dto.setDate(entity.getDate());
+
+        return dto;
+    }
+
+    @Override
+    public InternalPartDto toDto(InternalPart entity) {
+        InternalPartDto dto = new InternalPartDto();
+        mapPublicationDtoProperties(dto, entity);
+
+        dto.setPageRange(entity.getPageRange());
+        dto.setPartTitle(entity.getPartTitle());
+        dto.setPartType(entity.getPartType());
+        dto.setPageNumber(entity.getPageNumber());
+
+        return dto;
     }
 
     private void mapPageProperties(Page to, PageCreateDto from) {
@@ -124,5 +216,41 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
                         to.getClass().getSimpleName(), from.getPid(), from.getContext().size()));
             }
         }
+    }
+
+    private void mapPublicationDtoProperties(PublicationDto dto, Publication entity) {
+        dto.setChildren(entity.getChildren().stream()
+                .map(child -> child.accept(this))
+                .collect(Collectors.toList()));
+        dto.setPages(entity.getPages().stream()
+                .map(page -> page.accept(this))
+                .collect(Collectors.toList()));
+        dto.setCollections(entity.getCollections());
+        dto.setPolicy(entity.getPolicy());
+        dto.setModsMetadata(entity.getModsMetadata());
+        dto.setPublishInfo(entity.getPublishInfo());
+        dto.setParadata(entity.getParadata());
+        dto.setPdf(entity.isPdf());
+        dto.setDonator(entity.getDonator());
+        dto.setPageCount(entity.getPageCount());
+
+        mapDigitalObjectDtoProperties(dto, entity);
+    }
+
+    private void mapDigitalObjectDtoProperties(DigitalObjectDto dto, DigitalObject entity) {
+        dto.setParentId(entity.getParentId());
+        dto.setIndex(entity.getIndex());
+        dto.setRootId(entity.getRootId());
+        dto.setTitle(entity.getTitle());
+
+        dto.setCreated(entity.getCreated());
+        dto.setUpdated(entity.getUpdated());
+
+        dto.setId(entity.getId());
+    }
+
+    @Autowired
+    public void setTokenMapper(PageMapper pageMapper) {
+        this.pageMapper = pageMapper;
     }
 }

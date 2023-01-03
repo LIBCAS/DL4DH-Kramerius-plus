@@ -1,5 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.monograph;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.object.MonographUnitDto;
+import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,5 +27,10 @@ public class MonographUnit extends Publication {
     @Override
     public String getModel() {
         return MONOGRAPH_UNIT;
+    }
+
+    @Override
+    public MonographUnitDto accept(DigitalObjectMapperVisitor visitor) {
+        return visitor.toDto(this);
     }
 }

@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication.object;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.PublishInfo;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.PageDto;
 import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.EnrichmentParadata;
@@ -26,6 +27,8 @@ public abstract class PublicationDto extends DigitalObjectDto {
 
     private ModsMetadata modsMetadata;
 
+    private PublishInfo publishInfo;
+
     private Map<ExternalSystem, EnrichmentParadata> paradata = new HashMap<>();
 
     private boolean pdf;
@@ -33,4 +36,6 @@ public abstract class PublicationDto extends DigitalObjectDto {
     private List<String> donator = new ArrayList<>();
 
     private Long pageCount;
+
+    public abstract String getModel();
 }
