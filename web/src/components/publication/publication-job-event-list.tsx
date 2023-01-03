@@ -47,7 +47,7 @@ export const PublicationJobEventList = ({
 
 	useEffect(() => {
 		async function fetchJobs() {
-			const response = await listJobEvents('enriching', page, 10, {
+			const response = await listJobEvents('enrichment', page, 10, {
 				publicationId: publicationId,
 				jobType: krameriusJob,
 			})

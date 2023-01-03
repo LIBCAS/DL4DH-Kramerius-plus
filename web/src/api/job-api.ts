@@ -11,7 +11,7 @@ export const listJobEvents = async (
 	pageSize: number,
 	filter?: JobEventFilterDto,
 ): Promise<QueryResults<JobEvent>> => {
-	let url = `/api/jobs/list/${jobType}?page=${page}&pageSize=${pageSize}`
+	let url = `/api/jobs/${jobType}/list?page=${page}&pageSize=${pageSize}`
 	url = filter?.publicationId
 		? url + `&publicationId=${filter.publicationId}`
 		: url
