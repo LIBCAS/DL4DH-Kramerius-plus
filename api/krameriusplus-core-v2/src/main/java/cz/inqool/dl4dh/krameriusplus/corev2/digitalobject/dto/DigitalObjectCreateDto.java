@@ -14,7 +14,7 @@ import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.dto.periodical.Periodi
 import lombok.Getter;
 import lombok.Setter;
 
-import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PublicationModelName.*;
+import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.KrameriusModelName.*;
 
 
 @Getter

@@ -3,7 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.api.publication.object;
 import lombok.Getter;
 import lombok.Setter;
 
-import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PublicationModelName.MONOGRAPH_UNIT;
+import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.KrameriusModelName.MONOGRAPH_UNIT;
 
 
 @Getter

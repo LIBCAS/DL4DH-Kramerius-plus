@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
 
-import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PublicationModelName.MONOGRAPH_UNIT;
+import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.KrameriusModelName.MONOGRAPH_UNIT;
 
 
 /**
