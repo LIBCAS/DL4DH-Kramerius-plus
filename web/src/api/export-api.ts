@@ -1,19 +1,15 @@
-import {
-	ExportFormat,
-	ExportJobConfig,
-} from 'components/publication/publication-export-dialog'
-import { ExportRequest } from 'models/request/export-request'
+import { ExportJobConfig } from 'models/job/config/export-job-config'
 import { QueryResults } from 'models/query-results'
-import { customFetch } from 'utils/custom-fetch'
+import { ExportRequest } from 'models/request/export-request'
 import { ExportRequestFilterDto } from 'pages/export/export-request-list'
+import { customFetch } from 'utils/custom-fetch'
 
 export const exportPublication = async (
 	publicationIds: string[],
 	config: ExportJobConfig,
-	format: ExportFormat,
 	name?: string,
 ): Promise<Response> => {
-	return await customFetch(`/api/exports/${format}`, {
+	return await customFetch(`/api/exports/export`, {
 		method: 'POST',
 		body: JSON.stringify({
 			config,

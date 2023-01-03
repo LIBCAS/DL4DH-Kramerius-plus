@@ -16,7 +16,11 @@ import {
 	Button,
 } from '@mui/material'
 import { exportPublication } from 'api/export-api'
-import { TeiExportParams } from 'models/tei-params'
+import { ExportJobConfig } from 'models/job/config/export-job-config'
+import { ExportCsvJobConfig } from 'models/job/config/export-csv-job-config'
+import { ExportTeiJobConfig } from 'models/job/config/export-tei-job-config'
+import { v4 } from 'uuid'
+import { ExportKrameriusJob } from 'enums/export-kramerius-job'
 
 export type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
 
@@ -29,22 +33,10 @@ const defaultParams: Params = {
 	excludeFields: [],
 }
 
-const defaultTeiParams: TeiExportParams = {
+const defaultTeiParams: TeiParams = {
 	udPipeParams: [],
 	nameTagParams: [],
 	altoParams: [],
-}
-
-export interface ExportJobConfig {
-	params: Params
-}
-
-interface CsvExportJobConfig extends ExportJobConfig {
-	delimiter: Delimiter
-}
-
-interface TeiExportJobConfig extends ExportJobConfig {
-	teiExportParams: TeiExportParams
 }
 
 export const PublicationExportDialog: FC<{
@@ -76,36 +68,56 @@ export const PublicationExportDialog: FC<{
 	}
 
 	const handleSubmitExport = async () => {
-		let config
+		const callExport = async (config: ExportJobConfig) => {
+			const response = await exportPublication(publicationIds, config)
+
+			if (response.ok) {
+				toast('Operace proběhla úspěšně', {
+					type: 'success',
+				})
+			} else {
+				toast('Při pokusu o export publikace došlo k chybě', {
+					type: 'error',
+				})
+			}
+
+			onClose()
+		}
+
 		if (format === 'csv') {
-			config = {
+			callExport({
+				id: v4(),
 				params: params,
 				delimiter: delimiter,
-			} as CsvExportJobConfig
+				jobType: 'EXPORT_CSV',
+			} as ExportCsvJobConfig)
 		} else if (format === 'tei') {
-			config = {
+			callExport({
+				id: v4(),
+				jobType: 'EXPORT_TEI',
 				params: params,
-				teiExportParams: teiParams,
-			} as TeiExportJobConfig
-		} else {
-			config = {
+				teiParams: teiParams,
+			} as ExportTeiJobConfig)
+		} else if (format === 'json') {
+			callExport({
 				params: params,
-			} as ExportJobConfig
-		}
-
-		const response = await exportPublication(publicationIds, config, format)
-
-		if (response.ok) {
-			toast('Operace proběhla úspěšně', {
-				type: 'success',
+				jobType: 'EXPORT_JSON',
+			} as ExportJobConfig)
+		} else if (format === 'alto') {
+			callExport({
+				id: v4(),
+				params: params,
+				exportFormat: format,
+				jobType: ExportKrameriusJob.EXPORT_ALTO,
 			})
-		} else {
-			toast('Při pokusu o export publikace došlo k chybě', {
-				type: 'error',
+		} else if (format === 'text') {
+			callExport({
+				id: v4(),
+				params: params,
+				exportFormat: format,
+				jobType: ExportKrameriusJob.EXPORT_TEXT,
 			})
 		}
-
-		onClose()
 	}
 
 	return (

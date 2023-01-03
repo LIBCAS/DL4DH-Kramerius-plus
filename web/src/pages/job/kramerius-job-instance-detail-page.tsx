@@ -146,17 +146,17 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 						</Box>
 					</Box>
 					<Grid container spacing={1}>
-						<Grid item sx={{ p: 2 }} xs={2.7}>
+						<Grid item md={6} sx={{ p: 2 }} xl={2.7}>
 							<Paper elevation={4} sx={{ height: 300, p: 2 }}>
 								<JobInfo job={job} />
 							</Paper>
 						</Grid>
-						<Grid item sx={{ p: 2 }} xs={4}>
+						<Grid item md={6} sx={{ p: 2 }} xl={4}>
 							<Paper elevation={4} sx={{ height: 300, p: 2 }}>
 								<JobParameters jobParameters={job.jobParameters} />
 							</Paper>
 						</Grid>
-						<Grid item sx={{ p: 2 }} xs={5.3}>
+						<Grid item md={12} sx={{ p: 2 }} xl={5.3}>
 							<Paper elevation={4} sx={{ height: 300, p: 2 }}>
 								<JobExecutions
 									executions={job.executions}
@@ -164,7 +164,7 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 								/>
 							</Paper>
 						</Grid>
-						<Grid item sx={{ p: 2 }} xs={12}>
+						<Grid item sx={{ p: 2 }} xl={12}>
 							<Paper elevation={4} sx={{ height: 370, p: 2 }}>
 								<StepExecutions
 									executions={jobExecution?.stepExecutions}
@@ -194,7 +194,7 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 									</Grid>
 									<Grid item xs={11}>
 										<Typography color="primary" variant="body1">
-											{error.stackTrace}
+											<pre>{error.stackTrace}</pre>
 										</Typography>
 									</Grid>
 								</Grid>
