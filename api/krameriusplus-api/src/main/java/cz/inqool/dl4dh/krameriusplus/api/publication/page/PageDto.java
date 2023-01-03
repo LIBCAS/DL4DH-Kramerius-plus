@@ -11,7 +11,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PAGE;
+import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.KrameriusModelName.PAGE;
+
 
 @Getter
 @Setter

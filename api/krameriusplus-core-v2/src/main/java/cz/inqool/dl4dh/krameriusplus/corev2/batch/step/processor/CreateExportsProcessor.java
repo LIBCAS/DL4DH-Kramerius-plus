@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.PublicationProvider;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstanceService;
@@ -56,6 +57,7 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
         export.setParent(parent);
         export.setFormat(exportRequest.getConfig().getExportFormat());
         export.setOrder(order);
+        export.setModel(KrameriusModel.fromString(publication.getModel()));
         JobParametersMapWrapper jobParametersMapWrapper = exportRequest.getConfig().toJobParametersWrapper();
         jobParametersMapWrapper.putString(PUBLICATION_ID, publication.getId());
         jobParametersMapWrapper.putString(EXPORT_ID, export.getId());

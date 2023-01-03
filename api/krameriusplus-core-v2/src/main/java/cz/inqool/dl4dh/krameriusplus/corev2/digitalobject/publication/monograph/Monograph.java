@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
 
-import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.MONOGRAPH;
+import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.KrameriusModelName.MONOGRAPH;
+
 
 /**
  * Object representing a Monograph. Monographs contain either monograph units as children, or directly pages. Can

@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
 
-import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.INTERNAL_PART;
+import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.KrameriusModelName.INTERNAL_PART;
+
 
 @Getter
 @Setter

@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.TypeAlias;
 
-import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.PERIODICAL;
+import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.KrameriusModelName.PERIODICAL;
+
 
 /**
  * @author Norbert Bodnar

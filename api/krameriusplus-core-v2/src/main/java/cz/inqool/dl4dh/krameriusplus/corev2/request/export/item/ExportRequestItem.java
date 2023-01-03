@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.request.export.item;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.corev2.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
@@ -30,4 +31,8 @@ public class ExportRequestItem extends DomainObject {
 
     @OneToOne
     private Export rootExport;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private KrameriusModel model;
 }
