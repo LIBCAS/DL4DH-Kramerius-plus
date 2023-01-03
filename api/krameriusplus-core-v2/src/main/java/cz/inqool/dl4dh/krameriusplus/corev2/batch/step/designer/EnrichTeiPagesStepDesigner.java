@@ -2,26 +2,25 @@ package cz.inqool.dl4dh.krameriusplus.corev2.batch.step.designer;
 
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.PageLimitCheckingSkipPolicy;
 import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.listener.StepSkipListener;
+import cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.EnrichTeiPagesProcessor;
 import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.Page;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.data.MongoItemReader;
 import org.springframework.batch.item.data.MongoItemWriter;
-import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_ALTO_STEP;
-import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.processor.ItemProcessorsConfig.KrameriusProcessor.ENRICH_ALTO_COMPOSITE_PROCESSOR;
+import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.KrameriusStep.ENRICH_TEI_PAGES_STEP;
 import static cz.inqool.dl4dh.krameriusplus.corev2.batch.step.reader.ItemReadersConfig.KrameriusReader.PAGE_MONGO_READER_W_TOKENS;
 
-@Configuration
-public class EnrichAltoStepDesigner extends AbstractStepDesigner {
+@Component
+public class EnrichTeiPagesStepDesigner extends AbstractStepDesigner {
 
     private MongoItemReader<Page> reader;
 
-    private CompositeItemProcessor<Page, Page> processor;
+    private EnrichTeiPagesProcessor processor;
 
     private MongoItemWriter<Page> writer;
 
@@ -29,16 +28,11 @@ public class EnrichAltoStepDesigner extends AbstractStepDesigner {
 
     private PageLimitCheckingSkipPolicy skipPolicy;
 
-    @Override
-    protected String getStepName() {
-        return ENRICH_ALTO_STEP;
-    }
-
-    @Bean(ENRICH_ALTO_STEP)
+    @Bean(ENRICH_TEI_PAGES_STEP)
     @Override
     public Step build() {
         return getStepBuilder()
-                .<Page, Page> chunk(5)
+                .<Page, Page>chunk(5)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -48,13 +42,18 @@ public class EnrichAltoStepDesigner extends AbstractStepDesigner {
                 .build();
     }
 
+    @Override
+    protected String getStepName() {
+        return ENRICH_TEI_PAGES_STEP;
+    }
+
     @Autowired
     public void setReader(@Qualifier(PAGE_MONGO_READER_W_TOKENS) MongoItemReader<Page> reader) {
         this.reader = reader;
     }
 
     @Autowired
-    public void setProcessor(@Qualifier(ENRICH_ALTO_COMPOSITE_PROCESSOR) CompositeItemProcessor<Page, Page> processor) {
+    public void setProcessor(EnrichTeiPagesProcessor processor) {
         this.processor = processor;
     }
 

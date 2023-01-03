@@ -63,7 +63,7 @@ public class CreateEnrichmentRequestJobDesigner extends AbstractJobDesigner {
     }
 
     @Autowired
-    public void setFetchPublicationsStep(@Qualifier(FETCH_PUBLICATIONS) Step fetchPublicationsStep) {
+    public void setFetchPublicationsStep(@Qualifier(FETCH_PUBLICATIONS_STEP) Step fetchPublicationsStep) {
         this.fetchPublicationsStep = fetchPublicationsStep;
     }
 

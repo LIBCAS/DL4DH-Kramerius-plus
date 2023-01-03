@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TeiParamsDto {
+public class TeiParams {
 
     private List<UdPipeParam> udPipeParams = new ArrayList<>();
 
