@@ -3,6 +3,7 @@ import { KeyGridItem } from 'components/key-grid-item'
 import { PageBlock } from 'components/page-block'
 import { ValueGridItem } from 'components/value-grid-item'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
+import { RequestStateMapping } from 'models/request/request'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { formatDateTime } from 'utils/formatters'
@@ -14,7 +15,7 @@ type Props = {
 export const EnrichmentRequestInfo: FC<Props> = ({ request }) => {
 	return (
 		<PageBlock title="Základní informace">
-			<Grid container spacing={1}>
+			<Grid container spacing={0.5}>
 				<KeyGridItem>Autor</KeyGridItem>
 				<ValueGridItem>{request.owner.username}</ValueGridItem>
 				<KeyGridItem>Dátum vytvoření</KeyGridItem>
@@ -27,6 +28,8 @@ export const EnrichmentRequestInfo: FC<Props> = ({ request }) => {
 						{request.createRequestJob.executionStatus}
 					</Link>
 				</ValueGridItem>
+				<KeyGridItem>Stav žádosti</KeyGridItem>
+				<ValueGridItem>{RequestStateMapping[request.state]}</ValueGridItem>
 			</Grid>
 		</PageBlock>
 	)

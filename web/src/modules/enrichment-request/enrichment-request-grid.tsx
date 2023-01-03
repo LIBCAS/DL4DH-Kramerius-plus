@@ -7,6 +7,7 @@ import {
 import { listEnrichmentRequests } from 'api/enrichment-api'
 import { User } from 'models/domain/user'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
+import { RequestState, RequestStateMapping } from 'models/request/request'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -56,6 +57,9 @@ export const EnrichmentRequestGrid: FC<{
 			field: 'state',
 			headerName: 'Stav žádosti',
 			width: 250,
+			valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
+				return RequestStateMapping[params.value]
+			},
 		},
 	]
 

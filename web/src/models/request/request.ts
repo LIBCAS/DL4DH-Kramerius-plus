@@ -5,4 +5,20 @@ export interface Request extends DatedObject {
 	name: string
 	publicationIds: string[]
 	owner: User
+	state: RequestState
+}
+
+export type RequestState =
+	| 'CREATED'
+	| 'RUNNING'
+	| 'FAILED'
+	| 'COMPLETED'
+	| 'PARTIAL'
+
+export const RequestStateMapping = {
+	CREATED: 'Vytvořená',
+	RUNNING: 'Beží',
+	FAILED: 'Selhala',
+	COMPLETED: 'Dokončená',
+	PARTIAL: 'Částečně selhala',
 }

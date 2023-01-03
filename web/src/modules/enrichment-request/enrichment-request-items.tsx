@@ -3,11 +3,13 @@ import {
 	DataGrid,
 	GridRowParams,
 	GridValueFormatterParams,
+	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { PageBlock } from 'components/page-block'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { EnrichmentChain } from 'models/request/enrichment-chain'
 import { EnrichmentRequestItem } from 'models/request/enrichment-request-item'
+import { RequestState, RequestStateMapping } from 'models/request/request'
 import { FC } from 'react'
 
 const columns = [
@@ -19,7 +21,7 @@ const columns = [
 	{
 		field: 'publicationTitle',
 		headerName: 'Název publikace',
-		width: 280,
+		width: 190,
 	},
 	{
 		field: 'model',
@@ -30,14 +32,28 @@ const columns = [
 		},
 	},
 	{
-		field: 'enrichmentChains',
-		headerName: '# Plánů',
-		valueFormatter: (params: GridValueFormatterParams<EnrichmentChain[]>) => {
-			return params.value.length
-		},
-		type: 'number',
+		field: 'state',
+		headerName: 'Stav',
 		flex: 1,
+		valueGetter: (params: GridValueGetterParams) => {
+			const item = params.row as EnrichmentRequestItem
+			const finished = item.enrichmentChains.filter(
+				chain => chain.state === 'COMPLETED',
+			).length
+			return `${RequestStateMapping[item.state]} (${finished}/${
+				item.enrichmentChains.length
+			})`
+		},
 	},
+	// {
+	// 	field: 'enrichmentChains',
+	// 	headerName: '# Plánů',
+	// 	valueFormatter: (params: GridValueFormatterParams<EnrichmentChain[]>) => {
+	// 		return params.value.length
+	// 	},
+	// 	type: 'number',
+	// 	flex: 1,
+	// },
 ]
 
 export const EnrichmentRequestItems: FC<{
