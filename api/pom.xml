@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<modules>
-        <module>krameriusplus-core-v2</module>
+        <module>krameriusplus-core</module>
         <module>krameriusplus-rest</module>
 		<module>krameriusplus-app</module>
 		<module>krameriusplus-api</module>

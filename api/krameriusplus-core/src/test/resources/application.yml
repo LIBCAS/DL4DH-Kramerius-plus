@@ -4,53 +4,30 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password: password
+  main:
+    allow-bean-definition-overriding: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-  h2:
-    console:
-      enabled: true
+    hibernate:
+      ddl-auto: validate
   liquibase:
     changeLog: classpath:/dbchangelog.xml
-  data:
-    mongodb:
-      auto-index-creation: true
-      database: KrameriusPlus
-  mongodb:
-    embedded:
-      version: 4.0.2
-  activemq:
-    user: admin
-    password: admin
-    broker-url: tcp://localhost:61616
   batch:
-    initialize-schema: always
+    jdbc:
+      table-prefix: kplus
     job:
       enabled: false
-  #    cz.inqool.dl4dh.krameriusplus.config.LoggingRequestInterceptor: DEBUG
-  interceptor:
-    body: SHORT
-
-
-springdoc:
-  swagger-ui.path: /swagger
+  jms:
+    listener:
+      auto-startup: false
 
 system:
-  kramerius: NDK
+  kramerius:
+    code: nkp
+    default-url: https://www.ndk.cz
+    register-url: https://api.registr.digitalniknihovna.cz/api/libraries
   enrichment:
-    #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
-    #  and ALTO processing does not make manual corrections (while OCR processing does)
-    source: ALTO
-    udpipe:
-      api: http://lindat.mff.cuni.cz/services/udpipe/api/process
-    nametag:
-      api: http://lindat.mff.cuni.cz/services/nametag/api/recognize
-    tei:
-      api: http://localhost:5000/tei
     ndk:
-  #      path: todo
-  json:
-    serializeEmptyArrays: true
-
-active-mq:
-  messaging:
-    auto-consume: true
+      path: .
+  security:
+    secret: placeholder
