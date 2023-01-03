@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.corev2.user;
 
+import org.keycloak.KeycloakPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,9 +35,14 @@ public class UserProvider {
             return "MOCKED_USER!!!";
         }
 
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return principal.getUsername();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof KeycloakPrincipal) {
+            return ((KeycloakPrincipal<?>) principal).getName();
+        } else if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            throw new IllegalStateException("Unexpected class of security principal: " + principal.getClass());
+        }
     }
 
     @Autowired
