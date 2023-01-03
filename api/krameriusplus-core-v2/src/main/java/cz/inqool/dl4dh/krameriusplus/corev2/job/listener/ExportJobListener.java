@@ -2,12 +2,10 @@ package cz.inqool.dl4dh.krameriusplus.corev2.job.listener;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
-import cz.inqool.dl4dh.krameriusplus.corev2.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.corev2.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.export.ExportStore;
-import cz.inqool.dl4dh.krameriusplus.corev2.request.export.item.ExportRequestItemStore;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.corev2.request.export.request.ExportRequestStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +27,6 @@ public class ExportJobListener implements KrameriusJobListener {
     private ExportRequestStore exportRequestStore;
 
     private JobEnqueueService jobEnqueueService;
-    private final ExportRequestItemStore exportRequestItemStore;
-    private final PageStore pageStore;
-
-    public ExportJobListener(ExportRequestItemStore exportRequestItemStore,
-                             PageStore pageStore) {
-        this.exportRequestItemStore = exportRequestItemStore;
-        this.pageStore = pageStore;
-    }
 
     @Override
     public void afterJob(KrameriusJobInstance jobInstance) {
@@ -83,6 +73,8 @@ public class ExportJobListener implements KrameriusJobListener {
             export.setState(!export.getState().isIncomplete() ?
                     ExportState.SUCCESSFUL :  export.getState());
         }
+
+        exportStore.save(export);
     }
 
     private List<Export> buildPostOrderList(Export root) {
