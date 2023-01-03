@@ -1,6 +1,6 @@
-import { Grid, Button } from '@mui/material'
-import { KrameriusJobMapping } from '../../../components/mappings/kramerius-job-mapping'
+import { Button, Grid } from '@mui/material'
 import { EnrichmentKrameriusJob } from 'enums/enrichment-kramerius-job'
+import { KrameriusJobMapping } from '../mappings/kramerius-job-mapping'
 
 type Props = {
 	onClick: (krameriusJob: EnrichmentKrameriusJob) => void
@@ -18,7 +18,7 @@ export const ConfigButtons = ({ onClick }: Props) => {
 					key={i}
 					item
 					justifyContent="center"
-					lg={6}
+					lg={4}
 					textAlign="center"
 					xs={12}
 				>
