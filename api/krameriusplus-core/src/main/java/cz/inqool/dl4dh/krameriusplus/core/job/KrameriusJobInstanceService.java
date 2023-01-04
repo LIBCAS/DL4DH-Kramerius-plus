@@ -96,7 +96,7 @@ public class KrameriusJobInstanceService {
     public void stopJob(String id) {
         KrameriusJobInstance krameriusJobInstance = store.findById(id).orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, id));
         try {
-            jobOperator.stop(krameriusJobInstance.getJobInstanceId());
+            jobOperator.stop(getLastExecution(krameriusJobInstance.getJobInstanceId()).getId());
         } catch (JobExecutionNotRunningException jobExecutionNotRunningException) {
             throw new JobException(id, jobExecutionNotRunningException.getMessage(), JobException.ErrorCode.NOT_RUNNING);
         } catch (NoSuchJobExecutionException noSuchJobExecutionException) {
