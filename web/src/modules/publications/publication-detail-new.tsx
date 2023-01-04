@@ -29,8 +29,8 @@ export const PublicationDetail: FC<Props> = ({
 
 	const openInKramerius = () => {
 		if (
-			publication?.model === 'periodical' ||
-			publication?.model === 'periodicalvolume'
+			publication?.model === 'PERIODICAL' ||
+			publication?.model === 'PERIODICAL_VOLUME'
 		) {
 			window.open(`${info?.kramerius.url}/periodical/${publication.id}`)
 		} else {

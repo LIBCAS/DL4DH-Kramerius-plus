@@ -34,12 +34,6 @@ export const ExportRequestConfig: FC<{ config: ExportJobConfig }> = ({
 			<Grid container spacing={1}>
 				<KeyGridItem>Typ úlohy</KeyGridItem>
 				<ValueGridItem>{KrameriusJobMapping[config.jobType]}</ValueGridItem>
-				<KeyGridItem>Stránkování</KeyGridItem>
-				<ValueGridItem>
-					{config.params.paging
-						? `Stránka: ${config.params.paging.page}, velikost str.: ${config.params.paging.pageSize}`
-						: '-'}
-				</ValueGridItem>
 				<KeyGridItem>Parametre</KeyGridItem>
 				<ValueGridItem>
 					<Button

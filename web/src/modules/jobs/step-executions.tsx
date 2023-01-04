@@ -101,12 +101,12 @@ export const StepExecutions: FC<{
 		},
 		{
 			field: 'exitCode',
-			headerName: 'Výsledek',
+			headerName: 'Výstup',
 			width: 300,
 		},
 		{
 			field: 'erros',
-			headerName: '# Chyby',
+			headerName: '# Chyb',
 			flex: 1,
 			renderCell: renderErrorCell,
 		},

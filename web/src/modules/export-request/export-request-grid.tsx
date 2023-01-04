@@ -6,7 +6,9 @@ import {
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
+import { BulkExport } from 'models/bulk-export'
 import { User } from 'models/domain/user'
+import { ExportJobConfig } from 'models/job/config/export-job-config'
 import { ExportRequest } from 'models/request/export-request'
 import { ExportRequestFilterDto } from 'pages/export/export-request-list'
 import { FC, useEffect, useState } from 'react'
@@ -18,7 +20,7 @@ const exportDoneFormatter = (params: GridValueFormatterParams) => {
 	// 	return 'ANO'
 	// }
 
-	return 'NE'
+	return ''
 }
 
 export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
@@ -61,24 +63,22 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 			type: 'string',
 		},
 		{
-			field: 'bulkExportFormat',
+			field: 'config',
 			headerName: 'Formát',
 			width: 200,
 			type: 'string',
-			valueGetter: (params: GridValueGetterParams) => {
-				return (
-					// exportRequests.find(request => request.id === params.id)?.bulkExport
-					// 	?.format ??
-					'-'
-				)
+			valueGetter: (params: GridValueGetterParams<ExportJobConfig>) => {
+				return params.value?.exportFormat
 			},
 		},
 		{
 			field: 'bulkExport',
-			headerName: 'Ukončen',
+			headerName: 'Stav',
 			width: 200,
 			type: 'string',
-			valueFormatter: exportDoneFormatter,
+			valueGetter: (params: GridValueGetterParams<BulkExport>) => {
+				return params.value?.state
+			},
 		},
 		{
 			field: 'action',

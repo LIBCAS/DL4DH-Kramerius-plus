@@ -20,7 +20,7 @@ import { JobParameters } from 'modules/jobs/job-parameters'
 import { StepExecutions } from 'modules/jobs/step-executions'
 import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { toast } from 'react-toastify'
 
 export const KrameriusJobInstanceDetailPage: FC = () => {
@@ -29,6 +29,12 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 	const [stepExecution, setStepExecution] = useState<StepExecution>()
 	const [loading, setLoading] = useState<boolean>(true)
 	const { krameriusJobInstanceId } = useParams()
+
+	const navigate = useNavigate()
+
+	const onPublicationClick = () => {
+		navigate(`/publications/${job?.jobParameters['PUBLICATION_ID']}`)
+	}
 
 	const fetchJob = async () => {
 		if (krameriusJobInstanceId) {
@@ -121,8 +127,19 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 						<Box>
 							<Typography variant="h4">Detail úlohy</Typography>
 						</Box>
-						<Box display="flex" justifyContent="space-between" width="20%">
-							<Box width="45%">
+						<Box display="flex" justifyContent="space-between" width="30%">
+							<Box width="36%">
+								<Button
+									disabled={!job.jobParameters['PUBLICATION_ID']}
+									fullWidth
+									variant="contained"
+									onClick={onPublicationClick}
+								>
+									Zobrazit publikaci
+								</Button>
+							</Box>
+							<Box width="5%"></Box>
+							<Box width="27%">
 								<Button
 									disabled={!isRestartable()}
 									fullWidth
@@ -132,8 +149,8 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 									Restartovat
 								</Button>
 							</Box>
-							<Box width="10%"></Box>
-							<Box width="45%">
+							<Box width="5%"></Box>
+							<Box width="27%">
 								<Button
 									disabled={!isStoppable()}
 									fullWidth

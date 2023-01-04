@@ -1,22 +1,22 @@
 export const publicationModelList = [
-	'monograph',
-	'monographunit',
-	'periodical',
-	'periodicalvolume',
-	'periodicalitem',
-	'internalpart',
-	'supplement',
+	'MONOGRAPH',
+	'MONOGRAPH_UNIT',
+	'PERIODICAL',
+	'PERIODICAL_VOLUME',
+	'PERIODICAL_ITEM',
+	'INTERNAL_PART',
+	'SUPPLEMENT',
 ]
 
 export type DigitalObjectModel =
-	| 'monograph'
-	| 'monographunit'
-	| 'periodical'
-	| 'periodicalvolume'
-	| 'periodicalitem'
-	| 'page'
-	| 'internalpart'
-	| 'supplement'
+	| 'MONOGRAPH'
+	| 'MONOGRAPH_UNIT'
+	| 'PERIODICAL'
+	| 'PERIODICAL_VOLUME'
+	| 'PERIODICAL_ITEM'
+	| 'PAGE'
+	| 'INTERNAL_PART'
+	| 'SUPPLEMENT'
 
 export const DigitalObjectModelMapping: Record<string, string> = {
 	MONOGRAPH: 'Monografia',

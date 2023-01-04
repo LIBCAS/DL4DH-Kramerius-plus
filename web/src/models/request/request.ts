@@ -17,7 +17,7 @@ export type RequestState =
 
 export const RequestStateMapping = {
 	CREATED: 'Vytvořená',
-	RUNNING: 'Beží',
+	RUNNING: 'Běží',
 	FAILED: 'Selhala',
 	COMPLETED: 'Dokončená',
 	PARTIAL: 'Částečně selhala',
