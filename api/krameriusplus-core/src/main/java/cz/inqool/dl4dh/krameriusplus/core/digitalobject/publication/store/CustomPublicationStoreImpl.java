@@ -63,7 +63,7 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
         } if (filter.getParentId() != null) {
             query.addCriteria(where("parentId").is(filter.getParentId()));
         } if (filter.getModel() != null) {
-            query.addCriteria(where("_class").is(filter.getModel()));
+            query.addCriteria(where("_class").is(filter.getModel().getName()));
         } if (filter.getCreatedBefore() != null) {
             query.addCriteria(where("created").lte(filter.getCreatedBefore()));
         } if (filter.getCreatedAfter() != null) {

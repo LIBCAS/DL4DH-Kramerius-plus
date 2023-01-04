@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationFacade;
 import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationFilter;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.PublicationDto;
@@ -60,7 +61,7 @@ public class PublicationApi {
                                        @RequestParam(value = "uuid", required = false) String uuid,
                                        @RequestParam(value = "title", required = false) String title,
                                        @RequestParam(value = "parentId", required = false) String parentId,
-                                       @RequestParam(value = "model", required = false) String model,
+                                       @RequestParam(value = "model", required = false) KrameriusModel model,
                                        @RequestParam(value = "isRootEnrichment", required = false) Boolean isRootEnrichment,
                                        @RequestParam(value = "createdBefore", required = false)
                                              @DateTimeFormat(iso = DATE_TIME) Instant createdBefore,

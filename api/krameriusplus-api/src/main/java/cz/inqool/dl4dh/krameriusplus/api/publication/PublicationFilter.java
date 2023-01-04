@@ -19,7 +19,7 @@ public class PublicationFilter {
 
     private String parentId;
 
-    private String model;
+    private KrameriusModel model;
 
     private Boolean isRootEnrichment;
 

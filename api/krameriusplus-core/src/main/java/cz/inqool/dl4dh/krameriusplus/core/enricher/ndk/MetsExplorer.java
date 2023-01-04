@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.enricher.ndk;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.NdkEnrichmentException;
 import cz.inqool.dl4dh.mets.DivType;
+import cz.inqool.dl4dh.mets.FileType;
 import cz.inqool.dl4dh.mets.Mets;
 import cz.inqool.dl4dh.mets.StructMapType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,12 +99,12 @@ public class MetsExplorer {
 
     private Path findPageMetsPath(Map<String, Path> filenameToPathMap, DivType div) {
         DivType.Fptr amdFptrElement = div.getFptr().stream()
-                .filter(fptr -> ((String) fptr.getFILEID()).startsWith("amd"))
+                .filter(fptr -> ((FileType) fptr.getFILEID()).getID().startsWith("amd"))
                 .findFirst()
                 .orElseThrow(() -> new NdkEnrichmentException("Could not find <mets:fptr> element, where FILEID starts " +
                         "with 'amd' in <mets:div> with ORDERLABEL='" + div.getORDERLABEL() + "'.", NDK_PAGE_FILEID_NOT_FOUND));
 
-        String fileIdValue = (String) amdFptrElement.getFILEID();
+        String fileIdValue = ((FileType) amdFptrElement.getFILEID()).getID();
         String pageMetsFileSuffix = fileIdValue.substring(fileIdValue.length() - 4) + ".xml";
 
         return filenameToPathMap.entrySet().stream()

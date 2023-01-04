@@ -56,6 +56,7 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
         int count = query.select(qObject.count()).fetchOne().intValue();
         query.offset((long) page * pageSize);
         query.limit(pageSize);
+        query.orderBy(qObject.created.desc());
 
         List<ExportRequest> results = query.select(qObject).fetch();
 

@@ -55,7 +55,7 @@ public class MetsFileLocatorService {
     }
 
     private boolean matchesMetsPrefix(Path file) {
-        return file.getFileName().startsWith("mets") || file.getFileName().startsWith("METS");
+        return file.getFileName().toString().startsWith("mets") || file.getFileName().toString().startsWith("METS");
     }
 
     @Autowired

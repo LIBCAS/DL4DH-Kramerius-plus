@@ -30,6 +30,8 @@ public class EnrichmentRequestStore extends DatedStore<EnrichmentRequest, QEnric
         int count = query.select(qObject.count()).fetchOne().intValue();
         query.offset((long) page * pageSize);
         query.limit(pageSize);
+        query.orderBy(qObject.created.desc());
+
         List<EnrichmentRequest> enrichmentRequests = query.select(qObject).fetch();
 
         return new Result<>(pageSize, page, count, enrichmentRequests);
