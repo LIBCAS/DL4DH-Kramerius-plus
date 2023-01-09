@@ -367,4 +367,13 @@
         </createTable>
 
     </changeSet>
+    <changeSet id="2" author="kollar">
+        <addColumn tableName="kplus_export_job_config">
+            <column name="request_id" type="${id}">
+                <constraints foreignKeyName="export_job_config_request_id"
+                             referencedTableName="kplus_export_request"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

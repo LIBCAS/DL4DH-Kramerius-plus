@@ -31,4 +31,9 @@ public class ExportRequest extends Request {
     @Embedded
     @NotNull
     private BulkExport bulkExport;
+
+    public void setConfig(ExportJobConfig jobConfig) {
+        config = jobConfig;
+        jobConfig.setRequest(this);
+    }
 }
