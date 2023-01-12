@@ -25,6 +25,6 @@ public abstract class DomainDocumentStore<T> {
         long pageSize = query.getLimit();
         long page = query.getSkip() / query.getLimit();
 
-        return new Result<>(pageSize, page, total, result);
+        return new Result<>(page, pageSize, total, result);
     }
 }

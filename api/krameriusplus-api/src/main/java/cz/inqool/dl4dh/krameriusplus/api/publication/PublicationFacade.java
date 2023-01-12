@@ -19,7 +19,7 @@ public interface PublicationFacade {
 
     PageDto findPage(String id);
 
-    List<PageDto> listPages(String publicationId);
+    Result<PageDto> listPages(String publicationId, int page, int pageSize);
 
     void publish(String publicationId);
 

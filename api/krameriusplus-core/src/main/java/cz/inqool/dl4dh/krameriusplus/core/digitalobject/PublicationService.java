@@ -12,12 +12,17 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.store.PublicationStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
 public class PublicationService implements PublicationFacade {
@@ -67,10 +72,16 @@ public class PublicationService implements PublicationFacade {
     }
 
     @Override
-    public List<PageDto> listPages(String publicationId) {
-        List<Page> pages = pageStore.listByPublication(publicationId);
+    public Result<PageDto> listPages(String publicationId, int page, int pageSize) {
+        Query query = Query.query(where("parentId").is(publicationId));
+        query.fields().exclude("tokens");
+        query.fields().exclude("nameTagMetadata");
+        query.with(Sort.by(Sort.Direction.ASC, "index"));
+        query.with(PageRequest.of(page, pageSize));
 
-        return pages.stream().map(page -> page.accept(mapper)).collect(Collectors.toList());
+        Result<Page> pages = pageStore.list(query);
+
+        return toDtoPagesResult(pages);
     }
 
     @Override
@@ -95,10 +106,21 @@ public class PublicationService implements PublicationFacade {
 
     private Result<PublicationDto> toDtoResult(Result<Publication> publications) {
         return new Result<>(
-                publications.getPageSize(),
                 publications.getPage(),
+                publications.getPageSize(),
                 publications.getTotal(),
                 publications.getItems()
+                        .stream()
+                        .map(publication -> publication.accept(mapper))
+                        .collect(Collectors.toList()));
+    }
+
+    private Result<PageDto> toDtoPagesResult(Result<Page> pages) {
+        return new Result<>(
+                pages.getPage(),
+                pages.getPageSize(),
+                pages.getTotal(),
+                pages.getItems()
                         .stream()
                         .map(publication -> publication.accept(mapper))
                         .collect(Collectors.toList()));

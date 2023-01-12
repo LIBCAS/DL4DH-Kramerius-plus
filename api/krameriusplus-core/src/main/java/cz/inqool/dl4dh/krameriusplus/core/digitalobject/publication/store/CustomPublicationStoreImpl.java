@@ -83,7 +83,7 @@ public class CustomPublicationStoreImpl extends DomainDocumentStore<Publication>
 
         List<Publication> publications = mongoOperations.find(query, Publication.class);
 
-        return new Result<>(pageSize, page, total, publications);
+        return new Result<>(page, pageSize, total, publications);
     }
 
     private void getChildrenRec(Publication parent) {
