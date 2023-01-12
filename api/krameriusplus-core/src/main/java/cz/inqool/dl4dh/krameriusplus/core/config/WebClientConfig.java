@@ -63,10 +63,20 @@ public class WebClientConfig {
     @Bean(name = TEI_WEB_CLIENT)
     public WebClient webClientTei(@Value("${system.enrichment.tei.api:http://localhost:5000/tei}") String teiApi) {
         return WebClient.builder()
+                // logging request bodies
+//                .clientConnector(new ReactorClientHttpConnector(HttpClient
+//                        .create()
+//                .wiretap("reactor.netty.http.client.HttpClient",
+//                        LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL);))
                 .baseUrl(teiApi)
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(MAX_MEMORY_SIZE))
+//                .codecs(configurer -> {
+//                    configurer.defaultCodecs().maxInMemorySize(MAX_MEMORY_SIZE);
+//                    configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+//                    configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+//                })
                 .build();
     }
 

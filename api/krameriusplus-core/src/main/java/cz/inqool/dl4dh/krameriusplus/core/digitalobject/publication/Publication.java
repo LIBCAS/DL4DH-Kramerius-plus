@@ -54,7 +54,7 @@ public abstract class Publication extends DigitalObject {
 
     private List<String> donator = new ArrayList<>();
 
-    private Long pageCount;
+    private Integer pageCount;
 
     /**
      * Flag for deciding, if this publication should be shown in grid. Should be set to true

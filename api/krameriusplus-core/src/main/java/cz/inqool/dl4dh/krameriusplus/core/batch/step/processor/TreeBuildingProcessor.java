@@ -46,6 +46,7 @@ public class TreeBuildingProcessor implements ItemProcessor<String, Publication>
         List<Page> pages = filterObjects(publicationChildren, Page.class);
         publication.setChildren(publications);
         publication.setPages(pages);
+        publication.setPageCount(pages.size());
 
         publications.forEach(this::fetchTree);
 
