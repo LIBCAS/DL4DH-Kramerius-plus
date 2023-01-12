@@ -17,9 +17,9 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
 
     @Mappings({
             @Mapping(target = "publishers", expression = "java(mapPublishInfo(element.getPlaceOrPublisherOrDateIssued()))"),
-            @Mapping(target = "dateIssued", expression = "java(mapDate(findElements(element.getPlaceOrPublisherOrDateIssued(), \"dateIssued\")))"),
+            @Mapping(target = "datesIssued", expression = "java(mapDates(element.getPlaceOrPublisherOrDateIssued()))"),
             @Mapping(target = "places", expression = "java(mapPlaces(element.getPlaceOrPublisherOrDateIssued()))"),
-            @Mapping(target = "issuance", expression = "java(mapIssuance(findElements(element.getPlaceOrPublisherOrDateIssued(), \"issuance\")))")
+            @Mapping(target = "issuances", expression = "java(mapIssuances(element.getPlaceOrPublisherOrDateIssued()))")
     })
     ModsOriginInfo map(OriginInfoDefinition element);
 
@@ -72,49 +72,30 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
         return result;
     }
 
-    default ModsDateIssued mapDate(JAXBElement<?> element) {
-        if (element == null) {
+    default List<String> mapIssuances(List<JAXBElement<?>> elements) {
+        if (elements == null || elements.isEmpty()) {
             return null;
         }
 
-        if (!(element.getValue() instanceof DateDefinition)) {
-            throw new IllegalStateException("Found <dateIssued> element, but it is not an instance of DateDefinition.");
-        }
-        DateDefinition dateDefinition = (DateDefinition) element.getValue();
-
-        ModsDateIssued dateIssued = new ModsDateIssued();
-        dateIssued.setEncoding(dateDefinition.getEncoding());
-        dateIssued.setPoint(dateDefinition.getPoint());
-        dateIssued.setValue(dateDefinition.getValue());
-
-        return dateIssued;
-    }
-
-    default String mapIssuance(JAXBElement<?> issuanceElement) {
-        if (issuanceElement == null) {
-            return null;
+        List<String> issuances = new ArrayList<>();
+        for (JAXBElement<?> element : elements) {
+            if (element.getValue() instanceof IssuanceDefinition) {
+                issuances.add(((IssuanceDefinition) element.getValue()).value());
+            }
         }
 
-        if (!(issuanceElement.getValue() instanceof IssuanceDefinition)) {
-            throw new IllegalStateException("Found <issuance> element, but it is not and instance of "
-                    + IssuanceDefinition.class.getSimpleName());
-        }
 
-        return ((IssuanceDefinition) issuanceElement.getValue()).value();
+        return issuances;
     }
 
     default List<ModsDateIssued> mapDates(List<JAXBElement<?>> elements) {
+        if (elements == null || elements.isEmpty()) {
+            return null;
+        }
+
         List<ModsDateIssued> result = new ArrayList<>();
         for (JAXBElement<?> element : elements) {
             if (element.getValue() instanceof DateDefinition) {
-                if (element == null) {
-                    return null;
-                }
-
-                if (!(element.getValue() instanceof DateDefinition)) {
-                    throw new IllegalStateException("Found <dateIssued> element, but it is not an instance of DateDefinition.");
-                }
-
                 DateDefinition dateDefinition = (DateDefinition) element.getValue();
 
                 ModsDateIssued dateIssued = new ModsDateIssued();

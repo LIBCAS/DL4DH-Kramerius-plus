@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.enricher.tei;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsDateIssued;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsName;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsNamePart;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsOriginInfo;
@@ -47,8 +48,9 @@ public interface TeiHeaderMapper {
         TeiHeaderInput.TeiOriginInfo teiOriginInfo = new TeiHeaderInput.TeiOriginInfo();
         teiOriginInfo.setPublisher(String.join(",", firstOriginInfo.getPublishers()));
 
-        if (firstOriginInfo.getDateIssued() != null) {
-            teiOriginInfo.setDate(firstOriginInfo.getDateIssued().getValue());
+        if (firstOriginInfo.getDatesIssued() != null) {
+            teiOriginInfo.setDates(firstOriginInfo.getDatesIssued().stream().map(ModsDateIssued::getValue)
+                    .collect(Collectors.toList()));
         }
 
         if (firstOriginInfo.getPlaces() != null && !firstOriginInfo.getPlaces().isEmpty()) {

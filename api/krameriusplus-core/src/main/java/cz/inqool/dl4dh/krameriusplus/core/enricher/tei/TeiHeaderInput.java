@@ -31,7 +31,7 @@ public class TeiHeaderInput {
     @Setter
     public static class TeiOriginInfo {
         private String publisher;
-        private String date;
+        private List<String> dates;
         private List<String> places;
     }
 }
