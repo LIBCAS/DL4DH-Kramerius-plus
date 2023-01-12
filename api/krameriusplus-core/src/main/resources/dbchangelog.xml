@@ -244,32 +244,12 @@
             </column>
         </createTable>
 
-        <createTable tableName="kplus_export_job_config">
-            <column name="id" type="${id}">
-                <constraints nullable="false" primaryKey="true"
-                             primaryKeyName="export_job_config_PK"/>
-            </column>
-            <column name="params" type="text">
-                <constraints nullable="false"/>
-            </column>
-            <column name="delimiter" type="varchar(255)"/>
-            <column name="tei_params" type="text"/>
-            <column name="dtype" type="varchar(255)"/>
-        </createTable>
-
         <createTable tableName="kplus_export_request">
             <column name="id" type="${id}">
                 <constraints nullable="false" primaryKey="true"
                              primaryKeyName="export_request_PK"
                              foreignKeyName="export_request_FK"
                              referencedTableName="kplus_request"
-                             referencedColumnNames="id"/>
-            </column>
-
-            <column name="config_id" type="${id}">
-                <constraints nullable="false"
-                             foreignKeyName="export_request_config_FK"
-                             referencedTableName="kplus_export_job_config"
                              referencedColumnNames="id"/>
             </column>
             <column name="create_request_job_id" type="${id}">
@@ -290,6 +270,26 @@
             </column>
             <column name="state" type="varchar(255)">
                 <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_export_job_config">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="export_job_config_PK"/>
+            </column>
+            <column name="params" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delimiter" type="varchar(255)"/>
+            <column name="tei_params" type="text"/>
+            <column name="dtype" type="varchar(255)"/>
+
+            <column name="request_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="export_config_request_FK"
+                             referencedTableName="kplus_export_request"
+                             referencedColumnNames="id"/>
             </column>
         </createTable>
 
@@ -365,15 +365,5 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-
-    </changeSet>
-    <changeSet id="2" author="kollar">
-        <addColumn tableName="kplus_export_job_config">
-            <column name="request_id" type="${id}">
-                <constraints foreignKeyName="export_job_config_request_id"
-                             referencedTableName="kplus_export_request"
-                             referencedColumnNames="id"/>
-            </column>
-        </addColumn>
     </changeSet>
 </databaseChangeLog>
