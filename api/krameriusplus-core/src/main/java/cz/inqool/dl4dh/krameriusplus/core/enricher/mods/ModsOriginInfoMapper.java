@@ -17,9 +17,9 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
 
     @Mappings({
             @Mapping(target = "publishers", expression = "java(mapPublishInfo(element.getPlaceOrPublisherOrDateIssued()))"),
-            @Mapping(target = "dateIssued", expression = "java(mapDate(findOne(element.getPlaceOrPublisherOrDateIssued(), \"dateIssued\")))"),
+            @Mapping(target = "dateIssued", expression = "java(mapDate(findElements(element.getPlaceOrPublisherOrDateIssued(), \"dateIssued\")))"),
             @Mapping(target = "places", expression = "java(mapPlaces(element.getPlaceOrPublisherOrDateIssued()))"),
-            @Mapping(target = "issuance", expression = "java(mapIssuance(findOne(element.getPlaceOrPublisherOrDateIssued(), \"issuance\")))")
+            @Mapping(target = "issuance", expression = "java(mapIssuance(findElements(element.getPlaceOrPublisherOrDateIssued(), \"issuance\")))")
     })
     ModsOriginInfo map(OriginInfoDefinition element);
 
@@ -53,7 +53,8 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
                 PlaceDefinition placeDefinition = (PlaceDefinition) element.getValue();
                 if (placeDefinition.getPlaceTerm().isEmpty()) {
                     continue;
-                } if (placeDefinition.getPlaceTerm().size() > 1) {
+                }
+                if (placeDefinition.getPlaceTerm().size() > 1) {
                     throw new IllegalStateException("Expected <place> element to have at most one <placeTerm> element, but found: " + placeDefinition.getPlaceTerm().size());
                 }
 
@@ -100,5 +101,30 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
         }
 
         return ((IssuanceDefinition) issuanceElement.getValue()).value();
+    }
+
+    default List<ModsDateIssued> mapDates(List<JAXBElement<?>> elements) {
+        List<ModsDateIssued> result = new ArrayList<>();
+        for (JAXBElement<?> element : elements) {
+            if (element.getValue() instanceof DateDefinition) {
+                if (element == null) {
+                    return null;
+                }
+
+                if (!(element.getValue() instanceof DateDefinition)) {
+                    throw new IllegalStateException("Found <dateIssued> element, but it is not an instance of DateDefinition.");
+                }
+
+                DateDefinition dateDefinition = (DateDefinition) element.getValue();
+
+                ModsDateIssued dateIssued = new ModsDateIssued();
+                dateIssued.setEncoding(dateDefinition.getEncoding());
+                dateIssued.setPoint(dateDefinition.getPoint());
+                dateIssued.setValue(dateDefinition.getValue());
+                result.add(dateIssued);
+            }
+        }
+
+        return result;
     }
 }
