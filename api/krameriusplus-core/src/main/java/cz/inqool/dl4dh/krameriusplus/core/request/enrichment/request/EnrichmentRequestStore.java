@@ -34,6 +34,6 @@ public class EnrichmentRequestStore extends DatedStore<EnrichmentRequest, QEnric
 
         List<EnrichmentRequest> enrichmentRequests = query.select(qObject).fetch();
 
-        return new Result<>(pageSize, page, count, enrichmentRequests);
+        return new Result<>(page, pageSize, count, enrichmentRequests);
     }
 }

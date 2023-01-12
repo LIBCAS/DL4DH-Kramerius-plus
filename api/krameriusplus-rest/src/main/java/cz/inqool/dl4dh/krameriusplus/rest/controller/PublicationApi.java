@@ -92,8 +92,10 @@ public class PublicationApi {
     @Operation(summary = "List pages for given publication. Pages do not contain tokens and nameTagMetadata.")
     @ApiResponse(responseCode = "200", description = "OK")
     @GetMapping("/{id}/pages")
-    public List<PageDto> listPages(@PathVariable("id") String publicationId) {
-        return facade.listPages(publicationId);
+    public Result<PageDto> listPages(@PathVariable("id") String publicationId,
+                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                   @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        return facade.listPages(publicationId, page, pageSize);
     }
 
     @Operation(summary = "Find page for given publication by id. Page contains all metadata.")

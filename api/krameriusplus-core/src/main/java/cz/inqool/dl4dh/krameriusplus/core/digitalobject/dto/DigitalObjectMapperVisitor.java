@@ -23,6 +23,8 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.P
  */
 public interface DigitalObjectMapperVisitor {
 
+    // FROM DTO METHODS
+
     Monograph fromCreateDto(MonographCreateDto createDto);
 
     MonographUnit fromCreateDto(MonographUnitCreateDto createDto);
@@ -38,6 +40,8 @@ public interface DigitalObjectMapperVisitor {
     Supplement fromCreateDto(SupplementCreateDto createDto);
 
     InternalPart fromCreateDto(InternalPartCreateDto createDto);
+
+    // TO DTO METHODS
 
     MonographDto toDto(Monograph entity);
 
