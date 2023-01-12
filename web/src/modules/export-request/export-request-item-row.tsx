@@ -12,6 +12,7 @@ import {
 import { download } from 'api/file-ref-api'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { FC, Fragment, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ExportRowType } from './export-request-items'
 
 export const ExportRequestItemRow: FC<{
@@ -71,7 +72,9 @@ export const ExportRequestItemRow: FC<{
 					{row.children ? row.children.length : 0}
 				</TableCell>
 				<TableCell width="130px">
-					{row.exportJob ? row.exportJob.executionStatus : null}
+					<Link to={`/jobs/${row.exportJob?.id}`}>
+						{row.exportJob ? row.exportJob.executionStatus : null}
+					</Link>
 				</TableCell>
 				<TableCell width="100px">
 					<Button
