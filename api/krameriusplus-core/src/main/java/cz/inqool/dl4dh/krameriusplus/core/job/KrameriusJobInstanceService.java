@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.job;
 import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
 import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
+import cz.inqool.dl4dh.krameriusplus.api.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.job.config.JobParametersMapWrapper;
 import lombok.Getter;
@@ -10,6 +11,9 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.JobExecutionNotRunningException;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.NoSuchJobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,8 @@ public class KrameriusJobInstanceService {
     private KrameriusJobInstanceMapper mapper;
 
     private JobExplorer jobExplorer;
+
+    private JobOperator jobOperator;
 
     @Transactional(readOnly = true)
     public KrameriusJobInstance findEntity(String jobInstanceId) {
@@ -87,6 +93,17 @@ public class KrameriusJobInstanceService {
         return lastExecution;
     }
 
+    public void stopJob(String id) {
+        KrameriusJobInstance krameriusJobInstance = store.findById(id).orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, id));
+        try {
+            jobOperator.stop(getLastExecution(krameriusJobInstance.getJobInstanceId()).getId());
+        } catch (JobExecutionNotRunningException jobExecutionNotRunningException) {
+            throw new JobException(id, jobExecutionNotRunningException.getMessage(), JobException.ErrorCode.NOT_RUNNING);
+        } catch (NoSuchJobExecutionException noSuchJobExecutionException) {
+            throw new JobException(id, noSuchJobExecutionException.getMessage(), JobException.ErrorCode.NO_EXECUTION);
+        }
+    }
+
     @Autowired
     public void setStore(KrameriusJobInstanceStore store) {
         this.store = store;
@@ -100,5 +117,10 @@ public class KrameriusJobInstanceService {
     @Autowired
     public void setJobExplorer(JobExplorer jobExplorer) {
         this.jobExplorer = jobExplorer;
+    }
+
+    @Autowired
+    public void setJobOperator(JobOperator jobOperator) {
+        this.jobOperator = jobOperator;
     }
 }

@@ -38,6 +38,9 @@ public class JobRunner {
         KrameriusJobInstance krameriusJobInstance = jobService.findEntity(krameriusJobInstanceId);
         notNull(krameriusJobInstance, () -> new MissingObjectException(KrameriusJobInstance.class, krameriusJobInstanceId));
 
+        krameriusJobInstance.setExecutionStatus(ExecutionStatus.STARTING);
+        jobService.getStore().save(krameriusJobInstance);
+
         Job job = jobContainer.getJob(krameriusJobInstance.getJobType());
         notNull(job, () -> new IllegalArgumentException("No Job found for type: " + krameriusJobInstance.getJobType()));
 
@@ -58,6 +61,8 @@ public class JobRunner {
             listenerContainer.applyBeforeJobListeners(krameriusJobInstance);
 
             log.info("Job: [" + job + "] launched with the following parameters: [" + jobParameters + "]");
+            krameriusJobInstance.setExecutionStatus(ExecutionStatus.STARTED);
+            jobService.getStore().save(krameriusJobInstance);
             job.execute(jobExecution);
             log.info("Job: [" + job + "] completed with the following parameters: [" + jobParameters +
                     "] and the following status: [" + jobExecution.getStatus() + "]");
