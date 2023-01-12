@@ -18,7 +18,7 @@ import java.util.Set;
 @Table(name = "kplus_export_request")
 public class ExportRequest extends Request {
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "request")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "exportRequest")
     private ExportJobConfig config;
 
     @OneToMany(mappedBy = "exportRequest", fetch = FetchType.EAGER)
@@ -34,6 +34,6 @@ public class ExportRequest extends Request {
 
     public void setConfig(ExportJobConfig jobConfig) {
         config = jobConfig;
-        jobConfig.setRequest(this);
+        jobConfig.setExportRequest(this);
     }
 }

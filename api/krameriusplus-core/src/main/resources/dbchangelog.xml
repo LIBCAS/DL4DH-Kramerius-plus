@@ -285,9 +285,9 @@
             <column name="tei_params" type="text"/>
             <column name="dtype" type="varchar(255)"/>
 
-            <column name="request_id" type="${id}">
+            <column name="export_request_id" type="${id}">
                 <constraints nullable="false"
-                             foreignKeyName="export_config_request_FK"
+                             foreignKeyName="export_config_export_request_FK"
                              referencedTableName="kplus_export_request"
                              referencedColumnNames="id"/>
             </column>

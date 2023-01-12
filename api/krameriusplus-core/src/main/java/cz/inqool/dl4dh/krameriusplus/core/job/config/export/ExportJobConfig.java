@@ -28,12 +28,12 @@ public abstract class ExportJobConfig extends JobConfig {
     private ParamsDto params;
 
     @OneToOne
-    private ExportRequest request;
+    private ExportRequest exportRequest;
 
     @Override
     public JobParametersMapWrapper toJobParametersWrapper() {
         JobParametersMapWrapper jobParametersMapWrapper = super.toJobParametersWrapper();
-        jobParametersMapWrapper.putString(REQUEST_NAME, request.getName());
+        jobParametersMapWrapper.putString(REQUEST_NAME, exportRequest.getName());
 
         return jobParametersMapWrapper;
     }
