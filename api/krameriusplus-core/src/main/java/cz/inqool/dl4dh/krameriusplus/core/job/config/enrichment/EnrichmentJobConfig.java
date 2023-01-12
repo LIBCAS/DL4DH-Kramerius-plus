@@ -8,8 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-import static cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey.OVERRIDE;
-import static cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey.PAGE_ERROR_TOLERANCE;
+import static cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey.*;
 
 @Getter
 @Setter
@@ -30,6 +29,7 @@ public abstract class EnrichmentJobConfig extends JobConfig {
         JobParametersMapWrapper jobParametersMap = super.toJobParametersWrapper();
         jobParametersMap.putBoolean(OVERRIDE, override);
         jobParametersMap.putLong(PAGE_ERROR_TOLERANCE, pageErrorTolerance);
+        jobParametersMap.putString(REQUEST_NAME, enrichmentRequest.getName());
 
         return jobParametersMap;
     }

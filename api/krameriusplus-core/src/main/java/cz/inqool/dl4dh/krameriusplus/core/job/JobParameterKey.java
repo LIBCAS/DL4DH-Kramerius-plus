@@ -16,4 +16,5 @@ public class JobParameterKey {
     public static final String PARAMS = "PARAMS";
     public static final String JOB_CONFIG_ID = "JOB_CONFIG_ID";
     public static final String EXPORT_ID = "EXPORT_ID";
+    public static final String REQUEST_NAME = "REQUEST_NAME";
 }
