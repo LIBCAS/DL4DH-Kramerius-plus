@@ -6,7 +6,6 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
@@ -61,7 +60,7 @@ public class SyncTeiMessenger implements TeiMessenger {
     public String startMerge(InputStream teiHeader) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
-            builder.part("header", new InputStreamResource(teiHeader));
+            builder.part("header", new MultipartInputStreamFileResource(teiHeader, "header"));
 
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/prepare").build())
                     .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -80,11 +79,10 @@ public class SyncTeiMessenger implements TeiMessenger {
     public String addMerge(String sessionId, InputStream teiPage) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
-            builder.part("page[]", new InputStreamResource(teiPage));
+            builder.part("session", sessionId);
+            builder.part("page[]", new MultipartInputStreamFileResource(teiPage, "page[]"));
 
-            return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/add")
-                    .queryParam("session", sessionId)
-                    .build())
+            return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/add").build())
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()

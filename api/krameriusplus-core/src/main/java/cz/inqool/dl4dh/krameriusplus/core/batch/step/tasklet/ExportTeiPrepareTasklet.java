@@ -48,7 +48,7 @@ public class ExportTeiPrepareTasklet implements Tasklet {
 
         String sessionId = teiMessenger.startMerge(fileRef.open());
 
-        chunkContext.getStepContext().getStepExecutionContext().put(TEI_SESSION_ID, sessionId);
+        chunkContext.getStepContext().getStepExecution().getExecutionContext().put(TEI_SESSION_ID, sessionId);
 
         return RepeatStatus.FINISHED;
     }
