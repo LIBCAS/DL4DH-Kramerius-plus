@@ -1,10 +1,10 @@
-import { Box, Menu, MenuItem, IconButton } from '@mui/material'
-import { FC, useState } from 'react'
-import { NavbarInnerItem, NavbarItem } from './navbar'
 import MenuIcon from '@mui/icons-material/Menu'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from 'components/auth/auth-context'
+import { Box, IconButton, Menu, MenuItem } from '@mui/material'
 import { useKeycloak } from '@react-keycloak/web'
+import { useAuth } from 'components/auth/auth-context'
+import { FC, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { NavbarInnerItem, NavbarItem } from './navbar'
 import { NavbarMenuItem } from './navbar-menu-item'
 
 export const ToolbarMenu: FC<{
@@ -13,7 +13,6 @@ export const ToolbarMenu: FC<{
 	xsWidth: string
 }> = ({ pages, lgWidth, xsWidth }) => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
-	const navigate = useNavigate()
 	const { auth } = useAuth()
 	const { keycloak } = useKeycloak()
 
@@ -22,11 +21,6 @@ export const ToolbarMenu: FC<{
 	}
 	const handleCloseNavMenu = () => {
 		setAnchorElNav(null)
-	}
-
-	const handleNavMenuClick = (link: string) => () => {
-		setAnchorElNav(null)
-		navigate(link)
 	}
 
 	const logout = () => {
@@ -113,7 +107,9 @@ export const ToolbarMenu: FC<{
 						.map(page => (
 							<MenuItem
 								key={page.name}
-								onClick={handleNavMenuClick(page.link || '/')}
+								component={Link}
+								to={page.link}
+								onClick={handleCloseNavMenu}
 							>
 								{page.label}
 							</MenuItem>

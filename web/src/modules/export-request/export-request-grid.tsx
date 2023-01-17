@@ -15,14 +15,6 @@ import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter } from 'utils/formatters'
 
-const exportDoneFormatter = (params: GridValueFormatterParams) => {
-	// if ((params.value as BulkExport).fileRef) {
-	// 	return 'ANO'
-	// }
-
-	return ''
-}
-
 export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 	filter,
 }) => {
