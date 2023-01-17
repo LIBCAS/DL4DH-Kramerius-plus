@@ -10,6 +10,7 @@ import {
 import { KrameriusJobMapping } from 'components/mappings/kramerius-job-mapping'
 import { KrameriusJobInstance } from 'models/job/kramerius-job-instance'
 import { FC } from 'react'
+import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
 type Props = {
@@ -26,8 +27,11 @@ export const KrameriusJobTable: FC<Props> = ({ jobs }) => {
 					{jobs.map(job => (
 						<TableRow
 							key={job.id}
+							component={Link}
 							hover
+							style={{ textDecoration: 'none ' }}
 							sx={{ height: 20 }}
+							to={`/jobs/${job.id}`}
 							onClick={() => navigate(`/jobs/${job.id}`)}
 						>
 							<TableCell sx={{ padding: '0px 16px' }}>

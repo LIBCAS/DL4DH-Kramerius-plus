@@ -9,7 +9,7 @@ import { User } from 'models/domain/user'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { RequestState, RequestStateMapping } from 'models/request/request'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
-import { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dateTimeFormatter } from 'utils/formatters'
 

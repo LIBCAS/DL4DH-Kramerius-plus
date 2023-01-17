@@ -7,9 +7,8 @@ import {
 } from '@mui/x-data-grid'
 import { PageBlock } from 'components/page-block'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
-import { EnrichmentChain } from 'models/request/enrichment-chain'
 import { EnrichmentRequestItem } from 'models/request/enrichment-request-item'
-import { RequestState, RequestStateMapping } from 'models/request/request'
+import { RequestStateMapping } from 'models/request/request'
 import { FC } from 'react'
 
 const columns = [
@@ -45,15 +44,6 @@ const columns = [
 			})`
 		},
 	},
-	// {
-	// 	field: 'enrichmentChains',
-	// 	headerName: '# Plánů',
-	// 	valueFormatter: (params: GridValueFormatterParams<EnrichmentChain[]>) => {
-	// 		return params.value.length
-	// 	},
-	// 	type: 'number',
-	// 	flex: 1,
-	// },
 ]
 
 export const EnrichmentRequestItems: FC<{

@@ -32,7 +32,7 @@ export const HomePage: FC = () => {
 							</Grid>
 							<Grid item>
 								<Button variant="contained" onClick={login}>
-									Přihlásit cez KEYCLOAK
+									Přihlásit
 								</Button>
 							</Grid>
 						</>

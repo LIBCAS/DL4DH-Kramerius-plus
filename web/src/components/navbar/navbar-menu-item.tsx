@@ -1,14 +1,13 @@
-import { Button, Menu, MenuItem, Box } from '@mui/material'
+import { Box, Button, Menu, MenuItem } from '@mui/material'
 import { useAuth } from 'components/auth/auth-context'
 import { FC, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { NavbarItem } from './navbar'
 
 export const NavbarMenuItem: FC<{
 	item: NavbarItem
 }> = ({ item }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-	const navigate = useNavigate()
 	const open = Boolean(anchorEl)
 
 	const { auth } = useAuth()
@@ -19,11 +18,6 @@ export const NavbarMenuItem: FC<{
 
 	const handleClose = () => {
 		setAnchorEl(null)
-	}
-
-	const handleMenuItemClick = (link: string) => () => {
-		setAnchorEl(null)
-		navigate(link)
 	}
 
 	if (item.children) {
@@ -50,7 +44,9 @@ export const NavbarMenuItem: FC<{
 						.map(pageItem => (
 							<MenuItem
 								key={pageItem.name}
-								onClick={handleMenuItemClick(pageItem.link)}
+								component={Link}
+								to={pageItem.link}
+								onClick={handleClose}
 							>
 								{pageItem.label}
 							</MenuItem>
