@@ -23,19 +23,42 @@ export const NavbarInfoContent: FC<Props> = ({ instance, url, version }) => {
 					Instance:
 				</Typography>
 				<Typography component="span" fontSize={12}>
-					{instance}
+					<Link color="inherit" href={url} target="_blank">
+						{instance}
+					</Link>
 				</Typography>
 			</Box>
 			<Box display="flex" justifyContent="space-between">
 				<Typography component="span" fontSize={12}>
-					Url: {url}
+					Verze:
+				</Typography>
+				<Typography component="span" fontSize={12}>
+					{version}
+				</Typography>
+			</Box>
+			<Box display="flex" justifyContent="space-between">
+				<Typography component="span" fontSize={12}>
+					Odkazy:
 				</Typography>
 				<Typography component="span" fontSize={12}>
 					<Link
 						color="inherit"
-						href="https://github.com/LIBCAS/DL4DH-Kramerius-plus/wiki/Changelog"
+						href="https://github.com/LIBCAS/DL4DH-Kramerius-plus/wiki/Webov%C3%A1-aplikace"
+						target="_blank"
 					>
-						Verze: {version}
+						Dokumentace Kramerius+
+					</Link>
+				</Typography>
+			</Box>
+			<Box display="flex" justifyContent="space-between">
+				<Typography component="span" fontSize={12}></Typography>
+				<Typography component="span" fontSize={12}>
+					<Link
+						color="inherit"
+						href="https://github.com/LIBCAS/DL4DH"
+						target="_blank"
+					>
+						Informace o projektu DL4DH
 					</Link>
 				</Typography>
 			</Box>
