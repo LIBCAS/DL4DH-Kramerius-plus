@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,7 @@ public class SyncTeiMessenger implements TeiMessenger {
     }
 
     @Override
-    public String startMerge(InputStream teiHeader) {
+    public SessionDto startMerge(InputStream teiHeader) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
             builder.part("header", new MultipartInputStreamFileResource(teiHeader, "header"));
@@ -66,7 +67,8 @@ public class SyncTeiMessenger implements TeiMessenger {
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
-                    .bodyToMono(String.class)
+                    .bodyToMono(new ParameterizedTypeReference<SessionDto>() {
+                    })
                     .block();
         } catch (WebClientResponseException e) {
             throw new EnrichingException(EnrichingException.ErrorCode.TEI_ERROR, e);
@@ -76,17 +78,17 @@ public class SyncTeiMessenger implements TeiMessenger {
     }
 
     @Override
-    public String addMerge(String sessionId, InputStream teiPage) {
+    public SessionDto addMerge(String sessionId, InputStream teiPage) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
-            builder.part("session", sessionId);
             builder.part("page[]", new MultipartInputStreamFileResource(teiPage, "page[]"));
 
-            return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/add").build())
+            return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/add")
+                            .queryParam("session", "{sessionId}").build(sessionId))
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
-                    .bodyToMono(String.class)
+                    .bodyToMono(SessionDto.class)
                     .block();
         } catch (WebClientResponseException e) {
             throw new EnrichingException(EnrichingException.ErrorCode.TEI_ERROR, e);
@@ -96,7 +98,7 @@ public class SyncTeiMessenger implements TeiMessenger {
     }
 
     @Override
-    public String finishMerge(String sessionId, TeiParams teiParams) {
+    public SessionDto finishMerge(String sessionId, TeiParams teiParams) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
 
@@ -107,12 +109,12 @@ public class SyncTeiMessenger implements TeiMessenger {
             }
 
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/finish")
-                    .queryParam("session", sessionId)
-                    .build())
+                    .queryParam("session", "{sessionId}")
+                    .build(sessionId))
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
-                    .bodyToMono(String.class)
+                    .bodyToMono(SessionDto.class)
                     .block();
         } catch (WebClientResponseException e) {
             throw new EnrichingException(EnrichingException.ErrorCode.TEI_ERROR, e);

@@ -29,9 +29,9 @@ public interface TeiMessenger {
      * @param teiHeader inputStream of the teiHeader
      * @return ID of the created session from TEI Converter
      */
-    String startMerge(InputStream teiHeader);
+    SessionDto startMerge(InputStream teiHeader);
 
-    String addMerge(String sessionId, InputStream teiPage);
+    SessionDto addMerge(String sessionId, InputStream teiPage);
 
-    String finishMerge(String sessionId, TeiParams teiParams);
+    SessionDto finishMerge(String sessionId, TeiParams teiParams);
 }
