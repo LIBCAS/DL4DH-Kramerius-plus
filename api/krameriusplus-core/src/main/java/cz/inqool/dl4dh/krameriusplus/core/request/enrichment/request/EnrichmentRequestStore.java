@@ -17,14 +17,19 @@ public class EnrichmentRequestStore extends DatedStore<EnrichmentRequest, QEnric
         super(EnrichmentRequest.class, QEnrichmentRequest.class, entityManager);
     }
 
-    public Result<EnrichmentRequest> findByNameAndOwner(String name, String owner, int page, int pageSize) {
+    public Result<EnrichmentRequest> findByFilter(String publicationId, String name, String owner, int page, int pageSize) {
         JPAQuery<?> query = queryFactory.from(qObject);
+
+        if (publicationId != null) {
+            query.where(qObject.publicationIds.containsValue(publicationId));
+        }
+
         if (name != null) {
-            query = query.where(qObject.name.eq(name));
+            query = query.where(qObject.name.like(name));
         }
 
         if (owner != null) {
-            query = query.where(qObject.owner.username.eq(owner));
+            query = query.where(qObject.owner.username.like(owner));
         }
 
         int count = query.select(qObject.count()).fetchOne().intValue();

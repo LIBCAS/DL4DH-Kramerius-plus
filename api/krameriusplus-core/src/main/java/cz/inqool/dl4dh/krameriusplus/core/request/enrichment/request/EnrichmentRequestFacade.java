@@ -30,8 +30,8 @@ public class EnrichmentRequestFacade implements EnrichmentFacade {
     }
 
     @Override
-    public Result<EnrichmentRequestDto> list(String name, String owner, int page, int pageSize) {
-        return service.list(name, owner, page, pageSize);
+    public Result<EnrichmentRequestDto> list(String publicationId, String name, String owner, int page, int pageSize) {
+        return service.list(publicationId, name, owner, page, pageSize);
     }
 
     @Autowired

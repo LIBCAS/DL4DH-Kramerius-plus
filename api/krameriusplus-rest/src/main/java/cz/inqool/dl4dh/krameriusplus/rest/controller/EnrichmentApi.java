@@ -46,8 +46,9 @@ public class EnrichmentApi {
     @GetMapping("/list")
     public Result<EnrichmentRequestDto> list(@RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                              @RequestParam(value = "page", defaultValue = "0") int page,
+                                             @RequestParam(value = "publicationId", required = false) String publicationId,
                                              @RequestParam(value = "name", required = false) String name,
                                              @RequestParam(value = "owner", required = false) String owner) {
-        return facade.list(name, owner, page, pageSize);
+        return facade.list(publicationId, name, owner, page, pageSize);
     }
 }
