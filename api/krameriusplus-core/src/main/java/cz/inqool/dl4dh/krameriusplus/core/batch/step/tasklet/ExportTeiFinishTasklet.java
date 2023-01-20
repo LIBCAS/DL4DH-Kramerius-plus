@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.core.batch.step.tasklet;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.batch.step.wrapper.DigitalObjectExport;
-import cz.inqool.dl4dh.krameriusplus.core.enricher.tei.SessionDto;
 import cz.inqool.dl4dh.krameriusplus.core.enricher.tei.TeiMessenger;
 import cz.inqool.dl4dh.krameriusplus.core.exporter.DigitalObjectExporter;
 import cz.inqool.dl4dh.krameriusplus.core.job.config.export.ExportJobConfig;
@@ -54,9 +53,9 @@ public class ExportTeiFinishTasklet implements Tasklet {
         isTrue(jobConfig instanceof ExportTeiJobConfig,
                 () -> new IllegalStateException("Expected type of ExportTeiJobConfig, but found " + jobConfig.getClass().getSimpleName()));
 
-        SessionDto result = teiMessenger.finishMerge(sessionId, ((ExportTeiJobConfig) jobConfig).getTeiParams());
+        String result = teiMessenger.finishMerge(sessionId, ((ExportTeiJobConfig) jobConfig).getTeiParams());
 
-        exporter.export(List.of(new DigitalObjectExport(null, result.getSession(),
+        exporter.export(List.of(new DigitalObjectExport(null, result,
                 publicationId.substring(5) + ".xml")), directory);
 
         return RepeatStatus.FINISHED;

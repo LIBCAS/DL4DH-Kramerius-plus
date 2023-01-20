@@ -6,7 +6,6 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
@@ -67,8 +66,7 @@ public class SyncTeiMessenger implements TeiMessenger {
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<SessionDto>() {
-                    })
+                    .bodyToMono(SessionDto.class)
                     .block();
         } catch (WebClientResponseException e) {
             throw new EnrichingException(EnrichingException.ErrorCode.TEI_ERROR, e);
@@ -98,7 +96,7 @@ public class SyncTeiMessenger implements TeiMessenger {
     }
 
     @Override
-    public SessionDto finishMerge(String sessionId, TeiParams teiParams) {
+    public String finishMerge(String sessionId, TeiParams teiParams) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
 
@@ -114,7 +112,7 @@ public class SyncTeiMessenger implements TeiMessenger {
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
-                    .bodyToMono(SessionDto.class)
+                    .bodyToMono(String.class)
                     .block();
         } catch (WebClientResponseException e) {
             throw new EnrichingException(EnrichingException.ErrorCode.TEI_ERROR, e);
