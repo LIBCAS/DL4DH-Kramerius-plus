@@ -1,12 +1,11 @@
 import { Divider, Grid, Paper, Typography } from '@mui/material'
-import { GridCallbackDetails, GridSelectionModel } from '@mui/x-data-grid'
 import { getPublication, publish, unpublish } from 'api/publication-api'
 import { Loading } from 'components/loading'
 import { PublicationDetailJobs } from 'components/publication/publication-detail-jobs'
 import { KrameriusJob } from 'enums/kramerius-job'
 import { Publication } from 'models'
-import { PublicationDetail } from 'modules/publications/publication-detail-new'
-import { PublicationGrid } from 'modules/publications/publication-grid'
+import { PublicationChildrenGrid } from 'modules/publications/publication-children-grid'
+import { PublicationDetailInfo } from 'modules/publications/publication-detail-info'
 import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -54,7 +53,7 @@ export const PublicationDetailPage: FC = () => {
 				<Paper sx={{ p: 2 }}>
 					<Grid container>
 						<Grid item xs={12}>
-							<PublicationDetail
+							<PublicationDetailInfo
 								handlePublish={handlePublishButton}
 								publication={publication}
 							/>
@@ -77,15 +76,7 @@ export const PublicationDetailPage: FC = () => {
 								<Typography variant="h6">Podřazené publikace</Typography>
 							</Grid>
 							<Grid item xs={12}>
-								<PublicationGrid
-									filter={{ parentId: publication.id }}
-									onSelectionChange={(
-										// eslint-disable-next-line @typescript-eslint/no-unused-vars
-										_s: GridSelectionModel,
-										// eslint-disable-next-line @typescript-eslint/no-unused-vars
-										_d: GridCallbackDetails,
-									) => {}}
-								/>
+								<PublicationChildrenGrid parentId={publication.id} />
 							</Grid>
 						</Grid>
 					</Grid>

@@ -1,39 +1,25 @@
 import { Box, Button, Paper } from '@mui/material'
 import {
-	GridCallbackDetails,
 	GridColumns,
 	GridRenderCellParams,
-	GridSelectionModel,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
-import { listPublications, PublicationFilter } from 'api/publication-api'
+import { listPublications } from 'api/publication-api'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
-import { FC, MouseEvent, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export const PublicationGrid: FC<{
-	filter: PublicationFilter
-	onSelectionChange?: (
-		selectionModel: GridSelectionModel,
-		details: GridCallbackDetails,
-	) => void
-}> = ({ filter, onSelectionChange }) => {
+export const PublicationChildrenGrid: FC<{
+	parentId: string
+}> = ({ parentId }) => {
 	const [rowCount, setRowCount] = useState<number>()
 	const [publications, setPublications] = useState<Publication[]>([])
 	const [page, setPage] = useState<number>(0)
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
-
-	const onExportClick = (e: MouseEvent) => {
-		e.stopPropagation()
-	}
-
-	const onPublishClick = (e: MouseEvent) => {
-		e.stopPropagation()
-	}
 
 	const columns = useMemo<GridColumns<Publication>>(
 		() => [
@@ -76,7 +62,7 @@ export const PublicationGrid: FC<{
 			{
 				field: 'actions',
 				headerName: 'Akce',
-				width: 300,
+				width: 100,
 				renderCell: (params: GridRenderCellParams) => (
 					<Box display="flex" justifyContent="space-between" width="100%">
 						<Button
@@ -87,12 +73,6 @@ export const PublicationGrid: FC<{
 						>
 							Detail
 						</Button>
-						<Button size="small" variant="text" onClick={onExportClick}>
-							Exportovat
-						</Button>
-						<Button size="small" variant="text" onClick={onPublishClick}>
-							Publikovat
-						</Button>
 					</Box>
 				),
 			},
@@ -102,7 +82,7 @@ export const PublicationGrid: FC<{
 
 	useEffect(() => {
 		async function fetchPublications() {
-			const response = await listPublications(page, 10, filter)
+			const response = await listPublications(page, 10, { parentId })
 
 			if (response) {
 				setPublications(response.items)
@@ -110,7 +90,7 @@ export const PublicationGrid: FC<{
 			}
 		}
 		fetchPublications()
-	}, [page, filter])
+	}, [page, parentId])
 
 	useEffect(() => {
 		setRowCountState(prevRowCountState =>
@@ -127,7 +107,6 @@ export const PublicationGrid: FC<{
 				rowCount={rowCountState}
 				rows={publications}
 				onPageChange={onPageChange}
-				onSelectionChange={onSelectionChange}
 			/>
 		</Paper>
 	)

@@ -41,7 +41,6 @@ export const PublicationListPage: FC = () => {
 				</Grid>
 				<Grid item xs={12}>
 					<PublicationGrid
-						allowSelection
 						filter={filter}
 						onSelectionChange={onSelectionChange}
 					/>

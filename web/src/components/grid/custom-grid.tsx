@@ -1,4 +1,9 @@
-import { DataGrid, GridColumns } from '@mui/x-data-grid'
+import {
+	DataGrid,
+	GridCallbackDetails,
+	GridColumns,
+	GridSelectionModel,
+} from '@mui/x-data-grid'
 import { DomainObject } from 'models/domain/domain-object'
 
 export interface CustomGridProps<T extends DomainObject> {
@@ -6,6 +11,10 @@ export interface CustomGridProps<T extends DomainObject> {
 	rowCount?: number
 	rows: T[]
 	onPageChange: (page: number) => void
+	onSelectionChange?: (
+		selectionModel: GridSelectionModel,
+		details: GridCallbackDetails,
+	) => void
 }
 
 export const CustomGrid = <T extends DomainObject>({
@@ -13,6 +22,7 @@ export const CustomGrid = <T extends DomainObject>({
 	rowCount,
 	rows,
 	onPageChange,
+	onSelectionChange,
 }: CustomGridProps<T>) => {
 	return (
 		<DataGrid
@@ -22,8 +32,6 @@ export const CustomGrid = <T extends DomainObject>({
 			density="compact"
 			disableColumnFilter
 			disableColumnMenu
-			disableSelectionOnClick
-			getRowClassName={() => 'data-grid-row'}
 			pageSize={10}
 			paginationMode="server"
 			rowCount={rowCount}
@@ -31,6 +39,7 @@ export const CustomGrid = <T extends DomainObject>({
 			rowsPerPageOptions={[]}
 			sortingMode="server"
 			onPageChange={onPageChange}
+			onSelectionModelChange={onSelectionChange}
 		/>
 	)
 }

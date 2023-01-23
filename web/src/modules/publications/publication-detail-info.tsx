@@ -12,7 +12,7 @@ type Props = {
 	handlePublish: () => void
 }
 
-export const PublicationDetail: FC<Props> = ({
+export const PublicationDetailInfo: FC<Props> = ({
 	publication,
 	handlePublish,
 }) => {
