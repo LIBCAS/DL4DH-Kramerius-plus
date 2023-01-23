@@ -46,7 +46,8 @@ export const PublicationDetailInfo: FC<Props> = ({
 					<ReadOnlyField
 						label="Vytvořeno"
 						value={
-							publication && formatDateTime(publication.created.toString())
+							publication.created &&
+							formatDateTime(publication.created.toString())
 						}
 					/>
 					<ReadOnlyField label="Název" value={publication.title} />
@@ -95,7 +96,7 @@ export const PublicationDetailInfo: FC<Props> = ({
 							variant="contained"
 							onClick={handlePublish}
 						>
-							{publication.publishInfo.isPublished
+							{publication?.publishInfo?.isPublished
 								? 'Zrušit publikování'
 								: 'Publikovat'}
 						</Button>

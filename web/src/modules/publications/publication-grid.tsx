@@ -6,8 +6,13 @@ import {
 	GridSelectionModel,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
-import { listPublications, PublicationFilter } from 'api/publication-api'
+import {
+	listPublications,
+	PublicationFilter,
+	publish,
+} from 'api/publication-api'
 import { CustomGrid } from 'components/grid/custom-grid'
+import { PublicationExportDialog } from 'components/publication/publication-export-dialog'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
 import { FC, MouseEvent, useEffect, useMemo, useState } from 'react'
@@ -26,13 +31,33 @@ export const PublicationGrid: FC<{
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
+	const [exportPublicationId, setExportPublicationId] = useState<string>()
 
-	const onExportClick = (e: MouseEvent) => {
+	const onExportClick = (publicationId: string) => (e: MouseEvent) => {
 		e.stopPropagation()
+
+		setExportPublicationId(publicationId)
 	}
 
-	const onPublishClick = (e: MouseEvent) => {
+	const onPublishClick = (publicationId: string) => async (e: MouseEvent) => {
 		e.stopPropagation()
+
+		const response = await publish(publicationId)
+
+		if (response.ok) {
+			setPublications(prev =>
+				prev.map(pub => {
+					if (pub.id === publicationId) {
+						return {
+							...pub,
+							publishInfo: { ...pub.publishInfo, isPublished: true },
+						}
+					} else {
+						return pub
+					}
+				}),
+			)
+		}
 	}
 
 	const columns = useMemo<GridColumns<Publication>>(
@@ -87,10 +112,18 @@ export const PublicationGrid: FC<{
 						>
 							Detail
 						</Button>
-						<Button size="small" variant="text" onClick={onExportClick}>
+						<Button
+							size="small"
+							variant="text"
+							onClick={onExportClick(params.row['id'])}
+						>
 							Exportovat
 						</Button>
-						<Button size="small" variant="text" onClick={onPublishClick}>
+						<Button
+							size="small"
+							variant="text"
+							onClick={onPublishClick(params.row['id'])}
+						>
 							Publikovat
 						</Button>
 					</Box>
@@ -128,6 +161,11 @@ export const PublicationGrid: FC<{
 				rows={publications}
 				onPageChange={onPageChange}
 				onSelectionChange={onSelectionChange}
+			/>
+			<PublicationExportDialog
+				open={!!exportPublicationId}
+				publicationIds={exportPublicationId ? [exportPublicationId] : []}
+				onClose={() => setExportPublicationId(undefined)}
 			/>
 		</Paper>
 	)
