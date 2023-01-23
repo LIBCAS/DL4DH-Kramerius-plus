@@ -1,19 +1,17 @@
-import { Button, Paper } from '@mui/material'
+import { Box, Button, Paper } from '@mui/material'
 import {
-	DataGrid,
+	GridColumns,
 	GridRenderCellParams,
 	GridValueFormatterParams,
-	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
-import { BulkExport } from 'models/bulk-export'
+import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
-import { ExportJobConfig } from 'models/job/config/export-job-config'
 import { ExportRequest } from 'models/request/export-request'
+import { RequestState, RequestStateMapping } from 'models/request/request'
 import { ExportRequestFilterDto } from 'pages/export/export-request-list'
-import { FC, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { dateTimeFormatter } from 'utils/formatters'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 	filter,
@@ -24,71 +22,65 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
-	const navigate = useNavigate()
 
-	const columns = [
-		{
-			field: 'id',
-			headerName: 'ID',
-			width: 400,
-			type: 'string',
-		},
-		{
-			field: 'created',
-			headerName: 'Vytvořeno',
-			width: 250,
-			type: 'string',
-			valueFormatter: dateTimeFormatter,
-		},
-		{
-			field: 'owner',
-			headerName: 'Vytvořil',
-			width: 250,
-			type: 'string',
-			valueFormatter: (params: GridValueFormatterParams<User>) =>
-				params.value.username,
-		},
-		{
-			field: 'name',
-			headerName: 'Název',
-			width: 350,
-			type: 'string',
-		},
-		{
-			field: 'config',
-			headerName: 'Formát',
-			width: 200,
-			type: 'string',
-			valueGetter: (params: GridValueGetterParams<ExportJobConfig>) => {
-				return params.value?.exportFormat
+	const columns = useMemo<GridColumns<ExportRequest>>(
+		() => [
+			{
+				field: 'created',
+				headerName: 'Vytvořeno',
+				maxWidth: 200,
+				flex: 0.5,
+				type: 'dateTime',
+				valueGetter: ({ value }) => value && new Date(value),
 			},
-		},
-		{
-			field: 'bulkExport',
-			headerName: 'Stav',
-			width: 200,
-			type: 'string',
-			valueGetter: (params: GridValueGetterParams<BulkExport>) => {
-				return params.value?.state
+			{
+				field: 'owner',
+				headerName: 'Vytvořil',
+				width: 250,
+				valueFormatter: (params: GridValueFormatterParams<User>) =>
+					params.value.username,
 			},
-		},
-		{
-			field: 'action',
-			headerName: 'Akce',
-			flex: 1,
-			sortable: false,
-			renderCell: (params: GridRenderCellParams) => {
-				const onClick = () => {
-					navigate(params.row['id'])
-				}
-				return (
-					<Button color="primary" variant="contained" onClick={onClick}>
-						Detail
-					</Button>
-				)
+			{
+				field: 'name',
+				headerName: 'Název',
+				width: 350,
 			},
-		},
-	]
+			{
+				field: 'publicationIds',
+				headerName: 'Publikace v žádosti',
+				width: 800,
+				flex: 4,
+				valueFormatter: (params: GridValueFormatterParams<string[]>) =>
+					params.value.join(', '),
+			},
+			{
+				field: 'state',
+				headerName: 'Stav žádosti',
+				width: 250,
+				valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
+					return RequestStateMapping[params.value]
+				},
+			},
+			{
+				field: 'actions',
+				headerName: 'Akce',
+				width: 100,
+				renderCell: (params: GridRenderCellParams) => (
+					<Box display="flex" justifyContent="space-between" width="100%">
+						<Button
+							component={Link}
+							size="small"
+							to={`/exports/${params.row['id']}`}
+							variant="text"
+						>
+							Detail
+						</Button>
+					</Box>
+				),
+			},
+		],
+		[],
+	)
 
 	useEffect(() => {
 		async function fetchRequests() {
@@ -112,18 +104,11 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 
 	return (
 		<Paper>
-			<DataGrid
-				autoHeight
+			<CustomGrid
+				checkboxSelection={false}
 				columns={columns}
-				density="compact"
-				disableColumnFilter
-				disableColumnMenu
-				disableSelectionOnClick
-				pageSize={10}
-				paginationMode="server"
 				rowCount={rowCountState}
 				rows={exportRequests}
-				rowsPerPageOptions={[]}
 				onPageChange={onPageChange}
 			/>
 		</Paper>

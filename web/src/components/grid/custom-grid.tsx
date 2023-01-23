@@ -15,6 +15,7 @@ export interface CustomGridProps<T extends DomainObject> {
 		selectionModel: GridSelectionModel,
 		details: GridCallbackDetails,
 	) => void
+	checkboxSelection?: boolean
 }
 
 export const CustomGrid = <T extends DomainObject>({
@@ -23,11 +24,12 @@ export const CustomGrid = <T extends DomainObject>({
 	rows,
 	onPageChange,
 	onSelectionChange,
+	checkboxSelection,
 }: CustomGridProps<T>) => {
 	return (
 		<DataGrid
 			autoHeight
-			checkboxSelection={true}
+			checkboxSelection={checkboxSelection}
 			columns={columns}
 			density="compact"
 			disableColumnFilter

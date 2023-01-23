@@ -107,6 +107,7 @@ export const EnrichmentRequestGrid: FC<{
 	return (
 		<Paper>
 			<CustomGrid
+				checkboxSelection={false}
 				columns={columns}
 				rowCount={rowCountState}
 				rows={enrichmentRequests}

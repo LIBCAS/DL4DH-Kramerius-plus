@@ -156,6 +156,7 @@ export const PublicationGrid: FC<{
 	return (
 		<Paper>
 			<CustomGrid
+				checkboxSelection
 				columns={columns}
 				rowCount={rowCountState}
 				rows={publications}
