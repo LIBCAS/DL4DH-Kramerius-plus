@@ -18,7 +18,6 @@ export const ExportRequestDetailPage: FC = () => {
 		async function fetchExportRequest() {
 			if (requestId) {
 				const exportRequest = await getExportRequest(requestId)
-				console.log(exportRequest)
 				setExportRequest(exportRequest)
 			}
 		}
