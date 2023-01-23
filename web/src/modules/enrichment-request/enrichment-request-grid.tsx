@@ -1,17 +1,17 @@
-import { Paper } from '@mui/material'
+import { Box, Button, Paper } from '@mui/material'
 import {
-	DataGrid,
-	GridRowParams,
+	GridColumns,
+	GridRenderCellParams,
 	GridValueFormatterParams,
 } from '@mui/x-data-grid'
 import { listEnrichmentRequests } from 'api/enrichment-api'
+import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { RequestState, RequestStateMapping } from 'models/request/request'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
-import React, { FC, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { dateTimeFormatter } from 'utils/formatters'
+import React, { FC, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export const EnrichmentRequestGrid: FC<{
 	filter: EnrichmentRequestFilterDto
@@ -24,44 +24,65 @@ export const EnrichmentRequestGrid: FC<{
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
-	const navigate = useNavigate()
 
-	const columns = [
-		{
-			field: 'created',
-			headerName: 'Vytvořeno',
-			width: 250,
-			valueFormatter: dateTimeFormatter,
-		},
-		{
-			field: 'owner',
-			headerName: 'Vytvořil',
-			width: 250,
-			valueFormatter: (params: GridValueFormatterParams<User>) =>
-				params.value.username,
-		},
-		{
-			field: 'name',
-			headerName: 'Název',
-			width: 350,
-		},
-		{
-			field: 'publicationIds',
-			headerName: 'Publikace v žádosti',
-			width: 800,
-			flex: 4,
-			valueFormatter: (params: GridValueFormatterParams<string[]>) =>
-				params.value.join(', '),
-		},
-		{
-			field: 'state',
-			headerName: 'Stav žádosti',
-			width: 250,
-			valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
-				return RequestStateMapping[params.value]
+	const columns = useMemo<GridColumns<EnrichmentRequest>>(
+		() => [
+			{
+				field: 'created',
+				headerName: 'Vytvořeno',
+				maxWidth: 200,
+				flex: 0.5,
+				type: 'dateTime',
+				valueGetter: ({ value }) => value && new Date(value),
 			},
-		},
-	]
+			{
+				field: 'owner',
+				headerName: 'Vytvořil',
+				width: 250,
+				valueFormatter: (params: GridValueFormatterParams<User>) =>
+					params.value.username,
+			},
+			{
+				field: 'name',
+				headerName: 'Název',
+				width: 350,
+			},
+			{
+				field: 'publicationIds',
+				headerName: 'Publikace v žádosti',
+				width: 800,
+				flex: 4,
+				valueFormatter: (params: GridValueFormatterParams<string[]>) =>
+					params.value.join(', '),
+			},
+			{
+				field: 'state',
+				headerName: 'Stav žádosti',
+				width: 250,
+				valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
+					return RequestStateMapping[params.value]
+				},
+			},
+			{
+				field: 'actions',
+				headerName: 'Akce',
+				width: 100,
+				renderCell: (params: GridRenderCellParams) => (
+					<Box display="flex" justifyContent="space-between" width="100%">
+						<Button
+							component={Link}
+							size="small"
+							to={`/enrichment/${params.row['id']}`}
+							variant="text"
+						>
+							Detail
+						</Button>
+					</Box>
+				),
+			},
+		],
+		[],
+	)
 
 	useEffect(() => {
 		async function fetchRequests() {
@@ -85,22 +106,12 @@ export const EnrichmentRequestGrid: FC<{
 
 	return (
 		<Paper>
-			<DataGrid
-				autoHeight
+			<CustomGrid
+				checkboxSelection={false}
 				columns={columns}
-				density="compact"
-				disableColumnFilter
-				disableColumnMenu
-				disableSelectionOnClick
-				getRowClassName={() => 'data-grid-row'}
-				pageSize={10}
-				paginationMode="server"
 				rowCount={rowCountState}
 				rows={enrichmentRequests}
-				rowsPerPageOptions={[]}
-				sortingMode="server"
 				onPageChange={onPageChange}
-				onRowClick={(params: GridRowParams) => navigate(params.row['id'])}
 			/>
 		</Paper>
 	)

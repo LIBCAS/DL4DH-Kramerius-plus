@@ -1,79 +1,137 @@
-import { Button, Paper } from '@mui/material'
+import { Box, Button, Paper } from '@mui/material'
 import {
-	DataGrid,
 	GridCallbackDetails,
-	GridColDef,
+	GridColumns,
 	GridRenderCellParams,
 	GridSelectionModel,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
-import { listPublications, PublicationFilter } from 'api/publication-api'
+import {
+	listPublications,
+	PublicationFilter,
+	publish,
+} from 'api/publication-api'
+import { CustomGrid } from 'components/grid/custom-grid'
+import { PublicationExportDialog } from 'components/publication/publication-export-dialog'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
-import { FC, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { dateTimeFormatter } from 'utils/formatters'
-
-const getModel = (params: GridValueGetterParams) => {
-	return DigitalObjectModelMapping[params.row['model']]
-}
+import { FC, MouseEvent, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export const PublicationGrid: FC<{
 	filter: PublicationFilter
-	allowSelection?: boolean
-	onSelectionChange: (
+	onSelectionChange?: (
 		selectionModel: GridSelectionModel,
 		details: GridCallbackDetails,
 	) => void
-}> = ({ filter, allowSelection, onSelectionChange }) => {
+}> = ({ filter, onSelectionChange }) => {
 	const [rowCount, setRowCount] = useState<number>()
 	const [publications, setPublications] = useState<Publication[]>([])
 	const [page, setPage] = useState<number>(0)
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
-	const navigate = useNavigate()
+	const [exportPublicationId, setExportPublicationId] = useState<string>()
 
-	const columns: GridColDef[] = [
-		{
-			field: 'id',
-			headerName: 'UUID',
-			width: 340,
-		},
-		{
-			field: 'created',
-			headerName: 'Vytvořeno',
-			width: 200,
-			valueGetter: dateTimeFormatter,
-		},
-		{
-			field: 'title',
-			headerName: 'Název',
-			width: 400,
-		},
-		{
-			field: 'model',
-			headerName: 'Model',
-			width: 300,
-			valueGetter: getModel,
-		},
-		{
-			field: 'action',
-			headerName: 'Akce',
-			flex: 1,
-			sortable: false,
-			renderCell: (params: GridRenderCellParams) => {
-				const onClick = () => {
-					navigate(`/publications/${params.row['id']}`)
-				}
-				return (
-					<Button color="primary" variant="contained" onClick={onClick}>
-						Detail
-					</Button>
-				)
+	const onExportClick = (publicationId: string) => (e: MouseEvent) => {
+		e.stopPropagation()
+
+		setExportPublicationId(publicationId)
+	}
+
+	const onPublishClick = (publicationId: string) => async (e: MouseEvent) => {
+		e.stopPropagation()
+
+		const response = await publish(publicationId)
+
+		if (response.ok) {
+			setPublications(prev =>
+				prev.map(pub => {
+					if (pub.id === publicationId) {
+						return {
+							...pub,
+							publishInfo: { ...pub.publishInfo, isPublished: true },
+						}
+					} else {
+						return pub
+					}
+				}),
+			)
+		}
+	}
+
+	const columns = useMemo<GridColumns<Publication>>(
+		() => [
+			{
+				field: 'id',
+				headerName: 'UUID',
+				maxWidth: 400,
+				flex: 1,
 			},
-		},
-	]
+			{
+				field: 'created',
+				headerName: 'Vytvořeno',
+				maxWidth: 200,
+				flex: 0.5,
+				type: 'dateTime',
+				valueGetter: ({ value }) => value && new Date(value),
+			},
+			{
+				field: 'title',
+				headerName: 'Název',
+				flex: 1,
+			},
+			{
+				field: 'model',
+				headerName: 'Model',
+				maxWidth: 200,
+				flex: 0.6,
+				valueGetter: (params: GridValueGetterParams) =>
+					DigitalObjectModelMapping[params.row['model']],
+			},
+			{
+				field: 'publishInfo',
+				headerName: 'Publikováno',
+				maxWidth: 120,
+				type: 'boolean',
+				flex: 0.6,
+				valueGetter: (params: GridValueGetterParams) =>
+					params.row['publishInfo']['isPublished'],
+			},
+			{
+				field: 'actions',
+				headerName: 'Akce',
+				width: 300,
+				renderCell: (params: GridRenderCellParams) => (
+					<Box display="flex" justifyContent="space-between" width="100%">
+						<Button
+							component={Link}
+							size="small"
+							to={`/publications/${params.row['id']}`}
+							variant="text"
+						>
+							Detail
+						</Button>
+						<Button
+							size="small"
+							variant="text"
+							onClick={onExportClick(params.row['id'])}
+						>
+							Exportovat
+						</Button>
+						<Button
+							size="small"
+							variant="text"
+							onClick={onPublishClick(params.row['id'])}
+						>
+							Publikovat
+						</Button>
+					</Box>
+				),
+			},
+		],
+		[],
+	)
 
 	useEffect(() => {
 		async function fetchPublications() {
@@ -97,21 +155,18 @@ export const PublicationGrid: FC<{
 
 	return (
 		<Paper>
-			<DataGrid
-				autoHeight
-				checkboxSelection={allowSelection}
+			<CustomGrid
+				checkboxSelection
 				columns={columns}
-				density="compact"
-				disableColumnFilter
-				disableColumnMenu
-				disableSelectionOnClick={!allowSelection}
-				pageSize={10}
-				paginationMode="server"
 				rowCount={rowCountState}
 				rows={publications}
-				rowsPerPageOptions={[10]}
 				onPageChange={onPageChange}
-				onSelectionModelChange={onSelectionChange}
+				onSelectionChange={onSelectionChange}
+			/>
+			<PublicationExportDialog
+				open={!!exportPublicationId}
+				publicationIds={exportPublicationId ? [exportPublicationId] : []}
+				onClose={() => setExportPublicationId(undefined)}
 			/>
 		</Paper>
 	)

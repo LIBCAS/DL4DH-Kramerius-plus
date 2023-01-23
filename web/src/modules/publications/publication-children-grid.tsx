@@ -2,29 +2,33 @@ import { Box, Button, Paper } from '@mui/material'
 import {
 	GridColumns,
 	GridRenderCellParams,
-	GridValueFormatterParams,
+	GridValueGetterParams,
 } from '@mui/x-data-grid'
-import { listExportRequests } from 'api/export-api'
+import { listPublications } from 'api/publication-api'
 import { CustomGrid } from 'components/grid/custom-grid'
-import { User } from 'models/domain/user'
-import { ExportRequest } from 'models/request/export-request'
-import { RequestState, RequestStateMapping } from 'models/request/request'
-import { ExportRequestFilterDto } from 'pages/export/export-request-list'
+import { DigitalObjectModelMapping } from 'enums/publication-model'
+import { Publication } from 'models'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
-	filter,
-}) => {
+export const PublicationChildrenGrid: FC<{
+	parentId: string
+}> = ({ parentId }) => {
 	const [rowCount, setRowCount] = useState<number>()
-	const [exportRequests, setExportRequests] = useState<ExportRequest[]>([])
+	const [publications, setPublications] = useState<Publication[]>([])
 	const [page, setPage] = useState<number>(0)
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
 
-	const columns = useMemo<GridColumns<ExportRequest>>(
+	const columns = useMemo<GridColumns<Publication>>(
 		() => [
+			{
+				field: 'id',
+				headerName: 'UUID',
+				maxWidth: 400,
+				flex: 1,
+			},
 			{
 				field: 'created',
 				headerName: 'Vytvořeno',
@@ -34,32 +38,26 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 				valueGetter: ({ value }) => value && new Date(value),
 			},
 			{
-				field: 'owner',
-				headerName: 'Vytvořil',
-				width: 250,
-				valueFormatter: (params: GridValueFormatterParams<User>) =>
-					params.value.username,
-			},
-			{
-				field: 'name',
+				field: 'title',
 				headerName: 'Název',
-				width: 350,
+				flex: 1,
 			},
 			{
-				field: 'publicationIds',
-				headerName: 'Publikace v žádosti',
-				width: 800,
-				flex: 4,
-				valueFormatter: (params: GridValueFormatterParams<string[]>) =>
-					params.value.join(', '),
+				field: 'model',
+				headerName: 'Model',
+				maxWidth: 200,
+				flex: 0.6,
+				valueGetter: (params: GridValueGetterParams) =>
+					DigitalObjectModelMapping[params.row['model']],
 			},
 			{
-				field: 'state',
-				headerName: 'Stav žádosti',
-				width: 250,
-				valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
-					return RequestStateMapping[params.value]
-				},
+				field: 'publishInfo',
+				headerName: 'Publikováno',
+				maxWidth: 120,
+				type: 'boolean',
+				flex: 0.6,
+				valueGetter: (params: GridValueGetterParams) =>
+					params.row['publishInfo']['isPublished'],
 			},
 			{
 				field: 'actions',
@@ -70,7 +68,7 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 						<Button
 							component={Link}
 							size="small"
-							to={`/exports/${params.row['id']}`}
+							to={`/publications/${params.row['id']}`}
 							variant="text"
 						>
 							Detail
@@ -83,16 +81,16 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 	)
 
 	useEffect(() => {
-		async function fetchRequests() {
-			const response = await listExportRequests(page, 10, filter)
+		async function fetchPublications() {
+			const response = await listPublications(page, 10, { parentId })
 
 			if (response) {
-				setExportRequests(response.items)
+				setPublications(response.items)
 				setRowCount(response.total)
 			}
 		}
-		fetchRequests()
-	}, [page, filter])
+		fetchPublications()
+	}, [page, parentId])
 
 	useEffect(() => {
 		setRowCountState(prevRowCountState =>
@@ -105,10 +103,9 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 	return (
 		<Paper>
 			<CustomGrid
-				checkboxSelection={false}
 				columns={columns}
 				rowCount={rowCountState}
-				rows={exportRequests}
+				rows={publications}
 				onPageChange={onPageChange}
 			/>
 		</Paper>
