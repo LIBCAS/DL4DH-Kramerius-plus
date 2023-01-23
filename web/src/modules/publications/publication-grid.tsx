@@ -1,18 +1,21 @@
-import { Button, Paper } from '@mui/material'
+import { Visibility } from '@material-ui/icons'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { Paper } from '@mui/material'
 import {
-	DataGrid,
+	GridActionsCellItem,
 	GridCallbackDetails,
-	GridColDef,
-	GridRenderCellParams,
+	GridColumns,
+	GridRowId,
+	GridRowParams,
 	GridSelectionModel,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { listPublications, PublicationFilter } from 'api/publication-api'
+import { CustomGrid } from 'components/grid/custom-grid'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { dateTimeFormatter } from 'utils/formatters'
 
 const getModel = (params: GridValueGetterParams) => {
 	return DigitalObjectModelMapping[params.row['model']]
@@ -34,46 +37,59 @@ export const PublicationGrid: FC<{
 	)
 	const navigate = useNavigate()
 
-	const columns: GridColDef[] = [
-		{
-			field: 'id',
-			headerName: 'UUID',
-			width: 340,
+	const toDetail = useCallback(
+		(params: GridRowParams<Publication>) => () => {
+			navigate(`/publications/${params.row['id']}`)
 		},
-		{
-			field: 'created',
-			headerName: 'Vytvořeno',
-			width: 200,
-			valueGetter: dateTimeFormatter,
-		},
-		{
-			field: 'title',
-			headerName: 'Název',
-			width: 400,
-		},
-		{
-			field: 'model',
-			headerName: 'Model',
-			width: 300,
-			valueGetter: getModel,
-		},
-		{
-			field: 'action',
-			headerName: 'Akce',
-			flex: 1,
-			sortable: false,
-			renderCell: (params: GridRenderCellParams) => {
-				const onClick = () => {
-					navigate(`/publications/${params.row['id']}`)
-				}
-				return (
-					<Button color="primary" variant="contained" onClick={onClick}>
-						Detail
-					</Button>
-				)
+		[navigate],
+	)
+
+	const deleteUser = useCallback((id: GridRowId) => () => {}, [])
+
+	const columns = useMemo<GridColumns<Publication>>(
+		() => [
+			{
+				field: 'id',
+				headerName: 'UUID',
+				width: 340,
 			},
-		},
-	]
+			{
+				field: 'created',
+				headerName: 'Vytvořeno',
+				width: 200,
+				type: 'dateTime',
+				valueGetter: ({ value }) => value && new Date(value),
+			},
+			{
+				field: 'title',
+				headerName: 'Název',
+				width: 400,
+			},
+			{
+				field: 'model',
+				headerName: 'Model',
+				width: 300,
+				valueGetter: getModel,
+			},
+			{
+				field: 'actions',
+				type: 'actions',
+				getActions: params => [
+					// eslint-disable-next-line react/jsx-key
+					<GridActionsCellItem
+						icon={<Visibility />}
+						label="Detail"
+						nonce
+						showInMenu={false}
+						onClick={deleteUser(params.id)}
+						onResize
+						onResizeCapture
+					/>,
+				],
+			},
+		],
+		[toDetail],
+	)
 
 	useEffect(() => {
 		async function fetchPublications() {
@@ -97,7 +113,7 @@ export const PublicationGrid: FC<{
 
 	return (
 		<Paper>
-			<DataGrid
+			{/* <DataGrid
 				autoHeight
 				checkboxSelection={allowSelection}
 				columns={columns}
@@ -112,6 +128,13 @@ export const PublicationGrid: FC<{
 				rowsPerPageOptions={[10]}
 				onPageChange={onPageChange}
 				onSelectionModelChange={onSelectionChange}
+				components={{ Row: }}
+			/> */}
+			<CustomGrid
+				columns={columns}
+				rowCount={rowCountState}
+				rows={publications}
+				onPageChange={onPageChange}
 			/>
 		</Paper>
 	)
