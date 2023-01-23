@@ -11,14 +11,14 @@ import { FC, Fragment, useState } from 'react'
 export const ExportRequestConfig: FC<{ config: ExportJobConfig }> = ({
 	config,
 }) => {
-	const [openDialog, setOpenDialog] = useState<boolean>(false)
+	const [dialogContent, setDialogContent] = useState<string>()
 
-	const onOpen = () => {
-		setOpenDialog(true)
+	const onOpen = (content: string) => () => {
+		setDialogContent(content)
 	}
 
 	const onClose = () => {
-		setOpenDialog(false)
+		setDialogContent(undefined)
 	}
 
 	const isExportCsv = (obj: ExportJobConfig): obj is ExportCsvJobConfig => {
@@ -41,7 +41,7 @@ export const ExportRequestConfig: FC<{ config: ExportJobConfig }> = ({
 						size="small"
 						sx={{ height: 20 }}
 						variant="text"
-						onClick={onOpen}
+						onClick={onOpen(JSON.stringify(config.params, null, 2))}
 					>
 						Zobrazit
 					</Button>
@@ -58,15 +58,23 @@ export const ExportRequestConfig: FC<{ config: ExportJobConfig }> = ({
 					<Fragment>
 						<KeyGridItem>TEI parametre</KeyGridItem>
 						<ValueGridItem>
-							{(config as ExportTeiJobConfig).teiParams}
+							<Button
+								disabled={!config.params}
+								size="small"
+								sx={{ height: 20 }}
+								variant="text"
+								onClick={onOpen(JSON.stringify(config.teiParams, null, 2))}
+							>
+								Zobrazit
+							</Button>
 						</ValueGridItem>
 					</Fragment>
 				)}
 			</Grid>
-			<Dialog fullWidth open={openDialog} onClose={onClose}>
-				<DialogTitle>Parametre řazení</DialogTitle>
+			<Dialog fullWidth open={!!dialogContent} onClose={onClose}>
+				<DialogTitle>Parametre</DialogTitle>
 				<DialogContent>
-					<pre>{JSON.stringify(config.params, null, 2)}</pre>
+					<pre>{dialogContent}</pre>
 				</DialogContent>
 			</Dialog>
 		</PageBlock>

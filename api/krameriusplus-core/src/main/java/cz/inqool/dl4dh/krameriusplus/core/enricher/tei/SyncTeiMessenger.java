@@ -1,21 +1,27 @@
 package cz.inqool.dl4dh.krameriusplus.core.enricher.tei;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.EnrichingException;
+import cz.inqool.dl4dh.krameriusplus.api.export.params.AltoParam;
+import cz.inqool.dl4dh.krameriusplus.api.export.params.NameTagParam;
 import cz.inqool.dl4dh.krameriusplus.api.export.params.TeiParams;
+import cz.inqool.dl4dh.krameriusplus.api.export.params.UdPipeParam;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.InputStream;
+import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.api.exception.EnrichingException.ErrorCode.TEI_ERROR;
 import static cz.inqool.dl4dh.krameriusplus.core.config.WebClientConfig.TEI_WEB_CLIENT;
@@ -58,16 +64,16 @@ public class SyncTeiMessenger implements TeiMessenger {
     }
 
     @Override
-    public String startMerge(InputStream teiHeader) {
+    public SessionDto startMerge(InputStream teiHeader) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
-            builder.part("header", new InputStreamResource(teiHeader));
+            builder.part("header", new MultipartInputStreamFileResource(teiHeader, "header"));
 
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/prepare").build())
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
-                    .bodyToMono(String.class)
+                    .bodyToMono(SessionDto.class)
                     .block();
         } catch (WebClientResponseException e) {
             throw new EnrichingException(EnrichingException.ErrorCode.TEI_ERROR, e);
@@ -77,18 +83,18 @@ public class SyncTeiMessenger implements TeiMessenger {
     }
 
     @Override
-    public String addMerge(String sessionId, InputStream teiPage) {
+    public void addMerge(String sessionId, InputStream teiPage) {
         try {
-            MultipartBodyBuilder builder = new MultipartBodyBuilder();
-            builder.part("page[]", new InputStreamResource(teiPage));
+            MultiValueMap<String, Resource> map = new LinkedMultiValueMap<>();
+            map.add("page[]", new MultipartInputStreamFileResource(teiPage, "page[]"));
 
-            return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/add")
-                    .queryParam("session", sessionId)
-                    .build())
+            webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/add")
+                    .queryParam("session", "{sessionId}")
+                    .build(sessionId))
                     .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .body(BodyInserters.fromMultipartData(builder.build()))
+                    .body(BodyInserters.fromMultipartData(map))
                     .retrieve()
-                    .bodyToMono(String.class)
+                    .bodyToMono(SessionDto.class)
                     .block();
         } catch (WebClientResponseException e) {
             throw new EnrichingException(EnrichingException.ErrorCode.TEI_ERROR, e);
@@ -100,19 +106,19 @@ public class SyncTeiMessenger implements TeiMessenger {
     @Override
     public String finishMerge(String sessionId, TeiParams teiParams) {
         try {
-            MultipartBodyBuilder builder = new MultipartBodyBuilder();
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 
             if (teiParams != null) {
-                builder.part("NameTag", teiParams.getNameTagParams());
-                builder.part("UDPipe", teiParams.getUdPipeParams());
-                builder.part("ALTO", teiParams.getAltoParams());
+                map.add("NameTag", teiParams.getNameTagParams().stream().map(NameTagParam::getName).collect(Collectors.joining(",")));
+                map.add("UDPipe", teiParams.getUdPipeParams().stream().map(UdPipeParam::getName).collect(Collectors.joining(",")));
+                map.add("ALTO", teiParams.getAltoParams().stream().map(AltoParam::getName).collect(Collectors.joining(",")));
             }
 
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/merge/finish")
-                    .queryParam("session", sessionId)
-                    .build())
+                    .queryParam("session", "{sessionId}")
+                    .build(sessionId))
                     .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .body(BodyInserters.fromMultipartData(builder.build()))
+                    .body(BodyInserters.fromMultipartData(map))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();

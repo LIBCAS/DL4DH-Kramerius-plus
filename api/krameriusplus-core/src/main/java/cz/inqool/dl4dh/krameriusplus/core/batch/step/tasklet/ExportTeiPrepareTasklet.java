@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.api.exception.TeiEnrichmentException;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.store.PublicationStore;
+import cz.inqool.dl4dh.krameriusplus.core.enricher.tei.SessionDto;
 import cz.inqool.dl4dh.krameriusplus.core.enricher.tei.TeiMessenger;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileService;
@@ -46,9 +47,9 @@ public class ExportTeiPrepareTasklet implements Tasklet {
         notNull(fileRef, () -> new TeiEnrichmentException("Publication '" + publicationId + ", file with fileId: "
                 + publication.getTeiHeaderFileId() + " not found.", MISSING_TEI_HEADER_FILE));
 
-        String sessionId = teiMessenger.startMerge(fileRef.open());
+        SessionDto sessionDto = teiMessenger.startMerge(fileRef.open());
 
-        chunkContext.getStepContext().getStepExecutionContext().put(TEI_SESSION_ID, sessionId);
+        chunkContext.getStepContext().getStepExecution().getExecutionContext().put(TEI_SESSION_ID, sessionDto.getSession());
 
         return RepeatStatus.FINISHED;
     }

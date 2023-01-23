@@ -17,9 +17,13 @@ export const ExportRequestResult: FC<{ bulkExport?: BulkExport }> = ({
 				<ValueGridItem>{bulkExport?.state}</ValueGridItem>
 				<KeyGridItem>Slučovací úloha</KeyGridItem>
 				<ValueGridItem>
-					<Link to={`/jobs/${bulkExport?.mergeJob.id}`}>
-						{bulkExport?.mergeJob.executionStatus}
-					</Link>
+					{bulkExport?.mergeJob ? (
+						<Link to={`/jobs/${bulkExport?.mergeJob.id}`}>
+							{bulkExport?.mergeJob.executionStatus}
+						</Link>
+					) : (
+						'-'
+					)}
 				</ValueGridItem>
 				<KeyGridItem>Soubor</KeyGridItem>
 				<ValueGridItem>
