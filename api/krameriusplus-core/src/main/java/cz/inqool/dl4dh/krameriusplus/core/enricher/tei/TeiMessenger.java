@@ -31,7 +31,7 @@ public interface TeiMessenger {
      */
     SessionDto startMerge(InputStream teiHeader);
 
-    SessionDto addMerge(String sessionId, InputStream teiPage);
+    void addMerge(String sessionId, InputStream teiPage);
 
     String finishMerge(String sessionId, TeiParams teiParams);
 }

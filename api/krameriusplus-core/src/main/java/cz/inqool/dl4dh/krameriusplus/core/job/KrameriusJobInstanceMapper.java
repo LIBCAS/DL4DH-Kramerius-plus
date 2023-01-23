@@ -51,6 +51,10 @@ public abstract class KrameriusJobInstanceMapper {
         parametersBuilder.addString(JobParameterKey.KRAMERIUS_JOB_INSTANCE_ID, entity.getId());
 
         for (Map.Entry<String, Object> entry : nonIdentifyingParams.entrySet()) {
+            if (entry.getValue() == null) {
+                continue;
+            }
+
             if (entry.getValue() instanceof String) {
                 parametersBuilder.addString(entry.getKey(), (String) entry.getValue(), false);
             } else if (entry.getValue() instanceof Date) {
