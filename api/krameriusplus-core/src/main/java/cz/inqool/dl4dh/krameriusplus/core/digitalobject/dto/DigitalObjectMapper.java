@@ -100,9 +100,12 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         InternalPart internalPart = new InternalPart();
         mapPublicationProperties(internalPart, createDto);
         internalPart.setPartTitle(createDto.getTitle());
-        internalPart.setPageNumber(createDto.getInternalPartDetails().getPageNumber());
-        internalPart.setPageRange(createDto.getInternalPartDetails().getPageRange());
-        internalPart.setPartType(createDto.getInternalPartDetails().getType());
+
+        if (createDto.getInternalPartDetails() != null) {
+            internalPart.setPageNumber(createDto.getInternalPartDetails().getPageNumber());
+            internalPart.setPageRange(createDto.getInternalPartDetails().getPageRange());
+            internalPart.setPartType(createDto.getInternalPartDetails().getType());
+        }
 
         return internalPart;
     }
