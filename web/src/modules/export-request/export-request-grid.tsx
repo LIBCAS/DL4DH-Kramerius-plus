@@ -29,7 +29,7 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 				field: 'created',
 				headerName: 'Vytvořeno',
 				maxWidth: 200,
-				flex: 0.5,
+				flex: 1,
 				type: 'dateTime',
 				valueGetter: ({ value }) => value && new Date(value),
 			},

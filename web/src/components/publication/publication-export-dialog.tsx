@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { ChangeEvent, FC, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Params, TeiParams } from '../../models'
 import { JSONParams } from './publication-export-json'
@@ -14,6 +14,7 @@ import {
 	Radio,
 	FormControlLabel,
 	Button,
+	TextField,
 } from '@mui/material'
 import { exportPublication } from 'api/export-api'
 import { ExportJobConfig } from 'models/job/config/export-job-config'
@@ -44,6 +45,7 @@ export const PublicationExportDialog: FC<{
 	open: boolean
 	publicationIds: string[]
 }> = ({ onClose, open, publicationIds }) => {
+	const [name, setName] = useState<string>()
 	const [format, setFormat] = useState<ExportFormat>('json')
 	const [delimiter, setDelimiter] = useState<Delimiter>(',')
 	const [params, setParams] = useState<Params>(defaultParams)
@@ -61,6 +63,10 @@ export const PublicationExportDialog: FC<{
 		}
 	}
 
+	const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setName(event.target.value)
+	}
+
 	const handleDelimiterChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
@@ -69,7 +75,7 @@ export const PublicationExportDialog: FC<{
 
 	const handleSubmitExport = async () => {
 		const callExport = async (config: ExportJobConfig) => {
-			const response = await exportPublication(publicationIds, config)
+			const response = await exportPublication(publicationIds, config, name)
 
 			if (response.ok) {
 				toast('Operace proběhla úspěšně', {
@@ -127,41 +133,56 @@ export const PublicationExportDialog: FC<{
 			onClose={onClose}
 			onSubmit={handleSubmitExport}
 		>
-			<DialogTitle>Výběr formátu</DialogTitle>
+			<DialogTitle>Konfigurace exportu</DialogTitle>
 
 			<DialogContent>
-				<RadioGroup
-					aria-label="export-format"
-					name="format"
-					value={format}
-					onChange={handleChange}
-				>
-					<FormControlLabel
-						control={<Radio color="primary" />}
-						label="JSON"
-						value="json"
-					/>
-					<FormControlLabel
-						control={<Radio color="primary" />}
-						label="CSV"
-						value="csv"
-					/>
-					<FormControlLabel
-						control={<Radio color="primary" />}
-						label="TEI"
-						value="tei"
-					/>
-					<FormControlLabel
-						control={<Radio color="primary" />}
-						label="ALTO"
-						value="alto"
-					/>
-					<FormControlLabel
-						control={<Radio color="primary" />}
-						label="TEXT"
-						value="text"
-					/>
-				</RadioGroup>
+				<TextField
+					fullWidth
+					label="Název"
+					sx={{ marginBottom: 2, marginTop: 2 }}
+					value={name}
+					onChange={handleNameChange}
+				/>
+				<Box sx={{ marginLeft: 1 }}>
+					<Typography
+						sx={{ marginBottom: 1, marginTop: 1 }}
+						variant="subtitle1"
+					>
+						Výběr formátu
+					</Typography>
+					<RadioGroup
+						aria-label="export-format"
+						name="format"
+						value={format}
+						onChange={handleChange}
+					>
+						<FormControlLabel
+							control={<Radio color="primary" />}
+							label="JSON"
+							value="json"
+						/>
+						<FormControlLabel
+							control={<Radio color="primary" />}
+							label="CSV"
+							value="csv"
+						/>
+						<FormControlLabel
+							control={<Radio color="primary" />}
+							label="TEI"
+							value="tei"
+						/>
+						<FormControlLabel
+							control={<Radio color="primary" />}
+							label="ALTO"
+							value="alto"
+						/>
+						<FormControlLabel
+							control={<Radio color="primary" />}
+							label="TEXT"
+							value="text"
+						/>
+					</RadioGroup>
+				</Box>
 
 				{format === 'csv' && (
 					<Box sx={{ pt: 2 }}>
@@ -194,10 +215,10 @@ export const PublicationExportDialog: FC<{
 					))}
 			</DialogContent>
 			<DialogActions>
-				<Button color="inherit" onClick={onClose}>
+				<Button variant="contained" onClick={onClose}>
 					Zavřít
 				</Button>
-				<Button color="inherit" onClick={handleSubmitExport}>
+				<Button variant="contained" onClick={handleSubmitExport}>
 					Potvrdit
 				</Button>
 			</DialogActions>
