@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.domain.document;
 
-import cz.inqool.dl4dh.krameriusplus.api.Result;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -17,14 +16,7 @@ public abstract class DomainDocumentStore<T> {
         this.type = type;
     }
 
-    public Result<T> list(Query query) {
-        long total = mongoOperations.count(query, type);
-
-        List<T> result = mongoOperations.find(query, type);
-
-        long pageSize = query.getLimit();
-        long page = query.getSkip() / query.getLimit();
-
-        return new Result<>(page, pageSize, total, result);
+    public List<T> list(Query query) {
+        return mongoOperations.find(query, type);
     }
 }
