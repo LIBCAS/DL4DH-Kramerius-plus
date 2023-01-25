@@ -1,5 +1,5 @@
 import { Box, Button, Menu, MenuItem } from '@mui/material'
-import { useAuth } from 'components/auth/auth-context'
+import { useKeycloak } from '@react-keycloak/web'
 import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { NavbarItem } from './navbar'
@@ -9,8 +9,7 @@ export const NavbarMenuItem: FC<{
 }> = ({ item }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
-
-	const { auth } = useAuth()
+	const { keycloak } = useKeycloak()
 
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		setAnchorEl(event.currentTarget)
@@ -40,7 +39,9 @@ export const NavbarMenuItem: FC<{
 					onClose={handleClose}
 				>
 					{item.children
-						.filter(pageItem => !pageItem.onlyAuthenticated || auth)
+						.filter(
+							pageItem => !pageItem.onlyAuthenticated || keycloak.authenticated,
+						)
 						.map(pageItem => (
 							<MenuItem
 								key={pageItem.name}

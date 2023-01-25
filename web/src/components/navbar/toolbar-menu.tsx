@@ -1,7 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu'
 import { Box, IconButton, Menu, MenuItem } from '@mui/material'
 import { useKeycloak } from '@react-keycloak/web'
-import { useAuth } from 'components/auth/auth-context'
+import { KEYCLOAK_TOKEN } from 'keycloak'
 import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { NavbarInnerItem, NavbarItem } from './navbar'
@@ -13,7 +13,6 @@ export const ToolbarMenu: FC<{
 	xsWidth: string
 }> = ({ pages, lgWidth, xsWidth }) => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
-	const { auth } = useAuth()
 	const { keycloak } = useKeycloak()
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,6 +24,7 @@ export const ToolbarMenu: FC<{
 
 	const logout = () => {
 		keycloak.logout()
+		localStorage.removeItem(KEYCLOAK_TOKEN)
 	}
 
 	function flatten(arr: NavbarItem[]): NavbarInnerItem[] {
@@ -48,17 +48,23 @@ export const ToolbarMenu: FC<{
 	}
 
 	return (
-		<Box sx={{ width: { lg: lgWidth, xs: xsWidth } }}>
+		<Box
+			sx={{
+				width: { lg: lgWidth, xs: xsWidth },
+				display: 'flex',
+				justifyContent: 'center',
+			}}
+		>
 			<Box
 				sx={{
-					flexGrow: 1,
 					display: { lg: 'flex', xs: 'none' },
-					justifyContent: 'center',
+					justifyContent: 'space-between',
 					alignItems: 'center',
+					width: '50%',
 				}}
 			>
 				{pages
-					.filter(page => !page.onlyAuthenticated || auth)
+					.filter(page => !page.onlyAuthenticated || keycloak.authenticated)
 					.map(page => (
 						<NavbarMenuItem key={page.name} item={page} />
 					))}
@@ -103,7 +109,7 @@ export const ToolbarMenu: FC<{
 					onClose={handleCloseNavMenu}
 				>
 					{flatten(pages)
-						.filter(page => !page.onlyAuthenticated || auth)
+						.filter(page => !page.onlyAuthenticated || keycloak.authenticated)
 						.map(page => (
 							<MenuItem
 								key={page.name}
@@ -114,7 +120,9 @@ export const ToolbarMenu: FC<{
 								{page.label}
 							</MenuItem>
 						))}
-					{auth && <MenuItem onClick={logout}>Odhlásit se</MenuItem>}
+					{!!keycloak.authenticated && (
+						<MenuItem onClick={logout}>Odhlásit se</MenuItem>
+					)}
 				</Menu>
 			</Box>
 		</Box>

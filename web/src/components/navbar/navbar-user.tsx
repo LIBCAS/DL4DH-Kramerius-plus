@@ -1,13 +1,10 @@
-import { Box, Button, Menu, MenuItem } from '@mui/material'
-import { FC, useState } from 'react'
-import { useAuth } from 'components/auth/auth-context'
 import PersonIcon from '@mui/icons-material/Person'
+import { Box, Button, Menu, MenuItem } from '@mui/material'
 import { useKeycloak } from '@react-keycloak/web'
+import { FC, useState } from 'react'
 
 export const NavbarUser: FC<{ width: string }> = ({ width }) => {
-	const { auth, user } = useAuth()
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
 	const { keycloak } = useKeycloak()
 
 	const handleClose = () => {
@@ -22,7 +19,7 @@ export const NavbarUser: FC<{ width: string }> = ({ width }) => {
 		setAnchorEl(event.currentTarget)
 	}
 
-	if (auth) {
+	if (keycloak.authenticated) {
 		return (
 			<Box
 				sx={{
@@ -42,7 +39,7 @@ export const NavbarUser: FC<{ width: string }> = ({ width }) => {
 					onClick={handleClick}
 				>
 					<PersonIcon sx={{ color: 'white', mr: 2 }} />
-					{user?.username}
+					{keycloak.tokenParsed?.preferred_username}
 				</Button>
 				<Menu
 					MenuListProps={{ 'aria-labelledby': 'basic-button' }}

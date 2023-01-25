@@ -15,7 +15,7 @@ export const NavbarInfoContent: FC<Props> = ({ instance, url, version }) => {
 				flexDirection: 'column',
 				justifyContent: 'space-between',
 				p: 2,
-				minWidth: 250,
+				width: 300,
 			}}
 		>
 			<Box display="flex" justifyContent="space-between">
@@ -60,6 +60,15 @@ export const NavbarInfoContent: FC<Props> = ({ instance, url, version }) => {
 					>
 						Informace o projektu DL4DH
 					</Link>
+				</Typography>
+			</Box>
+			<Box paddingTop={4}>
+				<Typography fontSize={11} fontStyle="italic">
+					Projekt „DL4DH – vývoj nástrojů pro efektivnější využití a vytěžování
+					dat z digitálních knihoven k posílení výzkumu digital humanities“ byl
+					podpořen Ministerstvem kultury ČR v rámci programu aplikovaného
+					výzkumu NAKI II pod ID DG20P02OVV002 a jeho řešení probíhalo v letech
+					2020 – 2022.
 				</Typography>
 			</Box>
 		</Box>

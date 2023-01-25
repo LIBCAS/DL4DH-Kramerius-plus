@@ -1,9 +1,9 @@
-import { AppBar, Toolbar, Container } from '@mui/material'
-import { NavbarUser } from './navbar-user'
-import { NavbarInfo } from './navbar-info'
-import { ToolbarMenu } from './toolbar-menu'
+import { AppBar, Container, Toolbar } from '@mui/material'
 import { FC } from 'react'
-import { InstanceInfo } from 'models'
+import { useInfo } from './info/info-context'
+import { NavbarInfo } from './navbar-info'
+import { NavbarUser } from './navbar-user'
+import { ToolbarMenu } from './toolbar-menu'
 
 export type NavbarInnerItem = {
 	name: string
@@ -21,32 +21,17 @@ export type NavbarItem = {
 }
 
 const pages: NavbarItem[] = [
-	{ name: 'Home', label: 'Domov', link: '/', onlyAuthenticated: false },
 	{
-		name: 'Enrichment',
+		name: 'New enrichment',
 		label: 'Obohacení',
+		link: '/enrichment/new',
+		onlyAuthenticated: true,
+	},
+	{
+		name: 'Enrichment requests',
+		label: 'Žádosti obohacení',
 		link: '/enrichment',
 		onlyAuthenticated: true,
-		children: [
-			{
-				name: 'New enrichment',
-				label: 'Nové obohacení',
-				link: '/enrichment/new',
-				onlyAuthenticated: true,
-			},
-			{
-				name: 'Enrichment requests',
-				label: 'Žádosti obohacení',
-				link: '/enrichment',
-				onlyAuthenticated: true,
-			},
-			// {
-			// 	name: 'Enrichment jobs',
-			// 	label: 'Úlohy obohacení',
-			// 	link: '/jobs/enrichment',
-			// 	onlyAuthenticated: true,
-			// },
-		],
 	},
 	{
 		name: 'Publications',
@@ -55,27 +40,15 @@ const pages: NavbarItem[] = [
 		onlyAuthenticated: true,
 	},
 	{
-		name: 'Export',
-		label: 'Export',
+		name: 'Export requests',
+		label: 'Žádosti exportu',
+		link: '/exports',
 		onlyAuthenticated: true,
-		children: [
-			{
-				name: 'Export requests',
-				label: 'Žádosti exportu',
-				link: '/exports',
-				onlyAuthenticated: true,
-			},
-			// {
-			// 	name: 'Export jobs',
-			// 	label: 'Úlohy exportování',
-			// 	link: '/jobs/export',
-			// 	onlyAuthenticated: true,
-			// },
-		],
 	},
 ]
 
-export const Navbar: FC<{ info: InstanceInfo | null }> = ({ info }) => {
+export const Navbar: FC = () => {
+	const { info } = useInfo()
 	return (
 		<AppBar position="sticky">
 			<Container maxWidth={false} sx={{ margin: '0' }}>
@@ -84,7 +57,7 @@ export const Navbar: FC<{ info: InstanceInfo | null }> = ({ info }) => {
 					sx={{ display: 'flex', justifyContent: 'space-between' }}
 				>
 					<NavbarInfo
-						lgWidth="25%"
+						lgWidth="20%"
 						props={{
 							instance: info?.kramerius.name as string,
 							url: info?.kramerius.url as string,
@@ -92,8 +65,8 @@ export const Navbar: FC<{ info: InstanceInfo | null }> = ({ info }) => {
 						}}
 						xsWidth="60%"
 					/>
-					<ToolbarMenu lgWidth="50%" pages={pages} xsWidth="20%" />
-					<NavbarUser width="25%" />
+					<ToolbarMenu lgWidth="70%" pages={pages} xsWidth="20%" />
+					<NavbarUser width="20%" />
 				</Toolbar>
 			</Container>
 		</AppBar>

@@ -1,4 +1,4 @@
-import { User } from 'components/auth/user'
+import { User } from 'models/user'
 import { customFetch } from 'utils/custom-fetch'
 
 export const getCurrentUser = async (): Promise<User> => {

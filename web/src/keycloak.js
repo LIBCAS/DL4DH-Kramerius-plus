@@ -8,4 +8,6 @@ const keycloak = new Keycloak({
 	clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || 'feeder',
 })
 
+export const KEYCLOAK_TOKEN = 'KEYCLOAK_TOKEN'
+
 export default keycloak

@@ -2,7 +2,7 @@ import { InstanceInfo } from 'models'
 import { FC, useEffect, useState } from 'react'
 import { InfoContext } from './info-context'
 
-export const InfoProvider: FC<{ children: JSX.Element }> = ({ children }) => {
+export const InfoProvider: FC<{ children: JSX.Element[] }> = ({ children }) => {
 	const [info, setInfo] = useState<InstanceInfo | null>(null)
 
 	useEffect(() => {

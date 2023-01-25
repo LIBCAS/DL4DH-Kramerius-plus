@@ -1,8 +1,10 @@
+import { KEYCLOAK_TOKEN } from 'keycloak'
+
 export const customFetch = async (
 	url: string,
 	request?: RequestInit,
 ): Promise<Response> => {
-	const token = localStorage.getItem('token')
+	const token = localStorage.getItem(KEYCLOAK_TOKEN)
 
 	let headers = request?.headers ? { ...request?.headers } : new Headers()
 

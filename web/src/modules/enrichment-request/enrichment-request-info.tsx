@@ -17,7 +17,7 @@ export const EnrichmentRequestInfo: FC<Props> = ({ request }) => {
 		<PageBlock title="Základní informace">
 			<Grid container spacing={0.5}>
 				<KeyGridItem>Autor</KeyGridItem>
-				<ValueGridItem>{request.owner.username}</ValueGridItem>
+				<ValueGridItem>{request.owner?.username}</ValueGridItem>
 				<KeyGridItem>Dátum vytvoření</KeyGridItem>
 				<ValueGridItem>{formatDateTime(request.created)}</ValueGridItem>
 				<KeyGridItem>Název</KeyGridItem>
