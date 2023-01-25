@@ -27,6 +27,8 @@ public abstract class PublicationDto extends DigitalObjectDto {
 
     private ModsMetadata modsMetadata;
 
+    private String rootTitle;
+
     private PublishInfo publishInfo;
 
     private Map<ExternalSystem, EnrichmentParadata> paradata = new HashMap<>();

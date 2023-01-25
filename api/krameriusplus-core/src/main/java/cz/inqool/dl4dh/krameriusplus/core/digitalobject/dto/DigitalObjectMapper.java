@@ -236,6 +236,7 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         dto.setPdf(entity.isPdf());
         dto.setDonator(entity.getDonator());
         dto.setPageCount(entity.getPageCount());
+        dto.setRootTitle(entity.getRootTitle());
 
         mapDigitalObjectDtoProperties(dto, entity);
     }

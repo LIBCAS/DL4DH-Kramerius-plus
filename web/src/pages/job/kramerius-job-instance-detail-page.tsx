@@ -101,7 +101,7 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 			const response = await stopJob(job!.id)
 
 			if (response.ok) {
-				toast('Úloha úspěšně restartována', {
+				toast('Úloha úspěšně zastavena', {
 					type: 'success',
 				})
 			} else {

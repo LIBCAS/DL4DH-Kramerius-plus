@@ -61,7 +61,7 @@ export const PublicationDetailPage: FC = () => {
 						<Grid item xs={12}>
 							<Divider sx={{ m: 2 }} />
 						</Grid>
-						<Grid item xs={12}>
+						{/* <Grid item xs={12}>
 							<PublicationDetailJobs
 								handleJobTypeClick={handleJobTypeClick}
 								publication={publication}
@@ -70,7 +70,7 @@ export const PublicationDetailPage: FC = () => {
 						</Grid>
 						<Grid item xs={12}>
 							<Divider sx={{ m: 2 }} />
-						</Grid>
+						</Grid> */}
 						<Grid container item spacing={2} sx={{ p: 2 }} xs={12}>
 							<Grid item xs={12}>
 								<Typography variant="h6">Podřazené publikace</Typography>

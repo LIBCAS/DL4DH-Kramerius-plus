@@ -12,17 +12,12 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.store.PublicationStore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
 public class PublicationService implements PublicationFacade {
@@ -73,15 +68,7 @@ public class PublicationService implements PublicationFacade {
 
     @Override
     public Result<PageDto> listPages(String publicationId, int page, int pageSize) {
-        Query query = Query.query(where("parentId").is(publicationId));
-        query.fields().exclude("tokens");
-        query.fields().exclude("nameTagMetadata");
-        query.with(Sort.by(Sort.Direction.ASC, "index"));
-        query.with(PageRequest.of(page, pageSize));
-
-        Result<Page> pages = pageStore.list(query);
-
-        return toDtoPagesResult(pages);
+        return toDtoPagesResult(pageStore.list(publicationId, page, pageSize));
     }
 
     @Override

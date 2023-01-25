@@ -15,6 +15,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,6 +31,8 @@ public class EnrichModsTasklet implements Tasklet {
 
     private PublicationStore publicationStore;
 
+    private MongoOperations mongoOperations;
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
         Utils.notNull(publicationId, () -> new IllegalStateException("EnrichModsTasklet used without PUBLICATION_ID key in JobParameters."));
@@ -41,7 +44,13 @@ public class EnrichModsTasklet implements Tasklet {
 
         publication.setModsMetadata(modsMapper.map(mods));
 
-        return null;
+        // When calling publicationStore.save(publication), the field modsMetadata comes in as NULL for some reason
+        // and is therefore not saved to DB
+        // publicationStore.save(publication);
+
+        mongoOperations.save(publication, "publications");
+
+        return RepeatStatus.FINISHED;
     }
 
     @Autowired
@@ -57,5 +66,10 @@ public class EnrichModsTasklet implements Tasklet {
     @Autowired
     public void setModsMapper(ModsMapper modsMapper) {
         this.modsMapper = modsMapper;
+    }
+
+    @Autowired
+    public void setMongoOperations(MongoOperations mongoOperations) {
+        this.mongoOperations = mongoOperations;
     }
 }

@@ -20,4 +20,8 @@ export interface Publication {
 	issueNumber?: string
 	partNumber?: string
 	publishInfo: PublishInfo
+	pageCount?: number
+	rootTitle?: string
+	rootId?: string
+	paradata?: any
 }
