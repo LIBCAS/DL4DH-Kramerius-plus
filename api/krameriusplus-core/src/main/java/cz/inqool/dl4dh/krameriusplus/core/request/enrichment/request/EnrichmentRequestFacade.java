@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.api.enrichment.EnrichmentRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.jms.JobEnqueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class EnrichmentRequestFacade implements EnrichmentFacade {
@@ -25,6 +26,7 @@ public class EnrichmentRequestFacade implements EnrichmentFacade {
     }
 
     @Override
+    @Transactional(readOnly = true) // Important for fetching LOB values (StepError::stackTrace)
     public EnrichmentRequestDto find(String requestId) {
         return service.find(requestId);
     }
