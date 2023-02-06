@@ -2,6 +2,7 @@ import { Box, Button, Paper } from '@mui/material'
 import {
 	GridCallbackDetails,
 	GridColumns,
+	GridInputSelectionModel,
 	GridRenderCellParams,
 	GridSelectionModel,
 	GridValueGetterParams,
@@ -12,10 +13,17 @@ import {
 	publish,
 } from 'api/publication-api'
 import { CustomGrid } from 'components/grid/custom-grid'
-import { PublicationExportDialog } from 'components/publication/publication-export-dialog'
+import { PublicationGridToolbar } from 'components/grid/publication-grid-toolbar'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
-import { FC, MouseEvent, useEffect, useMemo, useState } from 'react'
+import {
+	FC,
+	MouseEvent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react'
 import { Link } from 'react-router-dom'
 
 export const PublicationGrid: FC<{
@@ -24,20 +32,37 @@ export const PublicationGrid: FC<{
 		selectionModel: GridSelectionModel,
 		details: GridCallbackDetails,
 	) => void
-}> = ({ filter, onSelectionChange }) => {
+	onExportSingleClick: (publicationId: string) => void
+	onExportMultipleClick: () => void
+	publishMultiple: () => Promise<Response>
+	unpublishMultiple: () => Promise<Response>
+	onClearSelection: () => void
+	selectionModel: GridInputSelectionModel
+}> = ({
+	filter,
+	onSelectionChange,
+	onExportSingleClick,
+	onExportMultipleClick,
+	publishMultiple,
+	unpublishMultiple,
+	onClearSelection,
+	selectionModel,
+}) => {
 	const [rowCount, setRowCount] = useState<number>()
 	const [publications, setPublications] = useState<Publication[]>([])
 	const [page, setPage] = useState<number>(0)
 	const [rowCountState, setRowCountState] = useState<number | undefined>(
 		rowCount,
 	)
-	const [exportPublicationId, setExportPublicationId] = useState<string>()
 
-	const onExportClick = (publicationId: string) => (e: MouseEvent) => {
-		e.stopPropagation()
+	const onExportClick = useCallback(
+		(publicationId: string) => (e: MouseEvent) => {
+			e.stopPropagation()
 
-		setExportPublicationId(publicationId)
-	}
+			onExportSingleClick(publicationId)
+		},
+		[onExportSingleClick],
+	)
 
 	const onPublishClick = (publicationId: string) => async (e: MouseEvent) => {
 		e.stopPropagation()
@@ -58,6 +83,32 @@ export const PublicationGrid: FC<{
 				}),
 			)
 		}
+	}
+
+	const onPublishMultipleClick = () => {
+		async function fetchPublications() {
+			const response = await listPublications(page, 10, filter)
+
+			if (response) {
+				setPublications(response.items)
+				setRowCount(response.total)
+			}
+		}
+
+		publishMultiple().then(() => fetchPublications())
+	}
+
+	const onUnpublishMultipleClick = () => {
+		async function fetchPublications() {
+			const response = await listPublications(page, 10, filter)
+
+			if (response) {
+				setPublications(response.items)
+				setRowCount(response.total)
+			}
+		}
+
+		unpublishMultiple().then(() => fetchPublications())
 	}
 
 	const columns = useMemo<GridColumns<Publication>>(
@@ -130,7 +181,7 @@ export const PublicationGrid: FC<{
 				),
 			},
 		],
-		[],
+		[onExportClick],
 	)
 
 	useEffect(() => {
@@ -160,13 +211,16 @@ export const PublicationGrid: FC<{
 				columns={columns}
 				rowCount={rowCountState}
 				rows={publications}
+				selectionModel={selectionModel}
+				toolbar={PublicationGridToolbar}
+				toolbarProps={{
+					onExportClick: onExportMultipleClick,
+					onPublishClick: onPublishMultipleClick,
+					onUnpublishClick: onUnpublishMultipleClick,
+					onClearSelection: onClearSelection,
+				}}
 				onPageChange={onPageChange}
 				onSelectionChange={onSelectionChange}
-			/>
-			<PublicationExportDialog
-				open={!!exportPublicationId}
-				publicationIds={exportPublicationId ? [exportPublicationId] : []}
-				onClose={() => setExportPublicationId(undefined)}
 			/>
 		</Paper>
 	)

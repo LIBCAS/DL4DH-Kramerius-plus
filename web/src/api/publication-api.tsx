@@ -7,7 +7,7 @@ export type PublicationFilter = {
 	uuid?: string
 	title?: string
 	parentId?: string
-	model?: DigitalObjectModel
+	model?: DigitalObjectModel | ''
 	createdBefore?: Date
 	createdAfter?: Date
 	isPublished?: boolean
@@ -59,8 +59,26 @@ export const publish = async (publicationId: string): Promise<Response> => {
 	})
 }
 
+export const publishMultiple = async (
+	publicationIds: string[],
+): Promise<Response> => {
+	return await customFetch(`/api/publications/publish`, {
+		method: 'POST',
+		body: JSON.stringify({ publicationIds }),
+	})
+}
+
 export const unpublish = async (publicationId: string): Promise<Response> => {
 	return await customFetch(`/api/publications/${publicationId}/unpublish`, {
 		method: 'POST',
+	})
+}
+
+export const unpublishMultiple = async (
+	publicationIds: string[],
+): Promise<Response> => {
+	return await customFetch(`/api/publications/unpublish`, {
+		method: 'POST',
+		body: JSON.stringify({ publicationIds }),
 	})
 }

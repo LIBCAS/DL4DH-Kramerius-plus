@@ -24,15 +24,12 @@ import {
 
 type Props = {
 	onSubmit: (filter: PublicationFilter) => void
-	onExportClick: () => void
 }
 
-export const PublicationListFilter: FC<Props> = ({
-	onSubmit,
-	onExportClick,
-}) => {
+export const PublicationListFilter: FC<Props> = ({ onSubmit }) => {
 	const [filter, setFilter] = useState<PublicationFilter>({
 		parentId: '',
+		model: '',
 	} as PublicationFilter)
 
 	const handleFieldChange =
@@ -100,7 +97,6 @@ export const PublicationListFilter: FC<Props> = ({
 						<FormControl fullWidth size="small">
 							<InputLabel id="demo-simple-select-label">Model</InputLabel>
 							<Select
-								defaultValue={undefined}
 								label="Model"
 								value={filter.model}
 								onChange={handleModelChange}
@@ -164,11 +160,6 @@ export const PublicationListFilter: FC<Props> = ({
 						<Grid item>
 							<Button variant="contained" onClick={handleSubmit}>
 								Filtrovat
-							</Button>
-						</Grid>
-						<Grid item>
-							<Button variant="contained" onClick={onExportClick}>
-								Exportovat vybrané
 							</Button>
 						</Grid>
 					</Grid>
