@@ -15,6 +15,7 @@ import {
 	FormControlLabel,
 	Button,
 	TextField,
+	Grid,
 } from '@mui/material'
 import { exportPublication } from 'api/export-api'
 import { ExportJobConfig } from 'models/job/config/export-job-config'
@@ -129,6 +130,7 @@ export const PublicationExportDialog: FC<{
 	return (
 		<Dialog
 			fullWidth
+			maxWidth="lg"
 			open={open}
 			onClose={onClose}
 			onSubmit={handleSubmitExport}
@@ -136,6 +138,20 @@ export const PublicationExportDialog: FC<{
 			<DialogTitle>Konfigurace exportu</DialogTitle>
 
 			<DialogContent>
+				<Box display="flex" justifyContent="space-between" sx={{ m: 1 }}>
+					<Box width="30%">
+						<Typography variant="subtitle1">Exportované publikace:</Typography>
+					</Box>
+					<Grid container spacing={1}>
+						{publicationIds.map(id => (
+							<Grid key={id} item lg={2} xl={6} xs={1}>
+								<Typography key={id} variant="body1">
+									{id}
+								</Typography>
+							</Grid>
+						))}
+					</Grid>
+				</Box>
 				<TextField
 					fullWidth
 					label="Název"
