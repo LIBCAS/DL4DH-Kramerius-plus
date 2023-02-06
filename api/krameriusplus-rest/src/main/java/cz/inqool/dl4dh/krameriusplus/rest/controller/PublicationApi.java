@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationFacade;
 import cz.inqool.dl4dh.krameriusplus.api.publication.PublicationFilter;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.PublicationDto;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.PageDto;
+import cz.inqool.dl4dh.krameriusplus.rest.dto.PublishDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
@@ -31,8 +30,6 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME
 public class PublicationApi {
 
     private final PublicationFacade facade;
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault());
 
     @Autowired
     public PublicationApi(PublicationFacade facade) {
@@ -113,11 +110,27 @@ public class PublicationApi {
         facade.publish(publicationId);
     }
 
+    @Operation(summary = "Mark publication as published.")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "Publication not found")
+    @PostMapping("/publish")
+    public void publishMultiple(@RequestBody PublishDto body) {
+        facade.publish(body.getPublicationIds());
+    }
+
     @Operation(summary = "Mark publication as unpublished.")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Publication not found")
     @PostMapping("/{id}/unpublish")
     public void unpublish(@PathVariable("id") String publicationId) {
         facade.unpublish(publicationId);
+    }
+
+    @Operation(summary = "Mark publication as unpublished.")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "Publication not found")
+    @PostMapping("/unpublish")
+    public void unpublish(@RequestBody PublishDto body) {
+        facade.unpublish(body.getPublicationIds());
     }
 }

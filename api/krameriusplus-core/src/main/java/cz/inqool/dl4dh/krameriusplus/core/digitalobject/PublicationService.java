@@ -11,8 +11,10 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.store.PageStore;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.store.PublicationStore;
+import cz.inqool.dl4dh.krameriusplus.core.domain.document.DomainDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -79,6 +81,15 @@ public class PublicationService implements PublicationFacade {
         publication.getPublishInfo().publish();
 
         publicationStore.save(publication);
+
+        List<Publication> children = publicationStore.findAllChildren(publicationId);
+        publish(children.stream().map(DomainDocument::getId).collect(Collectors.toList()));
+    }
+
+    @Transactional
+    @Override
+    public void publish(List<String> publicationIds) {
+        publicationIds.forEach(this::publish);
     }
 
     @Override
@@ -89,6 +100,15 @@ public class PublicationService implements PublicationFacade {
         publication.getPublishInfo().unPublish();
 
         publicationStore.save(publication);
+
+        List<Publication> children = publicationStore.findAllChildren(publicationId);
+        unpublish(children.stream().map(DomainDocument::getId).collect(Collectors.toList()));
+    }
+
+    @Transactional
+    @Override
+    public void unpublish(List<String> publicationIds) {
+        publicationIds.forEach(this::unpublish);
     }
 
     private Result<PublicationDto> toDtoResult(Result<Publication> publications) {

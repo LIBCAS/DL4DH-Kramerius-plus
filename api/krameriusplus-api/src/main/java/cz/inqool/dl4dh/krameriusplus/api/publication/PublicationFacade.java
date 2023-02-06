@@ -23,6 +23,9 @@ public interface PublicationFacade {
 
     void publish(String publicationId);
 
+    void publish(List<String> publicationIds);
+
     void unpublish(String publicationId);
 
+    void unpublish(List<String> publicationIds);
 }
