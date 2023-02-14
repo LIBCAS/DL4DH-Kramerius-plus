@@ -22,16 +22,6 @@ public class KrameriusJobInstanceFacade implements JobFacade {
     private JmsProducer jmsProducer;
 
     @Override
-    public Result<KrameriusJobInstanceDto> listEnrichmentJobs(JobEventFilter filter, int page, int pageSize) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
-    }
-
-    @Override
-    public Result<KrameriusJobInstanceDto> listExportJobs(JobEventFilter filter, int page, int pageSize) {
-        throw new UnsupportedOperationException("Not Yet Implemented.");
-    }
-
-    @Override
     public KrameriusJobInstanceDto findJob(String id) {
         return service.find(id);
     }
