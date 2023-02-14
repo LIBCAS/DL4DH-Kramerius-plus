@@ -5,11 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ModsDateIssued {
+public class ModsPlaceTerm {
 
-    private String encoding;
+    private String authority;
 
-    private String point;
+    private String type;
 
     private String value;
 }

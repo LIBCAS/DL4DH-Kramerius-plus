@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.enricher.mods;
 
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsLanguage;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsLanguageTerm;
 import cz.inqool.dl4dh.mods.LanguageDefinition;
 import cz.inqool.dl4dh.mods.LanguageTermDefinition;
 import org.mapstruct.Mapper;
@@ -9,19 +10,25 @@ import org.mapstruct.Mapper;
 public interface ModsLanguageMapper extends ModsMapperBase {
 
     default ModsLanguage map(LanguageDefinition element) {
-        if (element.getLanguageTerm().isEmpty()) {
+        if (element.getLanguageTerm() == null || element.getLanguageTerm().isEmpty()) {
             return null;
         }
 
-        if (element.getLanguageTerm().size() > 1) {
-            throw new IllegalStateException("Expected at most 1 element <languageTerm>, but found:" + element.getLanguageTerm().size());
-        }
+        ModsLanguage modsLanguage = new ModsLanguage();
 
-        ModsLanguage modsLanguage = map(element.getLanguageTerm().get(0));
         modsLanguage.setObjectPart(element.getObjectPart());
+
+        if (element.getLanguageTerm() != null) {
+            for (LanguageTermDefinition termDefinition : element.getLanguageTerm()) {
+                ModsLanguageTerm languageTerm = new ModsLanguageTerm();
+                languageTerm.setAuthority(termDefinition.getAuthority());
+                languageTerm.setType(termDefinition.getType().value());
+                languageTerm.setValue(termDefinition.getValue());
+
+                modsLanguage.getLanguageTerms().add(languageTerm);
+            }
+        }
 
         return modsLanguage;
     }
-
-    ModsLanguage map(LanguageTermDefinition element);
 }

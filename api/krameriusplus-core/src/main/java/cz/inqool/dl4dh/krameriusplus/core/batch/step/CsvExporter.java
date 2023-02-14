@@ -2,7 +2,6 @@ package cz.inqool.dl4dh.krameriusplus.core.batch.step;
 
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsGenre;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsNamePart;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Token;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
@@ -73,12 +72,13 @@ public class CsvExporter {
 
         if (publication.getModsMetadata() != null) {
             ModsMetadata mods = publication.getModsMetadata();
-            if (mods.getName() != null) {
-                line.add(mods.getName().getType());
-                line.add(mods.getName().getNameIdentifier());
-                line.add(listToCsvString(mods.getName().getNameParts()
-                        .stream().map(ModsNamePart::getValue)
-                        .collect(Collectors.toList())));
+            if (mods.getNames() != null) { // TODO: FIX MULTIPLE VALUES IN COLUMN
+//                line.add(mods.getName().getType());
+//                line.add(mods.getName().getNameIdentifier());
+//                line.add(listToCsvString(mods.getName().getNameParts()
+//                        .stream().map(ModsNamePart::getValue)
+//                        .collect(Collectors.toList())));
+                addEmptyValues(line, 3);
             } else {
                 addEmptyValues(line, 3);
             }
@@ -86,16 +86,17 @@ public class CsvExporter {
                     .map(ModsGenre::getValue)
                     .collect(Collectors.toList())));
 
-            if (mods.getOriginInfo() != null) {
-                line.add(listToCsvString(mods.getOriginInfo().stream()
+            if (mods.getOriginInfos() != null) {
+                line.add(listToCsvString(mods.getOriginInfos().stream()
                         .map(modsOriginInfo -> listToCsvString(modsOriginInfo.getPublishers()))
                         .collect(Collectors.toList())));
             } else {
                 addEmptyValues(line, 1);
             }
 
-            if (mods.getPhysicalDescription() != null) {
-                line.add(mods.getPhysicalDescription().getExtent());
+            if (mods.getPhysicalDescriptions() != null) { // TODO: FIX MULTIPLE VALUES IN COLUMN
+//                line.add(mods.getPhysicalDescriptions().getExtent());
+                addEmptyValues(line, 1);
             } else {
                 addEmptyValues(line, 1);
             }

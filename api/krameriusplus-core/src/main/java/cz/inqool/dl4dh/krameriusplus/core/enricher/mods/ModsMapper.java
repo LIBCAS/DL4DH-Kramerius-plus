@@ -27,22 +27,24 @@ public class ModsMapper {
     public ModsMetadata map(ModsCollectionDefinition element) {
         ModsMetadata modsMetadata = new ModsMetadata();
         lte(element.getMods().size(), 1, () -> new IllegalStateException(
-                "Root ModsCollectionDefinition element is expected to have 1 ModsDefinition, but had: " + element.getMods().size()));
+                "Root ModsCollectionDefinition element is expected to have 1 ModsDefinition, but has: "
+                        + element.getMods().size()));
+
         ModsDefinition modsDefinition = element.getMods().get(0);
 
         for (Object modsGroup : modsDefinition.getModsGroup()) {
             if (modsGroup instanceof TitleInfoDefinition) {
                 modsMetadata.getTitleInfos().add(titleMapper.map((TitleInfoDefinition) modsGroup));
             } else if (modsGroup instanceof NameDefinition) {
-                modsMetadata.setName(nameMapper.map((NameDefinition) modsGroup));
+                modsMetadata.getNames().add(nameMapper.map((NameDefinition) modsGroup));
             } else if (modsGroup instanceof GenreDefinition) {
                 modsMetadata.getGenres().add(genreMapper.map((GenreDefinition) modsGroup));
             } else if (modsGroup instanceof OriginInfoDefinition) {
-                modsMetadata.getOriginInfo().add(originInfoMapper.map((OriginInfoDefinition) modsGroup));
+                modsMetadata.getOriginInfos().add(originInfoMapper.map((OriginInfoDefinition) modsGroup));
             } else if (modsGroup instanceof LanguageDefinition) {
                 modsMetadata.getLanguages().add(languageMapper.map((LanguageDefinition) modsGroup));
             } else if (modsGroup instanceof PhysicalDescriptionDefinition) {
-                modsMetadata.setPhysicalDescription(physicalDescriptionMapper.map((PhysicalDescriptionDefinition) modsGroup));
+                modsMetadata.getPhysicalDescriptions().add(physicalDescriptionMapper.map((PhysicalDescriptionDefinition) modsGroup));
             } else if (modsGroup instanceof IdentifierDefinition) {
                 modsMetadata.getIdentifiers().add(identifierMapper.map((IdentifierDefinition) modsGroup));
             }

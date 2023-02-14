@@ -12,15 +12,15 @@ public class ModsMetadata {
 
     private List<ModsTitleInfo> titleInfos = new ArrayList<>();
 
-    private ModsName name;
+    private List<ModsName> names = new ArrayList<>();
 
     private List<ModsGenre> genres = new ArrayList<>();
 
-    private List<ModsOriginInfo> originInfo = new ArrayList<>();
+    private List<ModsOriginInfo> originInfos = new ArrayList<>();
 
     private List<ModsLanguage> languages = new ArrayList<>();
 
-    private ModsPhysicalDescription physicalDescription;
+    private List<ModsPhysicalDescription> physicalDescriptions = new ArrayList<>();
 
     private List<ModsIdentifier> identifiers = new ArrayList<>();
 }

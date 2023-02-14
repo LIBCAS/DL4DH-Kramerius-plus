@@ -31,8 +31,6 @@ public class SyncTeiMessenger implements TeiMessenger {
 
     private WebClient webClient;
 
-    private TeiHeaderMapper headerMapper;
-
     @Override
     public String convertPage(Page page) {
         try {
@@ -52,7 +50,7 @@ public class SyncTeiMessenger implements TeiMessenger {
         try {
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/convert/header").build())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromValue(headerMapper.map(publication)))
+                    .body(BodyInserters.fromValue(publication.getModsMetadata()))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -132,10 +130,5 @@ public class SyncTeiMessenger implements TeiMessenger {
     @Autowired
     public void setWebClient(@Qualifier(TEI_WEB_CLIENT) WebClient webClient) {
         this.webClient = webClient;
-    }
-
-    @Autowired
-    public void setHeaderMapper(TeiHeaderMapper headerMapper) {
-        this.headerMapper = headerMapper;
     }
 }

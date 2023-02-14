@@ -18,7 +18,7 @@ public interface ModsNameMapper extends ModsMapperBase {
     @Mappings({
             @Mapping(target = "type", source = "typeAtt"),
             @Mapping(target = "nameParts", expression = "java(mapModsNamePart(element.getNamePartOrDisplayFormOrAffiliation()))"),
-            @Mapping(target = "nameIdentifier", expression = "java(mapJaxbElements(element.getNamePartOrDisplayFormOrAffiliation(), \"nameIdentifier\"))")
+            @Mapping(target = "nameIdentifier", expression = "java(extractStringsFromListOfJAXBElements(element.getNamePartOrDisplayFormOrAffiliation(), \"nameIdentifier\"))")
     })
     ModsName map(NameDefinition element);
 

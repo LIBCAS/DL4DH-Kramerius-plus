@@ -1,8 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.core.enricher.mods;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsDateIssued;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsDate;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsOriginInfo;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlace;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlaceTerm;
 import cz.inqool.dl4dh.mods.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,34 +17,16 @@ import java.util.List;
 public interface ModsOriginInfoMapper extends ModsMapperBase {
 
     @Mappings({
-            @Mapping(target = "publishers", expression = "java(mapPublishInfo(element.getPlaceOrPublisherOrDateIssued()))"),
+            @Mapping(target = "publishers", expression = "java(extractStringsFromListOfJAXBElements(element.getPlaceOrPublisherOrDateIssued(), \"publisher\"))"),
             @Mapping(target = "datesIssued", expression = "java(mapDates(element.getPlaceOrPublisherOrDateIssued()))"),
             @Mapping(target = "places", expression = "java(mapPlaces(element.getPlaceOrPublisherOrDateIssued()))"),
-            @Mapping(target = "issuances", expression = "java(mapIssuances(element.getPlaceOrPublisherOrDateIssued()))")
+            @Mapping(target = "issuances", expression = "java(mapIssuance(element.getPlaceOrPublisherOrDateIssued()))")
     })
     ModsOriginInfo map(OriginInfoDefinition element);
 
-    default List<String> mapPublishInfo(List<JAXBElement<?>> elements) {
-        if (elements == null || elements.isEmpty()) {
-            return null;
-        }
-
-        List<String> result = new ArrayList<>();
-
-        for (JAXBElement<?> element : elements) {
-            if (element.getValue() instanceof PublisherDefinition) {
-                PublisherDefinition publisherDefinition = (PublisherDefinition) element.getValue();
-                result.add(publisherDefinition.getValue());
-            }
-        }
-
-        return result;
-
-    }
-
     default List<ModsPlace> mapPlaces(List<JAXBElement<?>> elements) {
         if (elements == null || elements.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
 
         List<ModsPlace> result = new ArrayList<>();
@@ -54,16 +37,16 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
                 if (placeDefinition.getPlaceTerm().isEmpty()) {
                     continue;
                 }
-                if (placeDefinition.getPlaceTerm().size() > 1) {
-                    throw new IllegalStateException("Expected <place> element to have at most one <placeTerm> element, but found: " + placeDefinition.getPlaceTerm().size());
-                }
-
-                PlaceTermDefinition placeTermDefinition = placeDefinition.getPlaceTerm().get(0);
 
                 ModsPlace modsPlace = new ModsPlace();
-                modsPlace.setAuthority(placeTermDefinition.getAuthority());
-                modsPlace.setType(placeTermDefinition.getType() == null ? null : placeTermDefinition.getType().value());
-                modsPlace.setValue(placeTermDefinition.getValue());
+                for (PlaceTermDefinition placeTermDefinition : placeDefinition.getPlaceTerm()) {
+                    ModsPlaceTerm placeTerm = new ModsPlaceTerm();
+                    placeTerm.setAuthority(placeTermDefinition.getAuthority());
+                    placeTerm.setValue(placeTermDefinition.getValue());
+                    placeTerm.setType(placeTermDefinition.getType() == null ? null : placeTermDefinition.getType().value());
+
+                    modsPlace.getPlaceTerms().add(placeTerm);
+                }
 
                 result.add(modsPlace);
             }
@@ -72,37 +55,33 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
         return result;
     }
 
-    default List<String> mapIssuances(List<JAXBElement<?>> elements) {
+    default List<ModsDate> mapDates(List<JAXBElement<?>> elements) {
         if (elements == null || elements.isEmpty()) {
             return null;
         }
 
-        List<String> issuances = new ArrayList<>();
-        for (JAXBElement<?> element : elements) {
-            if (element.getValue() instanceof IssuanceDefinition) {
-                issuances.add(((IssuanceDefinition) element.getValue()).value());
-            }
-        }
-
-
-        return issuances;
-    }
-
-    default List<ModsDateIssued> mapDates(List<JAXBElement<?>> elements) {
-        if (elements == null || elements.isEmpty()) {
-            return null;
-        }
-
-        List<ModsDateIssued> result = new ArrayList<>();
+        List<ModsDate> result = new ArrayList<>();
         for (JAXBElement<?> element : elements) {
             if (element.getValue() instanceof DateDefinition) {
                 DateDefinition dateDefinition = (DateDefinition) element.getValue();
 
-                ModsDateIssued dateIssued = new ModsDateIssued();
+                ModsDate dateIssued = new ModsDate();
                 dateIssued.setEncoding(dateDefinition.getEncoding());
                 dateIssued.setPoint(dateDefinition.getPoint());
                 dateIssued.setValue(dateDefinition.getValue());
                 result.add(dateIssued);
+            }
+        }
+
+        return result;
+    }
+
+    default List<String> mapIssuance(List<JAXBElement<?>> elements) {
+        List<String> result = new ArrayList<>();
+
+        for (JAXBElement<?> element : elements) {
+            if (element.getValue() instanceof IssuanceDefinition) {
+                result.add(((IssuanceDefinition) element.getValue()).value());
             }
         }
 
