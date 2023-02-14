@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
                 jobParametersMapWrapper);
     }
 
+    @Transactional(readOnly = true)
     public Result<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize) {
         Result<ExportRequest> requests = store.findByNameOwnerAndStatus(name, owner, isFinished, page, pageSize);
         List<ExportRequestDto> dtos = requests.getItems().stream().map(mapper::toDto).collect(Collectors.toList());
