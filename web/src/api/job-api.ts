@@ -1,9 +1,5 @@
-import { QueryResults } from 'models/query-results'
-import { JobEvent } from 'models/job/job-event'
-import { JobEventFilterDto } from '../modules/jobs/job-event/job-event-filter-dto'
-import { JobType } from 'enums/job-type'
-import { customFetch } from 'utils/custom-fetch'
 import { KrameriusJobInstance } from 'models/job/kramerius-job-instance'
+import { customFetch } from 'utils/custom-fetch'
 
 export const getJob = async (jobId: string): Promise<KrameriusJobInstance> => {
 	const response = await customFetch(`/api/jobs/${jobId}`, {
