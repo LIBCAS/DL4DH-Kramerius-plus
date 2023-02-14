@@ -14,9 +14,9 @@ public class ModsOriginInfo {
 
     private List<String> publishers = new ArrayList<>();
 
-    private ModsDateIssued dateIssued;
+    private List<ModsDate> datesIssued = new ArrayList<>();
 
     private List<ModsPlace> places = new ArrayList<>();
 
-    private String issuance;
+    private List<String> issuances = new ArrayList<>();
 }

@@ -55,4 +55,43 @@ public interface ModsMapperBase {
 
         return mapJaxbElements(result, tagName);
     }
+
+    default List<String> extractStringsFromListOfObjects(List<Object> elements, String elementName) {
+        List<String> result = new ArrayList<>();
+        for (Object element : elements) {
+            if (element instanceof StringPlusLanguage) {
+                result.add(((StringPlusLanguage) element).getValue());
+            } else if (element instanceof JAXBElement<?> && ((JAXBElement<?>) element).getValue() instanceof StringPlusLanguage) {
+                JAXBElement<?> jaxbElement = (JAXBElement<?>) element;
+
+                if (elementName != null) {
+                    if (jaxbElement.getName().getLocalPart().equals(elementName)) {
+                        result.add(((StringPlusLanguage) jaxbElement.getValue()).getValue());
+                    }
+                } else {
+                    result.add(((StringPlusLanguage) jaxbElement.getValue()).getValue());
+                }
+            }
+        }
+
+        return result;
+    }
+
+    default List<String> extractStringsFromListOfJAXBElements(List<JAXBElement<?>> elements, String elementName) {
+        List<String> result = new ArrayList<>();
+
+        for (JAXBElement<?> element : elements) {
+            if (element.getValue() instanceof StringPlusLanguage) {
+                if (elementName != null) {
+                    if (element.getName().getLocalPart().equals(elementName)) {
+                        result.add(((StringPlusLanguage) element.getValue()).getValue());
+                    }
+                } else {
+                    result.add(((StringPlusLanguage) element.getValue()).getValue());
+                }
+            }
+        }
+
+        return result;
+    }
 }

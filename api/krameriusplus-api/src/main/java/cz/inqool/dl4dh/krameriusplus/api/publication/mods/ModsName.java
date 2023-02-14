@@ -14,5 +14,5 @@ public class ModsName {
 
     private List<ModsNamePart> nameParts = new ArrayList<>();
 
-    private String nameIdentifier;
+    private List<String> nameIdentifier = new ArrayList<>();
 }

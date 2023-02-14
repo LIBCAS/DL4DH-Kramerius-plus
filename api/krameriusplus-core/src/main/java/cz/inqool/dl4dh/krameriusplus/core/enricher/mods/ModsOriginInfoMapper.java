@@ -1,8 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.core.enricher.mods;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsDateIssued;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsDate;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsOriginInfo;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlace;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlaceTerm;
 import cz.inqool.dl4dh.mods.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,34 +17,16 @@ import java.util.List;
 public interface ModsOriginInfoMapper extends ModsMapperBase {
 
     @Mappings({
-            @Mapping(target = "publishers", expression = "java(mapPublishInfo(element.getPlaceOrPublisherOrDateIssued()))"),
-            @Mapping(target = "dateIssued", expression = "java(mapDate(findOne(element.getPlaceOrPublisherOrDateIssued(), \"dateIssued\")))"),
+            @Mapping(target = "publishers", expression = "java(extractStringsFromListOfJAXBElements(element.getPlaceOrPublisherOrDateIssued(), \"publisher\"))"),
+            @Mapping(target = "datesIssued", expression = "java(mapDates(element.getPlaceOrPublisherOrDateIssued()))"),
             @Mapping(target = "places", expression = "java(mapPlaces(element.getPlaceOrPublisherOrDateIssued()))"),
-            @Mapping(target = "issuance", expression = "java(mapIssuance(findOne(element.getPlaceOrPublisherOrDateIssued(), \"issuance\")))")
+            @Mapping(target = "issuances", expression = "java(mapIssuance(element.getPlaceOrPublisherOrDateIssued()))")
     })
     ModsOriginInfo map(OriginInfoDefinition element);
 
-    default List<String> mapPublishInfo(List<JAXBElement<?>> elements) {
-        if (elements == null || elements.isEmpty()) {
-            return null;
-        }
-
-        List<String> result = new ArrayList<>();
-
-        for (JAXBElement<?> element : elements) {
-            if (element.getValue() instanceof PublisherDefinition) {
-                PublisherDefinition publisherDefinition = (PublisherDefinition) element.getValue();
-                result.add(publisherDefinition.getValue());
-            }
-        }
-
-        return result;
-
-    }
-
     default List<ModsPlace> mapPlaces(List<JAXBElement<?>> elements) {
         if (elements == null || elements.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
 
         List<ModsPlace> result = new ArrayList<>();
@@ -53,16 +36,17 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
                 PlaceDefinition placeDefinition = (PlaceDefinition) element.getValue();
                 if (placeDefinition.getPlaceTerm().isEmpty()) {
                     continue;
-                } if (placeDefinition.getPlaceTerm().size() > 1) {
-                    throw new IllegalStateException("Expected <place> element to have at most one <placeTerm> element, but found: " + placeDefinition.getPlaceTerm().size());
                 }
 
-                PlaceTermDefinition placeTermDefinition = placeDefinition.getPlaceTerm().get(0);
-
                 ModsPlace modsPlace = new ModsPlace();
-                modsPlace.setAuthority(placeTermDefinition.getAuthority());
-                modsPlace.setType(placeTermDefinition.getType() == null ? null : placeTermDefinition.getType().value());
-                modsPlace.setValue(placeTermDefinition.getValue());
+                for (PlaceTermDefinition placeTermDefinition : placeDefinition.getPlaceTerm()) {
+                    ModsPlaceTerm placeTerm = new ModsPlaceTerm();
+                    placeTerm.setAuthority(placeTermDefinition.getAuthority());
+                    placeTerm.setValue(placeTermDefinition.getValue());
+                    placeTerm.setType(placeTermDefinition.getType() == null ? null : placeTermDefinition.getType().value());
+
+                    modsPlace.getPlaceTerms().add(placeTerm);
+                }
 
                 result.add(modsPlace);
             }
@@ -71,34 +55,36 @@ public interface ModsOriginInfoMapper extends ModsMapperBase {
         return result;
     }
 
-    default ModsDateIssued mapDate(JAXBElement<?> element) {
-        if (element == null) {
+    default List<ModsDate> mapDates(List<JAXBElement<?>> elements) {
+        if (elements == null || elements.isEmpty()) {
             return null;
         }
 
-        if (!(element.getValue() instanceof DateDefinition)) {
-            throw new IllegalStateException("Found <dateIssued> element, but it is not an instance of DateDefinition.");
+        List<ModsDate> result = new ArrayList<>();
+        for (JAXBElement<?> element : elements) {
+            if (element.getValue() instanceof DateDefinition) {
+                DateDefinition dateDefinition = (DateDefinition) element.getValue();
+
+                ModsDate dateIssued = new ModsDate();
+                dateIssued.setEncoding(dateDefinition.getEncoding());
+                dateIssued.setPoint(dateDefinition.getPoint());
+                dateIssued.setValue(dateDefinition.getValue());
+                result.add(dateIssued);
+            }
         }
-        DateDefinition dateDefinition = (DateDefinition) element.getValue();
 
-        ModsDateIssued dateIssued = new ModsDateIssued();
-        dateIssued.setEncoding(dateDefinition.getEncoding());
-        dateIssued.setPoint(dateDefinition.getPoint());
-        dateIssued.setValue(dateDefinition.getValue());
-
-        return dateIssued;
+        return result;
     }
 
-    default String mapIssuance(JAXBElement<?> issuanceElement) {
-        if (issuanceElement == null) {
-            return null;
+    default List<String> mapIssuance(List<JAXBElement<?>> elements) {
+        List<String> result = new ArrayList<>();
+
+        for (JAXBElement<?> element : elements) {
+            if (element.getValue() instanceof IssuanceDefinition) {
+                result.add(((IssuanceDefinition) element.getValue()).value());
+            }
         }
 
-        if (!(issuanceElement.getValue() instanceof IssuanceDefinition)) {
-            throw new IllegalStateException("Found <issuance> element, but it is not and instance of "
-                    + IssuanceDefinition.class.getSimpleName());
-        }
-
-        return ((IssuanceDefinition) issuanceElement.getValue()).value();
+        return result;
     }
 }

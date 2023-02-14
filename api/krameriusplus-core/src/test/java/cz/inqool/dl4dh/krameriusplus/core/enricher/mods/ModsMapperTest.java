@@ -49,23 +49,31 @@ public class ModsMapperTest extends CoreBaseTest {
             softly.assertThat(titles.size()).isEqualTo(2);
 
             ModsTitleInfo title = titles.get(0);
-            softly.assertThat(title.getTitle()).isEqualTo("Výkonnost open source aplikací");
-            softly.assertThat(title.getSubTitle()).isEqualTo("rychlost, přesnost a trocha štěstí");
+            softly.assertThat(title.getTitles().size()).isEqualTo(1);
+            softly.assertThat(title.getTitles().get(0)).isEqualTo("Výkonnost open source aplikací");
+            softly.assertThat(title.getSubTitles().size()).isEqualTo(1);
+            softly.assertThat(title.getSubTitles().get(0)).isEqualTo("rychlost, přesnost a trocha štěstí");
 
             title = titles.get(1);
-            softly.assertThat(title.getTitle()).isEqualTo("Performance of open source applications. Česky");
+            softly.assertThat(title.getTitles().size()).isEqualTo(1);
+            softly.assertThat(title.getTitles().get(0)).isEqualTo("Performance of open source applications. Česky");
+            softly.assertThat(title.getType()).isEqualTo("uniform");
         });
     }
 
     @Test
     void modsName() {
-        ModsName modsName = modsMetadata.getName();
+        List<ModsName> modsNames = modsMetadata.getNames();
 
         SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(modsNames.size()).isEqualTo(1);
+
+            ModsName modsName = modsNames.get(0);
+
             softly.assertThat(modsName.getType()).isEqualTo("personal");
             softly.assertThat(modsName.getNameParts().size()).isEqualTo(1);
             softly.assertThat(modsName.getNameParts().get(0).getValue()).isEqualTo("Armstrong, Tavish");
-            softly.assertThat(modsName.getNameIdentifier()).isNull();
+            softly.assertThat(modsName.getNameIdentifier()).isEmpty();
         });
     }
 
@@ -92,32 +100,42 @@ public class ModsMapperTest extends CoreBaseTest {
 
     @Test
     void originInfo() {
-        List<ModsOriginInfo> originInfos = modsMetadata.getOriginInfo();
+        List<ModsOriginInfo> originInfos = modsMetadata.getOriginInfos();
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(originInfos.size()).isEqualTo(2);
 
-            ModsOriginInfo originInfo1 = originInfos.get(0);
+            ModsOriginInfo originInfo = originInfos.get(0);
 
-            softly.assertThat(originInfo1.getDateIssued().getEncoding()).isEqualTo("marc");
-            softly.assertThat(originInfo1.getDateIssued().getValue()).isEqualTo("2016");
+            softly.assertThat(originInfo.getDatesIssued().size()).isEqualTo(1);
+            softly.assertThat(originInfo.getDatesIssued().get(0).getEncoding()).isEqualTo("marc");
+            softly.assertThat(originInfo.getDatesIssued().get(0).getValue()).isEqualTo("2016");
 
-            softly.assertThat(originInfo1.getIssuance()).isEqualTo("monographic");
-            softly.assertThat(originInfo1.getPublishers()).isEmpty();
+            softly.assertThat(originInfo.getIssuances().size()).isEqualTo(1);
+            softly.assertThat(originInfo.getIssuances().get(0)).isEqualTo("monographic");
+            softly.assertThat(originInfo.getPublishers()).isEmpty();
 
-            softly.assertThat(originInfo1.getPlaces().size()).isEqualTo(1);
+            softly.assertThat(originInfo.getPlaces().size()).isEqualTo(1);
 
-            ModsPlace modsPlace = originInfo1.getPlaces().get(0);
-            softly.assertThat(modsPlace.getValue()).isEqualTo("xr");
-            softly.assertThat(modsPlace.getAuthority()).isEqualTo("marccountry");
-            softly.assertThat(modsPlace.getType()).isEqualTo("code");
+            ModsPlace modsPlace = originInfo.getPlaces().get(0);
+            softly.assertThat(modsPlace.getPlaceTerms().size()).isEqualTo(1);
 
-            ModsOriginInfo originInfo2 = originInfos.get(1);
+            ModsPlaceTerm modsPlaceTerm = modsPlace.getPlaceTerms().get(0);
+
+            softly.assertThat(modsPlaceTerm.getValue()).isEqualTo("xr");
+            softly.assertThat(modsPlaceTerm.getAuthority()).isEqualTo("marccountry");
+            softly.assertThat(modsPlaceTerm.getType()).isEqualTo("code");
+
+            originInfo = originInfos.get(1);
             
-            softly.assertThat(originInfo2.getPublishers().get(0)).isEqualTo("CZ.NIC, z.s.p.o.,");
+            softly.assertThat(originInfo.getPublishers().get(0)).isEqualTo("CZ.NIC, z.s.p.o.,");
 
-            ModsPlace modsPlace2 = originInfo2.getPlaces().get(0);
-            softly.assertThat(modsPlace2.getValue()).isEqualTo("Praha :");
+            modsPlace = originInfo.getPlaces().get(0);
+            softly.assertThat(modsPlace.getPlaceTerms().size()).isEqualTo(1);
+
+            modsPlaceTerm = modsPlace.getPlaceTerms().get(0);
+
+            softly.assertThat(modsPlaceTerm.getValue()).isEqualTo("Praha :");
         });
 
     }
@@ -130,22 +148,34 @@ public class ModsMapperTest extends CoreBaseTest {
             softly.assertThat(languages.size()).isEqualTo(2);
 
             ModsLanguage modsLanguage = languages.get(0);
+            softly.assertThat(modsLanguage.getObjectPart()).isNull();
+            softly.assertThat(modsLanguage.getLanguageTerms().size()).isEqualTo(1);
 
-            softly.assertThat(modsLanguage.getAuthority()).isEqualTo("iso639-2b");
-            softly.assertThat(modsLanguage.getType()).isEqualTo("CODE");
-            softly.assertThat(modsLanguage.getValue()).isEqualTo("cze");
+            ModsLanguageTerm modsLanguageTerm = modsLanguage.getLanguageTerms().get(0);
 
-            ModsLanguage modsLanguage1 = languages.get(1);
-            softly.assertThat(modsLanguage1.getObjectPart()).isEqualTo("translation");
-            softly.assertThat(modsLanguage1.getAuthority()).isEqualTo("iso639-2b");
-            softly.assertThat(modsLanguage1.getValue()).isEqualTo("eng");
+            softly.assertThat(modsLanguageTerm.getAuthority()).isEqualTo("iso639-2b");
+            softly.assertThat(modsLanguageTerm.getType()).isEqualTo("code");
+            softly.assertThat(modsLanguageTerm.getValue()).isEqualTo("cze");
+
+            modsLanguage = languages.get(1);
+            softly.assertThat(modsLanguage.getObjectPart()).isEqualTo("translation");
+            softly.assertThat(modsLanguage.getLanguageTerms().size()).isEqualTo(1);
+
+            modsLanguageTerm = modsLanguage.getLanguageTerms().get(0);
+
+            softly.assertThat(modsLanguageTerm.getType()).isEqualTo("code");
+            softly.assertThat(modsLanguageTerm.getAuthority()).isEqualTo("iso639-2b");
+            softly.assertThat(modsLanguageTerm.getValue()).isEqualTo("eng");
         });
     }
 
     @Test
     void physicalDescription() {
         SoftAssertions.assertSoftly(softly -> {
-            ModsPhysicalDescription physicalDescription = modsMetadata.getPhysicalDescription();
+            List<ModsPhysicalDescription> physicalDescriptions = modsMetadata.getPhysicalDescriptions();
+            softly.assertThat(physicalDescriptions.size()).isEqualTo(1);
+
+            ModsPhysicalDescription physicalDescription = physicalDescriptions.get(0);
 
             softly.assertThat(physicalDescription.getExtent()).isEqualTo("264 stran : ilustrace ; 25 cm");
         });

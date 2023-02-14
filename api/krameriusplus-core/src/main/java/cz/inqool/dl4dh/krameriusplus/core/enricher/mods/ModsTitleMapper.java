@@ -10,8 +10,8 @@ import org.mapstruct.Mappings;
 public interface ModsTitleMapper extends ModsMapperBase {
 
     @Mappings({
-            @Mapping(target = "title", expression = "java(mapJaxbElementsObjects(element.getTitleOrSubTitleOrPartNumber(), \"title\"))"),
-            @Mapping(target = "subTitle", expression = "java(mapJaxbElementsObjects(element.getTitleOrSubTitleOrPartNumber(), \"subTitle\"))"),
+            @Mapping(target = "titles", expression = "java(extractStringsFromListOfObjects(element.getTitleOrSubTitleOrPartNumber(), \"title\"))"),
+            @Mapping(target = "subTitles", expression = "java(extractStringsFromListOfObjects(element.getTitleOrSubTitleOrPartNumber(), \"subTitle\"))"),
             @Mapping(target = "type", source = "typeAtt")
     })
     ModsTitleInfo map(TitleInfoDefinition element);
