@@ -35,46 +35,6 @@ public class ExportApi {
     public ExportRequestDto export(@Valid @RequestBody ExportRequestCreateDto requestDto) {
         return facade.export(requestDto);
     }
-//
-//    @Operation(summary = "Creates and starts a new job of type EXPORT_TEI, which generates an Export in TEI format. " +
-//            "Job is started asynchronously.")
-//    @ApiResponse(responseCode = "200", description = "Job successfully created")
-//    @PostMapping("/tei")
-//    public ExportRequestDto export(@RequestBody @Valid TeiExportRequestCreateDto requestDto) {
-//        return facade.export(requestDto);
-//    }
-//
-//    @Operation(summary = "Creates and starts a new job of type EXPORT_JSON, which generates an Export in JSON format. " +
-//            "Job is started asynchronously.")
-//    @ApiResponse(responseCode = "200", description = "Job successfully created")
-//    @PostMapping("/json")
-//    public ExportRequestDto export(@RequestBody @Valid JsonExportRequestCreateDto requestDto) {
-//        return facade.export(requestDto);
-//    }
-//
-//    @Operation(summary = "Creates and starts a new job of type EXPORT_CSV, which generates an Export in CSV format. " +
-//            "Allows to specify 'delimiter', which should be used. Job is started asynchronously. ")
-//    @ApiResponse(responseCode = "200", description = "Job successfully created")
-//    @PostMapping("/csv")
-//    public ExportRequestDto export(@RequestBody @Valid CsvExportRequestCreateDto requestDto) {
-//        return facade.export(requestDto);
-//    }
-//
-//    @Operation(summary = "Creates and starts a new job of type EXPORT_ALTO, which generates an Export in ALTO format. " +
-//            "Job is started asynchronously. ")
-//    @ApiResponse(responseCode = "200", description = "Job successfully created")
-//    @PostMapping("/alto")
-//    public ExportRequestDto export(@RequestBody @Valid AltoExportRequestCreateDto requestDto) {
-//        return facade.export(requestDto);
-//    }
-//
-//    @Operation(summary = "Creates and starts a new job of type EXPORT_TEXT, which generates an Export in TEXT format. " +
-//            "Text is extracted from ALTO format. Job is started asynchronously. ")
-//    @ApiResponse(responseCode = "200", description = "Job successfully created")
-//    @PostMapping("/text")
-//    public ExportRequestDto export(@RequestBody @Valid TextExportRequestCreateDto requestDto) {
-//        return facade.export(requestDto);
-//    }
 
     @Operation(summary = "Find an export request.")
     @ApiResponse(responseCode = "200", description = "OK")

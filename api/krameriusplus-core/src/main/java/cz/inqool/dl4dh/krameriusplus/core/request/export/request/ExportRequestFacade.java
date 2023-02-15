@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.core.jms.JobEnqueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ExportRequestFacade implements ExportFacade {
@@ -25,11 +26,13 @@ public class ExportRequestFacade implements ExportFacade {
     }
 
     @Override
+    @Transactional(readOnly = true) // Important for fetching LOB values (StepError::stackTrace)
     public ExportRequestDto find(String exportRequestId) {
         return exportRequestService.find(exportRequestId);
     }
 
     @Override
+    @Transactional(readOnly = true) // Important for fetching LOB values (StepError::stackTrace)
     public Result<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize) {
         return exportRequestService.list(name, owner, isFinished, page, pageSize);
     }
