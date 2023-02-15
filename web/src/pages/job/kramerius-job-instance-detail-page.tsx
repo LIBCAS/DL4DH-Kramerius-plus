@@ -71,6 +71,11 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 		)
 	}
 
+	const reload = () => {
+		fetchJob()
+		toast('Informace byli aktualizovány.', { type: 'info' })
+	}
+
 	const onRestart = () => {
 		const callRestart = async () => {
 			const response = await restartJob(job!.id)
@@ -123,12 +128,17 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 				<Loading />
 			) : (
 				<Box>
-					<Box display="flex" justifyContent="space-between" p={2} pb={3}>
-						<Box>
-							<Typography variant="h4">Detail úlohy</Typography>
-						</Box>
-						<Box display="flex" justifyContent="space-between" width="30%">
-							<Box width="36%">
+					<Grid container spacing={1}>
+						<Grid container item spacing={2} sx={{ p: 2 }} xs={12}>
+							<Grid item lg={5} md={3} xl={7} xs={12}>
+								<Typography variant="h4">Detail úlohy</Typography>
+							</Grid>
+							<Grid item lg={2} md={2.5} xl={1.5} xs={12}>
+								<Button fullWidth variant="contained" onClick={reload}>
+									Znovu načíst
+								</Button>
+							</Grid>
+							<Grid item lg={2} md={2.5} xl={1.5} xs={12}>
 								<Button
 									disabled={!job.jobParameters['PUBLICATION_ID']}
 									fullWidth
@@ -137,9 +147,8 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 								>
 									Zobrazit publikaci
 								</Button>
-							</Box>
-							<Box width="5%"></Box>
-							<Box width="27%">
+							</Grid>
+							<Grid item lg={1.5} md={2} xl={1} xs={12}>
 								<Button
 									disabled={!isRestartable()}
 									fullWidth
@@ -148,9 +157,8 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 								>
 									Restartovat
 								</Button>
-							</Box>
-							<Box width="5%"></Box>
-							<Box width="27%">
+							</Grid>
+							<Grid item lg={1.5} md={2} xl={1} xs={12}>
 								<Button
 									disabled={!isStoppable()}
 									fullWidth
@@ -159,35 +167,35 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 								>
 									Zastavit
 								</Button>
-							</Box>
-						</Box>
-					</Box>
-					<Grid container spacing={1}>
-						<Grid item md={6} sx={{ p: 2 }} xl={2.7}>
-							<Paper elevation={4} sx={{ height: 300, p: 2 }}>
-								<JobInfo job={job} />
-							</Paper>
+							</Grid>
 						</Grid>
-						<Grid item md={6} sx={{ p: 2 }} xl={4}>
-							<Paper elevation={4} sx={{ height: 300, p: 2 }}>
-								<JobParameters jobParameters={job.jobParameters} />
-							</Paper>
-						</Grid>
-						<Grid item md={12} sx={{ p: 2 }} xl={5.3}>
-							<Paper elevation={4} sx={{ height: 300, p: 2 }}>
-								<JobExecutions
-									executions={job.executions}
-									onExecutionClick={onJobExecutionClick}
-								/>
-							</Paper>
-						</Grid>
-						<Grid item sx={{ p: 2 }} xl={12}>
-							<Paper elevation={4} sx={{ height: 370, p: 2 }}>
-								<StepExecutions
-									executions={jobExecution?.stepExecutions}
-									onStepExecutionClick={onStepExecutionClick}
-								/>
-							</Paper>
+						<Grid container item spacing={1} xs={12}>
+							<Grid item md={6} sx={{ p: 2 }} xl={2.7} xs={12}>
+								<Paper elevation={4} sx={{ height: 300, p: 2 }}>
+									<JobInfo job={job} />
+								</Paper>
+							</Grid>
+							<Grid item md={6} sx={{ p: 2 }} xl={4} xs={12}>
+								<Paper elevation={4} sx={{ height: 300, p: 2 }}>
+									<JobParameters jobParameters={job.jobParameters} />
+								</Paper>
+							</Grid>
+							<Grid item md={12} sx={{ p: 2 }} xl={5.3} xs={12}>
+								<Paper elevation={4} sx={{ height: 300, p: 2 }}>
+									<JobExecutions
+										executions={job.executions}
+										onExecutionClick={onJobExecutionClick}
+									/>
+								</Paper>
+							</Grid>
+							<Grid item sx={{ p: 2 }} xs={12}>
+								<Paper elevation={4} sx={{ height: 370, p: 2 }}>
+									<StepExecutions
+										executions={jobExecution?.stepExecutions}
+										onStepExecutionClick={onStepExecutionClick}
+									/>
+								</Paper>
+							</Grid>
 						</Grid>
 					</Grid>
 					<Dialog maxWidth="xl" open={!!stepExecution} onClose={onDialogClose}>

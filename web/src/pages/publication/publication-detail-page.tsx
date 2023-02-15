@@ -1,8 +1,6 @@
 import { Divider, Grid, Paper, Typography } from '@mui/material'
 import { getPublication, publish, unpublish } from 'api/publication-api'
 import { Loading } from 'components/loading'
-import { PublicationDetailJobs } from 'components/publication/publication-detail-jobs'
-import { KrameriusJob } from 'enums/kramerius-job'
 import { Publication } from 'models'
 import { PublicationChildrenGrid } from 'modules/publications/publication-children-grid'
 import { PublicationDetailInfo } from 'modules/publications/publication-detail-info'
@@ -12,7 +10,6 @@ import { useParams } from 'react-router-dom'
 
 export const PublicationDetailPage: FC = () => {
 	const [publication, setPublication] = useState<Publication>()
-	const [selectedJobType, setSelectedJobType] = useState<KrameriusJob>()
 	const { publicationId } = useParams()
 
 	useEffect(() => {
@@ -43,10 +40,6 @@ export const PublicationDetailPage: FC = () => {
 		}
 	}
 
-	const handleJobTypeClick = (_: React.MouseEvent<HTMLElement>, value: any) => {
-		setSelectedJobType(value)
-	}
-
 	return (
 		<PageWrapper requireAuth>
 			{publication ? (
@@ -61,16 +54,6 @@ export const PublicationDetailPage: FC = () => {
 						<Grid item xs={12}>
 							<Divider sx={{ m: 2 }} />
 						</Grid>
-						{/* <Grid item xs={12}>
-							<PublicationDetailJobs
-								handleJobTypeClick={handleJobTypeClick}
-								publication={publication}
-								selectedJobType={selectedJobType}
-							/>
-						</Grid>
-						<Grid item xs={12}>
-							<Divider sx={{ m: 2 }} />
-						</Grid> */}
 						<Grid container item spacing={2} sx={{ p: 2 }} xs={12}>
 							<Grid item xs={12}>
 								<Typography variant="h6">Podřazené publikace</Typography>

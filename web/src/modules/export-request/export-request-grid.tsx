@@ -3,10 +3,12 @@ import {
 	GridColumns,
 	GridRenderCellParams,
 	GridValueFormatterParams,
+	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
+import { ExportJobConfig } from 'models/job/config/export-job-config'
 import { ExportRequest } from 'models/request/export-request'
 import { RequestState, RequestStateMapping } from 'models/request/request'
 import { ExportRequestFilterDto } from 'pages/export/export-request-list'
@@ -52,6 +54,13 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 				flex: 4,
 				valueFormatter: (params: GridValueFormatterParams<string[]>) =>
 					params.value.join(', '),
+			},
+			{
+				field: 'config',
+				headerName: 'Formát',
+				width: 150,
+				valueGetter: (params: GridValueGetterParams<ExportJobConfig>) =>
+					params.value?.exportFormat,
 			},
 			{
 				field: 'state',
