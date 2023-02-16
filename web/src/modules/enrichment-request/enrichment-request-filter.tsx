@@ -25,7 +25,7 @@ export const EnrichmentRequestFilter: FC<Props> = ({ onSubmit }) => {
 
 	return (
 		<Paper elevation={2}>
-			<Box component="form" sx={{ p: 3 }}>
+			<Box component="form" sx={{ p: 2 }}>
 				<Box sx={{ pb: 3 }}>
 					<Typography variant="h5">Filtrování</Typography>
 				</Box>

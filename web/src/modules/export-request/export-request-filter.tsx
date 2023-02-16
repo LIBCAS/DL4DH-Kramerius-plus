@@ -24,10 +24,10 @@ export const ExportRequestFilter: FC<Props> = ({ onSubmit }) => {
 	return (
 		<Paper elevation={2}>
 			<Box component="form" sx={{ p: 2 }}>
+				<Box sx={{ pb: 3 }}>
+					<Typography variant="h5">Filtrování</Typography>
+				</Box>
 				<Grid container spacing={3}>
-					<Grid item xs={12}>
-						<Typography variant="h5">Filtrování</Typography>
-					</Grid>
 					<Grid item lg={3} md={5} sm={7} xs={9}>
 						<TextField
 							fullWidth
@@ -47,7 +47,7 @@ export const ExportRequestFilter: FC<Props> = ({ onSubmit }) => {
 						/>
 					</Grid>
 				</Grid>
-				<Box sx={{ paddingTop: 4 }}>
+				<Box sx={{ paddingTop: 3 }}>
 					<Button color="primary" variant="contained" onClick={handleSubmit}>
 						Filtrovat
 					</Button>

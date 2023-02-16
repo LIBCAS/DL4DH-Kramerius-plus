@@ -71,10 +71,10 @@ export const PublicationListFilter: FC<Props> = ({ onSubmit }) => {
 	return (
 		<Paper elevation={2}>
 			<Box component="form" sx={{ p: 2 }}>
+				<Box sx={{ pb: 3 }}>
+					<Typography variant="h5">Filtrování</Typography>
+				</Box>
 				<Grid container spacing={3}>
-					<Grid item xs={12}>
-						<Typography variant="h5">Filtrování</Typography>
-					</Grid>
 					<Grid item xs={3}>
 						<TextField
 							fullWidth
@@ -156,14 +156,12 @@ export const PublicationListFilter: FC<Props> = ({ onSubmit }) => {
 							onChange={onDateChange('publishedAfter')}
 						/>
 					</Grid>
-					<Grid container item spacing={2}>
-						<Grid item>
-							<Button variant="contained" onClick={handleSubmit}>
-								Filtrovat
-							</Button>
-						</Grid>
-					</Grid>
 				</Grid>
+				<Box sx={{ paddingTop: 3 }}>
+					<Button color="primary" variant="contained" onClick={handleSubmit}>
+						Filtrovat
+					</Button>
+				</Box>
 			</Box>
 		</Paper>
 	)

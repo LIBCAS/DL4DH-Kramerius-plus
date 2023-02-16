@@ -30,15 +30,14 @@ export const EnrichmentRequestGrid: FC<{
 			{
 				field: 'created',
 				headerName: 'Vytvořeno',
-				maxWidth: 200,
-				flex: 0.5,
+				width: 160,
 				type: 'dateTime',
 				valueGetter: ({ value }) => value && new Date(value),
 			},
 			{
 				field: 'owner',
 				headerName: 'Vytvořil',
-				width: 250,
+				width: 150,
 				valueFormatter: (params: GridValueFormatterParams<User>) =>
 					params.value.username,
 			},
@@ -50,15 +49,14 @@ export const EnrichmentRequestGrid: FC<{
 			{
 				field: 'publicationIds',
 				headerName: 'Publikace v žádosti',
-				width: 800,
-				flex: 4,
+				flex: 1,
 				valueFormatter: (params: GridValueFormatterParams<string[]>) =>
 					params.value.join(', '),
 			},
 			{
 				field: 'state',
 				headerName: 'Stav žádosti',
-				width: 250,
+				width: 200,
 				valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
 					return RequestStateMapping[params.value]
 				},
