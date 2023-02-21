@@ -38,41 +38,54 @@ public class JobRunner {
         KrameriusJobInstance krameriusJobInstance = jobService.findEntity(krameriusJobInstanceId);
         notNull(krameriusJobInstance, () -> new MissingObjectException(KrameriusJobInstance.class, krameriusJobInstanceId));
 
-        krameriusJobInstance.setExecutionStatus(ExecutionStatus.STARTING);
-        jobService.getStore().save(krameriusJobInstance);
-
-        Job job = jobContainer.getJob(krameriusJobInstance.getJobType());
-        notNull(job, () -> new IllegalArgumentException("No Job found for type: " + krameriusJobInstance.getJobType()));
-
-        JobParameters jobParameters = krameriusJobInstance.getJobParameters();
-        JobExecution lastExecution = jobRepository.getLastJobExecution(job.getName(), jobParameters);
-
-        if (lastExecution != null) {
-            validateExistingExecution(job, lastExecution, krameriusJobInstanceId);
-        }
-        validateParameters(job, krameriusJobInstance);
-
-        JobExecution jobExecution = createNewJobExecution(krameriusJobInstance);
-        if (krameriusJobInstance.getJobInstanceId() == null) {
-            jobService.assignInstance(krameriusJobInstance, jobExecution.getJobInstance());
-        }
-
         try {
-            listenerContainer.applyBeforeJobListeners(krameriusJobInstance);
+            if (!krameriusJobInstance.getExecutionStatus().isStartable()) {
+                throw new JobException(krameriusJobInstanceId,
+                        "Cannot launch job: " + krameriusJobInstanceId + ", because it is not in a startable status: "
+                        + krameriusJobInstance.getExecutionStatus(),
+                        NOT_STARTABLE_STATUS);
+            }
 
-            log.info("Job: [" + job + "] launched with the following parameters: [" + jobParameters + "]");
-            krameriusJobInstance.setExecutionStatus(ExecutionStatus.STARTED);
-            jobService.getStore().save(krameriusJobInstance);
-            job.execute(jobExecution);
-            log.info("Job: [" + job + "] completed with the following parameters: [" + jobParameters +
-                    "] and the following status: [" + jobExecution.getStatus() + "]");
+            Job job = jobContainer.getJob(krameriusJobInstance.getJobType());
+            notNull(job, () -> new IllegalArgumentException("No Job found for type: " + krameriusJobInstance.getJobType()));
 
-            krameriusJobInstance.setExecutionStatus(ExecutionStatus.valueOf(jobExecution.getStatus().toString()));
-            jobService.updateStatus(krameriusJobInstance);
+            JobParameters jobParameters = krameriusJobInstance.getJobParameters();
+            JobExecution lastExecution = jobRepository.getLastJobExecution(job.getName(), jobParameters);
+
+            if (lastExecution != null) {
+                validateExistingExecution(job, lastExecution, krameriusJobInstanceId);
+            }
+
+            job.getJobParametersValidator().validate(krameriusJobInstance.getJobParameters());
+
+            JobExecution jobExecution = createNewJobExecution(krameriusJobInstance);
+            if (krameriusJobInstance.getJobInstanceId() == null) {
+                jobService.assignInstance(krameriusJobInstance, jobExecution.getJobInstance());
+            }
+
+            try {
+                listenerContainer.applyBeforeJobListeners(krameriusJobInstance);
+
+                log.info("Job: [" + job + "] launched with the following parameters: [" + jobParameters + "]");
+                krameriusJobInstance.setExecutionStatus(ExecutionStatus.STARTED);
+                krameriusJobInstance.setLastLaunch(null);
+                jobService.getStore().save(krameriusJobInstance);
+                job.execute(jobExecution);
+                log.info("Job: [" + job + "] completed with the following parameters: [" + jobParameters +
+                        "] and the following status: [" + jobExecution.getStatus() + "]");
+
+                jobService.updateStatus(krameriusJobInstance.getId());
+            } catch (Exception e) {
+                log.info("Job: [" + job + "] failed unexpectedly and fatally with the following parameters: [" + jobParameters + "]", e);
+
+                jobService.updateStatus(krameriusJobInstance.getId(), ExecutionStatus.FAILED_FATALLY);
+                throw e;
+            }
         } catch (Exception e) {
-            log.info("Job: [" + job + "] failed unexpectedly and fatally with the following parameters: [" + jobParameters + "]", e);
-            krameriusJobInstance.setExecutionStatus(ExecutionStatus.FAILED_FATALLY);
-            throw e;
+            jobService.updateStatus(krameriusJobInstance.getId(), ExecutionStatus.FAILED);
+            jobService.saveLaunchError(krameriusJobInstance.getId(), e.getMessage());
+
+            log.error("Failed to run KrameriusInstanceJob with ID: " + krameriusJobInstanceId, e);
         } finally {
             listenerContainer.applyAfterJobListeners(krameriusJobInstance);
         }
@@ -87,14 +100,6 @@ public class JobRunner {
             throw new JobException(krameriusJobInstance.getId(), "Job cannot be restarted", NOT_RESTARTABLE, e);
         } catch (JobInstanceAlreadyCompleteException e) {
             throw new JobException(krameriusJobInstance.getId(), "Job is already completed and cannot be restarted.", IS_COMPLETED);
-        }
-    }
-
-    private void validateParameters(Job job, KrameriusJobInstance krameriusJobInstance) {
-        try {
-            job.getJobParametersValidator().validate(krameriusJobInstance.getJobParameters());
-        } catch (JobParametersInvalidException exception) {
-            throw new JobException(krameriusJobInstance.getId(), "Invalid JobParameters", INVALID_JOB_PARAMETERS, exception);
         }
     }
 

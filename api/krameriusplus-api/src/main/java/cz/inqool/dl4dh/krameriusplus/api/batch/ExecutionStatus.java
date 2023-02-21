@@ -19,6 +19,10 @@ public enum ExecutionStatus {
     UNKNOWN;
 
     public boolean finished() {
-        return List.of(COMPLETED, FAILED, FAILED_FATALLY, ABANDONED).contains(this);
+        return List.of(COMPLETED, FAILED, FAILED_FATALLY, ABANDONED, STOPPED).contains(this);
+    }
+
+    public boolean isStartable() {
+        return List.of(CREATED, ENQUEUED, FAILED, STOPPED).contains(this);
     }
 }
