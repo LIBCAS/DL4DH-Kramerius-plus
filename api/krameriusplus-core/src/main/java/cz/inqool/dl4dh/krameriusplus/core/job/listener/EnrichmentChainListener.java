@@ -32,6 +32,9 @@ public class EnrichmentChainListener implements KrameriusJobListener {
     @Override
     @Transactional
     public void beforeJob(KrameriusJobInstance jobInstance) {
+        // TODO: jobInstance might be an initialization jobInstance, in which case
+        // no EnrichmentChain will be found, but the state should be changed as well
+
         EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
         EnrichmentRequestItem requestItem = chain.getRequestItem();
         EnrichmentRequest request = requestItem.getEnrichmentRequest();
