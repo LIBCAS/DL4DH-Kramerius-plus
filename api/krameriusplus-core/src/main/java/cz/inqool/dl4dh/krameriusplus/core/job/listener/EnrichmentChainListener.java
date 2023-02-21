@@ -32,6 +32,9 @@ public class EnrichmentChainListener implements KrameriusJobListener {
     @Override
     @Transactional
     public void beforeJob(KrameriusJobInstance jobInstance) {
+        // TODO: jobInstance might be an initialization jobInstance, in which case
+        // no EnrichmentChain will be found, but the state should be changed as well
+
         EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
         EnrichmentRequestItem requestItem = chain.getRequestItem();
         EnrichmentRequest request = requestItem.getEnrichmentRequest();
@@ -54,23 +57,26 @@ public class EnrichmentChainListener implements KrameriusJobListener {
 
         if (nextInstance.isPresent()) {
             enqueueService.enqueue(nextInstance.get());
-        } else {
-            // after last job in chain
-            EnrichmentRequestItem requestItem = chain.getRequestItem();
+        } else { // after last job in chain
+            propagateState(chain);
+        }
+    }
 
-            List<RequestState> requestChainsStates = requestItem.getEnrichmentChains().stream().map(EnrichmentChain::getState).collect(Collectors.toList());
-            // if all chains in requestItem finished
-            if (requestChainsStates.stream().allMatch(chainState -> !RUNNING.equals(chainState) && !CREATED.equals(chainState))) {
-                requestItem.setState(RequestState.from(requestChainsStates));
-            }
+    private void propagateState(EnrichmentChain chain) {
+        EnrichmentRequestItem requestItem = chain.getRequestItem();
 
-            EnrichmentRequest request = requestItem.getEnrichmentRequest();
+        List<RequestState> requestChainsStates = requestItem.getEnrichmentChains().stream().map(EnrichmentChain::getState).collect(Collectors.toList());
+        // if all chains in requestItem finished
+        if (requestChainsStates.stream().allMatch(chainState -> !RUNNING.equals(chainState) && !CREATED.equals(chainState))) {
+            requestItem.setState(RequestState.from(requestChainsStates));
+        }
 
-            List<RequestState> requestItemsStates = request.getItems().stream().map(EnrichmentRequestItem::getState).collect(Collectors.toList());
-            // if all items in request finished
-            if (requestItemsStates.stream().allMatch(itemState -> !RUNNING.equals(itemState) && !CREATED.equals(itemState))) {
-                request.setState(RequestState.from(requestItemsStates));
-            }
+        EnrichmentRequest request = requestItem.getEnrichmentRequest();
+
+        List<RequestState> requestItemsStates = request.getItems().stream().map(EnrichmentRequestItem::getState).collect(Collectors.toList());
+        // if all items in request finished
+        if (requestItemsStates.stream().allMatch(itemState -> !RUNNING.equals(itemState) && !CREATED.equals(itemState))) {
+            request.setState(RequestState.from(requestItemsStates));
         }
     }
 

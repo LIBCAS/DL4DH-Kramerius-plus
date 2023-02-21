@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.api.batch.job;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.api.batch.LastLaunchDto;
 import cz.inqool.dl4dh.krameriusplus.api.domain.DomainObjectDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,4 +23,6 @@ public class KrameriusJobInstanceDto extends DomainObjectDto {
     private KrameriusJobType jobType;
 
     private Map<String, Object> jobParameters = new HashMap<>();
+
+    private LastLaunchDto lastLaunch;
 }
