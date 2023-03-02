@@ -366,4 +366,16 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="2" author="kollar">
+        <addColumn tableName="kplus_kramerius_job_instance">
+            <column name="timestamp" type="datetime"/>
+        </addColumn>
+        <addColumn tableName="kplus_kramerius_job_instance">
+            <column name="launch_status" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="kplus_kramerius_job_instance">
+            <column name="message" type="varchar(2500)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

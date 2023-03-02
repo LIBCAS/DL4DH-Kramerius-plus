@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.job;
 
 import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.api.batch.LaunchStatus;
 import cz.inqool.dl4dh.krameriusplus.api.batch.job.KrameriusJobInstanceDto;
 import cz.inqool.dl4dh.krameriusplus.api.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
@@ -60,9 +61,35 @@ public class KrameriusJobInstanceService {
     }
 
     @Transactional
-    public void updateStatus(KrameriusJobInstance instance) {
+    public void saveLaunchError(String instanceId, String message) {
+        KrameriusJobInstance instance = findEntity(instanceId);
+
+        LastLaunch lastLaunch = new LastLaunch();
+        lastLaunch.setLaunchStatus(LaunchStatus.FAILED);
+        lastLaunch.setMessage(message);
+
+        instance.setLastLaunch(lastLaunch);
+
+        store.save(instance);
+    }
+
+    @Transactional
+    public void updateStatus(String instanceId, ExecutionStatus newStatus) {
+        KrameriusJobInstance instance = findEntity(instanceId);
+
+        instance.setExecutionStatus(newStatus);
+
+        store.save(instance);
+    }
+
+    @Transactional
+    public void updateStatus(String instanceId) {
         // 1. get last JobExecution from mapper
         // 2. set status and update KrameriusJobInstance
+
+        // important to fetch up-to-date data
+        KrameriusJobInstance instance = findEntity(instanceId);
+
         JobExecution lastExecution = getLastExecution(instance.getJobInstanceId());
         if (lastExecution == null) {
             return;

@@ -184,6 +184,7 @@ export const KrameriusJobInstanceDetailPage: FC = () => {
 								<Paper elevation={4} sx={{ height: 300, p: 2 }}>
 									<JobExecutions
 										executions={job.executions}
+										lastLaunch={job.lastLaunch}
 										onExecutionClick={onJobExecutionClick}
 									/>
 								</Paper>

@@ -28,6 +28,7 @@ public class JobException extends GeneralException {
         IS_RUNNING,
         IS_COMPLETED,
         UNKNOWN_STATUS,
-        NO_EXECUTION
+        NO_EXECUTION,
+        NOT_STARTABLE_STATUS
     }
 }
