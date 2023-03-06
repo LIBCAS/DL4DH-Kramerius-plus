@@ -117,6 +117,7 @@ export const PublicationGrid: FC<{
 				field: 'id',
 				headerName: 'UUID',
 				maxWidth: 400,
+				sortable: false,
 				flex: 1,
 			},
 			{
@@ -125,16 +126,19 @@ export const PublicationGrid: FC<{
 				maxWidth: 200,
 				flex: 0.5,
 				type: 'dateTime',
+				sortable: false,
 				valueGetter: ({ value }) => value && new Date(value),
 			},
 			{
 				field: 'title',
 				headerName: 'Název',
+				sortable: false,
 				flex: 1,
 			},
 			{
 				field: 'model',
 				headerName: 'Model',
+				sortable: false,
 				maxWidth: 200,
 				flex: 0.6,
 				valueGetter: (params: GridValueGetterParams) =>
@@ -143,6 +147,7 @@ export const PublicationGrid: FC<{
 			{
 				field: 'publishInfo',
 				headerName: 'Publikováno',
+				sortable: false,
 				maxWidth: 120,
 				type: 'boolean',
 				flex: 0.6,
@@ -152,6 +157,7 @@ export const PublicationGrid: FC<{
 			{
 				field: 'actions',
 				headerName: 'Akce',
+				sortable: false,
 				width: 300,
 				renderCell: (params: GridRenderCellParams) => (
 					<Box display="flex" justifyContent="space-between" width="100%">

@@ -32,12 +32,14 @@ export const EnrichmentRequestGrid: FC<{
 				headerName: 'Vytvořeno',
 				width: 160,
 				type: 'dateTime',
+				sortable: false,
 				valueGetter: ({ value }) => value && new Date(value),
 			},
 			{
 				field: 'owner',
 				headerName: 'Vytvořil',
 				width: 150,
+				sortable: false,
 				valueFormatter: (params: GridValueFormatterParams<User>) =>
 					params.value.username,
 			},
@@ -45,11 +47,13 @@ export const EnrichmentRequestGrid: FC<{
 				field: 'name',
 				headerName: 'Název',
 				width: 350,
+				sortable: false,
 			},
 			{
 				field: 'publicationIds',
 				headerName: 'Publikace v žádosti',
 				flex: 1,
+				sortable: false,
 				valueFormatter: (params: GridValueFormatterParams<string[]>) =>
 					params.value.join(', '),
 			},
@@ -57,6 +61,7 @@ export const EnrichmentRequestGrid: FC<{
 				field: 'state',
 				headerName: 'Stav žádosti',
 				width: 200,
+				sortable: false,
 				valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
 					return RequestStateMapping[params.value]
 				},
@@ -65,6 +70,7 @@ export const EnrichmentRequestGrid: FC<{
 				field: 'actions',
 				headerName: 'Akce',
 				width: 100,
+				sortable: false,
 				renderCell: (params: GridRenderCellParams) => (
 					<Box display="flex" justifyContent="space-between" width="100%">
 						<Button

@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Typography } from '@mui/material'
+import { Alert, AlertTitle } from '@mui/material'
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid'
 import { PageBlock } from 'components/page-block'
 import { JobExecution } from 'models/job/job-execution'
