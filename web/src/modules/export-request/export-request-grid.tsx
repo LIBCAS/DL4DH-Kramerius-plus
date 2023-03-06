@@ -32,24 +32,28 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 				headerName: 'Vytvořeno',
 				width: 160,
 				type: 'dateTime',
+				sortable: false,
 				valueGetter: ({ value }) => value && new Date(value),
 			},
 			{
 				field: 'owner',
 				headerName: 'Vytvořil',
 				width: 150,
+				sortable: false,
 				valueFormatter: (params: GridValueFormatterParams<User>) =>
 					params.value.username,
 			},
 			{
 				field: 'name',
 				headerName: 'Název',
+				sortable: false,
 				width: 350,
 			},
 			{
 				field: 'publicationIds',
 				headerName: 'Publikace v žádosti',
 				flex: 1,
+				sortable: false,
 				valueFormatter: (params: GridValueFormatterParams<string[]>) =>
 					params.value.join(', '),
 			},
@@ -57,6 +61,7 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 				field: 'config',
 				headerName: 'Formát',
 				width: 100,
+				sortable: false,
 				valueGetter: (params: GridValueGetterParams<ExportJobConfig>) =>
 					params.value?.exportFormat,
 			},
@@ -64,6 +69,7 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 				field: 'state',
 				headerName: 'Stav žádosti',
 				width: 200,
+				sortable: false,
 				valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
 					return RequestStateMapping[params.value]
 				},
@@ -72,6 +78,7 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 				field: 'actions',
 				headerName: 'Akce',
 				width: 100,
+				sortable: false,
 				renderCell: (params: GridRenderCellParams) => (
 					<Box display="flex" justifyContent="space-between" width="100%">
 						<Button
