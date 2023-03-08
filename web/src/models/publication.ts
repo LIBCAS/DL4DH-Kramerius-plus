@@ -1,10 +1,10 @@
 import { ModsMetadata } from '.'
 import { DigitalObjectModel } from '../enums/publication-model'
+import { DomainObject } from './domain/domain-object'
 import { PublishInfo } from './publish-info'
 
-export interface Publication {
+export interface Publication extends DomainObject {
 	context: any
-	id: string
 	created: Date
 	title?: string
 	collections?: string[]

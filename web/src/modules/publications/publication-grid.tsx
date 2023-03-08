@@ -1,117 +1,35 @@
 import { Box, Button, Paper } from '@mui/material'
 import {
-	GridCallbackDetails,
-	GridColumns,
-	GridInputSelectionModel,
+	GridColDef,
+	GridPaginationModel,
 	GridRenderCellParams,
-	GridSelectionModel,
+	GridRowSelectionModel,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
-import {
-	listPublications,
-	PublicationFilter,
-	publish,
-} from 'api/publication-api'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { PublicationGridToolbar } from 'components/grid/publication-grid-toolbar'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
-import {
-	FC,
-	MouseEvent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react'
+import { QueryResults } from 'models/query-results'
+import { FC, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
+type GridProps = {
+	data?: QueryResults<Publication>
+	checkboxSelection?: boolean
+	pagination: GridPaginationModel
+	onPaginationChange: (pagination: GridPaginationModel) => void
+	selection: GridRowSelectionModel
+	onSelectionChange: (selection: GridRowSelectionModel) => void
+	toolbarProps?: any
+}
+
 export const PublicationGrid: FC<{
-	filter: PublicationFilter
-	onSelectionChange?: (
-		selectionModel: GridSelectionModel,
-		details: GridCallbackDetails,
-	) => void
-	onExportSingleClick: (publicationId: string) => void
-	onExportMultipleClick: () => void
-	publishMultiple: () => Promise<Response>
-	unpublishMultiple: () => Promise<Response>
-	onClearSelection: () => void
-	selectionModel: GridInputSelectionModel
-}> = ({
-	filter,
-	onSelectionChange,
-	onExportSingleClick,
-	onExportMultipleClick,
-	publishMultiple,
-	unpublishMultiple,
-	onClearSelection,
-	selectionModel,
-}) => {
-	const [rowCount, setRowCount] = useState<number>()
-	const [publications, setPublications] = useState<Publication[]>([])
-	const [page, setPage] = useState<number>(0)
-	const [rowCountState, setRowCountState] = useState<number | undefined>(
-		rowCount,
-	)
-
-	const onExportClick = useCallback(
-		(publicationId: string) => (e: MouseEvent) => {
-			e.stopPropagation()
-
-			onExportSingleClick(publicationId)
-		},
-		[onExportSingleClick],
-	)
-
-	const onPublishClick = (publicationId: string) => async (e: MouseEvent) => {
-		e.stopPropagation()
-
-		const response = await publish(publicationId)
-
-		if (response.ok) {
-			setPublications(prev =>
-				prev.map(pub => {
-					if (pub.id === publicationId) {
-						return {
-							...pub,
-							publishInfo: { ...pub.publishInfo, isPublished: true },
-						}
-					} else {
-						return pub
-					}
-				}),
-			)
-		}
-	}
-
-	const onPublishMultipleClick = () => {
-		async function fetchPublications() {
-			const response = await listPublications(page, 10, filter)
-
-			if (response) {
-				setPublications(response.items)
-				setRowCount(response.total)
-			}
-		}
-
-		publishMultiple().then(() => fetchPublications())
-	}
-
-	const onUnpublishMultipleClick = () => {
-		async function fetchPublications() {
-			const response = await listPublications(page, 10, filter)
-
-			if (response) {
-				setPublications(response.items)
-				setRowCount(response.total)
-			}
-		}
-
-		unpublishMultiple().then(() => fetchPublications())
-	}
-
-	const columns = useMemo<GridColumns<Publication>>(
+	onExportClick: (publicationId: string) => (e: React.MouseEvent) => void
+	onPublishClick: (publicationId: string) => (e: React.MouseEvent) => void
+	gridProps: GridProps
+}> = ({ onExportClick, onPublishClick, gridProps }) => {
+	const columns = useMemo<GridColDef<Publication>[]>(
 		() => [
 			{
 				field: 'id',
@@ -187,46 +105,15 @@ export const PublicationGrid: FC<{
 				),
 			},
 		],
-		[onExportClick],
+		[onExportClick, onPublishClick],
 	)
-
-	useEffect(() => {
-		async function fetchPublications() {
-			const response = await listPublications(page, 10, filter)
-
-			if (response) {
-				setPublications(response.items)
-				setRowCount(response.total)
-			}
-		}
-		fetchPublications()
-	}, [page, filter])
-
-	useEffect(() => {
-		setRowCountState(prevRowCountState =>
-			rowCount !== undefined ? rowCount : prevRowCountState,
-		)
-	}, [rowCount, setRowCountState])
-
-	const onPageChange = (page: number) => setPage(page)
 
 	return (
 		<Paper>
 			<CustomGrid
-				checkboxSelection
 				columns={columns}
-				rowCount={rowCountState}
-				rows={publications}
-				selectionModel={selectionModel}
 				toolbar={PublicationGridToolbar}
-				toolbarProps={{
-					onExportClick: onExportMultipleClick,
-					onPublishClick: onPublishMultipleClick,
-					onUnpublishClick: onUnpublishMultipleClick,
-					onClearSelection: onClearSelection,
-				}}
-				onPageChange={onPageChange}
-				onSelectionChange={onSelectionChange}
+				{...gridProps}
 			/>
 		</Paper>
 	)

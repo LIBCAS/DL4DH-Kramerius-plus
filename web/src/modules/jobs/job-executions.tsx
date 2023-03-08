@@ -58,13 +58,13 @@ export const JobExecutions: FC<{
 			) : (
 				<DataGrid
 					autoHeight
+					columnHeaderHeight={50}
 					columns={columns}
 					density="compact"
 					disableColumnFilter
 					disableColumnMenu
 					getRowClassName={() => 'data-grid-row'}
 					getRowId={row => row.id}
-					headerHeight={50}
 					hideFooter
 					rowHeight={50}
 					rows={executions}

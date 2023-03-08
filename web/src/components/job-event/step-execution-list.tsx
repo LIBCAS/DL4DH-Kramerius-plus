@@ -70,8 +70,8 @@ export const StepExecutionList: FC<Props> = ({ steps, onRowClick }) => {
 					autoHeight={true}
 					columns={stepColumns}
 					density="compact"
+					pageSizeOptions={[]}
 					rows={steps}
-					rowsPerPageOptions={[]}
 					onRowClick={handleStepClick}
 				/>
 			</Box>

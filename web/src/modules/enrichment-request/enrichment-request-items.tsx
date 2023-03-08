@@ -58,13 +58,13 @@ export const EnrichmentRequestItems: FC<{
 		<PageBlock title="Položky žádosti">
 			<Box display="flex" flexDirection="column" height={320}>
 				<DataGrid
+					columnHeaderHeight={50}
 					columns={columns}
 					density="compact"
 					disableColumnFilter
 					disableColumnMenu
 					getRowClassName={() => 'data-grid-row'}
 					getRowId={row => row.id}
-					headerHeight={50}
 					hideFooter
 					rowHeight={50}
 					rows={items}
