@@ -1,28 +1,27 @@
+import {
+	Box,
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	FormControlLabel,
+	Radio,
+	RadioGroup,
+	TextField,
+	Typography,
+} from '@mui/material'
+import { exportPublication } from 'api/export-api'
+import { ExportKrameriusJob } from 'enums/export-kramerius-job'
+import { ExportCsvJobConfig } from 'models/job/config/export-csv-job-config'
+import { ExportJobConfig } from 'models/job/config/export-job-config'
+import { ExportTeiJobConfig } from 'models/job/config/export-tei-job-config'
 import React, { ChangeEvent, FC, useState } from 'react'
 import { toast } from 'react-toastify'
+import { v4 } from 'uuid'
 import { Params, TeiParams } from '../../models'
 import { JSONParams } from './publication-export-json'
 import { TEIParams } from './publication-export-tei'
-import {
-	Typography,
-	Box,
-	Dialog,
-	DialogTitle,
-	DialogContent,
-	DialogActions,
-	RadioGroup,
-	Radio,
-	FormControlLabel,
-	Button,
-	TextField,
-	Grid,
-} from '@mui/material'
-import { exportPublication } from 'api/export-api'
-import { ExportJobConfig } from 'models/job/config/export-job-config'
-import { ExportCsvJobConfig } from 'models/job/config/export-csv-job-config'
-import { ExportTeiJobConfig } from 'models/job/config/export-tei-job-config'
-import { v4 } from 'uuid'
-import { ExportKrameriusJob } from 'enums/export-kramerius-job'
 
 export type ExportFormat = 'json' | 'tei' | 'csv' | 'alto' | 'text'
 
@@ -138,19 +137,15 @@ export const PublicationExportDialog: FC<{
 			<DialogTitle>Konfigurace exportu</DialogTitle>
 
 			<DialogContent>
-				<Box display="flex" justifyContent="space-between" sx={{ m: 1 }}>
-					<Box width="30%">
-						<Typography variant="subtitle1">Exportované publikace:</Typography>
+				<Box display="flex" justifyContent="flex-start" sx={{ m: 1 }}>
+					<Box sx={{ pr: 2 }}>
+						<Typography variant="subtitle1">
+							Počet exportovaných publikací:
+						</Typography>
 					</Box>
-					<Grid container spacing={1}>
-						{publicationIds.map(id => (
-							<Grid key={id} item lg={2} xl={6} xs={1}>
-								<Typography key={id} variant="body1">
-									{id}
-								</Typography>
-							</Grid>
-						))}
-					</Grid>
+					<Box>
+						<Typography variant="subtitle1">{publicationIds.length}</Typography>
+					</Box>
 				</Box>
 				<TextField
 					fullWidth
