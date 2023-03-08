@@ -75,8 +75,8 @@ export const JobExecutionList: FC<Props> = ({
 					autoHeight={true}
 					columns={executionColumns}
 					density="compact"
+					pageSizeOptions={[]}
 					rows={executions}
-					rowsPerPageOptions={[]}
 					onRowClick={handleExecutionClick}
 				/>
 			</Box>

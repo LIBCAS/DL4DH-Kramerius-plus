@@ -1,31 +1,32 @@
 import { Box, Button, Paper } from '@mui/material'
 import {
-	GridColumns,
+	GridColDef,
+	GridPaginationModel,
 	GridRenderCellParams,
+	GridRowSelectionModel,
 	GridValueFormatterParams,
 } from '@mui/x-data-grid'
 import { listEnrichmentRequests } from 'api/enrichment-api'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
+import { QueryResults } from 'models/query-results'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { RequestState, RequestStateMapping } from 'models/request/request'
 import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
-import React, { FC, useEffect, useMemo, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export const EnrichmentRequestGrid: FC<{
 	filter: EnrichmentRequestFilterDto
 }> = ({ filter }) => {
-	const [rowCount, setRowCount] = useState<number>()
-	const [enrichmentRequests, setEnrichmentRequests] = useState<
-		EnrichmentRequest[]
-	>([])
-	const [page, setPage] = useState<number>(0)
-	const [rowCountState, setRowCountState] = useState<number | undefined>(
-		rowCount,
-	)
+	const [data, setData] = useState<QueryResults<EnrichmentRequest>>()
+	const [selection, setSelection] = useState<GridRowSelectionModel>([])
+	const [pagination, setPagination] = useState<GridPaginationModel>({
+		page: 0,
+		pageSize: 10,
+	})
 
-	const columns = useMemo<GridColumns<EnrichmentRequest>>(
+	const columns = useMemo<GridColDef<EnrichmentRequest>[]>(
 		() => [
 			{
 				field: 'created',
@@ -88,34 +89,34 @@ export const EnrichmentRequestGrid: FC<{
 		[],
 	)
 
-	useEffect(() => {
-		async function fetchRequests() {
-			const response = await listEnrichmentRequests(page, 10, filter)
+	const fetchRequests = useCallback(
+		async (pagination: GridPaginationModel) => {
+			const response = await listEnrichmentRequests(
+				pagination.page,
+				pagination.pageSize,
+				filter,
+			)
 
 			if (response) {
-				setEnrichmentRequests(response.items)
-				setRowCount(response.total)
+				setData(response)
 			}
-		}
-		fetchRequests()
-	}, [page, filter])
+		},
+		[filter],
+	)
 
 	useEffect(() => {
-		setRowCountState(prevRowCountState =>
-			rowCount !== undefined ? rowCount : prevRowCountState,
-		)
-	}, [rowCount, setRowCountState])
-
-	const onPageChange = (page: number) => setPage(page)
+		fetchRequests(pagination)
+	}, [fetchRequests, pagination])
 
 	return (
 		<Paper>
 			<CustomGrid
-				checkboxSelection={false}
 				columns={columns}
-				rowCount={rowCountState}
-				rows={enrichmentRequests}
-				onPageChange={onPageChange}
+				data={data}
+				pagination={pagination}
+				selection={selection}
+				onPaginationChange={setPagination}
+				onSelectionChange={setSelection}
 			/>
 		</Paper>
 	)

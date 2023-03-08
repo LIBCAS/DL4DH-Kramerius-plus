@@ -1,31 +1,33 @@
 import { Box, Button, Paper } from '@mui/material'
 import {
-	GridColumns,
+	GridColDef,
+	GridPaginationModel,
 	GridRenderCellParams,
+	GridRowSelectionModel,
 	GridValueFormatterParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { listExportRequests } from 'api/export-api'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
-import { ExportJobConfig } from 'models/job/config/export-job-config'
+import { QueryResults } from 'models/query-results'
 import { ExportRequest } from 'models/request/export-request'
 import { RequestState, RequestStateMapping } from 'models/request/request'
 import { ExportRequestFilterDto } from 'pages/export/export-request-list'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 	filter,
 }) => {
-	const [rowCount, setRowCount] = useState<number>()
-	const [exportRequests, setExportRequests] = useState<ExportRequest[]>([])
-	const [page, setPage] = useState<number>(0)
-	const [rowCountState, setRowCountState] = useState<number | undefined>(
-		rowCount,
-	)
+	const [data, setData] = useState<QueryResults<ExportRequest>>()
+	const [selection, setSelection] = useState<GridRowSelectionModel>([])
+	const [pagination, setPagination] = useState<GridPaginationModel>({
+		page: 0,
+		pageSize: 10,
+	})
 
-	const columns = useMemo<GridColumns<ExportRequest>>(
+	const columns = useMemo<GridColDef<ExportRequest>[]>(
 		() => [
 			{
 				field: 'created',
@@ -62,7 +64,7 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 				headerName: 'Formát',
 				width: 100,
 				sortable: false,
-				valueGetter: (params: GridValueGetterParams<ExportJobConfig>) =>
+				valueGetter: (params: GridValueGetterParams<ExportRequest>) =>
 					params.value?.exportFormat,
 			},
 			{
@@ -96,34 +98,31 @@ export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
 		[],
 	)
 
-	useEffect(() => {
-		async function fetchRequests() {
-			const response = await listExportRequests(page, 10, filter)
-
-			if (response) {
-				setExportRequests(response.items)
-				setRowCount(response.total)
-			}
-		}
-		fetchRequests()
-	}, [page, filter])
-
-	useEffect(() => {
-		setRowCountState(prevRowCountState =>
-			rowCount !== undefined ? rowCount : prevRowCountState,
+	const fetchRequests = useCallback(async () => {
+		const response = await listExportRequests(
+			pagination.page,
+			pagination.pageSize,
+			filter,
 		)
-	}, [rowCount, setRowCountState])
 
-	const onPageChange = (page: number) => setPage(page)
+		if (response) {
+			setData(response)
+		}
+	}, [pagination, filter])
+
+	useEffect(() => {
+		fetchRequests()
+	}, [fetchRequests])
 
 	return (
 		<Paper>
 			<CustomGrid
-				checkboxSelection={false}
 				columns={columns}
-				rowCount={rowCountState}
-				rows={exportRequests}
-				onPageChange={onPageChange}
+				data={data}
+				pagination={pagination}
+				selection={selection}
+				onPaginationChange={setPagination}
+				onSelectionChange={setSelection}
 			/>
 		</Paper>
 	)
