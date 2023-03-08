@@ -11,7 +11,7 @@ export interface ExportRequestFilterDto {
 }
 
 export const ExportRequestListPage: FC = () => {
-	const [filter, setFilter] = useState<ExportRequestFilterDto>({})
+	const [filter, setFilter] = useState<ExportRequestFilterDto>()
 
 	const onFilterSubmit = (filter: ExportRequestFilterDto) => {
 		setFilter({ ...filter })

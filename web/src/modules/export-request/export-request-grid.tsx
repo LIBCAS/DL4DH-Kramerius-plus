@@ -17,7 +17,7 @@ import { ExportRequestFilterDto } from 'pages/export/export-request-list'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export const ExportRequestGrid: FC<{ filter: ExportRequestFilterDto }> = ({
+export const ExportRequestGrid: FC<{ filter?: ExportRequestFilterDto }> = ({
 	filter,
 }) => {
 	const [data, setData] = useState<QueryResults<ExportRequest>>()

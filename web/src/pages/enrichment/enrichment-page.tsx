@@ -3,7 +3,7 @@ import { enrich } from 'api/enrichment-api'
 import { PageBlock } from 'components/page-block'
 import { EnrichmentJobConfig } from 'models/job/config/enrichment-job-config'
 import { EnrichmentConfigs } from 'modules/enrichment-form/enrichment-configs'
-import { ChangeEvent, FC, useEffect, useState } from 'react'
+import { ChangeEvent, FC, useState } from 'react'
 import { toast } from 'react-toastify'
 import { PageWrapper } from '../page-wrapper'
 
@@ -62,10 +62,6 @@ export const EnrichmentPage: FC = () => {
 	const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setState(prev => ({ ...prev, name: event.target.value }))
 	}
-
-	useEffect(() => {
-		console.log(state)
-	}, [state])
 
 	return (
 		<PageWrapper requireAuth>
