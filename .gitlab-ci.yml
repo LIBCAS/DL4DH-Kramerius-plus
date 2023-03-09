@@ -58,6 +58,7 @@ web-build:
   tags:
     - yarn
     - docker
+    - runner-3
   variables:
     IMAGE_NAME: kramerius/web
   script:
