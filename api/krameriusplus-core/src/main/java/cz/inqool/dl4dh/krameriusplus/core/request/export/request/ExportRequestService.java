@@ -56,7 +56,7 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
 
     @Transactional(readOnly = true)
     public Result<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize) {
-        Result<ExportRequest> requests = store.findByNameOwnerAndStatus(name, owner, isFinished, page, pageSize);
+        Result<ExportRequestView> requests = store.findByNameOwnerAndStatus(name, owner, isFinished, page, pageSize);
         List<ExportRequestDto> dtos = requests.getItems().stream().map(mapper::toDto).collect(Collectors.toList());
 
         return new Result<>(page, pageSize, requests.getTotal(), dtos);

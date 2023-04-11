@@ -38,6 +38,22 @@ public interface ExportJobConfigMapper {
         throw new IllegalStateException("Mapping method not found.");
     }
 
+    default ExportJobConfigDto toDto(ExportJobConfigView entity) {
+        if (entity instanceof ExportAltoJobConfigView) {
+            return toDto((ExportAltoJobConfigView) entity);
+        } else if (entity instanceof ExportCsvJobConfigView) {
+            return toDto((ExportCsvJobConfigView) entity);
+        } else if (entity instanceof ExportJsonJobConfigView) {
+            return toDto((ExportJsonJobConfigView) entity);
+        } else if (entity instanceof ExportTeiJobConfigView) {
+            return toDto((ExportTeiJobConfigView) entity);
+        } else if (entity instanceof ExportTextJobConfigView) {
+            return toDto((ExportTextJobConfigView) entity);
+        }
+
+        throw new IllegalStateException("Mapping method not found.");
+    }
+
     ExportAltoJobConfig fromDto(ExportAltoJobConfigDto dto);
 
     ExportCsvJobConfig fromDto(ExportCsvJobConfigDto dto);
@@ -57,4 +73,14 @@ public interface ExportJobConfigMapper {
     ExportTeiJobConfigDto toDto(ExportTeiJobConfig entity);
 
     ExportTextJobConfigDto toDto(ExportTextJobConfig entity);
+
+    ExportTextJobConfigDto toDto(ExportTextJobConfigView entity);
+
+    ExportTeiJobConfigDto toDto(ExportTeiJobConfigView entity);
+
+    ExportJsonJobConfigDto toDto(ExportJsonJobConfigView entity);
+
+    ExportAltoJobConfigDto toDto(ExportAltoJobConfigView entity);
+
+    ExportCsvJobConfigDto toDto(ExportCsvJobConfigView entity);
 }

@@ -378,4 +378,22 @@
             <column name="message" type="varchar(2500)"/>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="3" author="kollar">
+        <createIndex tableName="kplus_request" indexName="name_IDX">
+            <column name="name"/>
+        </createIndex>
+        <createIndex tableName="kplus_request" indexName="owner_id_IDX">
+            <column name="owner_id"/>
+        </createIndex>
+        <createIndex tableName="kplus_user" indexName="username_IDX">
+            <column name="username"/>
+        </createIndex>
+        <createIndex tableName="kplus_export_request_item" indexName="export_request_id_IDX">
+            <column name="export_request_id"/>
+        </createIndex>
+        <createIndex tableName="kplus_request_publication_id" indexName="publication_id_IDX">
+            <column name="publication_id"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
