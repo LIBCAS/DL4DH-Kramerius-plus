@@ -25,6 +25,8 @@ import static cz.inqool.dl4dh.krameriusplus.core.batch.step.ExecutionContextKey.
 @StepScope
 public class ExportJsonPublicationTasklet implements Tasklet {
 
+    private ModsProvider modsProvider;
+
     private PublicationStore publicationStore;
 
     private DigitalObjectExporter exporter;
@@ -46,6 +48,8 @@ public class ExportJsonPublicationTasklet implements Tasklet {
         publication.setPages(null);
         publication.setTeiHeaderFileId(null);
         publication.setIsRootEnrichment(null);
+
+        publication.setModsMetadata(modsProvider.getMods(publicationId));
 
         exporter.export(List.of(new DigitalObjectExport(publication, objectMapper.writeValueAsString(publication),
                 publication.getModel() + "_" + publicationId.substring(5) + ".json")),
@@ -72,5 +76,10 @@ public class ExportJsonPublicationTasklet implements Tasklet {
     @Autowired
     public void setDirectory(@Value("#{jobExecutionContext['" + DIRECTORY + "']}") String directory) {
         this.directory = Path.of(directory);
+    }
+
+    @Autowired
+    public void setModsProvider(ModsProvider modsProvider) {
+        this.modsProvider = modsProvider;
     }
 }

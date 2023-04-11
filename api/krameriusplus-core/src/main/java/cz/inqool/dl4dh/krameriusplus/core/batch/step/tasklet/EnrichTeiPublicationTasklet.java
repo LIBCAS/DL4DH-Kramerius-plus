@@ -37,10 +37,14 @@ public class EnrichTeiPublicationTasklet implements Tasklet {
 
     private TeiMessenger teiMessenger;
 
+    private ModsProvider modsProvider;
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         Publication publication = publicationStore.findById(publicationId)
                 .orElseThrow(() -> new MissingObjectException(Publication.class, publicationId));
+
+        publication.setModsMetadata(modsProvider.getMods(publicationId));
 
         String tei = teiMessenger.convertHeader(publication);
         byte[] teiBytes = tei.getBytes(StandardCharsets.UTF_8);
@@ -70,5 +74,10 @@ public class EnrichTeiPublicationTasklet implements Tasklet {
     @Autowired
     public void setTeiMessenger(TeiMessenger teiMessenger) {
         this.teiMessenger = teiMessenger;
+    }
+
+    @Autowired
+    public void setModsProvider(ModsProvider modsProvider) {
+        this.modsProvider = modsProvider;
     }
 }
