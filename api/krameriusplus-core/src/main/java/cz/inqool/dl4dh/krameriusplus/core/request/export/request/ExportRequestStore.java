@@ -39,26 +39,27 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
                 .getMergeJob();
     }
 
-    public Result<ExportRequest> findByNameOwnerAndStatus(String name, String owner, Boolean isFinished, int page, int pageSize) {
-        JPAQuery<?> query = queryFactory.from(qObject);
+    public Result<ExportRequestView> findByNameOwnerAndStatus(String name, String owner, Boolean isFinished, int page, int pageSize) {
+        QExportRequestView exportRequestView = QExportRequestView.exportRequestView;
+        JPAQuery<?> query = queryFactory.from(exportRequestView);
 
         if (name != null) {
-            query = query.where(qObject.name.eq(name));
+            query = query.where(exportRequestView.name.eq(name));
         }
         if (owner != null) {
-            query = query.where(qObject.owner.username.eq(owner));
+            query = query.where(exportRequestView.owner.username.eq(owner));
 
         }
         if (isFinished != null) {
-            query = query.where(isFinished ? qObject.bulkExport.isNotNull() : qObject.bulkExport.isNull());
+            query = query.where(isFinished ? exportRequestView.bulkExport.isNotNull() : exportRequestView.bulkExport.isNull());
 
         }
-        int count = query.select(qObject.count()).fetchOne().intValue();
+        int count = query.select(exportRequestView.count()).fetchOne().intValue();
         query.offset((long) page * pageSize);
         query.limit(pageSize);
-        query.orderBy(qObject.created.desc());
+        query.orderBy(exportRequestView.created.desc());
 
-        List<ExportRequest> results = query.select(qObject).fetch();
+        List<ExportRequestView> results = query.select(QExportRequestView.exportRequestView).fetch();
 
         return new Result<>(page, pageSize, count, results);
     }

@@ -14,4 +14,6 @@ import org.mapstruct.Mapper;
                 KrameriusJobInstanceMapper.class,
         })
 public abstract class ExportRequestMapper extends RequestMapper<ExportRequest, ExportRequestCreateDto, ExportRequestDto> {
+
+        abstract ExportRequestDto toDto(ExportRequestView exportRequestView);
 }
