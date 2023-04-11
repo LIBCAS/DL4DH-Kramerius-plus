@@ -25,6 +25,10 @@ public class ModsMapper {
     private ModsIdentifierMapper identifierMapper;
 
     public ModsMetadata map(ModsCollectionDefinition element) {
+        if (element == null) {
+            return null;
+        }
+
         ModsMetadata modsMetadata = new ModsMetadata();
         lte(element.getMods().size(), 1, () -> new IllegalStateException(
                 "Root ModsCollectionDefinition element is expected to have 1 ModsDefinition, but has: "

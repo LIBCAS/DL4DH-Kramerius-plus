@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.step.processor;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.step.CsvExporter;
+import cz.inqool.dl4dh.krameriusplus.core.batch.step.csv.CsvExporter;
 import cz.inqool.dl4dh.krameriusplus.core.batch.step.wrapper.DigitalObjectExport;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import org.springframework.batch.core.configuration.annotation.StepScope;

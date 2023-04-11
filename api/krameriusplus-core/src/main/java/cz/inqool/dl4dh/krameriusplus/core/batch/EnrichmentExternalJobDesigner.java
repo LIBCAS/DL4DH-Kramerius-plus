@@ -10,14 +10,11 @@ import org.springframework.context.annotation.Configuration;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.KrameriusJobTypeName.ENRICHMENT_EXTERNAL;
 import static cz.inqool.dl4dh.krameriusplus.core.batch.step.KrameriusStep.ENRICH_ALTO_STEP;
-import static cz.inqool.dl4dh.krameriusplus.core.batch.step.KrameriusStep.ENRICH_MODS_STEP;
 
 @Configuration
 public class EnrichmentExternalJobDesigner extends AbstractJobDesigner {
 
     private EnrichmentJobValidator enrichmentJobValidator;
-
-    private Step enrichModsStep;
 
     private Step enrichAltoStep;
 
@@ -31,19 +28,13 @@ public class EnrichmentExternalJobDesigner extends AbstractJobDesigner {
     public Job build() {
         return getJobBuilder()
                 .validator(enrichmentJobValidator)
-                .start(enrichModsStep)
-                .next(enrichAltoStep)
+                .start(enrichAltoStep)
                 .build();
     }
 
     @Autowired
     public void setEnrichAltoStep(@Qualifier(ENRICH_ALTO_STEP) Step enrichAltoStep) {
         this.enrichAltoStep = enrichAltoStep;
-    }
-
-    @Autowired
-    public void setEnrichModsStep(@Qualifier(ENRICH_MODS_STEP) Step enrichModsStep) {
-        this.enrichModsStep = enrichModsStep;
     }
 
     @Autowired

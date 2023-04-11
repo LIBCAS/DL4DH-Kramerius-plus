@@ -1,6 +1,11 @@
-package cz.inqool.dl4dh.krameriusplus.core.batch.step;
+package cz.inqool.dl4dh.krameriusplus.core.batch.step.csv;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsGenre;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.core.json.JsonWriteFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Token;
@@ -15,18 +20,19 @@ import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CsvExporter {
 
     private final CSVFormat format;
 
+    private final ObjectMapper objectMapper = initObjectMapper();
+
     public CsvExporter(char delimiter) {
         format = CSVFormat.Builder
                 .create(CSVFormat.DEFAULT)
                 .setDelimiter(delimiter)
-                .setEscape('"')
-                .setQuoteMode(QuoteMode.NONE)
+                .setEscape('\\')
+                .setQuoteMode(QuoteMode.MINIMAL)
                 .build();
     }
 
@@ -64,7 +70,7 @@ public class CsvExporter {
         }
     }
 
-    private List<String> preparePublicationLine(Publication publication) {
+    private List<String> preparePublicationLine(Publication publication) throws JsonProcessingException {
         List<String> line = new ArrayList<>();
         line.add(publication.getId());
         line.add(publication.getTitle());
@@ -72,31 +78,23 @@ public class CsvExporter {
 
         if (publication.getModsMetadata() != null) {
             ModsMetadata mods = publication.getModsMetadata();
-            if (mods.getNames() != null) { // TODO: FIX MULTIPLE VALUES IN COLUMN
-//                line.add(mods.getName().getType());
-//                line.add(mods.getName().getNameIdentifier());
-//                line.add(listToCsvString(mods.getName().getNameParts()
-//                        .stream().map(ModsNamePart::getValue)
-//                        .collect(Collectors.toList())));
-                addEmptyValues(line, 3);
+            if (mods.getNames() != null) {
+                line.add(objectMapper.writeValueAsString(mods.getNames()));
+                line.add(objectMapper.writeValueAsString(mods.getNames()));
+                line.add(objectMapper.writeValueAsString(mods.getNames()));
             } else {
                 addEmptyValues(line, 3);
             }
-            line.add(listToCsvString(mods.getGenres().stream()
-                    .map(ModsGenre::getValue)
-                    .collect(Collectors.toList())));
+            line.add(objectMapper.writeValueAsString(mods.getGenres()));
 
             if (mods.getOriginInfos() != null) {
-                line.add(listToCsvString(mods.getOriginInfos().stream()
-                        .map(modsOriginInfo -> listToCsvString(modsOriginInfo.getPublishers()))
-                        .collect(Collectors.toList())));
+                line.add(objectMapper.writeValueAsString(mods.getOriginInfos()));
             } else {
                 addEmptyValues(line, 1);
             }
 
-            if (mods.getPhysicalDescriptions() != null) { // TODO: FIX MULTIPLE VALUES IN COLUMN
-//                line.add(mods.getPhysicalDescriptions().getExtent());
-                addEmptyValues(line, 1);
+            if (mods.getPhysicalDescriptions() != null) {
+                line.add(objectMapper.writeValueAsString(mods.getPhysicalDescriptions()));
             } else {
                 addEmptyValues(line, 1);
             }
@@ -105,10 +103,6 @@ public class CsvExporter {
         }
 
         return line;
-    }
-
-    private String listToCsvString(List<String> strings) {
-        return "[" + String.join(",", strings) + "]";
     }
 
     private List<String> prepareLine(Token token) {
@@ -154,6 +148,19 @@ public class CsvExporter {
         for (int i = 0; i < amount; i++) {
             line.add(null);
         }
+    }
+
+    private ObjectMapper initObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule("UnQuote");
+        module.addSerializer(new NoQuotesSerializer());
+
+        objectMapper.disable(JsonWriteFeature.QUOTE_FIELD_NAMES.mappedFeature());
+        objectMapper.disable(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature());
+        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        objectMapper.registerModule(module);
+
+        return objectMapper;
     }
 }
 

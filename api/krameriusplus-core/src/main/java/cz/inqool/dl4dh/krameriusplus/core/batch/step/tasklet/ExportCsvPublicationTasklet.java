@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.step.tasklet;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.batch.step.CsvExporter;
+import cz.inqool.dl4dh.krameriusplus.core.batch.step.csv.CsvExporter;
 import cz.inqool.dl4dh.krameriusplus.core.batch.step.wrapper.DigitalObjectExport;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.store.PublicationStore;
@@ -28,6 +28,8 @@ import static cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey.PUBLICATION
 @StepScope
 public class ExportCsvPublicationTasklet implements Tasklet {
 
+    private ModsProvider modsProvider;
+
     private PublicationStore publicationStore;
 
     private DigitalObjectExporter exporter;
@@ -49,6 +51,8 @@ public class ExportCsvPublicationTasklet implements Tasklet {
         publication.setPages(null);
         publication.setTeiHeaderFileId(null);
         publication.setIsRootEnrichment(null);
+
+        publication.setModsMetadata(modsProvider.getMods(publicationId));
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -83,5 +87,10 @@ public class ExportCsvPublicationTasklet implements Tasklet {
         }
 
         this.csvExporter = new CsvExporter(delimiter.charAt(0));
+    }
+
+    @Autowired
+    public void setModsProvider(ModsProvider modsProvider) {
+        this.modsProvider = modsProvider;
     }
 }
