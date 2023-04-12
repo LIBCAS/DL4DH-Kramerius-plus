@@ -40,13 +40,13 @@ export const EnrichmentRequestDetail: FC = () => {
 						<Typography variant="h4">Detail žádosti o obohacení</Typography>
 					</Box>
 					<Grid container spacing={1}>
-						<Grid item sx={{ p: 2 }} xs={4}>
-							<Paper elevation={4} sx={{ height: 200, p: 2 }}>
+						<Grid item sx={{ p: 2 }} xs={4.3}>
+							<Paper elevation={4} sx={{ height: 230, p: 2 }}>
 								<EnrichmentRequestInfo request={enrichmentRequest} />
 							</Paper>
 						</Grid>
-						<Grid item sx={{ p: 2 }} xs={8}>
-							<Paper elevation={4} sx={{ height: 200, p: 2 }}>
+						<Grid item sx={{ p: 2 }} xs={7.7}>
+							<Paper elevation={4} sx={{ height: 230, p: 2 }}>
 								<EnrichmentRequestConfigs configs={enrichmentRequest.configs} />
 							</Paper>
 						</Grid>

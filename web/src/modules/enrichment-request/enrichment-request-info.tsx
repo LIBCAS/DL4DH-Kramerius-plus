@@ -1,10 +1,10 @@
-import { Grid } from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle, Grid } from '@mui/material'
 import { KeyGridItem } from 'components/key-grid-item'
 import { PageBlock } from 'components/page-block'
 import { ValueGridItem } from 'components/value-grid-item'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { RequestStateMapping } from 'models/request/request'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { formatDateTime } from 'utils/formatters'
 
@@ -13,6 +13,8 @@ type Props = {
 }
 
 export const EnrichmentRequestInfo: FC<Props> = ({ request }) => {
+	const [dialogContent, setDialogContent] = useState<string | null>(null)
+
 	return (
 		<PageBlock title="Základní informace">
 			<Grid container spacing={0.5}>
@@ -30,7 +32,30 @@ export const EnrichmentRequestInfo: FC<Props> = ({ request }) => {
 				</ValueGridItem>
 				<KeyGridItem>Stav žádosti</KeyGridItem>
 				<ValueGridItem>{RequestStateMapping[request.state]}</ValueGridItem>
+				<KeyGridItem>Obohacované publikace</KeyGridItem>
+				<ValueGridItem>
+					<Button
+						size="small"
+						sx={{ height: 20 }}
+						variant="text"
+						onClick={() =>
+							setDialogContent(request.publicationIds.join(', \n'))
+						}
+					>
+						Zobrazit
+					</Button>
+				</ValueGridItem>
 			</Grid>
+			<Dialog
+				fullWidth
+				open={!!dialogContent}
+				onClose={() => setDialogContent(null)}
+			>
+				<DialogTitle>Publikace</DialogTitle>
+				<DialogContent>
+					<pre>{dialogContent}</pre>
+				</DialogContent>
+			</Dialog>
 		</PageBlock>
 	)
 }

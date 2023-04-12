@@ -34,17 +34,17 @@ export const ExportRequestDetailPage: FC = () => {
 					</Box>
 					<Grid container spacing={1}>
 						<Grid item sx={{ p: 2 }} xs={4}>
-							<Paper elevation={4} sx={{ height: 200, p: 2 }}>
+							<Paper elevation={4} sx={{ height: 230, p: 2 }}>
 								<ExportRequestInfo request={exportRequest} />
 							</Paper>
 						</Grid>
 						<Grid item sx={{ p: 2 }} xs={4}>
-							<Paper elevation={4} sx={{ height: 200, p: 2 }}>
+							<Paper elevation={4} sx={{ height: 230, p: 2 }}>
 								<ExportRequestConfig config={exportRequest.config} />
 							</Paper>
 						</Grid>
 						<Grid item sx={{ p: 2 }} xs={4}>
-							<Paper elevation={4} sx={{ height: 200, p: 2 }}>
+							<Paper elevation={4} sx={{ height: 230, p: 2 }}>
 								<ExportRequestResult bulkExport={exportRequest.bulkExport} />
 							</Paper>
 						</Grid>
