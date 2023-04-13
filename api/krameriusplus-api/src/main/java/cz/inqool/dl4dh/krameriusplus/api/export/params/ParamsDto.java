@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.export.params;
 
 import cz.inqool.dl4dh.krameriusplus.api.export.params.filter.Filter;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class ParamsDto {
 
     /**

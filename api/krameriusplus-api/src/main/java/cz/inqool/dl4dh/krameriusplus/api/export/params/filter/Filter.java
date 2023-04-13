@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.api.export.params.filter;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.EqualsAndHashCode;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "operation")
 @JsonSubTypes({
@@ -14,5 +15,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(name = "REGEX", value = RegexFilter.class),
         @JsonSubTypes.Type(name = "IN", value = InFilter.class)
 })
+@EqualsAndHashCode
 public abstract class Filter {
 }
