@@ -3,6 +3,7 @@ package cz.inqool.dl4dh.krameriusplus.core.request.enrichment.request;
 import com.querydsl.jpa.impl.JPAQuery;
 import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.store.DatedStore;
+import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -17,8 +18,15 @@ public class EnrichmentRequestStore extends DatedStore<EnrichmentRequest, QEnric
         super(EnrichmentRequest.class, QEnrichmentRequest.class, entityManager);
     }
 
+    public EnrichmentRequest findByCreateRequestJob(KrameriusJobInstance krameriusJobInstance) {
+        return query()
+                .select(qObject)
+                .where(qObject.createRequestJob.eq(krameriusJobInstance))
+                .fetchOne();
+    }
+
     public Result<EnrichmentRequest> findByFilter(String publicationId, String name, String owner, int page, int pageSize) {
-        JPAQuery<?> query = queryFactory.from(qObject);
+        JPAQuery<?> query = query();
 
         if (publicationId != null) {
             query.where(qObject.publicationIds.containsValue(publicationId));

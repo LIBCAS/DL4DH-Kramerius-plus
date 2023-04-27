@@ -2,13 +2,15 @@ package cz.inqool.dl4dh.krameriusplus.core.job.listener;
 
 import cz.inqool.dl4dh.krameriusplus.api.RequestState;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.jms.JobEnqueueService;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstance;
+import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstanceStore;
 import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.chain.EnrichmentChain;
 import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.chain.EnrichmentChainStore;
 import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.item.EnrichmentRequestItem;
 import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.request.EnrichmentRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,37 +22,29 @@ import static cz.inqool.dl4dh.krameriusplus.api.RequestState.CREATED;
 import static cz.inqool.dl4dh.krameriusplus.api.RequestState.RUNNING;
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.*;
 
+@RequiredArgsConstructor
 @Component
 public class EnrichmentChainListener implements KrameriusJobListener {
 
     private final List<KrameriusJobType> SUPPORTED_TYPES = List.of(ENRICHMENT_EXTERNAL, ENRICHMENT_NDK, ENRICHMENT_TEI);
 
-    private EnrichmentChainStore chainStore;
+    private final EnrichmentChainStore chainStore;
 
-    private JobEnqueueService enqueueService;
+    private final KrameriusJobInstanceStore jobInstanceStore;
+
+    private final JobEnqueueService enqueueService;
 
     @Override
-    @Transactional
-    public void beforeJob(KrameriusJobInstance jobInstance) {
-        // TODO: jobInstance might be an initialization jobInstance, in which case
-        // no EnrichmentChain will be found, but the state should be changed as well
-
-        EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
-        EnrichmentRequestItem requestItem = chain.getRequestItem();
-        EnrichmentRequest request = requestItem.getEnrichmentRequest();
-
-        if (CREATED.equals(requestItem.getState())) {
-            requestItem.setState(RUNNING);
-        }
-
-        if (CREATED.equals(request.getState())) {
-            request.setState(RUNNING);
-        }
+    public void beforeJob(String jobInstanceId) {
+        // do nothing
     }
 
     @Override
     @Transactional
-    public void afterJob(KrameriusJobInstance jobInstance) {
+    public void afterJob(String jobInstanceId) {
+        KrameriusJobInstance jobInstance = jobInstanceStore.findById(jobInstanceId)
+                .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
+
         EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
 
         Optional<KrameriusJobInstance> nextInstance = chain.getNextToExecute(jobInstance);
@@ -83,15 +77,5 @@ public class EnrichmentChainListener implements KrameriusJobListener {
     @Override
     public boolean supports(KrameriusJobInstance jobInstance) {
         return SUPPORTED_TYPES.contains(jobInstance.getJobType());
-    }
-
-    @Autowired
-    public void setChainStore(EnrichmentChainStore chainStore) {
-        this.chainStore = chainStore;
-    }
-
-    @Autowired
-    public void setEnqueueService(JobEnqueueService enqueueService) {
-        this.enqueueService = enqueueService;
     }
 }
