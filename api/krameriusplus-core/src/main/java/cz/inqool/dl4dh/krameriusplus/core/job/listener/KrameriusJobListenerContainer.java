@@ -15,7 +15,7 @@ public class KrameriusJobListenerContainer {
     public synchronized void applyBeforeJobListeners(KrameriusJobInstance job) {
         for (KrameriusJobListener listener : listeners) {
             if (listener.supports(job)) {
-                listener.beforeJob(job);
+                listener.beforeJob(job.getId());
             }
         }
     }
@@ -23,7 +23,7 @@ public class KrameriusJobListenerContainer {
     public synchronized void applyAfterJobListeners(KrameriusJobInstance job) {
         for (KrameriusJobListener listener : listeners) {
             if (listener.supports(job)) {
-                listener.afterJob(job);
+                listener.afterJob(job.getId());
             }
         }
     }

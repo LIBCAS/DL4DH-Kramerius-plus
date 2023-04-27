@@ -56,6 +56,7 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
         export.setFormat(exportRequest.getConfig().getExportFormat());
         export.setOrder(order);
         export.setModel(publication.getModel());
+
         JobParametersMapWrapper jobParametersMapWrapper = exportRequest.getConfig().toJobParametersWrapper();
         jobParametersMapWrapper.putString(JobParameterKey.PUBLICATION_ID, publication.getId());
         jobParametersMapWrapper.putString(JobParameterKey.EXPORT_ID, export.getId());

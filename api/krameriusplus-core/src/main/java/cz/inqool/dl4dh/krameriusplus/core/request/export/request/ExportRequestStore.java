@@ -20,6 +20,13 @@ public class ExportRequestStore extends DatedStore<ExportRequest, QExportRequest
         super(ExportRequest.class, QExportRequest.class, em);
     }
 
+    public ExportRequest findByCreateRequestJob(KrameriusJobInstance krameriusJobInstance) {
+        return query()
+                .select(qObject)
+                .where(qObject.createRequestJob.eq(krameriusJobInstance))
+                .fetchOne();
+    }
+
     /**
      * Finds mergeJob associated with ExportRequest. The exportRequest is found
      * by exportItem, which has the given export set as the rootExport
