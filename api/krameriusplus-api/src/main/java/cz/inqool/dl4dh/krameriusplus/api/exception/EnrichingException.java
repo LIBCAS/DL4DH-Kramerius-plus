@@ -24,6 +24,7 @@ public class EnrichingException extends GeneralException {
         TYPE_ERROR,
         INVALID_OBJECT_TYPE,
         UNSUPPORTED_DIGITAL_OBJECT,
-        MISSING_ALTO
+        MISSING_ALTO,
+        REQUEST_FINISHED
     }
 }

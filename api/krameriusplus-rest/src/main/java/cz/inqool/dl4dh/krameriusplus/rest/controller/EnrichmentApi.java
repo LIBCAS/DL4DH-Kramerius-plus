@@ -51,4 +51,11 @@ public class EnrichmentApi {
                                              @RequestParam(value = "owner", required = false) String owner) {
         return facade.list(publicationId, name, owner, page, pageSize);
     }
+
+    @Operation(summary = "Cancel an enrichment request.")
+    @ApiResponse(responseCode = "200", description = "Request successfully cancelled")
+    @PostMapping("/{id}/cancel")
+    public EnrichmentRequestDto cancel(@PathVariable String id) {
+        return facade.cancel(id);
+    }
 }

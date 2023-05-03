@@ -6,6 +6,7 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.job.JobContainer;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstanceService;
+import cz.inqool.dl4dh.krameriusplus.core.job.LastLaunch;
 import cz.inqool.dl4dh.krameriusplus.core.job.listener.KrameriusJobListenerContainer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
@@ -40,6 +41,10 @@ public class JobRunner {
 
         try {
             if (!krameriusJobInstance.getExecutionStatus().isStartable()) {
+                if (krameriusJobInstance.getExecutionStatus().equals(ExecutionStatus.CANCELLED)) {
+                    log.warn("Cannot launch job: " + krameriusJobInstanceId + ", launching jobs under cancelled request is not allowed.");
+                    return;
+                }
                 throw new JobException(krameriusJobInstanceId,
                         "Cannot launch job: " + krameriusJobInstanceId + ", because it is not in a startable status: "
                         + krameriusJobInstance.getExecutionStatus(),
@@ -68,7 +73,7 @@ public class JobRunner {
 
                 log.info("Job: [" + job + "] launched with the following parameters: [" + jobParameters + "]");
                 krameriusJobInstance.setExecutionStatus(ExecutionStatus.STARTED);
-                krameriusJobInstance.setLastLaunch(null);
+                krameriusJobInstance.setLastLaunch(new LastLaunch());
                 jobService.getStore().save(krameriusJobInstance);
                 job.execute(jobExecution);
                 log.info("Job: [" + job + "] completed with the following parameters: [" + jobParameters +

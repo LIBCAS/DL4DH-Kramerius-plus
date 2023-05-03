@@ -37,6 +37,12 @@ public class ExportRequestFacade implements ExportFacade {
         return exportRequestService.list(name, owner, isFinished, page, pageSize);
     }
 
+    @Override
+    @Transactional
+    public ExportRequestDto cancel(String id) {
+        return exportRequestService.cancel(id);
+    }
+
     @Autowired
     public void setExportRequestService(ExportRequestService exportRequestService) {
         this.exportRequestService = exportRequestService;

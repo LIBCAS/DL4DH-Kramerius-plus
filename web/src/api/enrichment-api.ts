@@ -48,3 +48,9 @@ export const getEnrichmentRequest = async (
 
 	return await response.json()
 }
+
+export const cancelRequest = async (requestId: string): Promise<Response> => {
+	return await customFetch(`/api/enrichment/${requestId}/cancel`, {
+		method: 'POST',
+	})
+}

@@ -1,12 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.api.batch;
 
-import java.util.List;
+import java.util.Set;
 
 public enum ExecutionStatus {
     // custom values
     CREATED,
     ENQUEUED,
     FAILED_FATALLY,
+    CANCELLED,
 
     // Spring Batch values
     COMPLETED,
@@ -18,11 +19,16 @@ public enum ExecutionStatus {
     ABANDONED,
     UNKNOWN;
 
-    public boolean finished() {
-        return List.of(COMPLETED, FAILED, FAILED_FATALLY, ABANDONED, STOPPED).contains(this);
+    public boolean isFinished() {
+        return Sets.finished.contains(this);
     }
 
     public boolean isStartable() {
-        return List.of(CREATED, ENQUEUED, FAILED, STOPPED).contains(this);
+        return Sets.startable.contains(this);
+    }
+
+    public static class Sets {
+        public static final Set<ExecutionStatus> finished = Set.of(COMPLETED, FAILED, FAILED_FATALLY, ABANDONED, STOPPED, CANCELLED);
+        public static final Set<ExecutionStatus> startable = Set.of(CREATED, ENQUEUED, FAILED, STOPPED);
     }
 }

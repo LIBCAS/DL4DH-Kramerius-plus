@@ -53,4 +53,12 @@ public class ExportApi {
                                          @RequestParam(value = "isFinished", required = false) Boolean isFinished) {
         return facade.list(name, owner, isFinished, page, pageSize);
     }
+
+    // DISABLED until real testing on EnrichmentRequests will show that it works
+//    @Operation(summary = "Cancel an export request.")
+//    @ApiResponse(responseCode = "200", description = "Export request successfully cancelled.")
+//    @PostMapping("/{id}/cancel")
+//    public ExportRequestDto cancel(@PathVariable String id) {
+//        return facade.cancel(id);
+//    }
 }

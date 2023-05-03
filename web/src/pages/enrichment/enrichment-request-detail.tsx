@@ -1,5 +1,5 @@
-import { Box, Grid, Paper, Typography } from '@mui/material'
-import { getEnrichmentRequest } from 'api/enrichment-api'
+import { Box, Button, Grid, Paper, Typography } from '@mui/material'
+import { cancelRequest, getEnrichmentRequest } from 'api/enrichment-api'
 import { Loading } from 'components/loading'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { EnrichmentRequestItem } from 'models/request/enrichment-request-item'
@@ -9,6 +9,7 @@ import { EnrichmentRequestInfo } from 'modules/enrichment-request/enrichment-req
 import { EnrichmentRequestItems } from 'modules/enrichment-request/enrichment-request-items'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { PageWrapper } from '../page-wrapper'
 
 export const EnrichmentRequestDetail: FC = () => {
@@ -32,12 +33,48 @@ export const EnrichmentRequestDetail: FC = () => {
 		setSelectedItem(enrichmentRequest?.items.find(item => item.id === itemId))
 	}
 
+	const onCancelClick = () => {
+		const callApi = async () => {
+			const response = await cancelRequest(requestId!)
+
+			console.log(response)
+
+			if (response.ok) {
+				toast('Operace proběhla úspěšně', {
+					type: 'success',
+				})
+			} else {
+				toast(
+					`Při pokusu o zrušení zádosti došlo k chybě: ${response.statusText}`,
+					{
+						type: 'error',
+					},
+				)
+			}
+		}
+
+		callApi()
+	}
+
 	return (
 		<PageWrapper requireAuth>
 			{enrichmentRequest ? (
 				<Box>
-					<Box display="flex" justifyContent="space-between" p={1} pb={3}>
+					<Box
+						display="flex"
+						justifyContent="space-between"
+						p={1}
+						pb={3}
+						pr={3}
+					>
 						<Typography variant="h4">Detail žádosti o obohacení</Typography>
+						<Button
+							disabled={enrichmentRequest.state != 'RUNNING'}
+							variant="contained"
+							onClick={onCancelClick}
+						>
+							Zrušit žádost
+						</Button>
 					</Box>
 					<Grid container spacing={1}>
 						<Grid item sx={{ p: 2 }} xs={4.3}>

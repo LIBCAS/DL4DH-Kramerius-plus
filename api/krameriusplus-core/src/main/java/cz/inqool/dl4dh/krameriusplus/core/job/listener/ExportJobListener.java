@@ -70,7 +70,7 @@ public class ExportJobListener implements KrameriusJobListener {
         } else {
             ExportRequest exportRequest = exportRequestStore.findByRootExport(root);
             if (exportRequest.getItems().stream().allMatch(exportRequestItem ->
-                    exportRequestItem.getRootExport().getExportJob().getExecutionStatus().finished())) {
+                    exportRequestItem.getRootExport().getExportJob().getExecutionStatus().isFinished())) {
                 jobEnqueueService.enqueue(exportRequestStore.findMergeJob(root));
             }
         }

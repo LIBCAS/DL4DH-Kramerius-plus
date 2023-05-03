@@ -9,4 +9,6 @@ public interface ExportFacade {
     ExportRequestDto find(String exportRequestId);
 
     Result<ExportRequestDto> list(String name, String owner, Boolean isFinished, int page, int pageSize);
+
+    ExportRequestDto cancel(String id);
 }

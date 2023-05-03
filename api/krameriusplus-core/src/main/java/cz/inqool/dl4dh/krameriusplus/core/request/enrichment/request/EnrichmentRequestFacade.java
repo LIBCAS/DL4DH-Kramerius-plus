@@ -37,6 +37,12 @@ public class EnrichmentRequestFacade implements EnrichmentFacade {
         return service.list(publicationId, name, owner, page, pageSize);
     }
 
+    @Override
+    @Transactional
+    public EnrichmentRequestDto cancel(String id) {
+        return service.cancel(id);
+    }
+
     @Autowired
     public void setService(EnrichmentRequestService service) {
         this.service = service;
