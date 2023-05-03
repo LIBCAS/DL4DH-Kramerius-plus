@@ -12,6 +12,7 @@ import cz.inqool.dl4dh.krameriusplus.core.request.export.request.ExportRequest;
 import cz.inqool.dl4dh.krameriusplus.core.request.export.request.ExportRequestStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,6 +40,7 @@ public class ExportJobListener implements KrameriusJobListener {
     }
 
     @Override
+    @Transactional
     public void afterJob(String jobInstanceId) {
         // Export jobs from one ExportRequestItem must run in sequence,
         // because otherwise it would be hard to determine, when to run
@@ -50,6 +52,7 @@ public class ExportJobListener implements KrameriusJobListener {
 
         Export export = exportStore.findByExportJob(jobInstance);
         updateExportState(export);
+        // TODO: propagate state to parent Exports and Request
 
         Export root = findRoot(export);
         List<Export> exportListInPostOrder = buildPostOrderList(root);

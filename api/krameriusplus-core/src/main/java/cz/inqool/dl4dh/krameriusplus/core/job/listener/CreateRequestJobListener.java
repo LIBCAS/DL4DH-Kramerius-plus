@@ -36,7 +36,7 @@ public class CreateRequestJobListener implements KrameriusJobListener {
         KrameriusJobInstance jobInstance = jobInstanceStore.findById(jobInstanceId)
                 .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
 
-        EnrichmentRequest request = enrichmentRequestStore.findByCreateRequestJob(jobInstance);
+        Request request = findRequest(jobInstance);
 
         request.setState(RUNNING);
     }
