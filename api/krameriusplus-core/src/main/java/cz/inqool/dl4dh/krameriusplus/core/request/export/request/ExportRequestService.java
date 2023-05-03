@@ -1,7 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.core.request.export.request;
 
+import cz.inqool.dl4dh.krameriusplus.api.RequestState;
 import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType;
+import cz.inqool.dl4dh.krameriusplus.api.exception.ExportException;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
@@ -10,16 +12,20 @@ import cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstanceService;
 import cz.inqool.dl4dh.krameriusplus.core.job.config.JobParametersMapWrapper;
+import cz.inqool.dl4dh.krameriusplus.core.request.export.export.Export;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ExportRequestService implements DatedService<ExportRequest, ExportRequestCreateDto, ExportRequestDto> {
 
     @Getter
@@ -60,6 +66,64 @@ public class ExportRequestService implements DatedService<ExportRequest, ExportR
         List<ExportRequestDto> dtos = requests.getItems().stream().map(mapper::toDto).collect(Collectors.toList());
 
         return new Result<>(page, pageSize, requests.getTotal(), dtos);
+    }
+
+    @Transactional
+    public ExportRequestDto cancel(String id) {
+        ExportRequest exportRequest = findEntity(id);
+
+        validateCancelConditions(exportRequest);
+
+        List<KrameriusJobInstance> jobsToCancel = new ArrayList<>();
+        // if request isn't created cancel the creation job only
+        log.info("Cancelling export request with id: " + id);
+        if (!exportRequest.getCreateRequestJob().getExecutionStatus().isFinished()) {
+            log.info("Cancelling create request job for export request id: " + id);
+            jobsToCancel.add(exportRequest.getCreateRequestJob());
+        } else {
+            if (exportRequest.getBulkExport().getMergeJob() == null) {
+                throw new IllegalStateException("ExportRequest with id: " + id + " has no merge job");
+            }
+            log.info("Cancelling merge job and export jobs for request id: " + id);
+            jobsToCancel.add(exportRequest.getBulkExport().getMergeJob());
+
+            jobsToCancel.addAll(getExportJobsFromRequest(exportRequest));
+        }
+
+        krameriusJobInstanceService.cancelMultipleJobs(jobsToCancel);
+        exportRequest.setState(RequestState.CANCELLED);
+
+        log.info("Request cancelled, owned Jobs stopping");
+        return mapper.toDto(store.save(exportRequest));
+    }
+
+    private void validateCancelConditions(ExportRequest exportRequest) {
+        String id = exportRequest.getId();
+        if (exportRequest.getState().isComplete()) {
+            throw new ExportException("ExportRequest with id: " + id + "is in state: " + exportRequest.getState(),
+                    ExportException.ErrorCode.REQUEST_FINISHED);
+        }
+
+        if (exportRequest.getCreateRequestJob() == null) {
+            throw new IllegalStateException("ExportRequest with id: " + id + " has no create request job");
+        }
+    }
+
+    private List<KrameriusJobInstance> getExportJobsFromRequest(ExportRequest exportRequest) {
+        return exportRequest.getItems().stream()
+                .flatMap(item -> getJobsInTree(item.getRootExport()).stream())
+                .collect(Collectors.toList());
+    }
+
+    private List<KrameriusJobInstance> getJobsInTree(Export rootExport) {
+        List<KrameriusJobInstance> result = new ArrayList<>();
+        getJobFromTree(rootExport, result);
+        return result;
+    }
+
+    private void getJobFromTree(Export rootExport, List<KrameriusJobInstance> accumulator) {
+        accumulator.add(rootExport.getExportJob());
+        rootExport.getChildrenList().forEach(child -> getJobFromTree(child, accumulator));
     }
 
     @Autowired

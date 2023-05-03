@@ -37,5 +37,5 @@ public class KrameriusJobInstance extends DomainObject {
     private JobParameters jobParameters;
 
     @Embedded
-    private LastLaunch lastLaunch = new LastLaunch();
+    private LastLaunch lastLaunch;
 }

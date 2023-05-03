@@ -8,6 +8,7 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.job.config.JobParametersMapWrapper;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
@@ -19,9 +20,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import static cz.inqool.dl4dh.krameriusplus.core.utils.Utils.notNull;
 
 @Service
+@Slf4j
 public class KrameriusJobInstanceService {
 
     @Getter
@@ -33,13 +41,13 @@ public class KrameriusJobInstanceService {
 
     private JobOperator jobOperator;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public KrameriusJobInstance findEntity(String jobInstanceId) {
         return store.findById(jobInstanceId)
                 .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public KrameriusJobInstanceDto find(String id) {
         return mapper.toDto(findEntity(id));
     }
@@ -120,15 +128,42 @@ public class KrameriusJobInstanceService {
         return lastExecution;
     }
 
-    public void stopJob(String id) {
+    public boolean stopJob(String id) {
         KrameriusJobInstance krameriusJobInstance = store.findById(id).orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, id));
         try {
-            jobOperator.stop(getLastExecution(krameriusJobInstance.getJobInstanceId()).getId());
+            return jobOperator.stop(getLastExecution(krameriusJobInstance.getJobInstanceId()).getId());
         } catch (JobExecutionNotRunningException jobExecutionNotRunningException) {
             throw new JobException(id, jobExecutionNotRunningException.getMessage(), JobException.ErrorCode.NOT_RUNNING);
         } catch (NoSuchJobExecutionException noSuchJobExecutionException) {
             throw new JobException(id, noSuchJobExecutionException.getMessage(), JobException.ErrorCode.NO_EXECUTION);
         }
+    }
+
+    @Transactional
+    public void cancelMultipleJobs(List<KrameriusJobInstance> jobs) {
+        Set<KrameriusJobInstance> cancelled = new HashSet<>(store.cancelStartableJobs(jobs.stream().map(KrameriusJobInstance::getId).collect(Collectors.toSet())));
+        jobs.stream().filter(Predicate.not(cancelled::contains)).forEach(this::cancelRunningJob);
+    }
+
+    private void cancelRunningJob(KrameriusJobInstance job) {
+        // if the job is running send a signal to stop, for startable jobs set unstartable status
+        if (!job.getExecutionStatus().isFinished() && !job.getExecutionStatus().isStartable()) {
+            try {
+                if (!stopJob(job.getId())) {
+                    throw new JobException(job.getId(), "JobOperator signal to stop Job couldn't be sent", JobException.ErrorCode.JOB_OPERATOR_ERROR);
+                }
+            } catch (JobException jobException) {
+                if (jobException.getErrorCode().equals(JobException.ErrorCode.NOT_RUNNING)) {
+                    log.warn("Job might have completed while trying to stop it");
+                    return;
+                }
+                else {
+                    throw jobException;
+                }
+            }
+        }
+
+        store.save(job);
     }
 
     @Autowired

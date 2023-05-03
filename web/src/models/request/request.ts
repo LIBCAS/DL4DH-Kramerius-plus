@@ -14,6 +14,7 @@ export type RequestState =
 	| 'FAILED'
 	| 'COMPLETED'
 	| 'PARTIAL'
+	| 'CANCELLED'
 
 export const RequestStateMapping = {
 	CREATED: 'Vytvořená',
@@ -21,4 +22,5 @@ export const RequestStateMapping = {
 	FAILED: 'Selhala',
 	COMPLETED: 'Dokončená',
 	PARTIAL: 'Částečně selhala',
+	CANCELLED: 'Zrušena',
 }

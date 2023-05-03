@@ -1,12 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.api;
 
 import java.util.Collection;
+import java.util.List;
 
 public enum RequestState {
     CREATED,
     RUNNING,
     COMPLETED,
     FAILED,
+    CANCELLED,
     PARTIAL;
 
     public static RequestState from(Collection<RequestState> states) {
@@ -23,5 +25,9 @@ public enum RequestState {
         }
 
         return RequestState.PARTIAL;
+    }
+
+    public boolean isComplete() {
+        return List.of(COMPLETED, FAILED, CANCELLED, PARTIAL).contains(this);
     }
 }

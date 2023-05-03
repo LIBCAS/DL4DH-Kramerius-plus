@@ -16,10 +16,10 @@ import static cz.inqool.dl4dh.krameriusplus.api.batch.LaunchStatus.SUCCESS;
 @Setter
 public class LastLaunch {
 
-    private Instant timestamp = Instant.now();
+    private final Instant timestamp = Instant.now();
 
     @Enumerated(EnumType.STRING)
     private LaunchStatus launchStatus = SUCCESS;
 
-    private String message;
+    private String message = "Job start OK";
 }

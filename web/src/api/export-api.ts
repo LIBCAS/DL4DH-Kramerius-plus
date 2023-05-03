@@ -51,3 +51,9 @@ export const getExportRequest = async (
 
 	return await response.json()
 }
+
+export const cancelRequest = async (requestId: string): Promise<Response> => {
+	return await customFetch(`/api/exports/${requestId}/cancel`, {
+		method: 'POST',
+	})
+}

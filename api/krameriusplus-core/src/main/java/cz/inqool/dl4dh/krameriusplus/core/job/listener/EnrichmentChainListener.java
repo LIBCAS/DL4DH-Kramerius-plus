@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.api.RequestState.CREATED;
-import static cz.inqool.dl4dh.krameriusplus.api.RequestState.RUNNING;
+import static cz.inqool.dl4dh.krameriusplus.api.RequestState.*;
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.*;
 
 @RequiredArgsConstructor
@@ -35,8 +34,17 @@ public class EnrichmentChainListener implements KrameriusJobListener {
     private final JobEnqueueService enqueueService;
 
     @Override
+    @Transactional
     public void beforeJob(String jobInstanceId) {
-        // do nothing
+        KrameriusJobInstance jobInstance = jobInstanceStore.findById(jobInstanceId)
+                .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
+
+        EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
+        EnrichmentRequestItem requestItem = chain.getRequestItem();
+        EnrichmentRequest request = requestItem.getEnrichmentRequest();
+
+        requestItem.setState(RUNNING);
+        request.setState(RUNNING);
     }
 
     @Override
@@ -58,6 +66,11 @@ public class EnrichmentChainListener implements KrameriusJobListener {
 
     private void propagateState(EnrichmentChain chain) {
         EnrichmentRequestItem requestItem = chain.getRequestItem();
+        EnrichmentRequest request = requestItem.getEnrichmentRequest();
+        if (request.getState().equals(CANCELLED)) {
+            requestItem.setState(CANCELLED);
+            return;
+        }
 
         List<RequestState> requestChainsStates = requestItem.getEnrichmentChains().stream().map(EnrichmentChain::getState).collect(Collectors.toList());
         // if all chains in requestItem finished
@@ -65,7 +78,6 @@ public class EnrichmentChainListener implements KrameriusJobListener {
             requestItem.setState(RequestState.from(requestChainsStates));
         }
 
-        EnrichmentRequest request = requestItem.getEnrichmentRequest();
 
         List<RequestState> requestItemsStates = request.getItems().stream().map(EnrichmentRequestItem::getState).collect(Collectors.toList());
         // if all items in request finished

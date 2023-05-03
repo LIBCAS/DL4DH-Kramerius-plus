@@ -5,13 +5,13 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.JobException;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstanceStore;
-import cz.inqool.dl4dh.krameriusplus.core.job.LastLaunch;
 import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.chain.EnrichmentChainStore;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,7 @@ public class EnrichmentJobValidator implements JobParametersValidator {
      * @throws JobParametersInvalidException in case of parameters missing needed keys
      */
     @Override
+    @Transactional
     public void validate(JobParameters parameters) throws JobParametersInvalidException {
         notNull(parameters, () -> new IllegalArgumentException("JobParameters are null"));
 
@@ -50,9 +51,6 @@ public class EnrichmentJobValidator implements JobParametersValidator {
         validateNoRunningJobs(matchingJobs, publicationId, newJob);
         validateOverride(matchingJobs, parameters, publicationId, newJob);
 
-        // job ok to run
-        LastLaunch lastLaunch = new LastLaunch();
-        newJob.setLastLaunch(lastLaunch);
         krameriusJobInstanceStore.save(newJob);
     }
 
@@ -75,7 +73,7 @@ public class EnrichmentJobValidator implements JobParametersValidator {
 
     private void validateNoRunningJobs(List<KrameriusJobInstance> matchingJobs, String publicationId, KrameriusJobInstance newJob) {
         KrameriusJobInstance runningJob = matchingJobs.stream()
-                .filter(krameriusJobInstance -> !krameriusJobInstance.getExecutionStatus().finished())
+                .filter(krameriusJobInstance -> !krameriusJobInstance.getExecutionStatus().isFinished())
                 .filter(krameriusJobInstance -> !krameriusJobInstance.getId().equals(newJob.getId()))
                 .findFirst().orElse(null);
 

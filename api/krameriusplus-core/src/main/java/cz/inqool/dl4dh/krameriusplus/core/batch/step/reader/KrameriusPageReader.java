@@ -5,6 +5,7 @@ import cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ public class KrameriusPageReader implements ItemReader<Page> {
 
     private final Deque<Page> pages;
 
+    @Autowired
     public KrameriusPageReader(KrameriusMessenger krameriusMessenger,
                                @Value("#{jobParameters['" + JobParameterKey.PUBLICATION_ID + "']}") String publicationId) {
         this.pages = krameriusMessenger.getDigitalObjectsForParent(publicationId)

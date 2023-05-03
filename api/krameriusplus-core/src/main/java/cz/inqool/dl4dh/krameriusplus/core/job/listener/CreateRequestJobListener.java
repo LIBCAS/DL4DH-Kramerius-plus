@@ -6,9 +6,6 @@ import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstance;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstanceStore;
 import cz.inqool.dl4dh.krameriusplus.core.request.Request;
-import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.chain.EnrichmentChain;
-import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.chain.EnrichmentChainStore;
-import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.item.EnrichmentRequestItem;
 import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.request.EnrichmentRequest;
 import cz.inqool.dl4dh.krameriusplus.core.request.enrichment.request.EnrichmentRequestStore;
 import cz.inqool.dl4dh.krameriusplus.core.request.export.request.ExportRequest;
@@ -19,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static cz.inqool.dl4dh.krameriusplus.api.RequestState.CREATED;
 import static cz.inqool.dl4dh.krameriusplus.api.RequestState.RUNNING;
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.CREATE_ENRICHMENT_REQUEST;
 import static cz.inqool.dl4dh.krameriusplus.api.batch.KrameriusJobType.CREATE_EXPORT_REQUEST;
@@ -32,26 +28,17 @@ public class CreateRequestJobListener implements KrameriusJobListener {
 
     private final EnrichmentRequestStore enrichmentRequestStore;
 
-    private final EnrichmentChainStore chainStore;
-
     private final KrameriusJobInstanceStore jobInstanceStore;
 
     @Override
+    @Transactional
     public void beforeJob(String jobInstanceId) {
         KrameriusJobInstance jobInstance = jobInstanceStore.findById(jobInstanceId)
                 .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
 
-        EnrichmentChain chain = chainStore.findByKrameriusJobInstance(jobInstance);
-        EnrichmentRequestItem requestItem = chain.getRequestItem();
-        EnrichmentRequest request = requestItem.getEnrichmentRequest();
+        EnrichmentRequest request = enrichmentRequestStore.findByCreateRequestJob(jobInstance);
 
-        if (CREATED.equals(requestItem.getState())) {
-            requestItem.setState(RUNNING);
-        }
-
-        if (CREATED.equals(request.getState())) {
-            request.setState(RUNNING);
-        }
+        request.setState(RUNNING);
     }
 
     @Override
