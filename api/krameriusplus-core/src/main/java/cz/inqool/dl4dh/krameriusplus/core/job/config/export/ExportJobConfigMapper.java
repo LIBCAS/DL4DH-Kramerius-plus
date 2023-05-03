@@ -19,7 +19,7 @@ public interface ExportJobConfigMapper {
             return fromDto((ExportTextJobConfigDto) dto);
         }
 
-        throw new IllegalStateException("Mapping method not found.");
+        throw new IllegalStateException("Mapping method not found for type " + dto.getClass().getSimpleName());
     }
 
     default ExportJobConfigDto toDto(ExportJobConfig entity) {
@@ -35,7 +35,7 @@ public interface ExportJobConfigMapper {
             return toDto((ExportTextJobConfig) entity);
         }
 
-        throw new IllegalStateException("Mapping method not found.");
+        throw new IllegalStateException("Mapping method not found for type " + entity.getClass().getSimpleName());
     }
 
     default ExportJobConfigDto toDto(ExportJobConfigView entity) {
@@ -51,7 +51,7 @@ public interface ExportJobConfigMapper {
             return toDto((ExportTextJobConfigView) entity);
         }
 
-        throw new IllegalStateException("Mapping method not found.");
+        throw new IllegalStateException("Mapping method not found for type " + entity.getClass().getSimpleName());
     }
 
     ExportAltoJobConfig fromDto(ExportAltoJobConfigDto dto);
