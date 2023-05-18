@@ -47,6 +47,16 @@ export const ToolbarMenu: FC<{
 		[])
 	}
 
+	const canAccess = (page: NavbarItem) => {
+		const userRoles = keycloak?.authenticated
+			? keycloak.tokenParsed?.realm_access?.roles
+			: []
+
+		const hasAdminRole = userRoles?.includes('dl4dh-admin')
+
+		return !page.onlyAuthenticated || (keycloak.authenticated && hasAdminRole)
+	}
+
 	return (
 		<Box
 			sx={{
@@ -64,7 +74,7 @@ export const ToolbarMenu: FC<{
 				}}
 			>
 				{pages
-					.filter(page => !page.onlyAuthenticated || keycloak.authenticated)
+					.filter(page => canAccess(page))
 					.map(page => (
 						<NavbarMenuItem key={page.name} item={page} />
 					))}

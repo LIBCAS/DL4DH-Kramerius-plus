@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Typography } from '@mui/material'
 import { useKeycloak } from '@react-keycloak/web'
-import { FC, useCallback } from 'react'
+import { FC, useCallback, useEffect } from 'react'
 import { PageWrapper } from './page-wrapper'
 
 export const HomePage: FC = () => {
@@ -9,6 +9,16 @@ export const HomePage: FC = () => {
 	const login = useCallback(() => {
 		keycloak?.login()
 	}, [keycloak])
+
+	const userRoles = keycloak?.authenticated
+		? keycloak.tokenParsed?.realm_access?.roles
+		: []
+
+	const hasAccess = userRoles?.includes('dl4dh-admin')
+
+	useEffect(() => {
+		console.log(userRoles)
+	})
 
 	return (
 		<PageWrapper>
@@ -36,6 +46,13 @@ export const HomePage: FC = () => {
 								</Button>
 							</Grid>
 						</>
+					)}
+					{keycloak.authenticated && !hasAccess && (
+						<Grid item>
+							<Typography>
+								Váš účet nemá dostatečné oprávnění. Kontaktuje správce systému.
+							</Typography>
+						</Grid>
 					)}
 				</Grid>
 			</Box>
