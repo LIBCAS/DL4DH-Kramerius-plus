@@ -28,13 +28,15 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class KeycloakSecurityConfigurer extends KeycloakWebSecurityConfigurerAdapter {
 
+    public static final String KEYCLOAK_ADMIN_ROLE = "dl4dh-admin";
+
     @Value("${system.security.secret}")
     private String feederSecret;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
         KeycloakAuthenticationProvider provider = keycloakAuthenticationProvider();
-        keycloakAuthenticationProvider().setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
+        provider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(provider);
 
         auth.authenticationProvider(new FeederAuthenticationProvider());
@@ -66,7 +68,7 @@ public class KeycloakSecurityConfigurer extends KeycloakWebSecurityConfigurerAda
                         .antMatchers("/h2-console/**").permitAll()
                         .antMatchers("/favicon.ico").permitAll()
                         .antMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().hasRole(KEYCLOAK_ADMIN_ROLE))
                 .cors().and()
                 .csrf().disable()
                 .headers().frameOptions().disable().and()

@@ -7,6 +7,7 @@ import { JSXElementConstructor, useEffect, useState } from 'react'
 export interface CustomGridProps<T extends DomainObject> {
 	columns: GridColDef<T>[]
 	data?: QueryResults<T>
+	isLoading?: boolean
 	checkboxSelection?: boolean
 	pagination: GridPaginationModel
 	onPaginationChange: (pagination: GridPaginationModel) => void
@@ -18,6 +19,7 @@ export interface CustomGridProps<T extends DomainObject> {
 
 export const CustomGrid = <T extends DomainObject>({
 	columns,
+	isLoading,
 	data,
 	pagination,
 	onPaginationChange,
@@ -46,6 +48,7 @@ export const CustomGrid = <T extends DomainObject>({
 			disableColumnFilter
 			disableColumnMenu
 			keepNonExistentRowsSelected
+			loading={isLoading}
 			localeText={{
 				MuiTablePagination: {
 					labelRowsPerPage: 'Počet řádků na stránce',

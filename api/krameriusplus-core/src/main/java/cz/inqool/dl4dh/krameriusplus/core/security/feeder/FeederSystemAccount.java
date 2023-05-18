@@ -1,10 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.core.security.feeder;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Set;
+
+import static cz.inqool.dl4dh.krameriusplus.core.security.KeycloakSecurityConfigurer.KEYCLOAK_ADMIN_ROLE;
 
 /**
  * System account with user details, which is used by Feeder to authenticate against
@@ -14,7 +17,7 @@ public class FeederSystemAccount implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new HashSet<>();
+        return Set.of(new SimpleGrantedAuthority(KEYCLOAK_ADMIN_ROLE));
     }
 
     @Override

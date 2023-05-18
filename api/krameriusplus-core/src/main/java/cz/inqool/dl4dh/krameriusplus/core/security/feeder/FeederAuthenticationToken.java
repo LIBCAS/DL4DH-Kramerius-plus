@@ -1,13 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.core.security.feeder;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.HashSet;
+import java.util.Set;
+
+import static cz.inqool.dl4dh.krameriusplus.core.security.KeycloakSecurityConfigurer.KEYCLOAK_ADMIN_ROLE;
 
 public class FeederAuthenticationToken extends AbstractAuthenticationToken {
 
     public FeederAuthenticationToken(boolean isAuthenticated) {
-        super(new HashSet<>());
+        super(Set.of(new SimpleGrantedAuthority(KEYCLOAK_ADMIN_ROLE)));
         setAuthenticated(isAuthenticated);
         setDetails(new FeederSystemAccount());
     }

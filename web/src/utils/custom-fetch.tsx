@@ -14,8 +14,14 @@ export const customFetch = async (
 		headers = { ...headers, Authorization: `Bearer ${token}` }
 	}
 
-	return await fetch(url, {
+	const response = await fetch(url, {
 		...request,
 		headers: headers,
 	})
+
+	if (response.status === 403) {
+		window.location.href = '/'
+	}
+
+	return response
 }
