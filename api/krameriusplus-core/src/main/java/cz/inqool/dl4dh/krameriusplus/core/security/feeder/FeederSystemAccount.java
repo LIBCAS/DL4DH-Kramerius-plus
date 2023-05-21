@@ -17,7 +17,7 @@ public class FeederSystemAccount implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(new SimpleGrantedAuthority(KEYCLOAK_ADMIN_ROLE));
+        return Set.of(new SimpleGrantedAuthority("ROLE_"+KEYCLOAK_ADMIN_ROLE));
     }
 
     @Override

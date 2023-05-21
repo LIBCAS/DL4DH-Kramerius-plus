@@ -10,7 +10,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.security.KeycloakSecurityConfig
 public class FeederAuthenticationToken extends AbstractAuthenticationToken {
 
     public FeederAuthenticationToken(boolean isAuthenticated) {
-        super(Set.of(new SimpleGrantedAuthority(KEYCLOAK_ADMIN_ROLE)));
+        super(Set.of(new SimpleGrantedAuthority("ROLE_"+KEYCLOAK_ADMIN_ROLE)));
         setAuthenticated(isAuthenticated);
         setDetails(new FeederSystemAccount());
     }
