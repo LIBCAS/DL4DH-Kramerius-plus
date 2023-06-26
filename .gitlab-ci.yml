@@ -27,7 +27,7 @@ api-deploy:
   only:
     - master
   tags:
-    - deploy
+    - runner-3
   needs:
     - api-build
   variables:
@@ -45,7 +45,7 @@ api-stop:
     - master
   when: manual
   tags:
-    - deploy
+    - runner-3
   script:
     - "cd api"
     - "kubectl delete -f .deployment.yml -n production"
@@ -72,7 +72,7 @@ web-deploy:
   only:
     - master
   tags:
-    - deploy
+    - runner-3
   needs:
     - web-build
   script:
@@ -89,7 +89,7 @@ web-stop:
     - master
   when: manual
   tags:
-    - deploy
+    - runner-3
   script:
     - "cd web"
     - "kubectl delete -f .deployment.yml -n production"
