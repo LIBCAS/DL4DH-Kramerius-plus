@@ -1,0 +1,2 @@
+REWRITE_SYSTEM "http://www.loc.gov/mods" "xsd"
+REWRITE_SYSTEM "http://www.loc.gov/standards/xlink" "xsd"

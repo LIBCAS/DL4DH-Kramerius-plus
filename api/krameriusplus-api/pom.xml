@@ -79,6 +79,7 @@
                                     </fileset>
                                 </schema>
                             </schemas>
+                            <catalog>src/main/resources/catalog.cat</catalog>
                         </configuration>
                     </execution>
                 </executions>
