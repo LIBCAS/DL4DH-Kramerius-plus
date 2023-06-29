@@ -51,8 +51,8 @@ public class ExportJobListener implements KrameriusJobListener {
                 .orElseThrow(() -> new MissingObjectException(KrameriusJobInstance.class, jobInstanceId));
 
         Export export = exportStore.findByExportJob(jobInstance);
-        updateExportState(export);
-        // TODO: propagate state to parent Exports and Request
+        decideState(export);
+        exportStore.save(export);
 
         Export root = findRoot(export);
         List<Export> exportListInPostOrder = buildPostOrderList(root);
@@ -79,18 +79,37 @@ public class ExportJobListener implements KrameriusJobListener {
         }
     }
 
-    private void updateExportState(Export export) {
-        // absence of fileref means failure in job
-        if (export.getFileRef() == null) {
-            export.setState(ExportState.FAILED);
-        }
-        // if fileref exists check if it's complete and set to successful accordingly
-        else {
-            export.setState(!export.getState().isIncomplete() ?
-                    ExportState.SUCCESSFUL :  export.getState());
+    /**
+     * Check for success of children, if there are no children figure out on file ref
+     *
+     * @param export whose children if any will be checked
+     */
+    private void decideState(Export export) {
+        // do not overwrite cancelled
+        if (export.getState().equals(ExportState.CANCELLED)) {
+            return;
         }
 
-        exportStore.save(export);
+        // if any child is not finished self can not be finished because of post order,
+        // this case may happen when a job is prematurely ended from API
+        if (export.getChildrenList().stream()
+                .anyMatch(child -> child.getState().equals(ExportState.CREATED))) {
+          return;
+        }
+
+        // inherit state from children
+        if (export.getFileRef() != null) {
+            if (export.getChildrenList().isEmpty() || export.getChildrenList().stream()
+                    .allMatch(child -> child.getState().equals(ExportState.SUCCESSFUL))) {
+                export.setState(ExportState.SUCCESSFUL);
+            }
+            else {
+                export.setState(ExportState.PARTIAL);
+            }
+        }
+        else {
+            export.setState(ExportState.FAILED);
+        }
     }
 
     private List<Export> buildPostOrderList(Export root) {
