@@ -72,8 +72,14 @@ export const ExportRequestGrid: FC<{ filter?: ExportRequestFilterDto }> = ({
 				headerName: 'Stav žádosti',
 				width: 200,
 				sortable: false,
-				valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
-					return RequestStateMapping[params.value]
+				valueGetter: (params: GridValueGetterParams<ExportRequest>) => {
+					if (
+						params.row.state == 'RUNNING' &&
+						params.row.bulkExport?.mergeJob?.executionStatus == 'COMPLETED'
+					) {
+						return RequestStateMapping.COMPLETED
+					}
+					return RequestStateMapping[params.row.state]
 				},
 			},
 			{
