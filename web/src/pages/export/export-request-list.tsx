@@ -6,7 +6,7 @@ import { ExportRequestGrid } from 'modules/export-request/export-request-grid'
 import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { CustomErrorComponent } from 'components/error'
+import { CustomErrorComponent } from 'components/custom-error-component'
 import { GridPaginationModel } from '@mui/x-data-grid'
 
 export interface ExportRequestFilterDto {

@@ -1,4 +1,4 @@
-import { Box, Button, Paper } from '@mui/material'
+import { Box, Button, Chip, Paper } from '@mui/material'
 import {
 	GridColDef,
 	GridPaginationModel,
@@ -10,7 +10,11 @@ import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
 import { QueryResults } from 'models/query-results'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
-import { RequestState, RequestStateMapping } from 'models/request/request'
+import {
+	RequestState,
+	RequestStateColorMapping,
+	RequestStateMapping,
+} from 'models/request/request'
 import React, { FC, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -59,8 +63,15 @@ export const EnrichmentRequestGrid: FC<{
 				headerName: 'Stav žádosti',
 				width: 200,
 				sortable: false,
-				valueFormatter: (params: GridValueFormatterParams<RequestState>) => {
-					return RequestStateMapping[params.value]
+				renderCell: (params: GridRenderCellParams) => {
+					const state: RequestState = params.row['state']
+					return (
+						<Chip
+							color={RequestStateColorMapping[state]}
+							label={RequestStateMapping[state]}
+							style={{ opacity: '80%' }}
+						/>
+					)
 				},
 			},
 			{

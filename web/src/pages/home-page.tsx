@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Typography } from '@mui/material'
 import { useKeycloak } from '@react-keycloak/web'
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback } from 'react'
 import { PageWrapper } from './page-wrapper'
 
 export const HomePage: FC = () => {
@@ -15,10 +15,6 @@ export const HomePage: FC = () => {
 		: []
 
 	const hasAccess = userRoles?.includes('dl4dh-admin')
-
-	useEffect(() => {
-		console.log(userRoles)
-	})
 
 	return (
 		<PageWrapper>

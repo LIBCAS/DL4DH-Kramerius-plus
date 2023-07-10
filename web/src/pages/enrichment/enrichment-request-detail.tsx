@@ -37,8 +37,6 @@ export const EnrichmentRequestDetail: FC = () => {
 		const callApi = async () => {
 			const response = await cancelRequest(requestId!)
 
-			console.log(response)
-
 			if (response.ok) {
 				toast('Operace proběhla úspěšně', {
 					type: 'success',
