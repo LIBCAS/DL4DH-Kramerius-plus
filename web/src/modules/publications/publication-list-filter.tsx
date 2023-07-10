@@ -28,15 +28,17 @@ type Props = {
 
 export const PublicationListFilter: FC<Props> = ({ onSubmit }) => {
 	const [filter, setFilter] = useState<PublicationFilter>({
-		parentId: '',
-		model: '',
-	} as PublicationFilter)
+		parentId: undefined,
+		model: undefined,
+		isRootEnrichment: true,
+	})
 
 	const handleFieldChange =
 		(field: string) => (event: ChangeEvent<HTMLInputElement>) => {
+			const value = event.target.value ? event.target.value : undefined
 			setFilter(prevFilter => ({
 				...prevFilter,
-				[field]: event.target.value,
+				[field]: value,
 			}))
 		}
 
@@ -48,9 +50,10 @@ export const PublicationListFilter: FC<Props> = ({ onSubmit }) => {
 		event: React.MouseEvent<HTMLElement>,
 		isPublished: boolean,
 	) => {
+		const value = isPublished === null ? undefined : isPublished
 		setFilter(prevFilter => ({
 			...prevFilter,
-			isPublished,
+			isPublished: value,
 		}))
 	}
 
@@ -65,7 +68,8 @@ export const PublicationListFilter: FC<Props> = ({ onSubmit }) => {
 
 	const onDateChange =
 		(key: keyof PublicationFilter) => (value: Date | null) => {
-			setFilter(prevFilter => ({ ...prevFilter, [key]: value }))
+			const fixedValue = value === null ? undefined : value
+			setFilter(prevFilter => ({ ...prevFilter, [key]: fixedValue }))
 		}
 
 	return (
@@ -101,7 +105,7 @@ export const PublicationListFilter: FC<Props> = ({ onSubmit }) => {
 								value={filter.model}
 								onChange={handleModelChange}
 							>
-								<MenuItem value={''}>Všechny</MenuItem>
+								<MenuItem value={undefined}>Všechny</MenuItem>
 								{publicationModelList.map(model => (
 									<MenuItem key={model} value={model}>
 										{DigitalObjectModelMapping[model]}
