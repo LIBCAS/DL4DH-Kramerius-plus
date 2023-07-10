@@ -38,7 +38,7 @@ export const listPublications = async (
 	const filterParams = filterCopy
 		? Object.entries(filterCopy)
 				.map(([key, value]) =>
-					value
+					value !== undefined
 						? `&${key}=${value instanceof Date ? value.toISOString() : value}`
 						: '',
 				)
