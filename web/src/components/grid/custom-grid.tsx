@@ -2,7 +2,7 @@ import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid'
 import { GridRowSelectionModel } from '@mui/x-data-grid/models/gridRowSelectionModel'
 import { DomainObject } from 'models/domain/domain-object'
 import { QueryResults } from 'models/query-results'
-import { JSXElementConstructor, useEffect, useState } from 'react'
+import { JSXElementConstructor } from 'react'
 
 export interface CustomGridProps<T extends DomainObject> {
 	columns: GridColDef<T>[]
@@ -29,16 +29,6 @@ export const CustomGrid = <T extends DomainObject>({
 	toolbar,
 	toolbarProps,
 }: CustomGridProps<T>) => {
-	const [rowCountState, setRowCountState] = useState<number>(
-		pagination.pageSize,
-	)
-
-	useEffect(() => {
-		setRowCountState(prevRowCountState =>
-			data?.total !== undefined ? data.total : prevRowCountState,
-		)
-	}, [data, setRowCountState])
-
 	return (
 		<DataGrid
 			autoHeight
@@ -59,7 +49,7 @@ export const CustomGrid = <T extends DomainObject>({
 			pageSizeOptions={[10, 20, 50]}
 			paginationMode="server"
 			paginationModel={pagination}
-			rowCount={rowCountState}
+			rowCount={data?.total ?? 0}
 			rowSelectionModel={selection}
 			rows={data?.items ?? []}
 			slotProps={{
@@ -69,7 +59,7 @@ export const CustomGrid = <T extends DomainObject>({
 				toolbar: toolbar,
 			}}
 			sortingMode="server"
-			onPaginationModelChange={onPaginationChange}
+			onPaginationModelChange={isLoading ? undefined : onPaginationChange}
 			onRowSelectionModelChange={onSelectionChange}
 		/>
 	)

@@ -46,7 +46,7 @@ export const NavbarMenuItem: FC<{
 							<MenuItem
 								key={pageItem.name}
 								component={Link}
-								to={pageItem.link}
+								to={pageItem.path}
 								onClick={handleClose}
 							>
 								{pageItem.label}
@@ -57,14 +57,24 @@ export const NavbarMenuItem: FC<{
 		)
 	} else {
 		return (
-			<Button
-				color="inherit"
-				component={Link}
-				to={item?.link ?? '/'}
-				variant="text"
-			>
-				{item.label}
-			</Button>
+			// <Button
+			// 	color="inherit"
+			// 	component={Link}
+			// 	to={{ pathName: item?.link ?? '/', search: '?page=0&pageSize=10' }}
+			// 	variant="text"
+			// >
+			// 	{item.label}
+			// </Button>
+			<Box>
+				<Link
+					style={{ textDecoration: 'none', color: 'white' }}
+					to={{ pathname: item.path, search: item.search }}
+				>
+					<Button color="inherit" variant="text">
+						{item.label}
+					</Button>
+				</Link>
+			</Box>
 		)
 	}
 }

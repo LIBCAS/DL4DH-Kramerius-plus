@@ -8,14 +8,15 @@ import { ToolbarMenu } from './toolbar-menu'
 export type NavbarInnerItem = {
 	name: string
 	label: string
-	link: string
+	path: string
 	onlyAuthenticated: boolean
 }
 
 export type NavbarItem = {
 	name: string
 	label: string
-	link?: string
+	path: string
+	search?: string
 	onlyAuthenticated: boolean
 	children?: NavbarInnerItem[]
 }
@@ -24,25 +25,25 @@ const pages: NavbarItem[] = [
 	{
 		name: 'New enrichment',
 		label: 'Obohacení',
-		link: '/enrichment/new',
+		path: '/enrichment/new',
 		onlyAuthenticated: true,
 	},
 	{
 		name: 'Enrichment requests',
 		label: 'Žádosti obohacení',
-		link: '/enrichment',
+		path: '/enrichment',
 		onlyAuthenticated: true,
 	},
 	{
 		name: 'Publications',
 		label: 'Publikace',
-		link: '/publications',
+		path: '/publications',
 		onlyAuthenticated: true,
 	},
 	{
 		name: 'Export requests',
 		label: 'Žádosti exportu',
-		link: '/exports',
+		path: '/exports',
 		onlyAuthenticated: true,
 	},
 ]

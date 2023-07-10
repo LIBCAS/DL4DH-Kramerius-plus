@@ -40,13 +40,11 @@ export const listEnrichmentRequests = async (
 export const getEnrichmentRequest = async (
 	requestId: string,
 ): Promise<EnrichmentRequest> => {
-	const requestUrl = `/api/enrichment/${requestId}`
-
-	const response = await customFetch(requestUrl, {
-		method: 'GET',
-	})
-
-	return await response.json()
+	return await (
+		await customFetch(`/api/enrichment/${requestId}`, {
+			method: 'GET',
+		})
+	).json()
 }
 
 export const cancelRequest = async (requestId: string): Promise<Response> => {

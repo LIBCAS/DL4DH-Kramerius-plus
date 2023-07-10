@@ -7,25 +7,21 @@ import {
 	GridValueFormatterParams,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
-import { listExportRequests } from 'api/export-api'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
 import { QueryResults } from 'models/query-results'
 import { ExportRequest } from 'models/request/export-request'
 import { RequestState, RequestStateMapping } from 'models/request/request'
-import { ExportRequestFilterDto } from 'pages/export/export-request-list'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export const ExportRequestGrid: FC<{ filter?: ExportRequestFilterDto }> = ({
-	filter,
-}) => {
-	const [data, setData] = useState<QueryResults<ExportRequest>>()
+export const ExportRequestGrid: FC<{
+	isLoading: boolean
+	data?: QueryResults<ExportRequest>
+	pagination: GridPaginationModel
+	onPaginationChange: (pagination: GridPaginationModel) => void
+}> = ({ isLoading, data, pagination, onPaginationChange }) => {
 	const [selection, setSelection] = useState<GridRowSelectionModel>([])
-	const [pagination, setPagination] = useState<GridPaginationModel>({
-		page: 0,
-		pageSize: 10,
-	})
 
 	const columns = useMemo<GridColDef<ExportRequest>[]>(
 		() => [
@@ -104,30 +100,15 @@ export const ExportRequestGrid: FC<{ filter?: ExportRequestFilterDto }> = ({
 		[],
 	)
 
-	const fetchRequests = useCallback(async () => {
-		const response = await listExportRequests(
-			pagination.page,
-			pagination.pageSize,
-			filter,
-		)
-
-		if (response) {
-			setData(response)
-		}
-	}, [pagination, filter])
-
-	useEffect(() => {
-		fetchRequests()
-	}, [fetchRequests])
-
 	return (
 		<Paper>
 			<CustomGrid
 				columns={columns}
 				data={data}
+				isLoading={isLoading}
 				pagination={pagination}
 				selection={selection}
-				onPaginationChange={setPagination}
+				onPaginationChange={onPaginationChange}
 				onSelectionChange={setSelection}
 			/>
 		</Paper>

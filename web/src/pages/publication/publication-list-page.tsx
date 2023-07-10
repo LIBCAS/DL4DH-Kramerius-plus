@@ -1,5 +1,6 @@
 import { Grid } from '@mui/material'
 import { GridPaginationModel, GridRowSelectionModel } from '@mui/x-data-grid'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
 	listPublications,
 	PublicationFilter,
@@ -7,26 +8,39 @@ import {
 	publishMultiple,
 	unpublishMultiple,
 } from 'api/publication-api'
+import { CustomErrorComponent } from 'components/error'
 import { PublicationExportDialog } from 'components/publication/publication-export-dialog'
-import { Publication } from 'models'
-import { QueryResults } from 'models/query-results'
 import { PublicationGrid } from 'modules/publications/publication-grid'
 import { PublicationListFilter } from 'modules/publications/publication-list-filter'
 import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useCallback, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 export const PublicationListPage: FC = () => {
+	const queryClient = useQueryClient()
+	const [searchParams, setSearchParams] = useSearchParams()
 	const [filter, setFilter] = useState<PublicationFilter>({
 		isRootEnrichment: true,
 	})
-	const [data, setData] = useState<QueryResults<Publication>>()
+	const { status, isLoading, data, error, isPreviousData, refetch } = useQuery({
+		queryKey: [
+			'publications',
+			parseInt(searchParams.get('page') ?? '1') - 1,
+			parseInt(searchParams.get('pageSize') ?? '10'),
+			filter,
+		],
+		queryFn: () =>
+			listPublications(
+				parseInt(searchParams.get('page') ?? '1') - 1,
+				parseInt(searchParams.get('pageSize') ?? '10'),
+				filter,
+			),
+		keepPreviousData: true,
+		staleTime: 5000,
+	})
 
 	const [selection, setSelection] = useState<GridRowSelectionModel>([])
-	const [pagination, setPagination] = useState<GridPaginationModel>({
-		page: 0,
-		pageSize: 10,
-	})
 	const [publicationsToExport, setPublicationsToExport] = useState<string[]>([])
 
 	const getSelectedPublications = () => {
@@ -37,32 +51,27 @@ export const PublicationListPage: FC = () => {
 		setFilter({ ...filter })
 	}
 
-	const exportSelected = () => {
-		setPublicationsToExport(getSelectedPublications())
-	}
-
-	const clearSelected = () => {
-		setSelection([])
-	}
-
-	const fetchPublications = useCallback(
-		async (pagination: GridPaginationModel) => {
-			const response = await listPublications(
-				pagination.page,
-				pagination.pageSize,
-				filter,
-			)
-
-			if (response) {
-				setData(response)
-			}
-		},
-		[filter],
-	)
-
 	useEffect(() => {
-		fetchPublications(pagination)
-	}, [fetchPublications, pagination])
+		const page = parseInt(searchParams.get('page') ?? '1') - 1
+		const pageSize = parseInt(searchParams.get('pageSize') ?? '10')
+		if (
+			!isPreviousData &&
+			data &&
+			data.total > (data.page + 1) * data.pageSize
+		) {
+			queryClient.prefetchQuery({
+				queryKey: ['publications', page + 1, pageSize],
+				queryFn: () => listPublications(page + 1, pageSize, filter),
+			})
+		}
+	}, [data, filter, isPreviousData, searchParams, queryClient])
+
+	const onPaginationChange = ({ page, pageSize }: GridPaginationModel) => {
+		setSearchParams({
+			...(page !== 0 ? { page: `${page + 1}` } : {}),
+			...(pageSize !== 10 ? { pageSize: `${pageSize}` } : {}),
+		})
+	}
 
 	const onExportSingleClick = useCallback(
 		(publicationId: string) => (e: React.MouseEvent) => {
@@ -77,34 +86,17 @@ export const PublicationListPage: FC = () => {
 		(publicationId: string) => async (e: React.MouseEvent) => {
 			e.stopPropagation()
 
-			const response = await publish(publicationId)
-
-			if (response.ok) {
-				setData(prev => {
-					if (prev) {
-						const items = prev.items.map(pub => {
-							if (pub.id === publicationId) {
-								return {
-									...pub,
-									publishInfo: { ...pub.publishInfo, isPublished: true },
-								}
-							} else {
-								return pub
-							}
-						})
-
-						return { ...prev, items }
+			publish(publicationId)
+				.then(response => {
+					if (response.ok) {
+						toast('Položka byla úspěšně publikována.', { type: 'success' })
+					} else {
+						toast('Při publikování došlo k chybě.', { type: 'error' })
 					}
-
-					return prev
 				})
-
-				toast('Položka byla úspěšně publikována.', { type: 'success' })
-			} else {
-				toast('Při publikování došlo k chybě.', { type: 'error' })
-			}
+				.then(() => refetch())
 		},
-		[],
+		[refetch],
 	)
 
 	const onPublishMultipleClick = () => {
@@ -116,7 +108,7 @@ export const PublicationListPage: FC = () => {
 					toast('Při publikování došlo k chybě.', { type: 'error' })
 				}
 			})
-			.then(() => fetchPublications(pagination))
+			.then(() => refetch())
 	}
 
 	const onUnpublishMultipleClick = () => {
@@ -130,41 +122,50 @@ export const PublicationListPage: FC = () => {
 					toast('Při zrušení publikování došlo k chybě.', { type: 'error' })
 				}
 			})
-			.then(() => fetchPublications(pagination))
+			.then(() => refetch())
 	}
 
 	return (
 		<PageWrapper requireAuth>
-			<Grid container spacing={3}>
-				<Grid item xs={12}>
-					<PublicationListFilter onSubmit={onFilterSubmit} />
-				</Grid>
-				<Grid item xs={12}>
-					<PublicationGrid
-						gridProps={{
-							data,
-							checkboxSelection: true,
-							pagination,
-							onPaginationChange: setPagination,
-							selection,
-							onSelectionChange: setSelection,
-							toolbarProps: {
-								onClearSelection: clearSelected,
-								onExportClick: exportSelected,
-								onPublishClick: onPublishMultipleClick,
-								onUnpublishClick: onUnpublishMultipleClick,
-							},
-						}}
-						onExportClick={onExportSingleClick}
-						onPublishClick={onPublishSingleClick}
+			{status === 'error' ? (
+				<CustomErrorComponent error={error} />
+			) : (
+				<Grid container spacing={3}>
+					<Grid item xs={12}>
+						<PublicationListFilter onSubmit={onFilterSubmit} />
+					</Grid>
+					<Grid item xs={12}>
+						<PublicationGrid
+							gridProps={{
+								isLoading,
+								data,
+								checkboxSelection: true,
+								pagination: {
+									page: parseInt(searchParams.get('page') ?? '1') - 1,
+									pageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+								},
+								onPaginationChange: onPaginationChange,
+								selection,
+								onSelectionChange: setSelection,
+								toolbarProps: {
+									onClearSelection: () => setSelection([]),
+									onExportClick: () =>
+										setPublicationsToExport(getSelectedPublications()),
+									onPublishClick: onPublishMultipleClick,
+									onUnpublishClick: onUnpublishMultipleClick,
+								},
+							}}
+							onExportClick={onExportSingleClick}
+							onPublishClick={onPublishSingleClick}
+						/>
+					</Grid>
+					<PublicationExportDialog
+						open={!!publicationsToExport.length}
+						publicationIds={publicationsToExport}
+						onClose={() => setPublicationsToExport([])}
 					/>
 				</Grid>
-				<PublicationExportDialog
-					open={!!publicationsToExport.length}
-					publicationIds={publicationsToExport}
-					onClose={() => setPublicationsToExport([])}
-				/>
-			</Grid>
+			)}
 		</PageWrapper>
 	)
 }

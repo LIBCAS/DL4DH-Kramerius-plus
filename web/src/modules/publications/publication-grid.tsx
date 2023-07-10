@@ -15,6 +15,7 @@ import { FC, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
 type GridProps = {
+	isLoading: boolean
 	data?: QueryResults<Publication>
 	checkboxSelection?: boolean
 	pagination: GridPaginationModel

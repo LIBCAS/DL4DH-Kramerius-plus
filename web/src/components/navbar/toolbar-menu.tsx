@@ -38,7 +38,7 @@ export const ToolbarMenu: FC<{
 				flat.push({
 					name: toFlatten.name,
 					label: toFlatten.label,
-					link: toFlatten.link ?? '/',
+					path: toFlatten.path,
 					onlyAuthenticated: toFlatten.onlyAuthenticated,
 				})
 				return flat
@@ -124,7 +124,7 @@ export const ToolbarMenu: FC<{
 							<MenuItem
 								key={page.name}
 								component={Link}
-								to={page.link}
+								to={page.path}
 								onClick={handleCloseNavMenu}
 							>
 								{page.label}
