@@ -6,25 +6,21 @@ import {
 	GridRowSelectionModel,
 	GridValueFormatterParams,
 } from '@mui/x-data-grid'
-import { listEnrichmentRequests } from 'api/enrichment-api'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
 import { QueryResults } from 'models/query-results'
 import { EnrichmentRequest } from 'models/request/enrichment-request'
 import { RequestState, RequestStateMapping } from 'models/request/request'
-import { EnrichmentRequestFilterDto } from 'pages/enrichment/enrichment-request-list'
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export const EnrichmentRequestGrid: FC<{
-	filter: EnrichmentRequestFilterDto
-}> = ({ filter }) => {
-	const [data, setData] = useState<QueryResults<EnrichmentRequest>>()
+	isLoading: boolean
+	data?: QueryResults<EnrichmentRequest>
+	pagination: GridPaginationModel
+	onPaginationChange: (pagination: GridPaginationModel) => void
+}> = ({ isLoading, data, pagination, onPaginationChange }) => {
 	const [selection, setSelection] = useState<GridRowSelectionModel>([])
-	const [pagination, setPagination] = useState<GridPaginationModel>({
-		page: 0,
-		pageSize: 10,
-	})
 
 	const columns = useMemo<GridColDef<EnrichmentRequest>[]>(
 		() => [
@@ -89,33 +85,15 @@ export const EnrichmentRequestGrid: FC<{
 		[],
 	)
 
-	const fetchRequests = useCallback(
-		async (pagination: GridPaginationModel) => {
-			const response = await listEnrichmentRequests(
-				pagination.page,
-				pagination.pageSize,
-				filter,
-			)
-
-			if (response) {
-				setData(response)
-			}
-		},
-		[filter],
-	)
-
-	useEffect(() => {
-		fetchRequests(pagination)
-	}, [fetchRequests, pagination])
-
 	return (
 		<Paper>
 			<CustomGrid
 				columns={columns}
 				data={data}
+				isLoading={isLoading}
 				pagination={pagination}
 				selection={selection}
-				onPaginationChange={setPagination}
+				onPaginationChange={onPaginationChange}
 				onSelectionChange={setSelection}
 			/>
 		</Paper>

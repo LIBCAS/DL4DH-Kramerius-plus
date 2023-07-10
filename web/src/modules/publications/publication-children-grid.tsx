@@ -6,23 +6,37 @@ import {
 	GridRowSelectionModel,
 	GridValueGetterParams,
 } from '@mui/x-data-grid'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { listPublications } from 'api/publication-api'
+import { CustomErrorComponent } from 'components/error'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
-import { QueryResults } from 'models/query-results'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 
 export const PublicationChildrenGrid: FC<{
 	parentId: string
 }> = ({ parentId }) => {
-	const [data, setData] = useState<QueryResults<Publication>>()
-	const [pagination, setPagination] = useState<GridPaginationModel>({
-		page: 0,
-		pageSize: 10,
-	})
+	const queryClient = useQueryClient()
+	const [searchParams, setSearchParams] = useSearchParams()
 	const [selection, setSelection] = useState<GridRowSelectionModel>([])
+	const { status, isLoading, data, error, isPreviousData } = useQuery({
+		queryKey: [
+			'publications',
+			parseInt(searchParams.get('page') ?? '1') - 1,
+			parseInt(searchParams.get('pageSize') ?? '10'),
+			{ parentId },
+		],
+		queryFn: () =>
+			listPublications(
+				parseInt(searchParams.get('page') ?? '1') - 1,
+				parseInt(searchParams.get('pageSize') ?? '10'),
+				{ parentId },
+			),
+		keepPreviousData: true,
+		staleTime: 5000,
+	})
 
 	const columns = useMemo<GridColDef<Publication>[]>(
 		() => [
@@ -89,32 +103,46 @@ export const PublicationChildrenGrid: FC<{
 		[],
 	)
 
-	const fetchPublications = useCallback(async () => {
-		const response = await listPublications(
-			pagination.page,
-			pagination.pageSize,
-			{ parentId },
-		)
-
-		if (response) {
-			setData(response)
-		}
-	}, [pagination, parentId])
-
 	useEffect(() => {
-		fetchPublications()
-	}, [fetchPublications])
+		const page = parseInt(searchParams.get('page') ?? '1') - 1
+		const pageSize = parseInt(searchParams.get('pageSize') ?? '10')
+		if (
+			!isPreviousData &&
+			data &&
+			data.total > (data.page + 1) * data.pageSize
+		) {
+			queryClient.prefetchQuery({
+				queryKey: ['enrichmentRequests', page + 1, pageSize],
+				queryFn: () => listPublications(page + 1, pageSize, { parentId }),
+			})
+		}
+	}, [data, isPreviousData, searchParams, queryClient, parentId])
+
+	const onPaginationChange = ({ page, pageSize }: GridPaginationModel) => {
+		setSearchParams({
+			...(page !== 0 ? { page: `${page + 1}` } : {}),
+			...(pageSize !== 10 ? { pageSize: `${pageSize}` } : {}),
+		})
+	}
 
 	return (
 		<Paper>
-			<CustomGrid
-				columns={columns}
-				data={data}
-				pagination={pagination}
-				selection={selection}
-				onPaginationChange={setPagination}
-				onSelectionChange={setSelection}
-			/>
+			{status === 'error' ? (
+				<CustomErrorComponent error={error} />
+			) : (
+				<CustomGrid
+					columns={columns}
+					data={data}
+					isLoading={isLoading}
+					pagination={{
+						page: parseInt(searchParams.get('page') ?? '1') - 1,
+						pageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+					}}
+					selection={selection}
+					onPaginationChange={onPaginationChange}
+					onSelectionChange={setSelection}
+				/>
+			)}
 		</Paper>
 	)
 }
