@@ -16,11 +16,32 @@ export type RequestState =
 	| 'PARTIAL'
 	| 'CANCELLED'
 
-export const RequestStateMapping = {
+export const RequestStateMapping: Record<
+	RequestState,
+	string | undefined | null
+> = {
 	CREATED: 'Vytvořená',
 	RUNNING: 'Běží',
 	FAILED: 'Selhala',
 	COMPLETED: 'Dokončená',
 	PARTIAL: 'Částečně selhala',
 	CANCELLED: 'Zrušena',
+}
+
+export const RequestStateColorMapping: Record<
+	RequestState,
+	| 'primary'
+	| 'secondary'
+	| 'error'
+	| 'success'
+	| 'warning'
+	| 'default'
+	| undefined
+> = {
+	CREATED: 'primary',
+	RUNNING: 'secondary',
+	FAILED: 'error',
+	COMPLETED: 'success',
+	PARTIAL: 'warning',
+	CANCELLED: 'default',
 }

@@ -8,7 +8,7 @@ import {
 } from '@mui/x-data-grid'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { listPublications } from 'api/publication-api'
-import { CustomErrorComponent } from 'components/error'
+import { CustomErrorComponent } from 'components/custom-error-component'
 import { CustomGrid } from 'components/grid/custom-grid'
 import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'

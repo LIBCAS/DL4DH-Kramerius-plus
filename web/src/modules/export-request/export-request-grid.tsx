@@ -1,4 +1,4 @@
-import { Box, Button, Paper } from '@mui/material'
+import { Box, Button, Chip, Paper } from '@mui/material'
 import {
 	GridColDef,
 	GridPaginationModel,
@@ -11,7 +11,11 @@ import { CustomGrid } from 'components/grid/custom-grid'
 import { User } from 'models/domain/user'
 import { QueryResults } from 'models/query-results'
 import { ExportRequest } from 'models/request/export-request'
-import { RequestState, RequestStateMapping } from 'models/request/request'
+import {
+	RequestState,
+	RequestStateColorMapping,
+	RequestStateMapping,
+} from 'models/request/request'
 import { FC, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -68,14 +72,19 @@ export const ExportRequestGrid: FC<{
 				headerName: 'Stav žádosti',
 				width: 200,
 				sortable: false,
-				valueGetter: (params: GridValueGetterParams<ExportRequest>) => {
-					if (
-						params.row.state == 'RUNNING' &&
-						params.row.bulkExport?.mergeJob?.executionStatus == 'COMPLETED'
-					) {
-						return RequestStateMapping.COMPLETED
-					}
-					return RequestStateMapping[params.row.state]
+				renderCell: (params: GridRenderCellParams) => {
+					const state: RequestState =
+						params.row['state'] == 'RUNNING' &&
+						params.row['bulkExport'].mergeJob.executionStatus == 'COMPLETED'
+							? 'COMPLETED'
+							: params.row['state'] // TODO: Hotfix for incorrect requestState propagation, remove after state propagation is fixed
+					return (
+						<Chip
+							color={RequestStateColorMapping[state]}
+							label={RequestStateMapping[state]}
+							style={{ opacity: '80%' }}
+						/>
+					)
 				},
 			},
 			{

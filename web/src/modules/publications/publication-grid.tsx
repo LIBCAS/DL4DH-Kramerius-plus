@@ -1,4 +1,4 @@
-import { Box, Button, Paper } from '@mui/material'
+import { Paper } from '@mui/material'
 import {
 	GridColDef,
 	GridPaginationModel,
@@ -12,9 +12,16 @@ import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
 import { QueryResults } from 'models/query-results'
 import { FC, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { PublicationRowOptions } from './publication-row-options'
 
-type GridProps = {
+type GridAction = {
+	getIcon: (id: string) => JSX.Element
+	getLabel: (id: string) => string
+	getHref?: (id: string) => string
+	getOnClick?: (id: string) => () => void
+}
+
+export const PublicationGrid: FC<{
 	isLoading: boolean
 	data?: QueryResults<Publication>
 	checkboxSelection?: boolean
@@ -23,13 +30,18 @@ type GridProps = {
 	selection: GridRowSelectionModel
 	onSelectionChange: (selection: GridRowSelectionModel) => void
 	toolbarProps?: any
-}
-
-export const PublicationGrid: FC<{
-	onExportClick: (publicationId: string) => (e: React.MouseEvent) => void
-	onPublishClick: (publicationId: string) => (e: React.MouseEvent) => void
-	gridProps: GridProps
-}> = ({ onExportClick, onPublishClick, gridProps }) => {
+	actions?: GridAction[]
+}> = ({
+	isLoading,
+	data,
+	checkboxSelection,
+	pagination,
+	onPaginationChange,
+	selection,
+	onSelectionChange,
+	toolbarProps,
+	actions,
+}) => {
 	const columns = useMemo<GridColDef<Publication>[]>(
 		() => [
 			{
@@ -77,44 +89,52 @@ export const PublicationGrid: FC<{
 				field: 'actions',
 				headerName: 'Akce',
 				sortable: false,
-				width: 300,
-				renderCell: (params: GridRenderCellParams) => (
-					<Box display="flex" justifyContent="space-between" width="100%">
-						<Button
-							component={Link}
-							size="small"
-							to={`/publications/${params.row['id']}`}
-							variant="text"
-						>
-							Detail
-						</Button>
-						<Button
-							size="small"
-							variant="text"
-							onClick={onExportClick(params.row['id'])}
-						>
-							Exportovat
-						</Button>
-						<Button
-							size="small"
-							variant="text"
-							onClick={onPublishClick(params.row['id'])}
-						>
-							Publikovat
-						</Button>
-					</Box>
-				),
+				width: 80,
+				renderCell: (params: GridRenderCellParams) => {
+					const options = actions
+						? actions.map(action => {
+								const id = params.row['id']
+								if (action.getOnClick) {
+									return {
+										icon: action.getIcon(id),
+										label: action.getLabel(id),
+										onClick: action.getOnClick(id),
+									}
+								}
+
+								if (action.getHref) {
+									return {
+										icon: action.getIcon(id),
+										label: action.getLabel(id),
+										href: action.getHref(id),
+									}
+								}
+
+								throw new Error(
+									'At least one of "onClick" or "href" props must be defined.',
+								)
+						  })
+						: []
+					return <PublicationRowOptions options={options} />
+				},
 			},
 		],
-		[onExportClick, onPublishClick],
+		[actions],
 	)
 
 	return (
 		<Paper>
 			<CustomGrid
+				checkboxSelection={checkboxSelection}
 				columns={columns}
+				data={data}
+				isLoading={isLoading}
+				pagination={pagination}
+				selection={selection}
 				toolbar={PublicationGridToolbar}
-				{...gridProps}
+				toolbarProps={toolbarProps}
+				onPaginationChange={onPaginationChange}
+				onSelectionChange={onSelectionChange}
 			/>
 		</Paper>
 	)

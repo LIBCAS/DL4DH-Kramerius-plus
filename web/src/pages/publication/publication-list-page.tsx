@@ -6,9 +6,10 @@ import {
 	PublicationFilter,
 	publish,
 	publishMultiple,
+	unpublish,
 	unpublishMultiple,
 } from 'api/publication-api'
-import { CustomErrorComponent } from 'components/error'
+import { CustomErrorComponent } from 'components/custom-error-component'
 import { PublicationExportDialog } from 'components/publication/publication-export-dialog'
 import { PublicationGrid } from 'modules/publications/publication-grid'
 import { PublicationListFilter } from 'modules/publications/publication-list-filter'
@@ -16,6 +17,10 @@ import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
+import PublicIcon from '@mui/icons-material/Public'
+import PublicOffIcon from '@mui/icons-material/PublicOff'
 
 export const PublicationListPage: FC = () => {
 	const queryClient = useQueryClient()
@@ -74,24 +79,35 @@ export const PublicationListPage: FC = () => {
 	}
 
 	const onExportSingleClick = useCallback(
-		(publicationId: string) => (e: React.MouseEvent) => {
-			e.stopPropagation()
-
+		(publicationId: string) => () => {
 			setPublicationsToExport([publicationId])
 		},
 		[],
 	)
 
 	const onPublishSingleClick = useCallback(
-		(publicationId: string) => async (e: React.MouseEvent) => {
-			e.stopPropagation()
-
+		(publicationId: string) => {
 			publish(publicationId)
 				.then(response => {
 					if (response.ok) {
 						toast('Položka byla úspěšně publikována.', { type: 'success' })
 					} else {
 						toast('Při publikování došlo k chybě.', { type: 'error' })
+					}
+				})
+				.then(() => refetch())
+		},
+		[refetch],
+	)
+
+	const onUnpublishSingleClick = useCallback(
+		(publicationId: string) => {
+			unpublish(publicationId)
+				.then(response => {
+					if (response.ok) {
+						toast('Publikování bylo úspěšně zrušeno.', { type: 'success' })
+					} else {
+						toast('Při zrušení publikovování došlo k chybě.', { type: 'error' })
 					}
 				})
 				.then(() => refetch())
@@ -125,6 +141,29 @@ export const PublicationListPage: FC = () => {
 			.then(() => refetch())
 	}
 
+	const getLabel = (id: string) => {
+		return data?.items.find(publication => publication.id === id)?.publishInfo
+			.isPublished
+			? 'Zrušit publikování'
+			: 'Publikovat'
+	}
+
+	const getIcon = (id: string) => {
+		return data?.items.find(publication => publication.id === id)?.publishInfo
+			.isPublished ? (
+			<PublicOffIcon />
+		) : (
+			<PublicIcon />
+		)
+	}
+
+	const getAction = (id: string) => () => {
+		return data?.items.find(publication => publication.id === id)?.publishInfo
+			.isPublished
+			? onUnpublishSingleClick(id)
+			: onPublishSingleClick(id)
+	}
+
 	return (
 		<PageWrapper requireAuth>
 			{status === 'error' ? (
@@ -136,27 +175,42 @@ export const PublicationListPage: FC = () => {
 					</Grid>
 					<Grid item xs={12}>
 						<PublicationGrid
-							gridProps={{
-								isLoading,
-								data,
-								checkboxSelection: true,
-								pagination: {
-									page: parseInt(searchParams.get('page') ?? '1') - 1,
-									pageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+							actions={[
+								{
+									getLabel: () => 'Detail',
+									getHref: (id: string) => {
+										return `/publications/${id}`
+									},
+									getIcon: () => <OpenInNewIcon />,
 								},
-								onPaginationChange: onPaginationChange,
-								selection,
-								onSelectionChange: setSelection,
-								toolbarProps: {
-									onClearSelection: () => setSelection([]),
-									onExportClick: () =>
-										setPublicationsToExport(getSelectedPublications()),
-									onPublishClick: onPublishMultipleClick,
-									onUnpublishClick: onUnpublishMultipleClick,
+								{
+									getLabel: () => 'Exportovat',
+									getOnClick: onExportSingleClick,
+									getIcon: () => <ExitToAppIcon />,
 								},
+								{
+									getLabel: (id: string) => getLabel(id),
+									getOnClick: (id: string) => getAction(id),
+									getIcon: (id: string) => getIcon(id),
+								},
+							]}
+							checkboxSelection={true}
+							data={data}
+							isLoading={isLoading}
+							pagination={{
+								page: parseInt(searchParams.get('page') ?? '1') - 1,
+								pageSize: parseInt(searchParams.get('pageSize') ?? '10'),
 							}}
-							onExportClick={onExportSingleClick}
-							onPublishClick={onPublishSingleClick}
+							selection={selection}
+							toolbarProps={{
+								onClearSelection: () => setSelection([]),
+								onExportClick: () =>
+									setPublicationsToExport(getSelectedPublications()),
+								onPublishClick: onPublishMultipleClick,
+								onUnpublishClick: onUnpublishMultipleClick,
+							}}
+							onPaginationChange={onPaginationChange}
+							onSelectionChange={setSelection}
 						/>
 					</Grid>
 					<PublicationExportDialog
