@@ -73,11 +73,7 @@ export const ExportRequestGrid: FC<{
 				width: 200,
 				sortable: false,
 				renderCell: (params: GridRenderCellParams) => {
-					const state: RequestState =
-						params.row['state'] == 'RUNNING' &&
-						params.row['bulkExport'].mergeJob.executionStatus == 'COMPLETED'
-							? 'COMPLETED'
-							: params.row['state'] // TODO: Hotfix for incorrect requestState propagation, remove after state propagation is fixed
+					const state: RequestState = params.row['state']
 					return (
 						<Chip
 							color={RequestStateColorMapping[state]}
