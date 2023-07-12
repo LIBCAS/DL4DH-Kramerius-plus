@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.step.tasklet;
 
-import cz.inqool.dl4dh.krameriusplus.api.batch.ExecutionStatus;
+import cz.inqool.dl4dh.krameriusplus.api.RequestState;
 import cz.inqool.dl4dh.krameriusplus.api.export.ExportState;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileService;
@@ -47,9 +47,9 @@ public class MergeExportsTasklet implements Tasklet {
         Path tmpUnzipDirectory = Files.createDirectory(tmpDirPath.resolve(tmpName));
         Path resultPath = tmpDirPath.resolve(tmpName + ".zip");
 
-        boolean isComplete = true;
         if (allIncomplete(exportRequest)) {
             exportRequest.getBulkExport().setState(ExportState.FAILED);
+            exportRequest.setState(RequestState.FAILED);
             return RepeatStatus.FINISHED;
         }
 
@@ -62,13 +62,11 @@ public class MergeExportsTasklet implements Tasklet {
                     zipArchiver.unzip(inputStream, tmpUnzipDirectory.resolve(export.getPublicationId().substring(5)));
                 }
             }
-            // either entire export tree is missing, or some part of it was incomplete
-            else if (fileRef == null || export.getExportJob().getExecutionStatus().equals(ExecutionStatus.FAILED)){
-                isComplete = false;
-            }
         }
 
         zipArchiver.zip(tmpUnzipDirectory, resultPath);
+
+        boolean containsIncompleteExports = containsIncomplete(exportRequest);
 
         try (InputStream inputStream = Files.newInputStream(resultPath)) {
             FileRef fileRef = fileService.create(
@@ -77,7 +75,8 @@ public class MergeExportsTasklet implements Tasklet {
                     tmpName + ".zip",
                     "application/zip");
             exportRequest.getBulkExport().setFile(fileRef);
-            exportRequest.getBulkExport().setState(isComplete ? ExportState.SUCCESSFUL : ExportState.PARTIAL);
+            exportRequest.getBulkExport().setState(containsIncompleteExports ? ExportState.PARTIAL : ExportState.SUCCESSFUL);
+            exportRequest.setState(containsIncompleteExports ? RequestState.PARTIAL : RequestState.COMPLETED);
             exportRequestStore.save(exportRequest);
         }
 
@@ -85,6 +84,11 @@ public class MergeExportsTasklet implements Tasklet {
         Files.delete(resultPath);
 
         return RepeatStatus.FINISHED;
+    }
+
+    private boolean containsIncomplete(ExportRequest exportRequest) {
+        return exportRequest.getItems().stream()
+                .anyMatch(item -> !item.getRootExport().getState().equals(ExportState.SUCCESSFUL));
     }
 
     private boolean allIncomplete(ExportRequest exportRequest) {

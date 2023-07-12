@@ -94,7 +94,7 @@ public class ExportJobListener implements KrameriusJobListener {
         // this case may happen when a job is prematurely ended from API
         if (export.getChildrenList().stream()
                 .anyMatch(child -> child.getState().equals(ExportState.CREATED))) {
-          return;
+            return;
         }
 
         // inherit state from children
@@ -102,12 +102,14 @@ public class ExportJobListener implements KrameriusJobListener {
             if (export.getChildrenList().isEmpty() || export.getChildrenList().stream()
                     .allMatch(child -> child.getState().equals(ExportState.SUCCESSFUL))) {
                 export.setState(ExportState.SUCCESSFUL);
+            } else {
+                if (export.getChildrenList().stream().allMatch(child -> child.getState().equals(ExportState.FAILED))) {
+                    export.setState(ExportState.FAILED);
+                } else {
+                    export.setState(ExportState.PARTIAL);
+                }
             }
-            else {
-                export.setState(ExportState.PARTIAL);
-            }
-        }
-        else {
+        } else {
             export.setState(ExportState.FAILED);
         }
     }

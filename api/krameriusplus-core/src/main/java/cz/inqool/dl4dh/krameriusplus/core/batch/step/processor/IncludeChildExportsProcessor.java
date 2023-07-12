@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.step.processor;
 
-import cz.inqool.dl4dh.krameriusplus.api.exception.ExportException;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.request.export.export.Export;
 import cz.inqool.dl4dh.krameriusplus.core.utils.ZipArchiver;
@@ -31,14 +30,11 @@ public class IncludeChildExportsProcessor implements ItemProcessor<Export, Expor
     public Export process(Export item) throws Exception {
         Path childPath = directory.resolve(item.getPublicationId().substring(5));
 
-        if (item.getFileRef() == null) {
-            throw new ExportException("Export id: " + item.getId() + " for publication id: "
-                    + item.getPublicationId() + " has no export file.",
-                    ExportException.ErrorCode.EXPORT_FILE_MISSING);
-        }
-
-        try (InputStream is = fileService.find(item.getFileRef().getId()).open()) {
-            zipArchiver.unzip(is, childPath);
+        // skip all missing files
+        if (item.getFileRef() != null) {
+            try (InputStream is = fileService.find(item.getFileRef().getId()).open()) {
+                zipArchiver.unzip(is, childPath);
+            }
         }
 
         return item;
