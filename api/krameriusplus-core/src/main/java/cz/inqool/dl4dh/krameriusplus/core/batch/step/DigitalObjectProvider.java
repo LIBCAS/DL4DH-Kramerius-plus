@@ -11,14 +11,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
- * Class providing Publication data for exports. Delegates to {@link PublicationStore} or {@link KrameriusMessenger}
+ * Class providing Publication metadata, must not be used to obtain pages. Delegates to {@link PublicationStore} or {@link KrameriusMessenger}
  * if publication is not found in local DB
  */
 @Component
-public class PublicationProvider {
+public class DigitalObjectProvider {
 
     private PublicationStore publicationStore;
 
@@ -34,15 +33,12 @@ public class PublicationProvider {
                 });
     }
 
-    public List<Publication> findChildren(String parentId) {
+    public List<? extends DigitalObject> findChildren(String parentId) {
         Optional<Publication> publication = publicationStore.findById(parentId);
         if (publication.isPresent()) {
             return publicationStore.findAllChildren(parentId);
         } else {
-            return krameriusMessenger.getDigitalObjectsForParent(parentId).stream()
-                    .filter(obj -> obj instanceof Publication)
-                    .map(obj -> (Publication) obj)
-                    .collect(Collectors.toList());
+            return krameriusMessenger.getDigitalObjectsForParent(parentId);
         }
     }
 

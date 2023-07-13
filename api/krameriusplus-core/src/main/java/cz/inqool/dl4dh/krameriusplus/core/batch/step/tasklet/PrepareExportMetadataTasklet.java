@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.step.tasklet;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.step.PublicationProvider;
+import cz.inqool.dl4dh.krameriusplus.core.batch.step.DigitalObjectProvider;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.core.utils.Utils;
@@ -21,7 +21,7 @@ import static cz.inqool.dl4dh.krameriusplus.core.batch.step.ExecutionContextKey.
 @StepScope
 public class PrepareExportMetadataTasklet implements Tasklet {
 
-    private PublicationProvider publicationProvider;
+    private DigitalObjectProvider digitalObjectProvider;
 
     @Value("#{jobParameters['" + JobParameterKey.PUBLICATION_ID + "']}")
     private String publicationId;
@@ -30,7 +30,7 @@ public class PrepareExportMetadataTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
         Utils.notNull(publicationId, () -> new IllegalStateException("Publication ID not in jobParameters"));
 
-        Publication publication = publicationProvider.find(publicationId);
+        Publication publication = digitalObjectProvider.find(publicationId);
 
         ExecutionContext stepContext = chunkContext.getStepContext().getStepExecution().getExecutionContext();
         stepContext.put(PUBLICATION_TITLE, publication.getTitle());
@@ -40,7 +40,7 @@ public class PrepareExportMetadataTasklet implements Tasklet {
     }
 
     @Autowired
-    public void setPublicationProvider(PublicationProvider publicationProvider) {
-        this.publicationProvider = publicationProvider;
+    public void setPublicationProvider(DigitalObjectProvider digitalObjectProvider) {
+        this.digitalObjectProvider = digitalObjectProvider;
     }
 }

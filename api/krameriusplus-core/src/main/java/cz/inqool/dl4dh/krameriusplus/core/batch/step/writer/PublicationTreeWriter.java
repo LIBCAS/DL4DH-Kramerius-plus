@@ -34,8 +34,10 @@ public class PublicationTreeWriter implements ItemWriter<Publication> {
             return;
         }
 
-        publicationStore.save(publication);
-        pageStore.saveAll(publication.getPages());
-        publication.getChildren().forEach(this::writeTree);
+        if (!publicationStore.existsById(publication.getId())) {
+            publicationStore.save(publication);
+            pageStore.saveAll(publication.getPages());
+            publication.getChildren().forEach(this::writeTree);
+        }
     }
 }
