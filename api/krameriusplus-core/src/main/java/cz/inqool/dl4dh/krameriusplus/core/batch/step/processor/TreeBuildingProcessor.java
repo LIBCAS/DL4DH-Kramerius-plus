@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.step.processor;
 
+import cz.inqool.dl4dh.krameriusplus.core.batch.step.DigitalObjectProvider;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
-import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,32 +16,23 @@ import java.util.stream.Collectors;
 @StepScope
 public class TreeBuildingProcessor implements ItemProcessor<String, Publication> {
 
-    private final KrameriusMessenger krameriusMessenger;
+    private final DigitalObjectProvider digitalObjectProvider;
 
     @Autowired
-    public TreeBuildingProcessor(KrameriusMessenger krameriusMessenger) {
-        this.krameriusMessenger = krameriusMessenger;
+    public TreeBuildingProcessor(DigitalObjectProvider digitalObjectProvider) {
+        this.digitalObjectProvider = digitalObjectProvider;
     }
 
     @Override
     public Publication process(String item) {
-        DigitalObject root = krameriusMessenger.getDigitalObject(item);
+        Publication root = digitalObjectProvider.find(item);
+        root.setIsRootEnrichment(true);
 
-        if (!(root instanceof Publication)) {
-            throw new IllegalStateException(String.format("Item with uuid:%s is a %s, expected DigitalObject of type Publication",
-                    item, root.getClass().getSimpleName()));
-        }
-
-        Publication publication = ((Publication) root);
-        publication.setIsRootEnrichment(true);
-
-        return fetchTree(publication);
+        return fetchTree(root);
     }
 
     private Publication fetchTree(Publication publication) {
-        List<DigitalObject> publicationChildren = krameriusMessenger
-                .getDigitalObjectsForParent(publication.getId());
-
+        List<? extends DigitalObject> publicationChildren = digitalObjectProvider.findChildren(publication.getId());
         List<Publication> publications = filterObjects(publicationChildren, Publication.class);
         List<Page> pages = filterObjects(publicationChildren, Page.class);
         publication.setChildren(publications);
@@ -54,7 +45,7 @@ public class TreeBuildingProcessor implements ItemProcessor<String, Publication>
     }
 
 
-    private <T extends DigitalObject>List<T> filterObjects(List<DigitalObject> objects, Class<T> targetClass) {
+    private <T extends DigitalObject> List<T> filterObjects(List<? extends DigitalObject> objects, Class<T> targetClass) {
         return objects.stream()
                 .filter(targetClass::isInstance)
                 .map(targetClass::cast)

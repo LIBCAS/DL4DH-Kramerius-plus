@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.step.processor;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
-import cz.inqool.dl4dh.krameriusplus.core.batch.step.PublicationProvider;
+import cz.inqool.dl4dh.krameriusplus.core.batch.step.DigitalObjectProvider;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey;
 import cz.inqool.dl4dh.krameriusplus.core.job.KrameriusJobInstanceService;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @StepScope
@@ -24,7 +25,7 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
 
     private final ExportRequest exportRequest;
 
-    private PublicationProvider publicationProvider;
+    private DigitalObjectProvider digitalObjectProvider;
 
     private KrameriusJobInstanceService jobInstanceService;
 
@@ -37,7 +38,7 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
 
     @Override
     public ExportRequestItem process(ExportRequestItem item) throws Exception {
-        Publication publication = publicationProvider.find(item.getPublicationId());
+        Publication publication = digitalObjectProvider.find(item.getPublicationId());
 
         item.setRootExport(createExport(publication, null, 0L));
         return item;
@@ -66,7 +67,12 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
                         exportRequest.getConfig().getJobType(),
                         jobParametersMapWrapper));
 
-        List<Publication> children = publicationProvider.findChildren(publication.getId());
+        List<Publication> children = digitalObjectProvider.findChildren(publication.getId())
+                .stream()
+                .filter(Publication.class::isInstance)
+                .map(Publication.class::cast)
+                .collect(Collectors.toList());
+
         Long childrenOrder = 0L;
         for (Publication child : children) {
             export.addChild(childrenOrder, createExport(child, export, childrenOrder));
@@ -78,8 +84,8 @@ public class CreateExportsProcessor implements ItemProcessor<ExportRequestItem, 
     }
 
     @Autowired
-    public void setPublicationProvider(PublicationProvider publicationProvider) {
-        this.publicationProvider = publicationProvider;
+    public void setPublicationProvider(DigitalObjectProvider digitalObjectProvider) {
+        this.digitalObjectProvider = digitalObjectProvider;
     }
 
     @Autowired

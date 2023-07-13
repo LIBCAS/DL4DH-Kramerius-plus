@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.batch.step.processor;
 
-import cz.inqool.dl4dh.krameriusplus.core.batch.step.PublicationProvider;
+import cz.inqool.dl4dh.krameriusplus.core.batch.step.DigitalObjectProvider;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.job.JobParameterKey;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -22,7 +22,7 @@ public class AppendExportMetadataProcessor implements ItemProcessor<Page, Page> 
 
     private Path exportDirectory;
 
-    private PublicationProvider publicationProvider;
+    private DigitalObjectProvider digitalObjectProvider;
 
     @Override
     public Page process(Page item) throws Exception {
@@ -35,7 +35,7 @@ public class AppendExportMetadataProcessor implements ItemProcessor<Page, Page> 
     }
 
     @Autowired
-    public void setPublicationProvider(PublicationProvider publicationProvider) {
-        this.publicationProvider = publicationProvider;
+    public void setPublicationProvider(DigitalObjectProvider digitalObjectProvider) {
+        this.digitalObjectProvider = digitalObjectProvider;
     }
 }
