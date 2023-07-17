@@ -59,7 +59,7 @@ web-build:
   script:
     - "cd web"
     - "yarn"
-    - "CI=false yarn build"
+    - "CI=false NODE_OPTIONS=--openssl-legacy-provider yarn build"
     - "createDocker"
 
 web-deploy:
