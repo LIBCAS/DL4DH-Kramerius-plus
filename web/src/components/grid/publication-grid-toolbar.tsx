@@ -1,7 +1,7 @@
-import DownloadIcon from '@mui/icons-material/Download'
-import PublishIcon from '@mui/icons-material/Publish'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
+import PublicIcon from '@mui/icons-material/Public'
+import PublicOffIcon from '@mui/icons-material/PublicOff'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
-import UnpublishedIcon from '@mui/icons-material/Unpublished'
 import { Button } from '@mui/material'
 import { GridToolbarContainer } from '@mui/x-data-grid'
 import { FC } from 'react'
@@ -22,7 +22,7 @@ const GridToolbarClearSelectionButton: FC<{ onClick: () => void }> = ({
 
 const GridToolbarPublishButton: FC<{ onClick: () => void }> = ({ onClick }) => {
 	return (
-		<Button endIcon={<PublishIcon />} variant="text" onClick={onClick}>
+		<Button endIcon={<PublicIcon />} variant="text" onClick={onClick}>
 			Publikovat
 		</Button>
 	)
@@ -32,7 +32,7 @@ const GridToolbarUnpublishButton: FC<{ onClick: () => void }> = ({
 	onClick,
 }) => {
 	return (
-		<Button endIcon={<UnpublishedIcon />} variant="text" onClick={onClick}>
+		<Button endIcon={<PublicOffIcon />} variant="text" onClick={onClick}>
 			Zrušit publikování
 		</Button>
 	)
@@ -40,7 +40,7 @@ const GridToolbarUnpublishButton: FC<{ onClick: () => void }> = ({
 
 const GridToolbarExportButton: FC<{ onClick: () => void }> = ({ onClick }) => {
 	return (
-		<Button endIcon={<DownloadIcon />} variant="text" onClick={onClick}>
+		<Button endIcon={<ExitToAppIcon />} variant="text" onClick={onClick}>
 			Exportovat
 		</Button>
 	)
