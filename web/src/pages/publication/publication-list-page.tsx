@@ -14,7 +14,7 @@ import { PublicationExportDialog } from 'components/publication/publication-expo
 import { PublicationGrid } from 'modules/publications/publication-grid'
 import { PublicationListFilter } from 'modules/publications/publication-list-filter'
 import { PageWrapper } from 'pages/page-wrapper'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, MouseEvent, useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
@@ -79,7 +79,8 @@ export const PublicationListPage: FC = () => {
 	}
 
 	const onExportSingleClick = useCallback(
-		(publicationId: string) => () => {
+		(publicationId: string) => (e: MouseEvent) => {
+			e.stopPropagation()
 			setPublicationsToExport([publicationId])
 		},
 		[],
@@ -141,14 +142,14 @@ export const PublicationListPage: FC = () => {
 			.then(() => refetch())
 	}
 
-	const getLabel = (id: string) => {
+	const getPublishLabel = (id: string) => {
 		return data?.items.find(publication => publication.id === id)?.publishInfo
 			.isPublished
 			? 'Zrušit publikování'
 			: 'Publikovat'
 	}
 
-	const getIcon = (id: string) => {
+	const getPublishIcon = (id: string) => {
 		return data?.items.find(publication => publication.id === id)?.publishInfo
 			.isPublished ? (
 			<PublicOffIcon />
@@ -157,7 +158,8 @@ export const PublicationListPage: FC = () => {
 		)
 	}
 
-	const getAction = (id: string) => () => {
+	const getPublishAction = (id: string) => (e: MouseEvent) => {
+		e.stopPropagation()
 		return data?.items.find(publication => publication.id === id)?.publishInfo
 			.isPublished
 			? onUnpublishSingleClick(id)
@@ -184,14 +186,14 @@ export const PublicationListPage: FC = () => {
 									getIcon: () => <OpenInNewIcon />,
 								},
 								{
+									getLabel: (id: string) => getPublishLabel(id),
+									getOnClick: (id: string) => getPublishAction(id),
+									getIcon: (id: string) => getPublishIcon(id),
+								},
+								{
 									getLabel: () => 'Exportovat',
 									getOnClick: onExportSingleClick,
 									getIcon: () => <ExitToAppIcon />,
-								},
-								{
-									getLabel: (id: string) => getLabel(id),
-									getOnClick: (id: string) => getAction(id),
-									getIcon: (id: string) => getIcon(id),
 								},
 							]}
 							checkboxSelection={true}

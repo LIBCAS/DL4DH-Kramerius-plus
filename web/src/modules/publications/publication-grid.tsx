@@ -1,4 +1,5 @@
-import { Paper } from '@mui/material'
+import { Tooltip } from '@material-ui/core'
+import { IconButton, Paper } from '@mui/material'
 import {
 	GridColDef,
 	GridPaginationModel,
@@ -12,13 +13,13 @@ import { DigitalObjectModelMapping } from 'enums/publication-model'
 import { Publication } from 'models'
 import { QueryResults } from 'models/query-results'
 import { FC, useMemo } from 'react'
-import { PublicationRowOptions } from './publication-row-options'
+import { Link } from 'react-router-dom'
 
 type GridAction = {
 	getIcon: (id: string) => JSX.Element
 	getLabel: (id: string) => string
 	getHref?: (id: string) => string
-	getOnClick?: (id: string) => () => void
+	getOnClick?: (id: string) => (e: any) => void
 }
 
 export const PublicationGrid: FC<{
@@ -30,7 +31,7 @@ export const PublicationGrid: FC<{
 	selection: GridRowSelectionModel
 	onSelectionChange: (selection: GridRowSelectionModel) => void
 	toolbarProps?: any
-	actions?: GridAction[]
+	actions: GridAction[]
 }> = ({
 	isLoading,
 	data,
@@ -89,33 +90,37 @@ export const PublicationGrid: FC<{
 				field: 'actions',
 				headerName: 'Akce',
 				sortable: false,
-				width: 80,
+				width: 160,
 				renderCell: (params: GridRenderCellParams) => {
-					const options = actions
-						? actions.map(action => {
-								const id = params.row['id']
-								if (action.getOnClick) {
-									return {
-										icon: action.getIcon(id),
-										label: action.getLabel(id),
-										onClick: action.getOnClick(id),
-									}
-								}
+					return actions.map(action => {
+						const id = params.row['id']
+						if (action.getOnClick) {
+							const handleOnClick = action.getOnClick(id)
 
-								if (action.getHref) {
-									return {
-										icon: action.getIcon(id),
-										label: action.getLabel(id),
-										href: action.getHref(id),
-									}
-								}
+							return (
+								<Tooltip title={action.getLabel(id)}>
+									<IconButton onClick={e => handleOnClick(e)}>
+										{action.getIcon(id)}
+									</IconButton>
+								</Tooltip>
+							)
+						}
 
-								throw new Error(
-									'At least one of "onClick" or "href" props must be defined.',
-								)
-						  })
-						: []
-					return <PublicationRowOptions options={options} />
+						if (action.getHref) {
+							const href = action.getHref(id)
+							return (
+								<Tooltip title={action.getLabel(id)}>
+									<Link rel="noopener noreferrer" to={href}>
+										<IconButton>{action.getIcon(id)}</IconButton>
+									</Link>
+								</Tooltip>
+							)
+						}
+
+						throw new Error(
+							'At least one of "onClick" or "href" props must be defined.',
+						)
+					})
 				},
 			},
 		],
