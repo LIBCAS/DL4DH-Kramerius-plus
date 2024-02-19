@@ -43,8 +43,11 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     public MonographUnit fromCreateDto(MonographUnitCreateDto createDto) {
         MonographUnit monographUnit = new MonographUnit();
         mapPublicationProperties(monographUnit, createDto);
-        monographUnit.setPartNumber(createDto.getDetails().getPartNumber());
-        monographUnit.setPartTitle(createDto.getDetails().getTitle());
+
+        if (createDto.getDetails() != null) {
+            monographUnit.setPartNumber(createDto.getDetails().getPartNumber());
+            monographUnit.setPartTitle(createDto.getDetails().getTitle());
+        }
 
         return monographUnit;
     }
@@ -61,8 +64,11 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     public PeriodicalVolume fromCreateDto(PeriodicalVolumeCreateDto createDto) {
         PeriodicalVolume periodicalVolume = new PeriodicalVolume();
         mapPublicationProperties(periodicalVolume, createDto);
-        periodicalVolume.setVolumeNumber(createDto.getDetails().getVolumeNumber());
-        periodicalVolume.setVolumeYear(createDto.getDetails().getYear());
+
+        if (createDto.getDetails() != null) {
+            periodicalVolume.setVolumeNumber(createDto.getDetails().getVolumeNumber());
+            periodicalVolume.setVolumeYear(createDto.getDetails().getYear());
+        }
 
         return periodicalVolume;
     }
@@ -71,9 +77,12 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     public PeriodicalItem fromCreateDto(PeriodicalItemCreateDto createDto) {
         PeriodicalItem periodicalItem = new PeriodicalItem();
         mapPublicationProperties(periodicalItem, createDto);
-        periodicalItem.setIssueNumber(createDto.getDetails().getIssueNumber());
-        periodicalItem.setPartNumber(createDto.getDetails().getPartNumber());
-        periodicalItem.setDate(createDto.getDetails().getDate());
+
+        if (createDto.getDetails() != null) {
+            periodicalItem.setIssueNumber(createDto.getDetails().getIssueNumber());
+            periodicalItem.setPartNumber(createDto.getDetails().getPartNumber());
+            periodicalItem.setDate(createDto.getDetails().getDate());
+        }
 
         return periodicalItem;
     }
@@ -90,7 +99,10 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
     public Supplement fromCreateDto(SupplementCreateDto createDto) {
         Supplement supplement = new Supplement();
         mapPublicationProperties(supplement, createDto);
-        supplement.setDate(createDto.getDetails().getDate());
+
+        if (createDto.getDetails() != null) {
+            supplement.setDate(createDto.getDetails().getDate());
+        }
 
         return supplement;
     }
@@ -198,8 +210,10 @@ public class DigitalObjectMapper implements DigitalObjectMapperVisitor {
         to.setTitle(from.getTitle());
         to.setRootId(from.getRootPid());
         to.setPolicy(from.getPolicy());
-        to.setPageType(from.getDetails().getType());
-        to.setPageNumber(from.getDetails().getPageNumber());
+        if (from.getDetails() != null) {
+            to.setPageType(from.getDetails().getType());
+            to.setPageNumber(from.getDetails().getPageNumber());
+        }
     }
 
     private void mapPublicationProperties(Publication to, PublicationCreateDto from) {
