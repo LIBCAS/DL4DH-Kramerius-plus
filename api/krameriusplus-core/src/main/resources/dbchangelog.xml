@@ -396,4 +396,9 @@
             <column name="publication_id"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="4" author="kollar">
+        <modifyDataType tableName="kplus_enrichment_request_item" columnName="publication_title" newDataType="varchar(2000)"/>
+        <modifyDataType tableName="kplus_enrichment_chain" columnName="publication_title" newDataType="varchar(2000)"/>
+    </changeSet>
 </databaseChangeLog>
