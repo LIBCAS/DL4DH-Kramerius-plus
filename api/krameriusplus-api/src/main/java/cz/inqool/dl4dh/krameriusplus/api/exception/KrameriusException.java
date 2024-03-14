@@ -30,6 +30,10 @@ public class KrameriusException extends GeneralException {
         MISSING_STREAM,
         NO_PAGE_HAD_ALTO,
         INTERRUPTED,
-        PARSING_ERROR
+        PARSING_ERROR,
+        NO_RESPONSE,
+        BAD_STATUS_CODE,
+        WRONG_NUMBER_OF_DOCUMENTS,
+        INEXACT_RESULT
     }
 }

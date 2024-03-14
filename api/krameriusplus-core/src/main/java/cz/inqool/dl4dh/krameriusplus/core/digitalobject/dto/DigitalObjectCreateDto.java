@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -41,12 +42,13 @@ public abstract class DigitalObjectCreateDto {
 
     private String title;
 
-    @JsonProperty("root_title")
+    @JsonAlias({"root.title", "root_title"})
     private String rootTitle;
 
-    @JsonProperty("root_pid")
+    @JsonAlias({"root.pid", "root_pid"})
     private String rootPid;
 
+    @JsonAlias({"accessibility"})
     private String policy;
 
     public abstract DigitalObject accept(DigitalObjectMapperVisitor visitor);

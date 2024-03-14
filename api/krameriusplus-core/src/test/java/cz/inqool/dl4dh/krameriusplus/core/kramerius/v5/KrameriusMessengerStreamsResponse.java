@@ -1,6 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.core.kramerius;
+package cz.inqool.dl4dh.krameriusplus.core.kramerius.v5;
 
-public class KrameriusMessengerStreamsResponse {
+class KrameriusMessengerStreamsResponse {
 
     public static final String MODS_RESPONSE = "<mods:modsCollection xmlns:mods=\"http://www.loc.gov/mods/v3\">\n" +
             "    <mods:mods xmlns=\"\" xmlns:ns4=\"info:fedora/fedora-system:def/foxml#\" ID=\"MODS_VOLUME_0001\" version=\"3.5\">\n" +

@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.PeriodicalItemDto;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectMapperVisitor;
@@ -19,10 +20,12 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.Krame
 @TypeAlias(PERIODICAL_ITEM)
 public class PeriodicalItem extends Publication {
 
+    @JsonAlias({"date.str"})
     private String date;
 
     private String issueNumber;
 
+    @JsonAlias({"part.number.str"})
     private String partNumber;
 
     @Override

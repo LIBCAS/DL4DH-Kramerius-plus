@@ -42,6 +42,7 @@ springdoc:
 system:
   environment: DEV
   kramerius:
+    version: 7
     code: nkp
     default-url: https://www.ndk.cz
     register-url: https://api.registr.digitalniknihovna.cz/api/libraries

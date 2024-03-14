@@ -1,44 +1,47 @@
-package cz.inqool.dl4dh.krameriusplus.core.kramerius;
+package cz.inqool.dl4dh.krameriusplus.core.kramerius.v5;
 
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.core.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
-import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalVolume;
+import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusV5Messenger;
+import cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import cz.inqool.dl4dh.mods.StringPlusLanguage;
 import cz.inqool.dl4dh.mods.TitleInfoDefinition;
 import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.xml.bind.JAXBElement;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper.testPublication;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class KrameriusMessengerTest extends CoreBaseTest {
+@TestPropertySource(properties = {"system.kramerius.version=5"})
+public class KrameriusV5MessengerTest extends CoreBaseTest {
 
     @Autowired
-    private SyncKrameriusMessenger krameriusMessenger;
+    private KrameriusV5Messenger krameriusMessenger;
 
     @Autowired
-    private MockWebServer mockServer;
+    private MessengerTestHelper helper;
 
     @Test
     void periodical() {
-        DigitalObject digitalObject = testAndGetDigitalObject(KrameriusMessengerResponse.PERIODICAL_RESPONSE, Periodical.class, "uuid:319546a0-5a42-11eb-b4d1-005056827e51");
+        DigitalObject digitalObject = helper.testAndGetDigitalObject(KrameriusMessengerResponse.PERIODICAL_RESPONSE, Periodical.class, "uuid:319546a0-5a42-11eb-b4d1-005056827e51", krameriusMessenger);
         Periodical periodical = (Periodical) digitalObject;
 
         testPublication(periodical, "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
@@ -48,7 +51,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void periodicalChildren() {
-        List<DigitalObject> digitalObjects = testAndGetChildren(KrameriusMessengerChildrenResponse.PERIODICAL_CHILDREN_RESPONSE, PeriodicalVolume.class, 2);
+        List<DigitalObject> digitalObjects = helper.testAndGetChildren(KrameriusMessengerChildrenResponse.PERIODICAL_CHILDREN_RESPONSE, PeriodicalVolume.class, 2, krameriusMessenger);
 
         List<PeriodicalVolume> periodicalVolumes = digitalObjects.stream().map(digitalObject -> ((PeriodicalVolume) digitalObject)).collect(Collectors.toList());
 
@@ -64,7 +67,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void periodicalVolume() {
-        DigitalObject digitalObject = testAndGetDigitalObject(KrameriusMessengerResponse.PERIODICAL_VOLUME_RESPONSE, PeriodicalVolume.class, "uuid:986ca2f0-5aaa-11ed-8756-005056827e51");
+        DigitalObject digitalObject = helper.testAndGetDigitalObject(KrameriusMessengerResponse.PERIODICAL_VOLUME_RESPONSE, PeriodicalVolume.class, "uuid:986ca2f0-5aaa-11ed-8756-005056827e51", krameriusMessenger);
 
         PeriodicalVolume periodicalVolume = (PeriodicalVolume) digitalObject;
 
@@ -77,7 +80,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void periodicalVolumeChildren() {
-        List<DigitalObject> digitalObjects = testAndGetChildren(KrameriusMessengerChildrenResponse.PERIODICAL_VOLUME_CHILDREN_RESPONSE, PeriodicalItem.class, 1);
+        List<DigitalObject> digitalObjects = helper.testAndGetChildren(KrameriusMessengerChildrenResponse.PERIODICAL_VOLUME_CHILDREN_RESPONSE, PeriodicalItem.class, 1, krameriusMessenger);
 
         PeriodicalItem periodicalItem = (PeriodicalItem) digitalObjects.get(0);
         testPublication(periodicalItem, "Protokol ... veřejné schůze Bratrstva sv. Michala v Praze dne. 5", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
@@ -90,7 +93,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void periodicalItem() {
-        DigitalObject digitalObject = testAndGetDigitalObject(KrameriusMessengerResponse.PERIODICAL_ITEM_RESPONSE, PeriodicalItem.class, "uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f");
+        DigitalObject digitalObject = helper.testAndGetDigitalObject(KrameriusMessengerResponse.PERIODICAL_ITEM_RESPONSE, PeriodicalItem.class, "uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f", krameriusMessenger);
 
         PeriodicalItem periodicalItem = (PeriodicalItem) digitalObject;
         testPublication(periodicalItem, "Protokol ... veřejné schůze Bratrstva sv. Michala v Praze dne. 5", "Protokol ... veřejné schůze bratrstva sv. Michala v Praze dne",
@@ -103,7 +106,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void periodicalItemChildren() {
-        List<DigitalObject> digitalObjects = testAndGetChildren(KrameriusMessengerChildrenResponse.PERIODICAL_ITEM_CHILDREN_RESPONSE, Page.class, 60);
+        List<DigitalObject> digitalObjects = helper.testAndGetChildren(KrameriusMessengerChildrenResponse.PERIODICAL_ITEM_CHILDREN_RESPONSE, Page.class, 60, krameriusMessenger);
 
         Page page = ((Page) digitalObjects.get(0));
 
@@ -114,7 +117,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void monograph() {
-        DigitalObject digitalObject = testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_RESPONSE, Monograph.class, "uuid:0af541d0-06c8-11e6-a5b6-005056827e52");
+        DigitalObject digitalObject = helper.testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_RESPONSE, Monograph.class, "uuid:0af541d0-06c8-11e6-a5b6-005056827e52", krameriusMessenger);
         Monograph monograph = (Monograph) digitalObject;
         testPublication(monograph, "Ve škole duchovní: čisté učení spiritistické : sbírka medijních sdělení a poučení, daná od duchů všech stavů, výší a druhů",
                 "Ve škole duchovní: čisté učení spiritistické : sbírka medijních sdělení a poučení, daná od duchů všech stavů, výší a druhů",
@@ -125,7 +128,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void monographChildren() {
-        List<DigitalObject> digitalObjects = testAndGetChildren(KrameriusMessengerChildrenResponse.MONOGRAPH_CHILDREN_RESPONSE, Page.class, 7);
+        List<DigitalObject> digitalObjects = helper.testAndGetChildren(KrameriusMessengerChildrenResponse.MONOGRAPH_CHILDREN_RESPONSE, Page.class, 7, krameriusMessenger);
 
         Page page = (Page) digitalObjects.get(4);
         assertThat(page.getId()).isEqualTo("uuid:0ea88040-17a7-11e6-adec-001018b5eb5c");
@@ -138,8 +141,8 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void monographUnit() {
-        MonographUnit monographUnit = (MonographUnit) testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_UNIT_RESPONSE, MonographUnit.class,
-                "uuid:c29c4970-55d8-11e9-936e-005056827e52");
+        MonographUnit monographUnit = (MonographUnit) helper.testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_UNIT_RESPONSE, MonographUnit.class,
+                "uuid:c29c4970-55d8-11e9-936e-005056827e52", krameriusMessenger);
 
         testPublication(monographUnit, "V ohradě měst a městských zdech. 1", "V ohradě měst a městských zdech",
                 "uuid:29dea0f0-ea9a-11e9-8d0f-005056825209", "public", false);
@@ -148,7 +151,9 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void monographUnitWithPartTitle() {
-        MonographUnit monographUnit = ((MonographUnit) testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_UNIT_WITH_PART_TITLE_RESPONSE, MonographUnit.class, "uuid:87ee9e20-f07c-11e3-b72e-005056827e52"));
+        MonographUnit monographUnit = ((MonographUnit) helper.testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_UNIT_WITH_PART_TITLE_RESPONSE,
+                MonographUnit.class,
+                "uuid:87ee9e20-f07c-11e3-b72e-005056827e52", krameriusMessenger));
 
         testPublication(monographUnit, "Ílias. 1. Ilias", "Ílias",
                 "uuid:ee0e12a0-f6b5-11e3-97df-5ef3fc9bb22f", "private", false);
@@ -159,12 +164,12 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void monographUnitChildren() {
-        testAndGetChildren(KrameriusMessengerChildrenResponse.MONOGRAPH_UNIT_CHILDREN_RESPONSE, Page.class, 15);
+        helper.testAndGetChildren(KrameriusMessengerChildrenResponse.MONOGRAPH_UNIT_CHILDREN_RESPONSE, Page.class, 15, krameriusMessenger);
     }
 
     @Test
     void alto() {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
+        helper.getMockServer().enqueue(new MockResponse().setResponseCode(200)
                 .setBody(KrameriusMessengerStreamsResponse.ALTO_UPPERCASE_STRING_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
 
@@ -177,7 +182,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void ocr() {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
+        helper.getMockServer().enqueue(new MockResponse().setResponseCode(200)
                 .setBody(KrameriusMessengerStreamsResponse.OCR_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_BINARY));
 
@@ -188,7 +193,7 @@ public class KrameriusMessengerTest extends CoreBaseTest {
 
     @Test
     void mods() {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
+        helper.getMockServer().enqueue(new MockResponse().setResponseCode(200)
                 .setBody(KrameriusMessengerStreamsResponse.MODS_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
 
@@ -200,40 +205,5 @@ public class KrameriusMessengerTest extends CoreBaseTest {
         assertThat(((StringPlusLanguage) ((JAXBElement) titleInfoDefinition.getTitleOrSubTitleOrPartNumber()
                 .get(0)).getValue()).getValue()).isEqualTo("Ve škole duchovní");
 
-    }
-
-    private void testPublication(Publication publication, String expectedTitle, String expectedRootTitle,
-                                 String expectedRootId, String expectedPolicy, boolean expectedPdf) {
-        assertThat(publication.getTitle()).isEqualTo(expectedTitle);
-        assertThat(publication.getRootTitle()).isEqualTo(expectedRootTitle);
-        assertThat(publication.getPolicy()).isEqualTo(expectedPolicy);
-        assertThat(publication.getRootId()).isEqualTo(expectedRootId);
-        assertThat(publication.isPdf()).isEqualTo(expectedPdf);
-    }
-
-    private DigitalObject testAndGetDigitalObject(String digitalObjectResponse, Class<?> expectedClass, String expectedId) {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
-                .setBody(digitalObjectResponse)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
-
-        DigitalObject digitalObject = krameriusMessenger.getDigitalObject("test");
-
-        assertThat(digitalObject.getClass()).isEqualTo(expectedClass);
-        assertThat(digitalObject.getId()).isEqualTo(expectedId);
-
-        return digitalObject;
-    }
-
-    private List<DigitalObject> testAndGetChildren(String childrenResponse, Class<?> expectedClass, int expectedCount) {
-        mockServer.enqueue(new MockResponse().setResponseCode(200)
-                .setBody(childrenResponse)
-                .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON));
-
-        List<DigitalObject> digitalObjects = krameriusMessenger.getDigitalObjectsForParent("test");
-
-        assertThat(digitalObjects.size()).isEqualTo(expectedCount);
-        assertThat(digitalObjects.stream().allMatch(object -> object.getClass().equals(expectedClass))).isTrue();
-
-        return digitalObjects;
     }
 }

@@ -7,8 +7,8 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,10 +24,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.*;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.SyncKrameriusMessenger.StreamType.*;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.*;
 
 @Component
-public class SyncKrameriusMessenger implements KrameriusMessenger {
+@ConditionalOnProperty(prefix = "system.kramerius", value = "version", havingValue = "5")
+public class KrameriusV5Messenger implements KrameriusMessenger {
 
     private static final ParameterizedTypeReference<Alto> ALTO_TYPE_REF
             = new ParameterizedTypeReference<>() {
@@ -96,13 +97,13 @@ public class SyncKrameriusMessenger implements KrameriusMessenger {
     @Override
     public ModsCollectionDefinition getMods(String publicationId) {
         return callInternal(
-                buildUriPath(publicationId, STREAMS_PATH_SEGMENT, MODS.streamId),
+                buildUriPath(publicationId, STREAMS_PATH_SEGMENT, MODS.getStreamId()),
                 MODS_TYPE_REF);
     }
 
-    String getOcrRawStream(String pageId) {
+    public String getOcrRawStream(String pageId) {
         String raw = callInternal(
-                buildUriPath(pageId, STREAMS_PATH_SEGMENT, TEXT_OCR.streamId),
+                buildUriPath(pageId, STREAMS_PATH_SEGMENT, TEXT_OCR.getStreamId()),
                 STRING_TYPE_REF);
 
         return raw == null ? "" : raw;
@@ -111,12 +112,12 @@ public class SyncKrameriusMessenger implements KrameriusMessenger {
     private <T> T getAltoRawStream(String pageId, ParameterizedTypeReference<T> typeReference) {
         try {
             return callInternal(
-                    buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.streamId),
+                    buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.getStreamId()),
                     typeReference);
         } catch (KrameriusException exception) {
             if (NOT_FOUND.equals(exception.getErrorCode())) {
                 return callInternal(
-                        buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.streamId.toLowerCase()),
+                        buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.getStreamId().toLowerCase()),
                         typeReference);
             } else {
                 throw exception;
@@ -184,18 +185,5 @@ public class SyncKrameriusMessenger implements KrameriusMessenger {
     @Autowired
     public void setMapper(DigitalObjectMapperVisitor mapper) {
         this.mapper = mapper;
-    }
-
-    @Getter
-    public enum StreamType {
-        TEXT_OCR("TEXT_OCR"),
-        ALTO("ALTO"),
-        MODS("BIBLIO_MODS");
-
-        private final String streamId;
-
-        StreamType(String streamId) {
-            this.streamId = streamId;
-        }
     }
 }

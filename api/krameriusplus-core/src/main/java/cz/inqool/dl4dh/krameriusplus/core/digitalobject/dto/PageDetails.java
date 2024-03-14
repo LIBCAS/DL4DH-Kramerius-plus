@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +8,9 @@ import lombok.Setter;
 @Setter
 public class PageDetails {
 
+    @JsonAlias({"page.type"})
     private String type;
 
-    @JsonProperty("pagenumber")
+    @JsonAlias({"pagenumber", "page.number"})
     private String pageNumber;
 }
