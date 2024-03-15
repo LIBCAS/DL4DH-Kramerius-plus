@@ -29,6 +29,7 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.Krame
         @JsonSubTypes.Type(value = PeriodicalItemCreateDto.class, name = PERIODICAL_ITEM),
         @JsonSubTypes.Type(value = PageCreateDto.class, name = PAGE),
         @JsonSubTypes.Type(value = InternalPartCreateDto.class, name = INTERNAL_PART),
+        @JsonSubTypes.Type(value = InternalPartCreateDto.class, name = ARTICLE),
         @JsonSubTypes.Type(value = SupplementCreateDto.class, name = SUPPLEMENT)
 })
 public abstract class DigitalObjectCreateDto {

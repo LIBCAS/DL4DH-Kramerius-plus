@@ -2,7 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.kramerius.v5;
 
 class KrameriusMessengerStreamsResponse {
 
-    public static final String MODS_RESPONSE = "<mods:modsCollection xmlns:mods=\"http://www.loc.gov/mods/v3\">\n" +
+    static final String MODS_RESPONSE = "<mods:modsCollection xmlns:mods=\"http://www.loc.gov/mods/v3\">\n" +
             "    <mods:mods xmlns=\"\" xmlns:ns4=\"info:fedora/fedora-system:def/foxml#\" ID=\"MODS_VOLUME_0001\" version=\"3.5\">\n" +
             "        <mods:titleInfo>\n" +
             "            <mods:title>Ve škole duchovní</mods:title>\n" +
@@ -72,7 +72,7 @@ class KrameriusMessengerStreamsResponse {
             "    </mods:mods>\n" +
             "</mods:modsCollection>\n";
 
-    public static final String ALTO_UPPERCASE_STRING_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n" +
+    static final String ALTO_UPPERCASE_STRING_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n" +
             "<alto xmlns=\"http://www.loc.gov/standards/alto/ns-v2#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
             "<Description>\n" +
             "<MeasurementUnit>pixel</MeasurementUnit>\n" +
@@ -105,7 +105,7 @@ class KrameriusMessengerStreamsResponse {
             "</Layout>\n" +
             "</alto>";
 
-    public static final String OCR_RESPONSE = "Madeleine Albrightová\n" +
+    static final String OCR_RESPONSE = "Madeleine Albrightová\n" +
             "DOPORUČENÍ\n" +
             "BUDOUCÍMU\n" +
             "PREZIDENTOVI\n" +
@@ -113,7 +113,7 @@ class KrameriusMessengerStreamsResponse {
             "*\n" +
             "ИЗГЕТЯ";
 
-    public static final String ALTO_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n" +
+    static final String ALTO_RESPONSE = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n" +
             "<alto xmlns=\"http://www.loc.gov/standards/alto/ns-v2#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
             "<Description>\n" +
             "<MeasurementUnit>pixel</MeasurementUnit>\n" +

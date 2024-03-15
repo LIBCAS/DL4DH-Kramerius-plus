@@ -4,16 +4,15 @@ import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.core.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
+import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.InternalPart;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.monograph.Monograph;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.monograph.MonographUnit;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalVolume;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper;
-import cz.inqool.dl4dh.krameriusplus.core.kramerius.v5.KrameriusMessengerChildrenResponse;
+import cz.inqool.dl4dh.mods.IdentifierDefinition;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
-import cz.inqool.dl4dh.mods.StringPlusLanguage;
-import cz.inqool.dl4dh.mods.TitleInfoDefinition;
 import okhttp3.mockwebserver.MockResponse;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
@@ -22,15 +21,13 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
-import javax.xml.bind.JAXBElement;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper.testPublication;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.PERIODICAL_ITEM_RESPONSE;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.PERIODICAL_RESPONSE;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.PERIODICAL_CHILDREN_STRUCTURE;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.PERIODICAL_VOLUME_CHILDREN_STRUCTURE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.*;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStreamsResponse.*;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -120,104 +117,105 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
 
     @Test
     void periodicalItemChildren() {
-        List<DigitalObject> digitalObjects = helper.testAndGetChildren(KrameriusMessengerChildrenResponse.PERIODICAL_ITEM_CHILDREN_RESPONSE, Page.class, 60, krameriusMessenger);
+        List<DigitalObject> digitalObjects = helper.testAndGetChildrenMultipleResponses(List.of(PERIODIAL_ITEM_CHILDREN_STRUCTURE,
+                        PERIODICAL_ITEM_INTERNAL_PART1, PERIODICAL_ITEM_INTERNAL_PART2),
+                InternalPart.class,
+                2,
+                krameriusMessenger);
 
-        Page page = ((Page) digitalObjects.get(0));
+        InternalPart part = ((InternalPart) digitalObjects.get(0));
+        InternalPart part1 = ((InternalPart) digitalObjects.get(1));
 
-        assertThat(page.getPageType()).isEqualTo("FrontCover");
-        assertThat(page.getPageNumber()).contains("[1a]");
-        assertThat(page.getTitle()).isEqualTo("[1a]");
+        assertThat(part.getId()).isEqualTo("uuid:aad65b8b-de92-4267-a529-946940f9d645");
+        assertThat(part1.getId()).isEqualTo("uuid:781144b0-f273-40f7-884d-cda9d24d9a3d");
+        assertThat(part.getTitle()).isEqualTo("Obálka");
+        assertThat(part1.getTitle()).isEqualTo("Vnitřní obálka");
+        assertThat(part.getRootId()).isEqualTo("uuid:30985811-c9fe-4798-80c5-2bbdc9f3131a");
+        assertThat(part1.getRootId()).isEqualTo("uuid:30985811-c9fe-4798-80c5-2bbdc9f3131a");
+        assertThat(part.getRootTitle()).isEqualTo("Jemná mechanika a optika");
+        assertThat(part1.getRootTitle()).isEqualTo("Jemná mechanika a optika");
     }
 
     @Test
     void monograph() {
-        DigitalObject digitalObject = helper.testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_RESPONSE, Monograph.class, "uuid:0af541d0-06c8-11e6-a5b6-005056827e52", krameriusMessenger);
+        DigitalObject digitalObject = helper.testAndGetDigitalObject(MONOGRAPH_RESPONSE,
+                Monograph.class,
+                "uuid:97a8ba80-d9a8-11e7-bbbb-005056827e51",
+                krameriusMessenger);
         Monograph monograph = (Monograph) digitalObject;
-        testPublication(monograph, "Ve škole duchovní: čisté učení spiritistické : sbírka medijních sdělení a poučení, daná od duchů všech stavů, výší a druhů",
-                "Ve škole duchovní: čisté učení spiritistické : sbírka medijních sdělení a poučení, daná od duchů všech stavů, výší a druhů",
-                "uuid:0af541d0-06c8-11e6-a5b6-005056827e52", "public", false);
-
-        assertThat(monograph.getCollections().get(0)).isEqualTo("vc:8e493b6d-0847-4c4e-9b40-49f25b550acd");
+        testPublication(monograph, "Statistické obrazy verše",
+                "Statistické obrazy verše",
+                "uuid:97a8ba80-d9a8-11e7-bbbb-005056827e51", "public", false);
     }
 
     @Test
     void monographChildren() {
-        List<DigitalObject> digitalObjects = helper.testAndGetChildren(KrameriusMessengerChildrenResponse.MONOGRAPH_CHILDREN_RESPONSE, Page.class, 7, krameriusMessenger);
+        List<DigitalObject> digitalObjects = helper.testAndGetChildrenMultipleResponses(List.of(MONOGRAPH_CHILDREN_STRUCTURE, MONOGRAPH_PAGE_RESPONSE),
+                Page.class,
+                1,
+                krameriusMessenger);
 
-        Page page = (Page) digitalObjects.get(4);
-        assertThat(page.getId()).isEqualTo("uuid:0ea88040-17a7-11e6-adec-001018b5eb5c");
-        assertThat(page.getRootId()).isEqualTo("uuid:0af541d0-06c8-11e6-a5b6-005056827e52");
-        assertThat(page.getPolicy()).isEqualTo("public");
-        assertThat(page.getTitle()).isEqualTo("[3]");
-        assertThat(page.getPageType()).isEqualTo("NormalPage");
-        assertThat(page.getPageNumber()).contains("[3]");
+        Page page = (Page) digitalObjects.get(0);
+        assertThat(page.getRootId()).isEqualTo("uuid:97a8ba80-d9a8-11e7-bbbb-005056827e51");
+        assertThat(page.getPageNumber()).isEqualTo("[1b]");
+        assertThat(page.getPageType()).isEqualTo("frontEndSheet");
+        assertThat(page.getTitle()).isEqualTo("[1b]");
     }
 
     @Test
     void monographUnit() {
-        MonographUnit monographUnit = (MonographUnit) helper.testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_UNIT_RESPONSE, MonographUnit.class,
-                "uuid:c29c4970-55d8-11e9-936e-005056827e52", krameriusMessenger);
+        MonographUnit monographUnit = (MonographUnit) helper.testAndGetDigitalObject(MONOGRAPH_UNIT_RESPONSE, MonographUnit.class,
+                "uuid:390fa76e-a2f0-40e1-b96f-85785f6b5c05", krameriusMessenger);
 
-        testPublication(monographUnit, "V ohradě měst a městských zdech. 1", "V ohradě měst a městských zdech",
-                "uuid:29dea0f0-ea9a-11e9-8d0f-005056825209", "public", false);
-        assertThat(monographUnit.getPartNumber()).isEqualTo("1");
-    }
-
-    @Test
-    void monographUnitWithPartTitle() {
-        MonographUnit monographUnit = ((MonographUnit) helper.testAndGetDigitalObject(KrameriusMessengerResponse.MONOGRAPH_UNIT_WITH_PART_TITLE_RESPONSE,
-                MonographUnit.class,
-                "uuid:87ee9e20-f07c-11e3-b72e-005056827e52", krameriusMessenger));
-
-        testPublication(monographUnit, "Ílias. 1. Ilias", "Ílias",
-                "uuid:ee0e12a0-f6b5-11e3-97df-5ef3fc9bb22f", "private", false);
-
-        assertThat(monographUnit.getPartTitle()).isEqualTo("Ilias");
-        assertThat(monographUnit.getPartNumber()).isEqualTo("1");
+        testPublication(monographUnit, "Rudolfu Havlovi: sborník k jeho 70. narozeninám. 3", "Rudolfu Havlovi: sborník k jeho 70. narozeninám",
+                "uuid:02df6d4d-e420-4ca2-9fb6-b33c3305a641", "public", false);
+        assertThat(monographUnit.getPartNumber()).isEqualTo("3");
     }
 
     @Test
     void monographUnitChildren() {
-        helper.testAndGetChildren(KrameriusMessengerChildrenResponse.MONOGRAPH_UNIT_CHILDREN_RESPONSE, Page.class, 15, krameriusMessenger);
+        helper.testAndGetChildrenMultipleResponses(List.of(MONOGRAPH_UNIT_CHILDREN, MONOGRAPH_UNIT_PAGE1,
+                        MONOGRAPH_UNIT_PAGE2, MONOGRAPH_UNIT_PAGE3),
+                Page.class,
+                3,
+                krameriusMessenger);
     }
 
     @Test
     void alto() {
         helper.getMockServer().enqueue(new MockResponse().setResponseCode(200)
-                .setBody(KrameriusMessengerStreamsResponse.ALTO_UPPERCASE_STRING_RESPONSE)
+                .setBody(ALTO_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
 
         Alto alto = krameriusMessenger.getAlto("test");
 
         assertThat(alto.getDescription().getMeasurementUnit()).isEqualTo("pixel");
         assertThat(alto.getDescription().getOCRProcessing().get(0).getOcrProcessingStep()
-                .getProcessingSoftware().getSoftwareCreator()).isEqualTo("ABBYY");
+                .getProcessingSoftware().getSoftwareCreator()).isEqualTo("Project PERO");
     }
 
     @Test
     void ocr() {
         helper.getMockServer().enqueue(new MockResponse().setResponseCode(200)
-                .setBody(KrameriusMessengerStreamsResponse.OCR_RESPONSE)
+                .setBody(TEXT_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_BINARY));
 
         String ocr = krameriusMessenger.getOcrRawStream("test");
 
-        assertThat(ocr).isEqualTo(KrameriusMessengerStreamsResponse.OCR_RESPONSE);
+        assertThat(ocr).isEqualTo(TEXT_RESPONSE);
     }
 
     @Test
     void mods() {
         helper.getMockServer().enqueue(new MockResponse().setResponseCode(200)
-                .setBody(KrameriusMessengerStreamsResponse.MODS_RESPONSE)
+                .setBody(MODS)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_XML));
 
         ModsCollectionDefinition modsCollectionDefinition = krameriusMessenger.getMods("test");
 
-        TitleInfoDefinition titleInfoDefinition = (TitleInfoDefinition) modsCollectionDefinition.getMods().get(0).getModsGroup().get(0);
+        IdentifierDefinition identifier = (IdentifierDefinition) modsCollectionDefinition.getMods().get(1).getModsGroup().get(0);
 
-        // assertThat call for title
-        assertThat(((StringPlusLanguage) ((JAXBElement) titleInfoDefinition.getTitleOrSubTitleOrPartNumber()
-                .get(0)).getValue()).getValue()).isEqualTo("Ve škole duchovní");
+        assertThat(identifier.getValue()).isEqualTo("14fd6cc7-79e9-4280-8b3d-82b2b50dc2c1");
     }
 }
 
