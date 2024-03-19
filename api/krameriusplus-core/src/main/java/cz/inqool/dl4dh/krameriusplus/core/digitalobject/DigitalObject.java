@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.digitalobject;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import cz.inqool.dl4dh.krameriusplus.api.publication.DigitalObjectContext;
 import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.core.domain.document.DomainDocument;
@@ -24,7 +23,6 @@ public abstract class DigitalObject extends DomainDocument {
 
     private String rootId;
 
-    @JsonAlias({"title.search"})
     private String title;
 
     private List<DigitalObjectContext> context = new ArrayList<>();

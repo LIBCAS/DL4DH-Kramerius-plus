@@ -41,6 +41,7 @@ public abstract class DigitalObjectCreateDto {
 
     private String model;
 
+    @JsonAlias({"title.search"})
     private String title;
 
     @JsonAlias({"root.title", "root_title"})

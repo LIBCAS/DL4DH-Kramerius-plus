@@ -68,7 +68,7 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
 
         return digitalObjectStructureDto.getChildren().getChildren()
                 .stream()
-                .map(objectId -> searchDigitalObject(buildUriPath("search?q=\"" + objectId + "\""))
+                .map(objectId -> searchDigitalObject(buildUriPath("search?q=pid:\"" + objectId + "\""))
                         .accept(mapper))
                 .collect(Collectors.toList());
     }
@@ -165,11 +165,11 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
             throw new KrameriusException(NO_RESPONSE, "Kramerius response is null");
         }
 
-        if (response.getResponseHeader().getStatus().equals(0)) {
+        if (!response.getResponseHeader().getStatus().equals(0)) {
             throw new KrameriusException(BAD_STATUS_CODE, "Kramerius responded with code: " + response.getResponseHeader().getStatus());
         }
 
-        if (response.getResponse().getNumFound().equals(1)) {
+        if (!response.getResponse().getNumFound().equals(1)) {
             throw new KrameriusException(WRONG_NUMBER_OF_DOCUMENTS, "Kramerius returned wrong number of documents, expected: " + 1 + " got: " + response.getResponse().getNumFound());
         }
 

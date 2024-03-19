@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.monograph;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.MonographUnitDto;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectMapperVisitor;
@@ -22,7 +21,6 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.Krame
 @TypeAlias(MONOGRAPH_UNIT)
 public class MonographUnit extends Publication {
 
-    @JsonAlias({"part.number.str"})
     private String partNumber;
 
     private String partTitle;

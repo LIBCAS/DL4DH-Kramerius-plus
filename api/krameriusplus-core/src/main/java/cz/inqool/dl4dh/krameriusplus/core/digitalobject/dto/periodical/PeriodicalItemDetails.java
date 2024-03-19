@@ -7,12 +7,9 @@ import lombok.Setter;
 @Setter
 public class PeriodicalItemDetails {
 
-    // TODO: find alias in K7
     private String date;
 
-    // TODO: find alias in K7
     private String issueNumber;
 
-    // TODO: find alias in K7
     private String partNumber;
 }

@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.digitalobject.page;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.PageDto;
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMetadata;
@@ -27,13 +26,11 @@ public class Page extends DigitalObject {
 
     private String policy;
 
-    @JsonAlias({"page.type"})
     private String pageType;
 
     /**
      * Storing it as a string for page numbers like "[1a]"
      */
-    @JsonAlias({"page.number"})
     private String pageNumber;
 
     private NameTagMetadata nameTagMetadata;

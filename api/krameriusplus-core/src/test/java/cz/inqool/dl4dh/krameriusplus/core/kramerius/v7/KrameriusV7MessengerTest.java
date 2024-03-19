@@ -46,7 +46,7 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
     void periodical() {
         DigitalObject digitalObject = helper.testAndGetDigitalObject(PERIODICAL_RESPONSE,
                 Periodical.class,
-                "uuid:319546a0-5a42-11eb-b4d1-005056827e51",
+                "uuid:2536b1e0-d1c9-11e3-b110-005056827e51",
                 krameriusMessenger);
         Periodical periodical = (Periodical) digitalObject;
 
@@ -66,7 +66,7 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
         List<PeriodicalVolume> periodicalVolumes = digitalObjects.stream().map(digitalObject -> ((PeriodicalVolume) digitalObject)).collect(Collectors.toList());
 
         periodicalVolumes.forEach(periodicalVolume ->
-                testPublication(periodicalVolume, "", "Sborník k dějinám 19. a 20. století",
+                testPublication(periodicalVolume, "1989", "Sborník k dějinám 19. a 20. století",
                         "uuid:2536b1e0-d1c9-11e3-b110-005056827e51", "public", false));
 
         assertThat(periodicalVolumes.get(0).getVolumeYear()).isEqualTo("1989");
@@ -81,7 +81,7 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
 
         PeriodicalVolume periodicalVolume = (PeriodicalVolume) digitalObject;
 
-        testPublication(periodicalVolume, "", "Sborník k dějinám 19. a 20. století",
+        testPublication(periodicalVolume, "1989", "Sborník k dějinám 19. a 20. století",
                 "uuid:2536b1e0-d1c9-11e3-b110-005056827e51", "public", false);
 
         assertThat(periodicalVolume.getVolumeNumber()).isEqualTo("1989");
@@ -93,11 +93,11 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
                 PERIODICAL_ITEM_RESPONSE), PeriodicalItem.class, 1, krameriusMessenger);
 
         PeriodicalItem periodicalItem = (PeriodicalItem) digitalObjects.get(0);
-        testPublication(periodicalItem, "Sborník k dějinám 19. a 20. století. 11", "Sborník k dějinám 19. a 20. století. 11",
+        testPublication(periodicalItem, "Sborník k dějinám 19. a 20. století. 11", "Sborník k dějinám 19. a 20. století",
                 "uuid:2536b1e0-d1c9-11e3-b110-005056827e51", "public", false);
 
         assertThat(periodicalItem.getDate()).isEqualTo("1989");
-        assertThat(periodicalItem.getPartNumber()).isEqualTo("5");
+        assertThat(periodicalItem.getPartNumber()).isEqualTo("11");
     }
 
     @Test
@@ -108,11 +108,11 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
                 krameriusMessenger);
 
         PeriodicalItem periodicalItem = (PeriodicalItem) digitalObject;
-        testPublication(periodicalItem, "Sborník k dějinám 19. a 20. století. 11", "Sborník k dějinám 19. a 20. století. 11",
+        testPublication(periodicalItem, "Sborník k dějinám 19. a 20. století. 11", "Sborník k dějinám 19. a 20. století",
                 "uuid:2536b1e0-d1c9-11e3-b110-005056827e51", "public", false);
 
         assertThat(periodicalItem.getDate()).isEqualTo("1989");
-        assertThat(periodicalItem.getPartNumber()).isEqualTo("5");
+        assertThat(periodicalItem.getPartNumber()).isEqualTo("11");
     }
 
     @Test

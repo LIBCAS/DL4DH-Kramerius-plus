@@ -1,6 +1,5 @@
 package cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel;
 import cz.inqool.dl4dh.krameriusplus.api.publication.object.PeriodicalVolumeDto;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectMapperVisitor;
@@ -29,7 +28,6 @@ public class PeriodicalVolume extends Publication {
      * Should be the same as volumeNumber, might delete later. As for now, some publications have different numbers
      * in these two attributes, so keeping both
      */
-    @JsonAlias({"title.sort"})
     private String volumeYear;
 
     @Override
