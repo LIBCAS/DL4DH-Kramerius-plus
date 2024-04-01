@@ -2,8 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.kramerius.v7;
 
 class KrameriusMessengerStreamsResponse {
 
-    static final String ALTO_RESPONSE = "This XML file does not appear to have any style information associated with it. The document tree is shown below.\n" +
-            "<alto xmlns=\"http://www.loc.gov/standards/alto/ns-v2#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+    static final String ALTO_RESPONSE = "<alto xmlns=\"http://www.loc.gov/standards/alto/ns-v2#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
             "<Description>\n" +
             "<MeasurementUnit>pixel</MeasurementUnit>\n" +
             "<sourceImageInformation>\n" +
@@ -45,8 +44,7 @@ class KrameriusMessengerStreamsResponse {
     static final String TEXT_RESPONSE = "Pák4.\n" +
             "323a";
 
-    static final String MODS = "This XML file does not appear to have any style information associated with it. The document tree is shown below.\n" +
-            "<mods:modsCollection xmlns:mods=\"http://www.loc.gov/mods/v3\" xmlns=\"info:fedora/fedora-system:def/foxml#\" xmlns:foxml=\"info:fedora/fedora-system:def/foxml#\" xmlns:mets=\"http://www.loc.gov/METS/\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+    static final String MODS = "<mods:modsCollection xmlns:mods=\"http://www.loc.gov/mods/v3\" xmlns=\"info:fedora/fedora-system:def/foxml#\" xmlns:foxml=\"info:fedora/fedora-system:def/foxml#\" xmlns:mets=\"http://www.loc.gov/METS/\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
             "<mods:mods ID=\"MODS_PAGE_0003\">\n" +
             "<mods:genre type=\"illustration\">page</mods:genre>\n" +
             "<mods:identifier type=\"uuid\">14fd6cc7-79e9-4280-8b3d-82b2b50dc2c1</mods:identifier>\n" +

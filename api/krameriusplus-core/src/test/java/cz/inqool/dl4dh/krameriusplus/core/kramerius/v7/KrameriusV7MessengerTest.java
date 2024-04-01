@@ -41,7 +41,6 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
     private MessengerTestHelper helper;
 
 
-    //TODO: implement actual tests for v7 version!
     @Test
     void periodical() {
         DigitalObject digitalObject = helper.testAndGetDigitalObject(PERIODICAL_RESPONSE,
@@ -213,7 +212,7 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
 
         ModsCollectionDefinition modsCollectionDefinition = krameriusMessenger.getMods("test");
 
-        IdentifierDefinition identifier = (IdentifierDefinition) modsCollectionDefinition.getMods().get(1).getModsGroup().get(0);
+        IdentifierDefinition identifier = (IdentifierDefinition) modsCollectionDefinition.getMods().get(0).getModsGroup().get(1);
 
         assertThat(identifier.getValue()).isEqualTo("14fd6cc7-79e9-4280-8b3d-82b2b50dc2c1");
     }
