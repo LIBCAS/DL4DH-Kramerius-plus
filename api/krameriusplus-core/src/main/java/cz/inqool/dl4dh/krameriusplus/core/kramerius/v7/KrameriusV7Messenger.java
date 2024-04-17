@@ -13,9 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXB;
@@ -26,6 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.*;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.buildUriPath;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.tryKrameriusCall;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.*;
 
 //TODO: cleanup implemention extract common code from both version implementations
@@ -52,15 +51,19 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
             = new ParameterizedTypeReference<>() {
     };
 
+    private static final ParameterizedTypeReference<DigitalObjectStructureDto> STRUCTURE_REF =
+            new ParameterizedTypeReference<>() {
+    };
+
     @Override
     public DigitalObject getDigitalObject(String objectId) {
-        return searchDigitalObject(buildUriPath("search?q=\"" + objectId + "\""))
+        return searchDigitalObject(buildUriPath("search?q=pid:\"" + objectId + "\""))
                 .accept(mapper);
     }
 
     @Override
     public List<DigitalObject> getDigitalObjectsForParent(String parentId) {
-        DigitalObjectStructureDto digitalObjectStructureDto = getDigitalObjectStructure(buildUriPath(parentId, "info", "structure"));
+        DigitalObjectStructureDto digitalObjectStructureDto = callInternal(buildUriPath("items", parentId, "info", "structure"), STRUCTURE_REF);
 
         if (digitalObjectStructureDto.getChildren() == null || digitalObjectStructureDto.getChildren().getChildren() == null) {
             return new ArrayList<>();
@@ -68,21 +71,21 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
 
         return digitalObjectStructureDto.getChildren().getChildren()
                 .stream()
-                .map(objectId -> searchDigitalObject(buildUriPath("search?q=pid:\"" + objectId + "\""))
+                .map(objectRefDto -> searchDigitalObject(buildUriPath("search?q=pid:\"" + objectRefDto.getPid() + "\""))
                         .accept(mapper))
                 .collect(Collectors.toList());
     }
 
     @Override
     public Alto getAlto(String pageId) {
-        String altoString = getAltoRawStream(pageId, STRING_TYPE_REF);
+        String altoString = getAltoRawStream(pageId);
 
         return JAXB.unmarshal(new StringReader(altoString), Alto.class);
     }
 
     @Override
     public String getAltoString(String pageId) {
-        return getAltoRawStream(pageId, STRING_TYPE_REF);
+        return getAltoRawStream(pageId);
     }
 
     @Override
@@ -105,32 +108,8 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
         return raw == null ? "" : raw;
     }
 
-
-    private DigitalObjectStructureDto getDigitalObjectStructure(String uri) {
-        try {
-            return webClient.get()
-                    .uri(uri)
-                    .acceptCharset(StandardCharsets.UTF_8)
-                    .retrieve()
-                    .bodyToMono(DigitalObjectStructureDto.class)
-                    .block();
-        } catch (WebClientResponseException e) {
-            if (e.getRawStatusCode() == 404) {
-                throw new KrameriusException(NOT_FOUND, e);
-            }
-            if (e.getRawStatusCode() == 403) {
-                throw new KrameriusException(UNAUTHORIZED, e);
-            }
-            throw new KrameriusException(EXTERNAL_API_ERROR, e);
-        } catch (WebClientRequestException e) {
-            throw new KrameriusException(NOT_RESPONDING, e);
-        } catch (Exception e) {
-            throw new KrameriusException(UNDEFINED, e);
-        }
-    }
-
     private DigitalObjectCreateDto searchDigitalObject(String uri) {
-        try {
+        return tryKrameriusCall(() -> {
             SearchResponse response = webClient.get()
                     .uri(uri)
                     .acceptCharset(StandardCharsets.UTF_8)
@@ -138,95 +117,61 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
                     .bodyToMono(SearchResponse.class)
                     .block();
 
-            validateResponse(response);
+            validateResponse(response, uri);
 
             return response.getResponse().getDocs().get(0);
-        } catch (WebClientResponseException e) {
-            if (e.getRawStatusCode() == 404) {
-                throw new KrameriusException(NOT_FOUND, e);
-            }
-            if (e.getRawStatusCode() == 403) {
-                throw new KrameriusException(UNAUTHORIZED, e);
-            }
-            throw new KrameriusException(EXTERNAL_API_ERROR, e);
-        } catch (WebClientRequestException e) {
-            throw new KrameriusException(NOT_RESPONDING, e);
-        } catch (Exception e) {
-            throw new KrameriusException(UNDEFINED, e);
-        }
+        });
     }
 
-    private static void validateResponse(SearchResponse response) {
+    private static void validateResponse(SearchResponse response, String uri) {
         if (response == null || response.getResponseHeader() == null || response.getResponseHeader().getStatus() == null) {
-            throw new KrameriusException(NO_RESPONSE, "Kramerius response header is null");
+            throw new KrameriusException(NO_RESPONSE, "Kramerius response header is null, uri: " + uri);
         }
 
         if (response.getResponse() == null) {
-            throw new KrameriusException(NO_RESPONSE, "Kramerius response is null");
+            throw new KrameriusException(NO_RESPONSE, "Kramerius response is null uri: " + uri);
         }
 
         if (!response.getResponseHeader().getStatus().equals(0)) {
-            throw new KrameriusException(BAD_STATUS_CODE, "Kramerius responded with code: " + response.getResponseHeader().getStatus());
+            throw new KrameriusException(BAD_STATUS_CODE, "Kramerius responded with code: " + response.getResponseHeader().getStatus() + " on uri: " + uri);
         }
 
         if (!response.getResponse().getNumFound().equals(1)) {
-            throw new KrameriusException(WRONG_NUMBER_OF_DOCUMENTS, "Kramerius returned wrong number of documents, expected: " + 1 + " got: " + response.getResponse().getNumFound());
+            throw new KrameriusException(WRONG_NUMBER_OF_DOCUMENTS, "Kramerius returned wrong number of documents, " +
+                    "expected: " + 1 + " got: " + response.getResponse().getNumFound() + " uri: " + uri);
         }
 
         if (!response.getResponse().isNumFoundExact()) {
-            throw new KrameriusException(INEXACT_RESULT, "Kramerius returned an inexact result to search");
+            throw new KrameriusException(INEXACT_RESULT, "Kramerius returned an inexact result to search on uri: " + uri);
         }
     }
 
     private <T> T callInternal(String uri, ParameterizedTypeReference<T> typeReference) {
-        try {
-            return webClient.get()
+        return tryKrameriusCall( () -> webClient.get()
                     .uri(uri)
                     .acceptCharset(StandardCharsets.UTF_8)
                     .retrieve()
                     .bodyToMono(typeReference)
-                    .block();
-        } catch (WebClientResponseException e) {
-            if (e.getRawStatusCode() == 404) {
-                throw new KrameriusException(NOT_FOUND, e);
-            }
-            if (e.getRawStatusCode() == 403) {
-                throw new KrameriusException(UNAUTHORIZED, e);
-            }
-            throw new KrameriusException(EXTERNAL_API_ERROR, e);
-        } catch (WebClientRequestException e) {
-            throw new KrameriusException(NOT_RESPONDING, e);
-        } catch (Exception e) {
-            throw new KrameriusException(UNDEFINED, e);
-        }
+                    .block());
     }
 
-    private <T> T getAltoRawStream(String pageId, ParameterizedTypeReference<T> typeReference) {
+    private String getAltoRawStream(String pageId) {
         try {
             return callInternal(
                     buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.getStreamId()),
-                    typeReference);
+                    STRING_TYPE_REF);
         } catch (KrameriusException exception) {
             if (NOT_FOUND.equals(exception.getErrorCode())) {
                 return callInternal(
                         buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.getStreamId().toLowerCase()),
-                        typeReference);
+                        STRING_TYPE_REF);
             } else {
                 throw exception;
             }
         }
     }
 
-
-
-    private String buildUriPath(String... segments) {
-        return UriComponentsBuilder.newInstance()
-                .pathSegment(segments)
-                .build()
-                .toUriString();
-    }
-
-    @Resource(name = WebClientConfig.KRAMERIUS_WEB_CLIENT)
+    @Resource(name = WebClientConfig.KRAMERIUS_V7_WEB_CLIENT)
     public void setWebClient(WebClient webClient) {
         this.webClient = webClient;
     }

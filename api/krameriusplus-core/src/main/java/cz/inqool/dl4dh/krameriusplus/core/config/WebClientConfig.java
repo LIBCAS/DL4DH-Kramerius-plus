@@ -11,7 +11,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Configuration
 public class WebClientConfig {
 
-    public static final String KRAMERIUS_WEB_CLIENT = "KRAMERIUS_WEB_CLIENT";
+    public static final String KRAMERIUS_V5_WEB_CLIENT = "KRAMERIUS_V5_WEB_CLIENT";
+
+    public static final String KRAMERIUS_V7_WEB_CLIENT = "KRAMERIUS_V7_WEB_CLIENT";
 
     public static final String UD_PIPE_WEB_CLIENT = "UD_PIPE_WEB_CLIENT";
 
@@ -23,8 +25,11 @@ public class WebClientConfig {
 
     private String krameriusUrl;
 
-    @Bean(KRAMERIUS_WEB_CLIENT)
-    public WebClient webClient() {
+    @Value("${system.kramerius.default-url}")
+    private String defaultUrl;
+
+    @Bean(KRAMERIUS_V5_WEB_CLIENT)
+    public WebClient v5Client() {
         return WebClient.builder()
                 .baseUrl(
                         UriComponentsBuilder.fromUriString(krameriusUrl)
@@ -36,6 +41,22 @@ public class WebClientConfig {
                         .maxInMemorySize(MAX_MEMORY_SIZE))
                 .build();
     }
+
+    @Bean(KRAMERIUS_V7_WEB_CLIENT)
+    public WebClient v7Client() {
+        return WebClient.builder()
+                .baseUrl(
+                        UriComponentsBuilder.fromUriString(defaultUrl)
+                                .path("/search/api/client/v7.0")
+                                .build()
+                                .toUriString())
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(MAX_MEMORY_SIZE))
+                .build();
+    }
+
+
 
     @Bean(UD_PIPE_WEB_CLIENT)
     public WebClient webClient(@Value("${system.enrichment.udpipe.api:http://lindat.mff.cuni.cz/services/udpipe/api/process}")

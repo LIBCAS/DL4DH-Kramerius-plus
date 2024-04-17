@@ -9,7 +9,6 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.monograph.Mo
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalVolume;
-import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusV5Messenger;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import cz.inqool.dl4dh.mods.StringPlusLanguage;

@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.kramerius;
+package cz.inqool.dl4dh.krameriusplus.core.kramerius.v5;
 
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException;
@@ -6,15 +6,13 @@ import cz.inqool.dl4dh.krameriusplus.core.config.WebClientConfig;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectMapperVisitor;
+import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXB;
@@ -23,7 +21,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.*;
+import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.NOT_FOUND;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.buildUriPath;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.tryKrameriusCall;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.*;
 
 @Component
@@ -126,26 +126,12 @@ public class KrameriusV5Messenger implements KrameriusMessenger {
     }
 
     private <T> T callInternal(String uri, ParameterizedTypeReference<T> typeReference) {
-        try {
-            return webClient.get()
+            return tryKrameriusCall(() -> webClient.get()
                     .uri(uri)
                     .acceptCharset(StandardCharsets.UTF_8)
                     .retrieve()
                     .bodyToMono(typeReference)
-                    .block();
-        } catch (WebClientResponseException e) {
-            if (e.getRawStatusCode() == 404) {
-                throw new KrameriusException(NOT_FOUND, e);
-            }
-            if (e.getRawStatusCode() == 403) {
-                throw new KrameriusException(UNAUTHORIZED, e);
-            }
-            throw new KrameriusException(EXTERNAL_API_ERROR, e);
-        } catch (WebClientRequestException e) {
-            throw new KrameriusException(NOT_RESPONDING, e);
-        } catch (Exception e) {
-            throw new KrameriusException(UNDEFINED, e);
-        }
+                    .block());
     }
 
     private String normalizeText(String textOcr) {
@@ -156,13 +142,6 @@ public class KrameriusV5Messenger implements KrameriusMessenger {
                 .replaceAll("\\S–\n", "")
                 .replaceAll("\r\n", " ")
                 .replaceAll("\n", " ");
-    }
-
-    private String buildUriPath(String... segments) {
-        return UriComponentsBuilder.newInstance()
-                .pathSegment(segments)
-                .build()
-                .toUriString();
     }
 
     private void setParentId(String parentId, List<DigitalObject> result) {
@@ -177,7 +156,7 @@ public class KrameriusV5Messenger implements KrameriusMessenger {
         }
     }
 
-    @Resource(name = WebClientConfig.KRAMERIUS_WEB_CLIENT)
+    @Resource(name = WebClientConfig.KRAMERIUS_V5_WEB_CLIENT)
     public void setWebClient(WebClient webClient) {
         this.webClient = webClient;
     }
