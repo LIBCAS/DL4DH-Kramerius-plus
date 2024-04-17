@@ -73,14 +73,19 @@ public class SyncKrameriusMessenger implements KrameriusMessenger {
 
     @Override
     public Alto getAlto(String pageId) {
-        String altoString = getAltoRawStream(pageId, STRING_TYPE_REF);
+        String altoString = sanitizeAlto(getAltoRawStream(pageId, STRING_TYPE_REF));
 
         return JAXB.unmarshal(new StringReader(altoString), Alto.class);
     }
 
     @Override
     public String getAltoString(String pageId) {
-        return getAltoRawStream(pageId, STRING_TYPE_REF);
+        return sanitizeAlto(getAltoRawStream(pageId, STRING_TYPE_REF));
+    }
+
+    private String sanitizeAlto(String altoRawStream) {
+        // for properly formed xml this does nothing
+        return altoRawStream.substring(altoRawStream.indexOf('<'), altoRawStream.lastIndexOf('>') + 1);
     }
 
     @Override
