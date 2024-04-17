@@ -1,10 +1,10 @@
-import {Alert, AlertTitle} from '@mui/material'
-import {DataGrid, GridColDef, GridRowParams} from '@mui/x-data-grid'
-import {PageBlock} from 'components/page-block'
-import {JobExecution} from 'models/job/job-execution'
-import {LastLaunch} from 'models/job/job-launch'
-import {FC} from 'react'
-import {dateTimeFormatter, durationFormatter} from 'utils/formatters'
+import { Alert, AlertTitle } from '@mui/material'
+import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid'
+import { PageBlock } from 'components/page-block'
+import { JobExecution } from 'models/job/job-execution'
+import { LastLaunch } from 'models/job/job-launch'
+import { FC } from 'react'
+import { dateTimeFormatter, durationFormatter } from 'utils/formatters'
 
 const columns: GridColDef[] = [
 	{
