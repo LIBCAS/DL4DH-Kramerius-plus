@@ -40,6 +40,12 @@ services:
       - 27017
     volumes:
       - mongodb:/data/db
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
   mongodb-express:
     image: mongo-express
     ports:
