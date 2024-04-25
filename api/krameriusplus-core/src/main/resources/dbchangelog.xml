@@ -401,4 +401,94 @@
         <modifyDataType tableName="kplus_enrichment_request_item" columnName="publication_title" newDataType="varchar(2000)"/>
         <modifyDataType tableName="kplus_enrichment_chain" columnName="publication_title" newDataType="varchar(2000)"/>
     </changeSet>
+    
+    <changeSet id="5" author="kollar">
+        <createTable tableName="kplus_user_request">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="user_request_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+            
+            <column name="request_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="user_id" type="${id}">
+                <constraints nullable="false" referencedTableName="kplus_user"
+                             referencedColumnNames="id" foreignKeyName="user_request_user_FK"/>
+            </column>
+            <column name="identification" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <createTable tableName="kplus_user_request_message">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="user_request_message_PK"/>
+            </column>
+
+            <!-- Dated Object-->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="user_request_id" type="${id}">
+                <constraints nullable="false" referencedTableName="kplus_user_reqeust"
+                             referencedColumnNames="id" foreignKeyName="user_request_message_request_FK"/>
+            </column>
+            <column name="username" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="blob">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_user_request_file">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="user_request_file_PK"/>
+            </column>
+            <column name="message_id" type="${id}">
+                <constraints nullable="false" referencedTableName="kplus_user_request_message"
+                             referencedColumnNames="id" foreignKeyName="user_request_file_message_FK"/>
+            </column>
+            <column name="file_id" type="${id}">
+                <constraints nullable="false" referencedTableName="kplus_file_ref"
+                             referencedColumnNames="id" foreignKeyName="user_request_file_ref_FK"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="kplus_user_request_part">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="user_request_part_PK"/>
+            </column>
+            <column name="user_request_id" type="${id}">
+                <constraints nullable="false" referencedTableName="kplus_user_request"
+                             referencedColumnNames="id" foreignKeyName="user_request_part_request_FK"/>
+            </column>
+            <column name="publication_id" type="${id}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note" type="blob"/>
+            <column name="state_until" type="timestamp"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="kplus_user_request_part"
+                             columnNames="publication_id, user_request_id"
+                             constraintName="user_request_publication_UNIQUE"/>
+    </changeSet>
 </databaseChangeLog>
