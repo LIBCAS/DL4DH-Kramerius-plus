@@ -425,6 +425,10 @@
             <column name="identification" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+
+            <column name="state" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         
         <createTable tableName="kplus_user_request_message">
@@ -439,7 +443,7 @@
             <column name="deleted" type="timestamp"/>
 
             <column name="user_request_id" type="${id}">
-                <constraints nullable="false" referencedTableName="kplus_user_reqeust"
+                <constraints nullable="false" referencedTableName="kplus_user_request"
                              referencedColumnNames="id" foreignKeyName="user_request_message_request_FK"/>
             </column>
             <column name="username" type="varchar(255)">
@@ -448,7 +452,10 @@
             <column name="user_type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="message" type="blob">
+            <column name="message" type="clob">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -462,7 +469,7 @@
                 <constraints nullable="false" referencedTableName="kplus_user_request_message"
                              referencedColumnNames="id" foreignKeyName="user_request_file_message_FK"/>
             </column>
-            <column name="file_id" type="${id}">
+            <column name="file_ref_id" type="${id}">
                 <constraints nullable="false" referencedTableName="kplus_file_ref"
                              referencedColumnNames="id" foreignKeyName="user_request_file_ref_FK"/>
             </column>
@@ -483,9 +490,15 @@
             <column name="state" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="note" type="blob"/>
+            <column name="note" type="clob"/>
             <column name="state_until" type="timestamp"/>
         </createTable>
+
+        <addColumn tableName="kplus_user">
+            <column name="user_role" type="varchar(255)" defaultValue="USER">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
 
         <addUniqueConstraint tableName="kplus_user_request_part"
                              columnNames="publication_id, user_request_id"

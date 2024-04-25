@@ -47,7 +47,7 @@ system:
     register-url: https://api.registr.digitalniknihovna.cz/api/libraries
   enrichment:
   #  should use only ALTO for now, OCR comes without information about word concatenation at the end of lines
-  #  and ALTO processing does not make manual corrections (while OCR processing does)
+  #  and ALTO processing does not make manual corrections (while OCR processing does)tr
     source: ALTO
     udpipe:
       api: http://lindat.mff.cuni.cz/services/udpipe/api/process

@@ -1,7 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.core.user.request;
+package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
-import cz.inqool.dl4dh.krameriusplus.api.user.UserType;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DatedObject;
+import cz.inqool.dl4dh.krameriusplus.core.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,10 +13,12 @@ import javax.persistence.*;
 @Table(name = "kplus_user_request_message")
 public class UserRequestMessage extends DatedObject {
 
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "user_request_id")
+    private UserRequest userRequest;
 
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
+    @ManyToOne
+    private User author;
 
     @Lob
     private String message;

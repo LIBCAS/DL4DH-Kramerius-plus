@@ -1,5 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.core.user.request;
+package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
+import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestType;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
@@ -15,11 +16,15 @@ import javax.persistence.*;
 public class UserRequest extends DatedObject {
 
     @Enumerated(EnumType.STRING)
-    private UserRequestType requestType;
+    @Column(name = "request_type")
+    private UserRequestType type;
 
     @ManyToOne
     private User user;
 
-    // TODO: generator
+    @Enumerated(EnumType.STRING)
+    private UserRequestState state = UserRequestState.CREATED;
+
     private String identification;
+
 }

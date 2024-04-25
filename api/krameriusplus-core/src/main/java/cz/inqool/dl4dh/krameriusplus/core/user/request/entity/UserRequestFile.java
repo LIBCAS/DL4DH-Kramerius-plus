@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.core.user.request;
+package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DomainObject;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileRef;

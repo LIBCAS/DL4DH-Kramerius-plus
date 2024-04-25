@@ -1,5 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.core.user.request;
+package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
+import cz.inqool.dl4dh.krameriusplus.api.user.request.document.DocumentState;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DomainObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class UserRequestPart extends DomainObject {
     private String publicationId;
 
     @Enumerated(EnumType.STRING)
-    private String state;
+    private DocumentState state = DocumentState.WAITING;
 
     @Lob
     private String note;
