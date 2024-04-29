@@ -1,14 +1,16 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.service;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.user.UserRole;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestFacade;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestListDto;
+import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
+import cz.inqool.dl4dh.krameriusplus.api.user.request.document.DocumentState;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
 import cz.inqool.dl4dh.krameriusplus.core.user.UserProvider;
-import cz.inqool.dl4dh.krameriusplus.core.user.UserRole;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequest;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestFile;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestMessage;
@@ -22,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class UserRequestService implements UserRequestFacade {
@@ -112,6 +116,39 @@ public class UserRequestService implements UserRequestFacade {
         userRequestMessage.setMessage(messageCreateDto.getMessage());
 
         userRequestMessageStore.save(userRequestMessage);
+    }
+
+    @Override
+    public boolean changeRequestState(String requestId, UserRequestState state, boolean forceTransition) {
+        UserRequest userRequest = findUserRequest(requestId);
+
+        if (!forceTransition) {
+            Set<UserRequestState> nextPossibleState = userRequest.getState().getValidTransitions();
+            if (!nextPossibleState.contains(state)) {
+                return false;
+            }
+        }
+
+        userRequest.setState(state);
+        userRequestStore.save(userRequest);
+        return true;
+    }
+
+    @Override
+    public boolean changeDocumentState(String requestId, String partId, DocumentState state, boolean forceTransition) {
+        UserRequestPart part = userRequestPartStore.findById(partId)
+                .orElseThrow(() -> new MissingObjectException(UserRequestPart.class, partId));
+
+        if (!forceTransition) {
+            Set<DocumentState> transitions = part.getState().getTransitions();
+            if (!transitions.contains(state)) {
+                return false;
+            }
+        }
+
+        part.setState(state);
+        userRequestPartStore.save(part);
+        return true;
     }
 
     private UserRequest findUserRequest(String id) {

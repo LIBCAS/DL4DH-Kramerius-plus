@@ -1,11 +1,14 @@
-package cz.inqool.dl4dh.krameriusplus.core.user;
+package cz.inqool.dl4dh.krameriusplus.api.user;
 
+import lombok.Getter;
+
+@Getter
 public enum UserRole {
 
-    ADMIN("dl4dh-admin"),
-    USER("user");
+    ADMIN(RoleNames.ADMIN),
+    USER(RoleNames.USER);
 
-    private String roleName;
+    private final String roleName;
 
     UserRole(String roleName) {
         this.roleName = roleName;

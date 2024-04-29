@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.user;
 
+import cz.inqool.dl4dh.krameriusplus.api.user.UserRole;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.web.context.annotation.RequestScope;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.core.user.UserRole.*;
+import static cz.inqool.dl4dh.krameriusplus.api.user.UserRole.ADMIN;
+import static cz.inqool.dl4dh.krameriusplus.api.user.UserRole.USER;
+import static cz.inqool.dl4dh.krameriusplus.api.user.UserRole.fromRoleName;
 
 @Component
 @RequestScope
