@@ -503,5 +503,9 @@
         <addUniqueConstraint tableName="kplus_user_request_part"
                              columnNames="publication_id, user_request_id"
                              constraintName="user_request_publication_UNIQUE"/>
+
+        <createSequence sequenceName="kplus_user_request_number_SEQ"
+                        startValue="1"
+                        incrementBy="1"/>
     </changeSet>
 </databaseChangeLog>

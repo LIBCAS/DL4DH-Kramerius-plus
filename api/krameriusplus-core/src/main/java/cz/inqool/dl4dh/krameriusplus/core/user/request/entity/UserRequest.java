@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestType;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DatedObject;
@@ -11,8 +12,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.time.temporal.ChronoField;
 
 @Getter
 @Setter
@@ -30,7 +34,14 @@ public class UserRequest extends DatedObject {
     @Enumerated(EnumType.STRING)
     private UserRequestState state = UserRequestState.CREATED;
 
-    private String identification;
+    @JsonIgnore
+    @GeneratedValue(generator = "identification_generator")
+    @SequenceGenerator(name = "identification_generator",
+            sequenceName = "kplus_user_request_number_SEQ",
+            allocationSize = 1)
+    private Integer identification;
 
-
+    public String getRequestIdentification() {
+        return created.get(ChronoField.YEAR) + String.format("%08d", identification);
+    }
 }
