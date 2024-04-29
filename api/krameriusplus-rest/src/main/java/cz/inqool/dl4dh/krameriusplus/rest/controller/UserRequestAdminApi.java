@@ -3,12 +3,13 @@ package cz.inqool.dl4dh.krameriusplus.rest.controller;
 import cz.inqool.dl4dh.krameriusplus.api.user.RoleNames;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestFacade;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.document.DocumentState;
+import cz.inqool.dl4dh.krameriusplus.api.user.request.document.ChangeDocumentStatesDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,12 +42,10 @@ public class UserRequestAdminApi {
         }
     }
 
-    @PutMapping("/{requestId}/document/{partId}")
+    @PutMapping("/{requestId}/document")
     public ResponseEntity<Void> changeDocumentState(@PathVariable String requestId,
-                                                    @PathVariable String partId,
-                                                    @RequestParam DocumentState state,
-                                                    @RequestParam(defaultValue = "false") boolean forceTransition) {
-        if (userRequestFacade.changeDocumentState(requestId, partId, state, forceTransition)) {
+                                                    @RequestBody ChangeDocumentStatesDto dto) {
+        if (userRequestFacade.changeDocumentState(requestId, dto.getDocumentIds(), dto.getState(), dto.isForceTransitions())) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();

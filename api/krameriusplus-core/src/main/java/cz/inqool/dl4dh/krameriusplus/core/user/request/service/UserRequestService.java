@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -135,19 +136,18 @@ public class UserRequestService implements UserRequestFacade {
     }
 
     @Override
-    public boolean changeDocumentState(String requestId, String partId, DocumentState state, boolean forceTransition) {
-        UserRequestPart part = userRequestPartStore.findById(partId)
-                .orElseThrow(() -> new MissingObjectException(UserRequestPart.class, partId));
+    public boolean changeDocumentState(String requestId, List<String> documentIds, DocumentState state, boolean forceTransition) {
+        List<UserRequestPart> requestParts = userRequestPartStore.findAllById(documentIds);
 
         if (!forceTransition) {
-            Set<DocumentState> transitions = part.getState().getTransitions();
-            if (!transitions.contains(state)) {
+            if (requestParts.stream()
+                    .anyMatch(part -> !part.getState().getTransitions().contains(state))) {
                 return false;
             }
         }
 
-        part.setState(state);
-        userRequestPartStore.save(part);
+        requestParts.forEach(part -> part.setState(state));
+        userRequestPartStore.saveAll(requestParts);
         return true;
     }
 

@@ -5,6 +5,8 @@ import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageCreateDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface UserRequestFacade {
 
     UserRequestDto createUserRequest(UserRequestCreateDto createDto);
@@ -19,5 +21,5 @@ public interface UserRequestFacade {
 
     boolean changeRequestState(String requestId, UserRequestState state, boolean overrideTransition);
 
-    boolean changeDocumentState(String requestId, String documentId, DocumentState state, boolean forceTransition);
+    boolean changeDocumentState(String requestId, List<String> documentId, DocumentState state, boolean forceTransition);
 }
