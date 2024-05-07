@@ -45,7 +45,7 @@ public class UserRequestAdminApi {
     @PutMapping("/{requestId}/document")
     public ResponseEntity<Void> changeDocumentState(@PathVariable String requestId,
                                                     @RequestBody ChangeDocumentStatesDto dto) {
-        if (userRequestFacade.changeDocumentState(requestId, dto.getDocumentIds(), dto.getState(), dto.isForceTransitions())) {
+        if (userRequestFacade.changeDocumentState(requestId, dto.getPublicationIds(), dto.getState(), dto.isForceTransitions())) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.badRequest().build();

@@ -12,10 +12,15 @@ import org.mapstruct.Mappings;
         uses = UserRequestPartMapper.class)
 public interface UserRequestMapper {
 
+    @Mappings({
+            @Mapping(source = "user.username", target = "username"),
+            @Mapping(source = "requestIdentification", target = "identification")}
+    )
     UserRequestDto toDto(UserRequest userRequest);
 
     @Mappings({
-            @Mapping(source = "user.username", target = "username")}
+            @Mapping(source = "user.username", target = "username"),
+            @Mapping(source = "requestIdentification", target = "identification")}
     )
     UserRequestListDto toListDto(UserRequest userRequest);
 }

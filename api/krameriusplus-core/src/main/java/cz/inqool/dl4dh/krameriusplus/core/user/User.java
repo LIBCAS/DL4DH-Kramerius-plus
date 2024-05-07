@@ -20,6 +20,7 @@ public class User extends DatedObject {
     @Column(nullable = false)
     private String username;
 
+    @Column(name = "user_role", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
 }

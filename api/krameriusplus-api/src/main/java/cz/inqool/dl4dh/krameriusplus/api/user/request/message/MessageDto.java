@@ -1,0 +1,16 @@
+package cz.inqool.dl4dh.krameriusplus.api.user.request.message;
+
+import cz.inqool.dl4dh.krameriusplus.api.domain.FileRefDto;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class MessageDto {
+
+    private List<FileRefDto> files;
+
+    private String content;
+}

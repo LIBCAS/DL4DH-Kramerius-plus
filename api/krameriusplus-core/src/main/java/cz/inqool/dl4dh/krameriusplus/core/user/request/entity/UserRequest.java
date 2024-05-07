@@ -12,11 +12,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.temporal.ChronoField;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -40,6 +44,14 @@ public class UserRequest extends DatedObject {
             sequenceName = "kplus_user_request_number_SEQ",
             allocationSize = 1)
     private Integer identification;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_request_id")
+    private Set<UserRequestPart> parts;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_request_id")
+    private Set<UserRequestMessage> messages;
 
     public String getRequestIdentification() {
         return created.get(ChronoField.YEAR) + String.format("%08d", identification);

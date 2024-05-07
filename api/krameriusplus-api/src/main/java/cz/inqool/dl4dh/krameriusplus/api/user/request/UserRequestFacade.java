@@ -4,12 +4,13 @@ import cz.inqool.dl4dh.krameriusplus.api.user.request.document.DocumentState;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageCreateDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface UserRequestFacade {
 
-    UserRequestDto createUserRequest(UserRequestCreateDto createDto);
+    UserRequestDto createUserRequest(UserRequestCreateDto createDto, List<MultipartFile> files);
 
     Page<UserRequestListDto> listPage(Pageable pageable, boolean viewDeleted);
 

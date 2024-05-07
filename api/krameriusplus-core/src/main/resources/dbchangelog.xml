@@ -79,20 +79,20 @@
             <column name="stack_trace" type="text"/>
             <column name="error_order" type="bigint"/>
         </createTable>
-        
+
         <createTable tableName="kplus_user">
             <column name="id" type="${id}">
                 <constraints nullable="false" primaryKey="true"
                              primaryKeyName="user_pk"/>
             </column>
-            
+
             <!-- Dated Object -->
             <column name="created" type="timestamp"/>
             <column name="updated" type="timestamp"/>
             <column name="deleted" type="timestamp"/>
-            
+
             <column name="username" type="varchar(255)">
-                <constraints nullable="false" unique="true" 
+                <constraints nullable="false" unique="true"
                              uniqueConstraintName="user_unique_constraint"/>
             </column>
         </createTable>
@@ -219,7 +219,7 @@
                              referencedColumnNames="id"/>
             </column>
             <column name="job_order" type="bigint">
-                <constraints nullable="false" primaryKey="true" 
+                <constraints nullable="false" primaryKey="true"
                              primaryKeyName="enrichment_chain_job_PK"/>
             </column>
         </createTable>
@@ -378,7 +378,7 @@
             <column name="message" type="varchar(2500)"/>
         </addColumn>
     </changeSet>
-    
+
     <changeSet id="3" author="kollar">
         <createIndex tableName="kplus_request" indexName="name_IDX">
             <column name="name"/>
@@ -398,10 +398,11 @@
     </changeSet>
 
     <changeSet id="4" author="kollar">
-        <modifyDataType tableName="kplus_enrichment_request_item" columnName="publication_title" newDataType="varchar(2000)"/>
+        <modifyDataType tableName="kplus_enrichment_request_item" columnName="publication_title"
+                        newDataType="varchar(2000)"/>
         <modifyDataType tableName="kplus_enrichment_chain" columnName="publication_title" newDataType="varchar(2000)"/>
     </changeSet>
-    
+
     <changeSet id="5" author="kollar">
         <createTable tableName="kplus_user_request">
             <column name="id" type="${id}">
@@ -413,16 +414,16 @@
             <column name="created" type="timestamp"/>
             <column name="updated" type="timestamp"/>
             <column name="deleted" type="timestamp"/>
-            
+
             <column name="request_type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            
+
             <column name="user_id" type="${id}">
                 <constraints nullable="false" referencedTableName="kplus_user"
                              referencedColumnNames="id" foreignKeyName="user_request_user_FK"/>
             </column>
-            <column name="identification" type="varchar(255)">
+            <column name="identification" type="integer">
                 <constraints nullable="false"/>
             </column>
 
@@ -430,7 +431,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        
+
         <createTable tableName="kplus_user_request_message">
             <column name="id" type="${id}">
                 <constraints nullable="false" primaryKey="true"
@@ -455,23 +456,21 @@
             <column name="message" type="clob">
                 <constraints nullable="false"/>
             </column>
-            <column name="author_id">
+            <column name="author_id" type="${id}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <createTable tableName="kplus_user_request_file">
-            <column name="id" type="${id}">
-                <constraints nullable="false" primaryKey="true"
-                             primaryKeyName="user_request_file_PK"/>
-            </column>
+        <createTable tableName="kplus_user_request_message_files">
             <column name="message_id" type="${id}">
-                <constraints nullable="false" referencedTableName="kplus_user_request_message"
-                             referencedColumnNames="id" foreignKeyName="user_request_file_message_FK"/>
+                <constraints nullable="false" referencedColumnNames="id"
+                             referencedTableName="kplus_user_request_message"
+                             foreignKeyName="kplus_user_request_message_message_FK"/>
             </column>
-            <column name="file_ref_id" type="${id}">
-                <constraints nullable="false" referencedTableName="kplus_file_ref"
-                             referencedColumnNames="id" foreignKeyName="user_request_file_ref_FK"/>
+            <column name="file_id" type="${id}">
+                <constraints nullable="false" referencedColumnNames="id"
+                             referencedTableName="kplus_file_ref"
+                             foreignKeyName="kplus_user_request_message_file_FK"/>
             </column>
         </createTable>
 
@@ -503,6 +502,10 @@
         <addUniqueConstraint tableName="kplus_user_request_part"
                              columnNames="publication_id, user_request_id"
                              constraintName="user_request_publication_UNIQUE"/>
+
+        <addUniqueConstraint tableName="kplus_user_request_message_files"
+                             columnNames="message_id, file_id"
+                             constraintName="user_request_message_files_UNIQUE"/>
 
         <createSequence sequenceName="kplus_user_request_number_SEQ"
                         startValue="1"

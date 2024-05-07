@@ -26,6 +26,8 @@ public class UserProvider {
     @Value("${system.security.mock}")
     private boolean mock;
 
+    public static final String MOCK_USERNAME = "MOCKED_USER!!!";
+
     public User getCurrentUser() {
         User user = buildUser(mock);
 
@@ -44,7 +46,7 @@ public class UserProvider {
 
         if (mock) {
             user.setRole(ADMIN);
-            user.setUsername( "MOCKED_USER!!!");
+            user.setUsername(MOCK_USERNAME);
             return user;
         }
 

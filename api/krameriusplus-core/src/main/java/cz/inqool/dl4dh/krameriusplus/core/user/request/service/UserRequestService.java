@@ -9,14 +9,14 @@ import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestListDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.document.DocumentState;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageCreateDto;
+import cz.inqool.dl4dh.krameriusplus.core.file.FileRef;
+import cz.inqool.dl4dh.krameriusplus.core.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
 import cz.inqool.dl4dh.krameriusplus.core.user.UserProvider;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequest;
-import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestFile;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestMessage;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestPart;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.mapper.UserRequestMapper;
-import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestFileStore;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestMessageStore;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestPartStore;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestStore;
@@ -24,11 +24,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional
 public class UserRequestService implements UserRequestFacade {
 
     private final UserRequestMapper userRequestMapper;
@@ -39,39 +45,65 @@ public class UserRequestService implements UserRequestFacade {
 
     private final UserRequestPartStore userRequestPartStore;
 
-    private final UserRequestFileStore userRequestFileStore;
-
     private final UserRequestMessageStore userRequestMessageStore;
+
+    private final FileService fileService;
 
     @Autowired
     public UserRequestService(UserRequestMapper userRequestMapper,
                               UserProvider userProvider,
-                              UserRequestStore userRequestStore, UserRequestPartStore userRequestPartStore, UserRequestFileStore userRequestFileStore, UserRequestMessageStore userRequestMessageStore) {
+                              UserRequestStore userRequestStore,
+                              UserRequestPartStore userRequestPartStore,
+                              UserRequestMessageStore userRequestMessageStore,
+                              FileService fileService) {
         this.userRequestMapper = userRequestMapper;
         this.userProvider = userProvider;
         this.userRequestStore = userRequestStore;
         this.userRequestPartStore = userRequestPartStore;
-        this.userRequestFileStore = userRequestFileStore;
         this.userRequestMessageStore = userRequestMessageStore;
+        this.fileService = fileService;
     }
 
     @Override
-    public UserRequestDto createUserRequest(UserRequestCreateDto createDto) {
+    public UserRequestDto createUserRequest(UserRequestCreateDto createDto, List<MultipartFile> multipartFiles) {
         UserRequest userRequest = new UserRequest();
         userRequest.setUser(userProvider.getCurrentUser());
         userRequest.setType(createDto.getType());
 
         userRequest = userRequestStore.save(userRequest);
 
+        createRequestParts(createDto, userRequest);
+        createMessage(userRequest.getId(), new MessageCreateDto(createDto.getMessage(), multipartFiles));
+
+        return userRequestMapper.toDto(userRequest);
+    }
+
+    private Set<FileRef> createRequestFiles(List<MultipartFile> multipartFiles) {
+        Set<FileRef> result = new HashSet<>();
+        for (MultipartFile multipartFile : multipartFiles) {
+            try {
+                FileRef fileRef = fileService.create(multipartFile.getInputStream(),
+                        multipartFile.getSize(),
+                        multipartFile.getName(),
+                        multipartFile.getContentType());
+                result.add(fileRef);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        return result;
+
+    }
+
+    private void createRequestParts(UserRequestCreateDto createDto, UserRequest userRequest) {
         for (String id : createDto.getPublicationIds()) {
             UserRequestPart userRequestPart = new UserRequestPart();
             userRequestPart.setUserRequest(userRequest);
             userRequestPart.setPublicationId(id);
-            userRequestPart.setNote(createDto.getNote());
+            userRequestPart.setNote(createDto.getMessage());
             userRequestPartStore.save(userRequestPart);
         }
-
-        return userRequestMapper.toDto(userRequest);
     }
 
     @Override
@@ -96,14 +128,16 @@ public class UserRequestService implements UserRequestFacade {
 
     @Override
     public boolean checkFileAccessible(String requestId, String fileId) {
-        User currentUser = userProvider.getCurrentUser();
+        UserRequest request = userRequestStore.findById(requestId)
+                .orElseThrow(() -> new MissingObjectException(UserRequest.class, requestId));
 
-        UserRequestFile userRequestFile = userRequestFileStore.findById(fileId)
-                .orElseThrow(() -> new MissingObjectException(UserRequestFile.class, fileId));
+        boolean hasPermission = checkPermissionsForRequest(request);
 
-        return userRequestFile.getMessage().getUserRequest()
-                .getUser()
-                .equals(currentUser);
+        boolean exists = request.getMessages().stream()
+                .flatMap(message -> message.getFiles().stream())
+                .anyMatch(file -> file.getId().equals(fileId));
+
+        return hasPermission && exists;
     }
 
     @Override
@@ -115,12 +149,17 @@ public class UserRequestService implements UserRequestFacade {
         userRequestMessage.setUserRequest(userRequest);
         userRequestMessage.setAuthor(currentUser);
         userRequestMessage.setMessage(messageCreateDto.getMessage());
+        userRequestMessage.setFiles(createRequestFiles(messageCreateDto.getFiles()));
 
         userRequestMessageStore.save(userRequestMessage);
     }
 
     @Override
     public boolean changeRequestState(String requestId, UserRequestState state, boolean forceTransition) {
+        if (!userProvider.getCurrentUser().getRole().equals(UserRole.ADMIN)) {
+            return false;
+        }
+
         UserRequest userRequest = findUserRequest(requestId);
 
         if (!forceTransition) {
@@ -136,8 +175,12 @@ public class UserRequestService implements UserRequestFacade {
     }
 
     @Override
-    public boolean changeDocumentState(String requestId, List<String> documentIds, DocumentState state, boolean forceTransition) {
-        List<UserRequestPart> requestParts = userRequestPartStore.findAllById(documentIds);
+    public boolean changeDocumentState(String requestId, List<String> publicationIds, DocumentState state, boolean forceTransition) {
+        if (!userProvider.getCurrentUser().getRole().equals(UserRole.ADMIN)) {
+            return false;
+        }
+
+        List<UserRequestPart> requestParts = userRequestPartStore.findAllByPublicationIds(publicationIds);
 
         if (!forceTransition) {
             if (requestParts.stream()
@@ -152,7 +195,21 @@ public class UserRequestService implements UserRequestFacade {
     }
 
     private UserRequest findUserRequest(String id) {
-        return userRequestStore.findById(id)
+        UserRequest userRequest = userRequestStore.findById(id)
                 .orElseThrow(() -> new MissingObjectException(UserRequest.class, id));
+
+        boolean hasPermissionToView = checkPermissionsForRequest(userRequest);
+
+        // TODO: exception
+        if (!hasPermissionToView) {
+            throw new IllegalArgumentException("user has no permission to view, todo: add better exception");
+        }
+
+        return userRequest;
+    }
+
+    private boolean checkPermissionsForRequest(UserRequest userRequest) {
+        User currentUser = userProvider.getCurrentUser();
+        return userRequest.getUser().equals(currentUser) && !currentUser.getRole().equals(UserRole.ADMIN);
     }
 }

@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Arrays;
 
 import static cz.inqool.dl4dh.krameriusplus.api.user.RoleNames.USER;
 
@@ -38,8 +40,9 @@ public class UserRequestApi {
     }
 
     @PostMapping("/")
-    public UserRequestDto createUserRequest(@RequestBody UserRequestCreateDto createDto) {
-        return userRequestFacade.createUserRequest(createDto);
+    public UserRequestDto createUserRequest(@RequestBody UserRequestCreateDto createDto,
+                                            @RequestParam("files") MultipartFile[] multipartFiles) {
+        return userRequestFacade.createUserRequest(createDto, Arrays.asList(multipartFiles));
     }
 
     @GetMapping("/")
