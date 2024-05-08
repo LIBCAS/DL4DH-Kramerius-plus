@@ -7,20 +7,20 @@ import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.time.temporal.ChronoField;
+import java.time.ZoneId;
 import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Getter
 @Setter
@@ -39,21 +39,17 @@ public class UserRequest extends DatedObject {
     private UserRequestState state = UserRequestState.CREATED;
 
     @JsonIgnore
-    @GeneratedValue(generator = "identification_generator")
-    @SequenceGenerator(name = "identification_generator",
-            sequenceName = "kplus_user_request_number_SEQ",
-            allocationSize = 1)
+    @Column(updatable = false)
+    @Generated(GenerationTime.INSERT)
     private Integer identification;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_request_id")
+    @OneToMany(cascade = ALL, mappedBy = "userRequest")
     private Set<UserRequestPart> parts;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_request_id")
+    @OneToMany(cascade = ALL, mappedBy = "userRequest")
     private Set<UserRequestMessage> messages;
 
     public String getRequestIdentification() {
-        return created.get(ChronoField.YEAR) + String.format("%08d", identification);
+        return created.atZone(ZoneId.systemDefault()).getYear() + "-" + String.format("%08d", identification);
     }
 }

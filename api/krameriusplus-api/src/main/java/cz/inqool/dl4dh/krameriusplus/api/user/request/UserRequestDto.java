@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,7 +27,7 @@ public class UserRequestDto {
 
     private String identification;
 
-    private List<UserRequestPartDto> userRequestParts;
+    private List<UserRequestPartDto> parts = new ArrayList<>();
 
-    private List<MessageDto> messages;
+    private List<MessageDto> messages = new ArrayList<>();
 }

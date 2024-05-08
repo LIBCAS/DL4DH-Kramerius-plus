@@ -404,6 +404,10 @@
     </changeSet>
 
     <changeSet id="5" author="kollar">
+        <createSequence sequenceName="KPLUS_USER_REQUEST_NUMBER_SEQ"
+                        startValue="1"
+                        incrementBy="1"/>
+
         <createTable tableName="kplus_user_request">
             <column name="id" type="${id}">
                 <constraints nullable="false" primaryKey="true"
@@ -423,8 +427,9 @@
                 <constraints nullable="false" referencedTableName="kplus_user"
                              referencedColumnNames="id" foreignKeyName="user_request_user_FK"/>
             </column>
-            <column name="identification" type="integer">
-                <constraints nullable="false"/>
+            <column name="identification" type="integer" defaultValueSequenceNext="KPLUS_USER_REQUEST_NUMBER_SEQ">
+                <constraints nullable="false" unique="true"
+                             uniqueConstraintName="kplus_user_request_identification_UNIQUE"/>
             </column>
 
             <column name="state" type="varchar(255)">
@@ -446,12 +451,6 @@
             <column name="user_request_id" type="${id}">
                 <constraints nullable="false" referencedTableName="kplus_user_request"
                              referencedColumnNames="id" foreignKeyName="user_request_message_request_FK"/>
-            </column>
-            <column name="username" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="user_type" type="varchar(255)">
-                <constraints nullable="false"/>
             </column>
             <column name="message" type="clob">
                 <constraints nullable="false"/>
@@ -506,9 +505,5 @@
         <addUniqueConstraint tableName="kplus_user_request_message_files"
                              columnNames="message_id, file_id"
                              constraintName="user_request_message_files_UNIQUE"/>
-
-        <createSequence sequenceName="kplus_user_request_number_SEQ"
-                        startValue="1"
-                        incrementBy="1"/>
     </changeSet>
 </databaseChangeLog>

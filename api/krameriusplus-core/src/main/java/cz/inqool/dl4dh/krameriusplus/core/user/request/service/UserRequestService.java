@@ -67,13 +67,15 @@ public class UserRequestService implements UserRequestFacade {
     @Override
     public UserRequestDto createUserRequest(UserRequestCreateDto createDto, List<MultipartFile> multipartFiles) {
         UserRequest userRequest = new UserRequest();
-        userRequest.setUser(userProvider.getCurrentUser());
+        User currentUser = userProvider.getCurrentUser();
+        userRequest.setUser(currentUser);
         userRequest.setType(createDto.getType());
 
-        userRequest = userRequestStore.save(userRequest);
+        userRequest = userRequestStore.saveAndFlush(userRequest);
 
-        createRequestParts(createDto, userRequest);
-        createMessage(userRequest.getId(), new MessageCreateDto(createDto.getMessage(), multipartFiles));
+        userRequest.setParts(createRequestParts(createDto, userRequest));
+        userRequest.setMessages(Set.of(doCreateMessage(userRequest,
+                new MessageCreateDto(createDto.getMessage(), multipartFiles), currentUser)));
 
         return userRequestMapper.toDto(userRequest);
     }
@@ -96,14 +98,18 @@ public class UserRequestService implements UserRequestFacade {
 
     }
 
-    private void createRequestParts(UserRequestCreateDto createDto, UserRequest userRequest) {
+    private Set<UserRequestPart> createRequestParts(UserRequestCreateDto createDto, UserRequest userRequest) {
+        Set<UserRequestPart> parts = new HashSet<>();
+
         for (String id : createDto.getPublicationIds()) {
             UserRequestPart userRequestPart = new UserRequestPart();
             userRequestPart.setUserRequest(userRequest);
             userRequestPart.setPublicationId(id);
             userRequestPart.setNote(createDto.getMessage());
-            userRequestPartStore.save(userRequestPart);
+            parts.add(userRequestPartStore.save(userRequestPart));
         }
+
+        return parts;
     }
 
     @Override
@@ -131,7 +137,7 @@ public class UserRequestService implements UserRequestFacade {
         UserRequest request = userRequestStore.findById(requestId)
                 .orElseThrow(() -> new MissingObjectException(UserRequest.class, requestId));
 
-        boolean hasPermission = checkPermissionsForRequest(request);
+        boolean hasPermission = hasPermissionsForRequest(request);
 
         boolean exists = request.getMessages().stream()
                 .flatMap(message -> message.getFiles().stream())
@@ -143,15 +149,17 @@ public class UserRequestService implements UserRequestFacade {
     @Override
     public void createMessage(String requestId, MessageCreateDto messageCreateDto) {
         UserRequest userRequest = findUserRequest(requestId);
-        User currentUser = userProvider.getCurrentUser();
+        doCreateMessage(userRequest, messageCreateDto, userProvider.getCurrentUser());
+    }
 
+    private UserRequestMessage doCreateMessage(UserRequest request, MessageCreateDto createDto, User currentUser) {
         UserRequestMessage userRequestMessage = new UserRequestMessage();
-        userRequestMessage.setUserRequest(userRequest);
+        userRequestMessage.setUserRequest(request);
         userRequestMessage.setAuthor(currentUser);
-        userRequestMessage.setMessage(messageCreateDto.getMessage());
-        userRequestMessage.setFiles(createRequestFiles(messageCreateDto.getFiles()));
+        userRequestMessage.setMessage(createDto.getMessage());
+        userRequestMessage.setFiles(createRequestFiles(createDto.getFiles()));
 
-        userRequestMessageStore.save(userRequestMessage);
+        return userRequestMessageStore.save(userRequestMessage);
     }
 
     @Override
@@ -198,7 +206,7 @@ public class UserRequestService implements UserRequestFacade {
         UserRequest userRequest = userRequestStore.findById(id)
                 .orElseThrow(() -> new MissingObjectException(UserRequest.class, id));
 
-        boolean hasPermissionToView = checkPermissionsForRequest(userRequest);
+        boolean hasPermissionToView = hasPermissionsForRequest(userRequest);
 
         // TODO: exception
         if (!hasPermissionToView) {
@@ -208,8 +216,8 @@ public class UserRequestService implements UserRequestFacade {
         return userRequest;
     }
 
-    private boolean checkPermissionsForRequest(UserRequest userRequest) {
+    private boolean hasPermissionsForRequest(UserRequest userRequest) {
         User currentUser = userProvider.getCurrentUser();
-        return userRequest.getUser().equals(currentUser) && !currentUser.getRole().equals(UserRole.ADMIN);
+        return userRequest.getUser().equals(currentUser) || currentUser.getRole().equals(UserRole.ADMIN);
     }
 }

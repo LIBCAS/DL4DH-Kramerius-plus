@@ -36,7 +36,7 @@ public class UserRequestStore extends DatedStore<UserRequest, QUserRequest> {
 
     private Page<UserRequest> listUserRequests(Pageable pageable, boolean viewDeleted, JPAQuery<?> queryBase) {
         if (!viewDeleted) {
-            queryBase = queryBase.where(qObject.deleted.isNotNull());
+            queryBase = queryBase.where(qObject.deleted.isNull());
         }
 
         long count = queryBase.select(qObject.count()).fetchFirst();

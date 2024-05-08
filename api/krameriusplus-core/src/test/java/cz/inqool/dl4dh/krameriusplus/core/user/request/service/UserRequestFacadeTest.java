@@ -9,22 +9,22 @@ import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestListDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestType;
 import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageCreateDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageDto;
 import cz.inqool.dl4dh.krameriusplus.core.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
 import cz.inqool.dl4dh.krameriusplus.core.user.UserProvider;
 import cz.inqool.dl4dh.krameriusplus.core.user.UserStore;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequest;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestStore;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 
+import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +32,11 @@ import java.util.List;
 import static cz.inqool.dl4dh.krameriusplus.core.user.UserProvider.MOCK_USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserRequestFacadeTest extends CoreBaseTest {
 
     @Autowired
@@ -52,11 +55,12 @@ class UserRequestFacadeTest extends CoreBaseTest {
 
     private User admin;
 
-    private boolean setupDone = false;
-
     @BeforeEach
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void initUsers() {
-        if (setupDone) {
+        store.deleteAll();
+
+        if (!(userStore.count() == 0)) {
             return;
         }
 
@@ -69,14 +73,6 @@ class UserRequestFacadeTest extends CoreBaseTest {
         admin.setUsername("admin");
         admin.setRole(UserRole.ADMIN);
         this.admin = userStore.save(admin);
-
-        setupDone = true;
-    }
-
-    @AfterEach
-    public void tearDown() {
-        userStore.deleteAll();
-        store.deleteAll();
     }
 
     @Test
@@ -84,12 +80,14 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
 
         when(userProvider.getCurrentUser()).thenReturn(user);
         UserRequestDto userRequest = userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
 
         assertThat(userRequest.getType()).isEqualTo(UserRequestType.ENRICHMENT);
-        assertThat(userRequest.getUserRequestParts().size()).isEqualTo(1);
+        assertThat(userRequest.getParts().size()).isEqualTo(1);
+        assertThat(userRequest.getMessages().size()).isEqualTo(1);
         assertThat(userRequest.getIdentification()).isNotBlank();
         assertThat(userRequest.getUsername()).isEqualTo(MOCK_USERNAME);
     }
@@ -99,23 +97,30 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
 
-        when(userProvider.getCurrentUser()).thenReturn(user);
-        userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
-        userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
-        userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
 
         UserRequest userRequest = new UserRequest();
         userRequest.setState(UserRequestState.CREATED);
-        User user = new User();
-        user.setUsername("admin");
-        user.setRole(UserRole.ADMIN);
-        userRequest.setUser(user);
+        userRequest.setType(UserRequestType.ENRICHMENT);
 
+        User newUser = new User();
+        newUser.setUsername("admin3");
+        newUser.setRole(UserRole.USER);
+
+        newUser = userStore.save(newUser);
+        userRequest.setUser(newUser);
+
+        // 3 for user in field of class, 1 for newUser
+        when(userProvider.getCurrentUser()).thenReturn(user);
+        userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
+        userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
+        userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
         store.save(userRequest);
 
-        when(userProvider.getCurrentUser()).thenReturn(user);
         Page<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false);
+
+        verify(userProvider, times(4)).getCurrentUser();
 
         assertThat(userRequestListDtos.getTotalElements()).isEqualTo(3);
         assertThat(userRequestListDtos.getContent().stream()
@@ -127,6 +132,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
 
         when(userProvider.getCurrentUser()).thenReturn(user);
         userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
@@ -135,11 +141,13 @@ class UserRequestFacadeTest extends CoreBaseTest {
 
         UserRequest userRequest = new UserRequest();
         userRequest.setState(UserRequestState.CREATED);
+        userRequest.setType(UserRequestType.ENRICHMENT);
         User user = new User();
-        user.setUsername("admin");
+        user.setUsername("admin2");
         user.setRole(UserRole.ADMIN);
-        userRequest.setUser(user);
+        user = userStore.save(user);
 
+        userRequest.setUser(user);
         store.save(userRequest);
 
         when(userProvider.getCurrentUser()).thenReturn(admin);
@@ -153,6 +161,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
 
         when(userProvider.getCurrentUser()).thenReturn(user);
         UserRequestDto userRequest = userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
@@ -172,6 +181,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
 
         when(userProvider.getCurrentUser()).thenReturn(admin);
         UserRequestDto userRequest = userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
@@ -186,6 +196,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
         MockMultipartFile file = new MockMultipartFile("test", "test.txt",
                 "text/plain", "content".getBytes(StandardCharsets.UTF_8));
 
@@ -204,12 +215,13 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
 
         when(userProvider.getCurrentUser()).thenReturn(admin);
         UserRequestDto userRequest = userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
 
         when(userProvider.getCurrentUser()).thenReturn(admin);
-        assertThat(userRequest.getMessages().size()).isEqualTo(0);
+        assertThat(userRequest.getMessages().size()).isEqualTo(1);
         assertThat(userRequestFacade.checkFileAccessible(userRequest.getId(), "test")).isFalse();
     }
 
@@ -218,6 +230,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
         MockMultipartFile file = new MockMultipartFile("test", "test.txt",
                 "text/plain", "content".getBytes(StandardCharsets.UTF_8));
 
@@ -236,6 +249,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
         MockMultipartFile file = new MockMultipartFile("test", "test.txt",
                 "text/plain", "content".getBytes(StandardCharsets.UTF_8));
 
@@ -249,28 +263,25 @@ class UserRequestFacadeTest extends CoreBaseTest {
         userRequestFacade.createMessage(userRequest.getId(), messageCreateDto);
 
         UserRequestDto retrieved = userRequestFacade.findById(userRequest.getId());
-        assertThat(retrieved.getMessages().size()).isEqualTo(1);
-        MessageDto message = retrieved.getMessages().get(0);
-        assertThat(message.getFiles().size()).isEqualTo(1);
-        assertThat(message.getContent()).isEqualTo("test message");
+        assertThat(retrieved.getMessages().size()).isEqualTo(2);
+        assertThat(retrieved.getMessages().stream().allMatch(message -> message.getFiles().size() == 1)).isTrue();
+        assertThat(retrieved.getMessages().stream().allMatch(message -> !message.getMessage().isBlank())).isTrue();
     }
 
     @Test
     void createMessage_requestDoesNotExist_missingObjectThrown() {
-        UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
-        userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
-        userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+
         MockMultipartFile file = new MockMultipartFile("test", "test.txt",
                 "text/plain", "content".getBytes(StandardCharsets.UTF_8));
 
         when(userProvider.getCurrentUser()).thenReturn(admin);
-        UserRequestDto userRequest = userRequestFacade.createUserRequest(userRequestCreateDto, List.of(file));
+
 
         MessageCreateDto messageCreateDto = new MessageCreateDto();
         messageCreateDto.setFiles(List.of(file));
         messageCreateDto.setMessage("test message");
 
-        assertThatThrownBy(() -> userRequestFacade.createMessage(userRequest.getId(), messageCreateDto))
+        assertThatThrownBy(() -> userRequestFacade.createMessage("no request!", messageCreateDto))
                 .isInstanceOf(MissingObjectException.class);
 
     }
@@ -280,6 +291,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
         MockMultipartFile file = new MockMultipartFile("test", "test.txt",
                 "text/plain", "content".getBytes(StandardCharsets.UTF_8));
 
@@ -299,6 +311,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
         MockMultipartFile file = new MockMultipartFile("test", "test.txt",
                 "text/plain", "content".getBytes(StandardCharsets.UTF_8));
 
@@ -314,10 +327,11 @@ class UserRequestFacadeTest extends CoreBaseTest {
     }
 
     @Test
-    void changeRequestState_transitionIsInvalid_exceptionThrown() {
+    void changeRequestState_transitionIsInvalid_returnsFalse() {
         UserRequestCreateDto userRequestCreateDto = new UserRequestCreateDto();
         userRequestCreateDto.setType(UserRequestType.ENRICHMENT);
         userRequestCreateDto.setPublicationIds(List.of("publication-1"));
+        userRequestCreateDto.setMessage("test");
         MockMultipartFile file = new MockMultipartFile("test", "test.txt",
                 "text/plain", "content".getBytes(StandardCharsets.UTF_8));
 
@@ -325,7 +339,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestDto userRequest = userRequestFacade.createUserRequest(userRequestCreateDto, List.of(file));
 
         boolean changed = userRequestFacade
-                .changeRequestState(userRequest.getId(), UserRequestState.WAITING_FOR_USER, false);
+                .changeRequestState(userRequest.getId(), UserRequestState.PROLONGING, false);
 
         assertThat(changed).isFalse();
     }

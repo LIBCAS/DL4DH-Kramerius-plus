@@ -19,5 +19,6 @@ public class UserRequestCreateDto {
     @Size(min = 1)
     private List<String> publicationIds;
 
+    @NotNull
     private String message;
 }

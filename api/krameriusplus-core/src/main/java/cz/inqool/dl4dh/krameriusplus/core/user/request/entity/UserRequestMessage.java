@@ -24,7 +24,6 @@ import java.util.Set;
 public class UserRequestMessage extends DatedObject {
 
     @ManyToOne
-    @JoinColumn(name = "user_request_id")
     private UserRequest userRequest;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

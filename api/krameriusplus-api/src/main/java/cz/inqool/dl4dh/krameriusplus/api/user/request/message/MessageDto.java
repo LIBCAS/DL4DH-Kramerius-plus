@@ -10,7 +10,9 @@ import java.util.List;
 @Setter
 public class MessageDto {
 
+    private String id;
+
     private List<FileRefDto> files;
 
-    private String content;
+    private String message;
 }
