@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,7 +31,8 @@ public class RestExceptionHandler {
             ValidationException.class,
             javax.validation.ValidationException.class,
             JobException.class,
-            MethodArgumentNotValidException.class
+            MethodArgumentNotValidException.class,
+            BindException.class
     })
     public ResponseEntity<RestException> badRequest(HttpServletRequest request, Exception e) {
         return defaultExceptionHandling(request, e, HttpStatus.BAD_REQUEST);
