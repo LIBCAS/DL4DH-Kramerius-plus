@@ -1,12 +1,21 @@
 package cz.inqool.dl4dh.krameriusplus.core.user;
 
+import cz.inqool.dl4dh.krameriusplus.api.user.UserRole;
 import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static cz.inqool.dl4dh.krameriusplus.api.user.UserRole.ADMIN;
+import static cz.inqool.dl4dh.krameriusplus.api.user.UserRole.USER;
+import static cz.inqool.dl4dh.krameriusplus.api.user.UserRole.fromRoleName;
 
 @Component
 @RequestScope
@@ -17,32 +26,64 @@ public class UserProvider {
     @Value("${system.security.mock}")
     private boolean mock;
 
-    public User getCurrentUser() {
-        String username = getUsername(mock);
+    public static final String MOCK_USERNAME = "MOCKED_USER!!!";
 
-        User user = userStore.findUserByUsername(username);
-        if (user == null) {
-            user = new User();
-            user.setUsername(username);
-            userStore.save(user);
+    public User getCurrentUser() {
+        User user = buildUser(mock);
+
+        User existing = userStore.findUserByUsername(user.getUsername());
+        if (existing == null) {
+            return userStore.save(user);
+        }
+
+        return existing;
+    }
+
+    private User buildUser(boolean mock) {
+        User user = new User();
+
+        if (mock) {
+            user.setRole(ADMIN);
+            user.setUsername(MOCK_USERNAME);
+            return user;
+        }
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof KeycloakPrincipal) {
+            KeycloakPrincipal<?> keycloakPrincipal = (KeycloakPrincipal<?>) principal;
+            user.setRole(getKeycloakRole(keycloakPrincipal.getKeycloakSecurityContext()));
+            user.setUsername(keycloakPrincipal.getName());
+        } else if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            user.setRole(getUserDetailsRole(userDetails));
+            user.setUsername(userDetails.getUsername());
+        } else {
+            throw new IllegalStateException("Unexpected class of security principal: " + principal.getClass());
         }
 
         return user;
     }
 
-    private String getUsername(boolean mock) {
-        if (mock) {
-            return "MOCKED_USER!!!";
+    private UserRole getUserDetailsRole(UserDetails userDetails) {
+        Set<UserRole> roles = userDetails.getAuthorities().stream()
+                .map(authority -> fromRoleName(authority.getAuthority()))
+                .collect(Collectors.toSet());
+        if (roles.contains(ADMIN)) {
+            return ADMIN;
         }
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof KeycloakPrincipal) {
-            return ((KeycloakPrincipal<?>) principal).getName();
-        } else if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else {
-            throw new IllegalStateException("Unexpected class of security principal: " + principal.getClass());
+        return USER;
+    }
+
+    private UserRole getKeycloakRole(KeycloakSecurityContext keycloakSecurityContext) {
+        Set<UserRole> roles = keycloakSecurityContext.getToken().getRealmAccess().getRoles().stream()
+                .map(UserRole::fromRoleName)
+                .collect(Collectors.toSet());
+        if (roles.contains(ADMIN)) {
+            return ADMIN;
         }
+
+        return USER;
     }
 
     @Autowired
