@@ -34,11 +34,9 @@ public class UserProvider {
         User existing = userStore.findUserByUsername(user.getUsername());
         if (existing == null) {
             return userStore.save(user);
-        } else {
-            existing.setRole(user.getRole());
         }
 
-        return user;
+        return existing;
     }
 
     private User buildUser(boolean mock) {
