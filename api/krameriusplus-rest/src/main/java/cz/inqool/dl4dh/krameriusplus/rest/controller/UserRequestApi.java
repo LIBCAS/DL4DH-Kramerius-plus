@@ -12,9 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +42,7 @@ public class UserRequestApi {
     }
 
     @PostMapping(value = "/")
-    public ResponseEntity<UserRequestDto> createUserRequest(@Valid @RequestBody UserRequestCreateDto createDto,
+    public ResponseEntity<UserRequestDto> createUserRequest(@Valid @ModelAttribute UserRequestCreateDto createDto,
                                             @RequestParam("files") MultipartFile[] multipartFiles) {
         return new ResponseEntity<>(userRequestFacade
                 .createUserRequest(createDto, Arrays.asList(multipartFiles)), HttpStatus.CREATED);
@@ -67,7 +67,7 @@ public class UserRequestApi {
 
     @PostMapping("/{requestId}/message")
     public ResponseEntity<Void> createMessage(@PathVariable String requestId,
-                                              @Valid @RequestBody MessageCreateDto messageCreateDto,
+                                              @Valid @ModelAttribute MessageCreateDto messageCreateDto,
                                               @RequestParam("files") MultipartFile[] multipartFiles) {
         userRequestFacade.createMessage(requestId, messageCreateDto, Arrays.asList(multipartFiles));
 
