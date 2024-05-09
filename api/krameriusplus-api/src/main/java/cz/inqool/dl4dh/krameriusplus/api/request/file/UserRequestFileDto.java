@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.api.user.request.file;
+package cz.inqool.dl4dh.krameriusplus.api.request.file;
 
 import cz.inqool.dl4dh.krameriusplus.api.domain.FileRefDto;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestType;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestState;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestType;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
 import lombok.Getter;

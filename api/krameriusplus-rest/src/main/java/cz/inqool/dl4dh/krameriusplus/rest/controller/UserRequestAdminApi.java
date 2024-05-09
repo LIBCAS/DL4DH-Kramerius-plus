@@ -1,9 +1,9 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestState;
+import cz.inqool.dl4dh.krameriusplus.api.request.document.ChangeDocumentStatesDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.RoleNames;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestFacade;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.document.ChangeDocumentStatesDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+
 @Tag(name = "UserRequestAdmin", description = "Užívatelské žádosti administrace")
 @RestController
 @RequestMapping(UserRequestAdminApi.USER_REQUEST_ADMIN_PATH)
@@ -44,7 +46,7 @@ public class UserRequestAdminApi {
 
     @PutMapping("/{requestId}/document")
     public ResponseEntity<Void> changeDocumentState(@PathVariable String requestId,
-                                                    @RequestBody ChangeDocumentStatesDto dto) {
+                                                    @Valid @RequestBody ChangeDocumentStatesDto dto) {
         if (userRequestFacade.changeDocumentState(requestId, dto.getPublicationIds(), dto.getState(), dto.isForceTransitions())) {
             return ResponseEntity.ok().build();
         } else {

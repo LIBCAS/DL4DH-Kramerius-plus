@@ -1,7 +1,7 @@
-package cz.inqool.dl4dh.krameriusplus.api.user.request;
+package cz.inqool.dl4dh.krameriusplus.api.request;
 
-import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.part.UserRequestPartDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.part.UserRequestPartDto;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
-import cz.inqool.dl4dh.krameriusplus.api.user.request.document.DocumentState;
+import cz.inqool.dl4dh.krameriusplus.api.request.document.DocumentState;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DomainObject;
 import lombok.Getter;
 import lombok.Setter;

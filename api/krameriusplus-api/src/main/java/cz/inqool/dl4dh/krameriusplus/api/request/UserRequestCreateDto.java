@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.api.user.request;
+package cz.inqool.dl4dh.krameriusplus.api.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +16,7 @@ public class UserRequestCreateDto {
     @NotNull
     private UserRequestType type;
 
+    @NotNull
     @Size(min = 1)
     private List<String> publicationIds;
 

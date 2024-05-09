@@ -1,14 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestFacade;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestListDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageCreateDto;
+import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestListDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageCreateDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 import java.util.Arrays;
 
 import static cz.inqool.dl4dh.krameriusplus.api.user.RoleNames.USER;
@@ -39,15 +41,18 @@ public class UserRequestApi {
         this.userRequestFacade = userRequestFacade;
     }
 
-    @PostMapping("/")
-    public UserRequestDto createUserRequest(@RequestBody UserRequestCreateDto createDto,
+    @PostMapping(value = "/")
+    public ResponseEntity<UserRequestDto> createUserRequest(@Valid @RequestBody UserRequestCreateDto createDto,
                                             @RequestParam("files") MultipartFile[] multipartFiles) {
-        return userRequestFacade.createUserRequest(createDto, Arrays.asList(multipartFiles));
+        return new ResponseEntity<>(userRequestFacade
+                .createUserRequest(createDto, Arrays.asList(multipartFiles)), HttpStatus.CREATED);
     }
 
     @GetMapping("/")
-    public Page<UserRequestListDto> userRequest(@RequestBody Pageable pageable, @RequestParam boolean viewDeleted){
-        return userRequestFacade.listPage(pageable, viewDeleted);
+    public Result<UserRequestListDto> userRequest(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                  @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                                  @RequestParam(value = "viewDeleted", defaultValue = "false") boolean viewDeleted){
+        return userRequestFacade.listPage(Pageable.ofSize(pageSize).withPage(page), viewDeleted);
     }
 
     @GetMapping("/{requestId}")
@@ -61,9 +66,11 @@ public class UserRequestApi {
     }
 
     @PostMapping("/{requestId}/message")
-    public ResponseEntity<Void> createMessage(@PathVariable String requestId, @RequestBody MessageCreateDto messageCreateDto) {
-        userRequestFacade.createMessage(requestId, messageCreateDto);
+    public ResponseEntity<Void> createMessage(@PathVariable String requestId,
+                                              @Valid @RequestBody MessageCreateDto messageCreateDto,
+                                              @RequestParam("files") MultipartFile[] multipartFiles) {
+        userRequestFacade.createMessage(requestId, messageCreateDto, Arrays.asList(multipartFiles));
 
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

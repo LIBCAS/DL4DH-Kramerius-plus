@@ -1,7 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.mapper;
 
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestListDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestListDto;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

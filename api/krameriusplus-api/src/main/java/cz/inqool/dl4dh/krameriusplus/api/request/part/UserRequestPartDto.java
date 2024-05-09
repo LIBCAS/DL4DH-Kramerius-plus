@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.api.user.request.part;
+package cz.inqool.dl4dh.krameriusplus.api.request.part;
 
 import lombok.Getter;
 import lombok.Setter;

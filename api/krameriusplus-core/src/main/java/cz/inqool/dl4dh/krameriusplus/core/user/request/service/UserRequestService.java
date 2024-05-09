@@ -1,14 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.service;
 
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestListDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestState;
+import cz.inqool.dl4dh.krameriusplus.api.request.document.DocumentState;
+import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.UserRole;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestFacade;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestListDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.document.DocumentState;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
@@ -32,6 +33,7 @@ import java.io.UncheckedIOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -75,7 +77,8 @@ public class UserRequestService implements UserRequestFacade {
 
         userRequest.setParts(createRequestParts(createDto, userRequest));
         userRequest.setMessages(Set.of(doCreateMessage(userRequest,
-                new MessageCreateDto(createDto.getMessage(), multipartFiles), currentUser)));
+                new MessageCreateDto(createDto.getMessage()), currentUser,
+                multipartFiles)));
 
         return userRequestMapper.toDto(userRequest);
     }
@@ -113,7 +116,7 @@ public class UserRequestService implements UserRequestFacade {
     }
 
     @Override
-    public Page<UserRequestListDto> listPage(Pageable pageable, boolean viewDeleted) {
+    public Result<UserRequestListDto> listPage(Pageable pageable, boolean viewDeleted) {
         User currentUser = userProvider.getCurrentUser();
 
         Page<UserRequest> userRequests;
@@ -123,7 +126,11 @@ public class UserRequestService implements UserRequestFacade {
             userRequests = userRequestStore.findAllForUser(pageable, currentUser.getId(), viewDeleted);
         }
 
-        return userRequests.map(userRequestMapper::toListDto);
+        return new Result<>(pageable.getPageNumber(), pageable.getPageSize(),
+                userRequests.getTotalElements(),
+                userRequests.getContent()
+                .stream()
+                .map(userRequestMapper::toListDto).collect(Collectors.toList()));
     }
 
     @Override
@@ -147,17 +154,18 @@ public class UserRequestService implements UserRequestFacade {
     }
 
     @Override
-    public void createMessage(String requestId, MessageCreateDto messageCreateDto) {
+    public void createMessage(String requestId, MessageCreateDto messageCreateDto, List<MultipartFile> files) {
         UserRequest userRequest = findUserRequest(requestId);
-        doCreateMessage(userRequest, messageCreateDto, userProvider.getCurrentUser());
+        doCreateMessage(userRequest, messageCreateDto, userProvider.getCurrentUser(), files);
     }
 
-    private UserRequestMessage doCreateMessage(UserRequest request, MessageCreateDto createDto, User currentUser) {
+    private UserRequestMessage doCreateMessage(UserRequest request, MessageCreateDto createDto,
+                                               User currentUser, List<MultipartFile> files) {
         UserRequestMessage userRequestMessage = new UserRequestMessage();
         userRequestMessage.setUserRequest(request);
         userRequestMessage.setAuthor(currentUser);
         userRequestMessage.setMessage(createDto.getMessage());
-        userRequestMessage.setFiles(createRequestFiles(createDto.getFiles()));
+        userRequestMessage.setFiles(createRequestFiles(files));
 
         return userRequestMessageStore.save(userRequestMessage);
     }

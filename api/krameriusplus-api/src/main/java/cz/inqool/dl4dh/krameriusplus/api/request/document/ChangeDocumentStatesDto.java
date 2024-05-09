@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.api.user.request.document;
+package cz.inqool.dl4dh.krameriusplus.api.request.document;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +14,7 @@ import java.util.List;
 @Validated
 public class ChangeDocumentStatesDto {
 
+    @NotNull
     @Size(min = 1, message = "No document ids were provided for change of state")
     List<String> publicationIds = new ArrayList<>();
 

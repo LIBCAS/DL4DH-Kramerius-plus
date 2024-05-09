@@ -1,14 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.service;
 
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestListDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestState;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestType;
+import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.UserRole;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestCreateDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestFacade;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestListDto;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestState;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.UserRequestType;
-import cz.inqool.dl4dh.krameriusplus.api.user.request.message.MessageCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
 import cz.inqool.dl4dh.krameriusplus.core.user.UserProvider;
@@ -257,10 +257,9 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestDto userRequest = userRequestFacade.createUserRequest(userRequestCreateDto, List.of(file));
 
         MessageCreateDto messageCreateDto = new MessageCreateDto();
-        messageCreateDto.setFiles(List.of(file));
         messageCreateDto.setMessage("test message");
 
-        userRequestFacade.createMessage(userRequest.getId(), messageCreateDto);
+        userRequestFacade.createMessage(userRequest.getId(), messageCreateDto, List.of(file));
 
         UserRequestDto retrieved = userRequestFacade.findById(userRequest.getId());
         assertThat(retrieved.getMessages().size()).isEqualTo(2);
@@ -278,10 +277,9 @@ class UserRequestFacadeTest extends CoreBaseTest {
 
 
         MessageCreateDto messageCreateDto = new MessageCreateDto();
-        messageCreateDto.setFiles(List.of(file));
         messageCreateDto.setMessage("test message");
 
-        assertThatThrownBy(() -> userRequestFacade.createMessage("no request!", messageCreateDto))
+        assertThatThrownBy(() -> userRequestFacade.createMessage("no request!", messageCreateDto, List.of(file)))
                 .isInstanceOf(MissingObjectException.class);
 
     }

@@ -1,4 +1,4 @@
-package cz.inqool.dl4dh.krameriusplus.api.user.request.document;
+package cz.inqool.dl4dh.krameriusplus.api.request.document;
 
 
 import java.util.Set;
