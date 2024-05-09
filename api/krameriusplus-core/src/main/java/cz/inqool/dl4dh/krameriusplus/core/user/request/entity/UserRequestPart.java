@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import cz.inqool.dl4dh.krameriusplus.api.request.document.DocumentState;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DomainObject;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import java.time.Instant;
 public class UserRequestPart extends DomainObject {
 
     @ManyToOne
+    @JsonBackReference
     private UserRequest userRequest;
 
     private String publicationId;

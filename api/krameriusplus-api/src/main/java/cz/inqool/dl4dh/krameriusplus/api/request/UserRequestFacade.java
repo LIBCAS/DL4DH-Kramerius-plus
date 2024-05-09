@@ -22,5 +22,5 @@ public interface UserRequestFacade {
 
     boolean changeRequestState(String requestId, UserRequestState state, boolean overrideTransition);
 
-    boolean changeDocumentState(String requestId, List<String> documentId, DocumentState state, boolean forceTransition);
+    boolean changeDocumentState(String requestId, List<String> publicationIds, DocumentState state, boolean forceTransition);
 }

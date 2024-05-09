@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestState;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestType;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DatedObject;
@@ -44,9 +45,11 @@ public class UserRequest extends DatedObject {
     private Integer identification;
 
     @OneToMany(cascade = ALL, mappedBy = "userRequest")
+    @JsonManagedReference
     private Set<UserRequestPart> parts;
 
     @OneToMany(cascade = ALL, mappedBy = "userRequest")
+    @JsonManagedReference
     private Set<UserRequestMessage> messages;
 
     public String getRequestIdentification() {

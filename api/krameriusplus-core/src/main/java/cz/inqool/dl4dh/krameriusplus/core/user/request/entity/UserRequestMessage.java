@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import cz.inqool.dl4dh.krameriusplus.core.domain.jpa.object.DatedObject;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileRef;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
@@ -24,6 +25,7 @@ import java.util.Set;
 public class UserRequestMessage extends DatedObject {
 
     @ManyToOne
+    @JsonManagedReference
     private UserRequest userRequest;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
