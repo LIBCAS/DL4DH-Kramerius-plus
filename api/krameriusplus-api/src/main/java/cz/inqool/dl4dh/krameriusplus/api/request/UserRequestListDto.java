@@ -9,6 +9,8 @@ import java.time.Instant;
 @Setter
 public class UserRequestListDto {
 
+    private String id;
+
     private Instant created;
 
     private Instant updated;

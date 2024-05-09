@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.service;
 
+import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
@@ -20,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -118,12 +118,12 @@ class UserRequestFacadeTest extends CoreBaseTest {
         userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
         store.save(userRequest);
 
-        Page<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false);
+        Result<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false);
 
         verify(userProvider, times(4)).getCurrentUser();
 
-        assertThat(userRequestListDtos.getTotalElements()).isEqualTo(3);
-        assertThat(userRequestListDtos.getContent().stream()
+        assertThat(userRequestListDtos.getTotal()).isEqualTo(3);
+        assertThat(userRequestListDtos.getItems().stream()
                 .allMatch(request -> request.getUsername().equals(MOCK_USERNAME))).isTrue();
     }
 
@@ -151,9 +151,9 @@ class UserRequestFacadeTest extends CoreBaseTest {
         store.save(userRequest);
 
         when(userProvider.getCurrentUser()).thenReturn(admin);
-        Page<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false);
+        Result<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false);
 
-        assertThat(userRequestListDtos.getTotalElements()).isEqualTo(4);
+        assertThat(userRequestListDtos.getTotal()).isEqualTo(4);
     }
 
     @Test
