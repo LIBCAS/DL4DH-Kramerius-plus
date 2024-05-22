@@ -93,7 +93,7 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
 
     @Override
     public String getOcr(String pageId) {
-        return getOcrRawStream(pageId);
+        return normalizeText(getOcrRawStream(pageId));
     }
 
     @Override
@@ -156,6 +156,16 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
                     .retrieve()
                     .bodyToMono(typeReference)
                     .block());
+    }
+
+    private String normalizeText(String textOcr) {
+        return textOcr.replace("\uFEFF", "")
+                .replaceAll("\\S-\r\n", "")
+                .replaceAll("\\S-\n", "")
+                .replaceAll("\\S–\r\n", "")
+                .replaceAll("\\S–\n", "")
+                .replaceAll("\r\n", " ")
+                .replaceAll("\n", " ");
     }
 
     private String getAltoRawStream(String pageId) {

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper.testPublication;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.Util.normalizeText;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.MONOGRAPH_PAGE_RESPONSE;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.MONOGRAPH_RESPONSE;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.MONOGRAPH_UNIT_RESPONSE;
@@ -217,7 +218,7 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
 
         String ocr = krameriusMessenger.getOcr("test");
 
-        assertThat(ocr).isEqualTo(TEXT_RESPONSE);
+        assertThat(ocr).isEqualTo(normalizeText(TEXT_RESPONSE));
     }
 
     @Test

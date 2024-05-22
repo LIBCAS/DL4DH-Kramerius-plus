@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper.testPublication;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.Util.normalizeText;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -188,7 +189,7 @@ public class KrameriusV5MessengerTest extends CoreBaseTest {
 
         String ocr = krameriusMessenger.getOcr("test");
 
-        assertThat(ocr).isEqualTo(KrameriusMessengerStreamsResponse.OCR_RESPONSE);
+        assertThat(ocr).isEqualTo(normalizeText(KrameriusMessengerStreamsResponse.OCR_RESPONSE));
     }
 
     @Test
