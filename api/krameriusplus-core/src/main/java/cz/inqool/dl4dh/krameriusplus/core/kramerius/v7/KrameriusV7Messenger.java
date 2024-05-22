@@ -62,17 +62,21 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
 
     @Override
     public List<DigitalObject> getDigitalObjectsForParent(String parentId) {
-        DigitalObjectStructureDto digitalObjectStructureDto = callInternal(buildUriPath("items", parentId, "info", "structure"), STRUCTURE_REF);
+        DigitalObjectStructureDto digitalObjectStructureDto = callInternal(buildUriPath(ITEMS_PATH_SEGMENT, parentId, "info", "structure"), STRUCTURE_REF);
 
         if (digitalObjectStructureDto.getChildren() == null || digitalObjectStructureDto.getChildren().getChildren() == null) {
             return new ArrayList<>();
         }
 
-        return digitalObjectStructureDto.getChildren().getChildren()
+        List<DigitalObject> digitalObjects = digitalObjectStructureDto.getChildren().getChildren()
                 .stream()
                 .map(objectRefDto -> searchDigitalObject(buildUriPath("search?q=pid:\"" + objectRefDto.getPid() + "\""))
                         .accept(mapper))
                 .collect(Collectors.toList());
+
+        setParentId(parentId, digitalObjects);
+
+        return digitalObjects;
     }
 
     @Override
@@ -176,6 +180,18 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
                         STRING_TYPE_REF);
             } else {
                 throw exception;
+            }
+        }
+    }
+
+    private void setParentId(String parentId, List<DigitalObject> result) {
+        int index = 0;
+
+        if (result != null) {
+            // publications and pages will share indices
+            for (DigitalObject child : result) {
+                child.setParentId(parentId);
+                child.setIndex(index++);
             }
         }
     }
