@@ -25,10 +25,10 @@ public class MessengerConfiguration {
     public KrameriusMessenger krameriusMessenger(DigitalObjectMapperVisitor mapper) {
         if (krameriusVersion.startsWith("7")) {
             log.info("Initializing v7 version of messenger.");
-            return new KrameriusV7Messenger(v5Client(), mapper);
+            return new KrameriusV7Messenger(v7Client(), mapper);
         } else if (krameriusVersion.startsWith("5")) {
             log.info("Initializing v5 version of messenger.");
-            return new KrameriusV5Messenger(v7Client(), mapper);
+            return new KrameriusV5Messenger(v5Client(), mapper);
         }
 
         throw new IllegalStateException("Unknown Kramerius version: " + krameriusVersion);
