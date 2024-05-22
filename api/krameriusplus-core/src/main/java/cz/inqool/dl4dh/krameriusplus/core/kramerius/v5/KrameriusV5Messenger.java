@@ -2,19 +2,14 @@ package cz.inqool.dl4dh.krameriusplus.core.kramerius.v5;
 
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException;
-import cz.inqool.dl4dh.krameriusplus.core.config.WebClientConfig;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.annotation.Resource;
 import javax.xml.bind.JAXB;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -24,10 +19,10 @@ import java.util.stream.Collectors;
 import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.NOT_FOUND;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.buildUriPath;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.tryKrameriusCall;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.*;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.ALTO;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.MODS;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.TEXT_OCR;
 
-@Component
-@ConditionalOnProperty(prefix = "system.kramerius", value = "version", havingValue = "5")
 public class KrameriusV5Messenger implements KrameriusMessenger {
 
     private static final ParameterizedTypeReference<Alto> ALTO_TYPE_REF
@@ -48,9 +43,14 @@ public class KrameriusV5Messenger implements KrameriusMessenger {
 
     private static final String STREAMS_PATH_SEGMENT = "streams";
 
-    private WebClient webClient;
+    private final WebClient webClient;
 
-    private DigitalObjectMapperVisitor mapper;
+    private final DigitalObjectMapperVisitor mapper;
+
+    public KrameriusV5Messenger(WebClient webClient, DigitalObjectMapperVisitor mapper) {
+        this.webClient = webClient;
+        this.mapper = mapper;
+    }
 
     @Override
     public DigitalObject getDigitalObject(String objectId) {
@@ -154,15 +154,5 @@ public class KrameriusV5Messenger implements KrameriusMessenger {
                 child.setIndex(index++);
             }
         }
-    }
-
-    @Resource(name = WebClientConfig.KRAMERIUS_V5_WEB_CLIENT)
-    public void setWebClient(WebClient webClient) {
-        this.webClient = webClient;
-    }
-
-    @Autowired
-    public void setMapper(DigitalObjectMapperVisitor mapper) {
-        this.mapper = mapper;
     }
 }

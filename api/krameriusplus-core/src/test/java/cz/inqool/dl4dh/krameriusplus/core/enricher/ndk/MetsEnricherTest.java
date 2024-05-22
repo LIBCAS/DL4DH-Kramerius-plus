@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 import java.math.BigInteger;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(properties = {"system.kramerius.version=7"})
 public class MetsEnricherTest extends CoreBaseTest {
 
     @Autowired

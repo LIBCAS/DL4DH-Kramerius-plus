@@ -1,6 +1,15 @@
 package cz.inqool.dl4dh.krameriusplus.core.enricher.mods.v5;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.*;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsGenre;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsLanguage;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsLanguageTerm;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsName;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsOriginInfo;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPhysicalDescription;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlace;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlaceTerm;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsTitleInfo;
 import cz.inqool.dl4dh.krameriusplus.core.CoreBaseTest;
 import cz.inqool.dl4dh.krameriusplus.core.enricher.mods.ModsMapper;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;

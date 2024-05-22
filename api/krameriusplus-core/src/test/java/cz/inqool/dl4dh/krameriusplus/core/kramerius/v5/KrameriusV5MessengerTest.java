@@ -9,6 +9,7 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.monograph.Mo
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalVolume;
+import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
 import cz.inqool.dl4dh.mods.StringPlusLanguage;
@@ -33,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class KrameriusV5MessengerTest extends CoreBaseTest {
 
     @Autowired
-    private KrameriusV5Messenger krameriusMessenger;
+    private KrameriusMessenger krameriusMessenger;
 
     @Autowired
     private MessengerTestHelper helper;
@@ -185,7 +186,7 @@ public class KrameriusV5MessengerTest extends CoreBaseTest {
                 .setBody(KrameriusMessengerStreamsResponse.OCR_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_BINARY));
 
-        String ocr = krameriusMessenger.getOcrRawStream("test");
+        String ocr = krameriusMessenger.getOcr("test");
 
         assertThat(ocr).isEqualTo(KrameriusMessengerStreamsResponse.OCR_RESPONSE);
     }

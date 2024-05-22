@@ -2,19 +2,14 @@ package cz.inqool.dl4dh.krameriusplus.core.kramerius.v7;
 
 import cz.inqool.dl4dh.alto.Alto;
 import cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException;
-import cz.inqool.dl4dh.krameriusplus.core.config.WebClientConfig;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.DigitalObject;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectCreateDto;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.annotation.Resource;
 import javax.xml.bind.JAXB;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -34,15 +29,13 @@ import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.MODS;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.TEXT_OCR;
 
 // TODO: refactor with something better than web client ex: https://spring.io/projects/spring-cloud-openfeign
-@Component
-@ConditionalOnProperty(prefix = "system.kramerius", value = "version", havingValue = "7")
 public class KrameriusV7Messenger implements KrameriusMessenger {
 
     private static final String STREAMS_PATH_SEGMENT = "streams";
 
-    private WebClient webClient;
+    private final WebClient webClient;
 
-    private DigitalObjectMapperVisitor mapper;
+    private final DigitalObjectMapperVisitor mapper;
 
     private static final ParameterizedTypeReference<DigitalObjectCreateDto> DIGITAL_OBJECT_TYPE_REF
             = new ParameterizedTypeReference<>() {
@@ -59,6 +52,11 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
     private static final ParameterizedTypeReference<DigitalObjectStructureDto> STRUCTURE_REF =
             new ParameterizedTypeReference<>() {
     };
+
+    public KrameriusV7Messenger(WebClient webClient, DigitalObjectMapperVisitor mapper) {
+        this.webClient = webClient;
+        this.mapper = mapper;
+    }
 
     @Override
     public DigitalObject getDigitalObject(String objectId) {
@@ -174,15 +172,5 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
                 throw exception;
             }
         }
-    }
-
-    @Resource(name = WebClientConfig.KRAMERIUS_V7_WEB_CLIENT)
-    public void setWebClient(WebClient webClient) {
-        this.webClient = webClient;
-    }
-
-    @Autowired
-    public void setMapper(DigitalObjectMapperVisitor mapper) {
-        this.mapper = mapper;
     }
 }

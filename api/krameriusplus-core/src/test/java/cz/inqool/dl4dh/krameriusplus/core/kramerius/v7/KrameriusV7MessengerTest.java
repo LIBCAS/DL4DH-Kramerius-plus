@@ -10,6 +10,7 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.monograph.Mo
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.Periodical;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalItem;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.periodical.PeriodicalVolume;
+import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper;
 import cz.inqool.dl4dh.mods.IdentifierDefinition;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
@@ -25,17 +26,32 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.MessengerTestHelper.testPublication;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.*;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStreamsResponse.*;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.*;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.MONOGRAPH_PAGE_RESPONSE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.MONOGRAPH_RESPONSE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.MONOGRAPH_UNIT_RESPONSE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.PERIODICAL_ITEM_INTERNAL_PART1;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.PERIODICAL_ITEM_INTERNAL_PART2;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.PERIODICAL_ITEM_RESPONSE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerResponse.PERIODICAL_RESPONSE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStreamsResponse.ALTO_RESPONSE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStreamsResponse.MODS;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStreamsResponse.TEXT_RESPONSE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.MONOGRAPH_CHILDREN_STRUCTURE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.MONOGRAPH_UNIT_CHILDREN;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.MONOGRAPH_UNIT_PAGE1;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.MONOGRAPH_UNIT_PAGE2;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.MONOGRAPH_UNIT_PAGE3;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.PERIODIAL_ITEM_CHILDREN_STRUCTURE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.PERIODICAL_CHILDREN_STRUCTURE;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.KrameriusMessengerStructureResponse.PERIODICAL_VOLUME_CHILDREN_STRUCTURE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestPropertySource(properties = {"system.kramerius.version = 7"})
+@TestPropertySource(properties = {"system.kramerius.version=7"})
 public class KrameriusV7MessengerTest extends CoreBaseTest {
 
     @Autowired
-    private KrameriusV7Messenger krameriusMessenger;
+    private KrameriusMessenger krameriusMessenger;
 
     @Autowired
     private MessengerTestHelper helper;
@@ -199,7 +215,7 @@ public class KrameriusV7MessengerTest extends CoreBaseTest {
                 .setBody(TEXT_RESPONSE)
                 .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.DEFAULT_BINARY));
 
-        String ocr = krameriusMessenger.getOcrRawStream("test");
+        String ocr = krameriusMessenger.getOcr("test");
 
         assertThat(ocr).isEqualTo(TEXT_RESPONSE);
     }
