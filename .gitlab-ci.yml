@@ -1,6 +1,19 @@
 stages:
   - build
   - deploy
+  - test
+
+test:
+  stage: test
+  tags:
+    - maven
+    - java11
+    - lessmemory
+  script:
+    - "cd api"
+    - "mvn test"
+  only:
+    - merge_requests
 
 api-build:
   stage: build
