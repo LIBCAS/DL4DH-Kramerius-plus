@@ -1,9 +1,9 @@
-package cz.inqool.dl4dh.krameriusplus.core.kramerius;
+package cz.inqool.dl4dh.krameriusplus.core.kramerius.v5;
 
 import lombok.Getter;
 
 @Getter
-public enum StreamType {
+enum StreamType {
     TEXT_OCR("TEXT_OCR"),
     ALTO("ALTO"),
     MODS("BIBLIO_MODS");

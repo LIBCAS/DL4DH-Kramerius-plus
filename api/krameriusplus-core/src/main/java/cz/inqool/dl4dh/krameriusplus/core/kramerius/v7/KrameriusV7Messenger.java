@@ -24,22 +24,18 @@ import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.Err
 import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.WRONG_NUMBER_OF_DOCUMENTS;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.buildUriPath;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.tryKrameriusCall;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.ALTO;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.MODS;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.TEXT_OCR;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.ALTO;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.MODS;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.TEXT_OCR;
 
 // TODO: refactor with something better than web client ex: https://spring.io/projects/spring-cloud-openfeign
 public class KrameriusV7Messenger implements KrameriusMessenger {
 
-    private static final String STREAMS_PATH_SEGMENT = "streams";
+    private static final String ITEMS_PATH_SEGMENT = "items";
 
     private final WebClient webClient;
 
     private final DigitalObjectMapperVisitor mapper;
-
-    private static final ParameterizedTypeReference<DigitalObjectCreateDto> DIGITAL_OBJECT_TYPE_REF
-            = new ParameterizedTypeReference<>() {
-    };
 
     private static final ParameterizedTypeReference<String> STRING_TYPE_REF
             = new ParameterizedTypeReference<>() {
@@ -99,13 +95,13 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
     @Override
     public ModsCollectionDefinition getMods(String publicationId) {
         return callInternal(
-                buildUriPath(publicationId, STREAMS_PATH_SEGMENT, MODS.getStreamId()),
+                buildUriPath(ITEMS_PATH_SEGMENT, publicationId, MODS.getStreamId()),
                 MODS_TYPE_REF);
     }
 
     String getOcrRawStream(String pageId) {
         String raw = callInternal(
-                buildUriPath(pageId, STREAMS_PATH_SEGMENT, TEXT_OCR.getStreamId()),
+                buildUriPath(ITEMS_PATH_SEGMENT, pageId, TEXT_OCR.getStreamId()),
                 STRING_TYPE_REF);
 
         return raw == null ? "" : raw;
@@ -171,12 +167,12 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
     private String getAltoRawStream(String pageId) {
         try {
             return callInternal(
-                    buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.getStreamId()),
+                    buildUriPath(ITEMS_PATH_SEGMENT, pageId, ALTO.getStreamId()),
                     STRING_TYPE_REF);
         } catch (KrameriusException exception) {
             if (NOT_FOUND.equals(exception.getErrorCode())) {
                 return callInternal(
-                        buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.getStreamId().toLowerCase()),
+                        buildUriPath(ITEMS_PATH_SEGMENT, pageId, ALTO.getStreamId().toLowerCase()),
                         STRING_TYPE_REF);
             } else {
                 throw exception;

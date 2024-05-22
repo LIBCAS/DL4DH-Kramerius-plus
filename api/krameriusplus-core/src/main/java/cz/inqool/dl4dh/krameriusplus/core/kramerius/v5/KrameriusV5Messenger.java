@@ -19,15 +19,12 @@ import java.util.stream.Collectors;
 import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.NOT_FOUND;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.buildUriPath;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.tryKrameriusCall;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.ALTO;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.MODS;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.TEXT_OCR;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v5.StreamType.ALTO;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v5.StreamType.MODS;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v5.StreamType.TEXT_OCR;
 
 public class KrameriusV5Messenger implements KrameriusMessenger {
 
-    private static final ParameterizedTypeReference<Alto> ALTO_TYPE_REF
-            = new ParameterizedTypeReference<>() {
-    };
     private static final ParameterizedTypeReference<ModsCollectionDefinition> MODS_TYPE_REF
             = new ParameterizedTypeReference<>() {
     };
