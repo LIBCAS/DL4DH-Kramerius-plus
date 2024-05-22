@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.NOT_FOUND;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.buildUriPath;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.normalizeText;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.setParentId;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.tryKrameriusCall;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v5.StreamType.ALTO;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v5.StreamType.MODS;
@@ -129,27 +131,5 @@ public class KrameriusV5Messenger implements KrameriusMessenger {
                     .retrieve()
                     .bodyToMono(typeReference)
                     .block());
-    }
-
-    private String normalizeText(String textOcr) {
-        return textOcr.replace("\uFEFF", "")
-                .replaceAll("\\S-\r\n", "")
-                .replaceAll("\\S-\n", "")
-                .replaceAll("\\S–\r\n", "")
-                .replaceAll("\\S–\n", "")
-                .replaceAll("\r\n", " ")
-                .replaceAll("\n", " ");
-    }
-
-    private void setParentId(String parentId, List<DigitalObject> result) {
-        int index = 0;
-
-        if (result != null) {
-            // publications and pages will share indices
-            for (DigitalObject child : result) {
-                child.setParentId(parentId);
-                child.setIndex(index++);
-            }
-        }
     }
 }

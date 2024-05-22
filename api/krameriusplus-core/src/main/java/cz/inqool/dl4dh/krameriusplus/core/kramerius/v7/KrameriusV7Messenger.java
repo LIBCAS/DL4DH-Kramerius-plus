@@ -23,12 +23,14 @@ import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.Err
 import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.NO_RESPONSE;
 import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.WRONG_NUMBER_OF_DOCUMENTS;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.buildUriPath;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.normalizeText;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.setParentId;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.tryKrameriusCall;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.ALTO;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.MODS;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.TEXT_OCR;
 
-// TODO: refactor with something better than web client ex: https://spring.io/projects/spring-cloud-openfeign
+// TODO: refactor with something safer than web client ex: https://spring.io/projects/spring-cloud-openfeign
 public class KrameriusV7Messenger implements KrameriusMessenger {
 
     private static final String ITEMS_PATH_SEGMENT = "items";
@@ -158,16 +160,6 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
                     .block());
     }
 
-    private String normalizeText(String textOcr) {
-        return textOcr.replace("\uFEFF", "")
-                .replaceAll("\\S-\r\n", "")
-                .replaceAll("\\S-\n", "")
-                .replaceAll("\\S–\r\n", "")
-                .replaceAll("\\S–\n", "")
-                .replaceAll("\r\n", " ")
-                .replaceAll("\n", " ");
-    }
-
     private String getAltoRawStream(String pageId) {
         try {
             return callInternal(
@@ -180,18 +172,6 @@ public class KrameriusV7Messenger implements KrameriusMessenger {
                         STRING_TYPE_REF);
             } else {
                 throw exception;
-            }
-        }
-    }
-
-    private void setParentId(String parentId, List<DigitalObject> result) {
-        int index = 0;
-
-        if (result != null) {
-            // publications and pages will share indices
-            for (DigitalObject child : result) {
-                child.setParentId(parentId);
-                child.setIndex(index++);
             }
         }
     }
