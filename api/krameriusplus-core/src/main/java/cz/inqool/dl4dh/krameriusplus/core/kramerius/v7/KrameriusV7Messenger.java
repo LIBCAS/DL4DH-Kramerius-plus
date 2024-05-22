@@ -22,13 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.*;
+import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.BAD_STATUS_CODE;
+import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.INEXACT_RESULT;
+import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.NOT_FOUND;
+import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.NO_RESPONSE;
+import static cz.inqool.dl4dh.krameriusplus.api.exception.KrameriusException.ErrorCode.WRONG_NUMBER_OF_DOCUMENTS;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.buildUriPath;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusUtils.tryKrameriusCall;
-import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.*;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.ALTO;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.MODS;
+import static cz.inqool.dl4dh.krameriusplus.core.kramerius.StreamType.TEXT_OCR;
 
-//TODO: cleanup implemention extract common code from both version implementations
-// TODO: implement articles + analyse "hasIntCompPart" relationships uuid:b1c91df5-ca52-458f-a291-328ae108a3cc
+// TODO: refactor with something better than web client ex: https://spring.io/projects/spring-cloud-openfeign
 @Component
 @ConditionalOnProperty(prefix = "system.kramerius", value = "version", havingValue = "7")
 public class KrameriusV7Messenger implements KrameriusMessenger {
