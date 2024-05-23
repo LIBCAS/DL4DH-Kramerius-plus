@@ -23,6 +23,7 @@ spring:
 
 system:
   kramerius:
+    version: 5
     code: nkp
     default-url: https://www.ndk.cz
     register-url: https://api.registr.digitalniknihovna.cz/api/libraries
