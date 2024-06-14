@@ -15,5 +15,7 @@ public class KrameriusProperties {
 
     private String defaultUrl;
 
+    private String defaultVersion;
+
     private String registerUrl;
 }

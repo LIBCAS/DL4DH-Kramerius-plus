@@ -15,11 +15,17 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 public class MessengerConfiguration {
 
-    private String krameriusUrl;
+    private final String krameriusUrl;
 
-    private String krameriusVersion;
+    private final String krameriusVersion;
 
     private static final int MAX_MEMORY_SIZE = 16777216;
+
+    @Autowired
+    public MessengerConfiguration(KrameriusInfo krameriusInfo) {
+        krameriusUrl = (String) krameriusInfo.getInfo().get("url");
+        krameriusVersion = (String) krameriusInfo.getInfo().get("version");
+    }
 
     @Bean
     public KrameriusMessenger krameriusMessenger(DigitalObjectMapperVisitor mapper) {
@@ -58,15 +64,5 @@ public class MessengerConfiguration {
                         .defaultCodecs()
                         .maxInMemorySize(MAX_MEMORY_SIZE))
                 .build();
-    }
-
-    @Autowired
-    public void setKrameriusUrl(KrameriusInfo krameriusInfo) {
-        this.krameriusUrl = (String) krameriusInfo.getInfo().get("url");
-    }
-
-    @Autowired
-    public void setKrameriusVersion(KrameriusInfo krameriusInfo) {
-        this.krameriusVersion = (String) krameriusInfo.getInfo().get("version");
     }
 }
