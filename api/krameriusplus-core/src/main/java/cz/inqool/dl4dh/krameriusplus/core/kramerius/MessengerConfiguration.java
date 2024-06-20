@@ -8,8 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 @Configuration
 @Slf4j
@@ -50,6 +52,7 @@ public class MessengerConfiguration {
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(MAX_MEMORY_SIZE))
+                .filter(logRequest())
                 .build();
     }
 
@@ -63,6 +66,14 @@ public class MessengerConfiguration {
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(MAX_MEMORY_SIZE))
+                .filter(logRequest())
                 .build();
+    }
+
+    private ExchangeFilterFunction logRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            log.info("WEBCLIENT REQUEST: {}", clientRequest.url());
+            return Mono.just(clientRequest);
+        });
     }
 }
