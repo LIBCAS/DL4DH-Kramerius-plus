@@ -2,18 +2,22 @@ package cz.inqool.dl4dh.krameriusplus.core.enricher.ndk;
 
 import cz.inqool.dl4dh.krameriusplus.api.publication.page.mets.MetsMetadata;
 import cz.inqool.dl4dh.krameriusplus.core.CoreBaseTest;
+import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 import java.math.BigInteger;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(properties = {"system.kramerius.version=7"})
 public class MetsEnricherTest extends CoreBaseTest {
 
     @Autowired
@@ -23,6 +27,12 @@ public class MetsEnricherTest extends CoreBaseTest {
     private ResourceLoader resourceLoader;
 
     private MetsMetadata metsMetadata;
+
+    /**
+     * Avoid instantiating messenger in unrelated test
+     */
+    @MockBean
+    private KrameriusMessenger krameriusMessenger;
 
     @BeforeAll
     void setup() throws IOException {

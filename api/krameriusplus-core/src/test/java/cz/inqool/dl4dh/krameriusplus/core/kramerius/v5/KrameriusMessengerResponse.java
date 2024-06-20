@@ -1,8 +1,8 @@
-package cz.inqool.dl4dh.krameriusplus.core.kramerius;
+package cz.inqool.dl4dh.krameriusplus.core.kramerius.v5;
 
-public class KrameriusMessengerResponse {
+class KrameriusMessengerResponse {
 
-    public static final String PERIODICAL_RESPONSE = "{\n" +
+    static final String PERIODICAL_RESPONSE = "{\n" +
             "    \"datanode\": false,\n" +
             "    \"context\": [\n" +
             "        [\n" +
@@ -23,7 +23,7 @@ public class KrameriusMessengerResponse {
             "    \"policy\": \"public\"\n" +
             "}";
 
-    public static final String PERIODICAL_VOLUME_RESPONSE = "{\n" +
+    static final String PERIODICAL_VOLUME_RESPONSE = "{\n" +
             "    \"datanode\": false,\n" +
             "    \"context\": [\n" +
             "        [\n" +
@@ -52,7 +52,7 @@ public class KrameriusMessengerResponse {
             "    \"policy\": \"public\"\n" +
             "}";
 
-    public static final String PERIODICAL_ITEM_RESPONSE = "{\n" +
+    static final String PERIODICAL_ITEM_RESPONSE = "{\n" +
             "        \"datanode\": false,\n" +
             "        \"pid\": \"uuid:e8ebdd40-4ad3-11ed-9b54-5ef3fc9bb22f\",\n" +
             "        \"model\": \"periodicalitem\",\n" +
@@ -67,7 +67,7 @@ public class KrameriusMessengerResponse {
             "        \"policy\": \"public\"\n" +
             "    }\n";
 
-    public static final String MONOGRAPH_RESPONSE = "{\n" +
+    static final String MONOGRAPH_RESPONSE = "{\n" +
             "    \"datanode\": false,\n" +
             "    \"collections\": [\n" +
             "        \"vc:8e493b6d-0847-4c4e-9b40-49f25b550acd\"\n" +
@@ -91,7 +91,7 @@ public class KrameriusMessengerResponse {
             "    \"policy\": \"public\"\n" +
             "}";
 
-    public static final String MONOGRAPH_UNIT_RESPONSE = "{\n" +
+    static final String MONOGRAPH_UNIT_RESPONSE = "{\n" +
             "    \"datanode\": false,\n" +
             "    \"context\": [\n" +
             "        [\n" +
@@ -120,7 +120,7 @@ public class KrameriusMessengerResponse {
             "    \"dnnt\": false\n" +
             "}";
 
-    public static final String MONOGRAPH_UNIT_WITH_PART_TITLE_RESPONSE = "{\n" +
+    static final String MONOGRAPH_UNIT_WITH_PART_TITLE_RESPONSE = "{\n" +
             "    \"dnnt-labels\": [\n" +
             "        \"covid\"\n" +
             "    ],\n" +

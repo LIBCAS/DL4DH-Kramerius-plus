@@ -1,6 +1,6 @@
-package cz.inqool.dl4dh.krameriusplus.core.kramerius;
+package cz.inqool.dl4dh.krameriusplus.core.kramerius.v5;
 
-public class KrameriusMessengerChildrenResponse {
+class KrameriusMessengerChildrenResponse {
 
     public static final String PERIODICAL_CHILDREN_RESPONSE = "[\n" +
             "  {\n" +

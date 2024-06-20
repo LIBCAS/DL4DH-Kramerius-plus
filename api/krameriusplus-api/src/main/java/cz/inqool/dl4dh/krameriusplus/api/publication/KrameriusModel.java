@@ -36,6 +36,7 @@ public enum KrameriusModel {
         public static final String PERIODICAL_VOLUME = "periodicalvolume";
         public static final String PERIODICAL_ITEM = "periodicalitem";
         public static final String INTERNAL_PART = "internalpart";
+        public static final String ARTICLE = "article";
         public static final String SUPPLEMENT = "supplement";
         public static final String PAGE = "page";
     }

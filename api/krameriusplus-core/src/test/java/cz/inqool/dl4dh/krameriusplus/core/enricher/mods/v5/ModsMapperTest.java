@@ -1,7 +1,17 @@
-package cz.inqool.dl4dh.krameriusplus.core.enricher.mods;
+package cz.inqool.dl4dh.krameriusplus.core.enricher.mods.v5;
 
-import cz.inqool.dl4dh.krameriusplus.api.publication.mods.*;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsGenre;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsLanguage;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsLanguageTerm;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsName;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsOriginInfo;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPhysicalDescription;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlace;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsPlaceTerm;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsTitleInfo;
 import cz.inqool.dl4dh.krameriusplus.core.CoreBaseTest;
+import cz.inqool.dl4dh.krameriusplus.core.enricher.mods.ModsMapper;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -12,12 +22,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(properties = {"system.kramerius.version=5"})
 public class ModsMapperTest extends CoreBaseTest {
 
     private ModsMetadata modsMetadata;

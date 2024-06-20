@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -28,6 +29,7 @@ import static cz.inqool.dl4dh.krameriusplus.api.publication.KrameriusModel.Krame
         @JsonSubTypes.Type(value = PeriodicalItemCreateDto.class, name = PERIODICAL_ITEM),
         @JsonSubTypes.Type(value = PageCreateDto.class, name = PAGE),
         @JsonSubTypes.Type(value = InternalPartCreateDto.class, name = INTERNAL_PART),
+        @JsonSubTypes.Type(value = InternalPartCreateDto.class, name = ARTICLE),
         @JsonSubTypes.Type(value = SupplementCreateDto.class, name = SUPPLEMENT)
 })
 public abstract class DigitalObjectCreateDto {
@@ -39,14 +41,16 @@ public abstract class DigitalObjectCreateDto {
 
     private String model;
 
+    @JsonAlias({"title.search"})
     private String title;
 
-    @JsonProperty("root_title")
+    @JsonAlias({"root.title", "root_title"})
     private String rootTitle;
 
-    @JsonProperty("root_pid")
+    @JsonAlias({"root.pid", "root_pid"})
     private String rootPid;
 
+    @JsonAlias({"accessibility"})
     private String policy;
 
     public abstract DigitalObject accept(DigitalObjectMapperVisitor visitor);

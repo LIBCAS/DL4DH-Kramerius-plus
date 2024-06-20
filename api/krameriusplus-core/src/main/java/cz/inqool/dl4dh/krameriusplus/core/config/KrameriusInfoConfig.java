@@ -43,12 +43,17 @@ public class KrameriusInfoConfig {
             notNull(krameriusInfoMap, () -> new IllegalStateException("Request to '" + endpoint + "' did not return any results."));
         } catch (Exception e) {
             if (krameriusProperties.getDefaultUrl() == null) {
-                throw new IllegalStateException("Failed to connect to " + krameriusProperties.getRegisterUrl() +
+                throw new IllegalStateException("Failed to connect to " + endpoint +
                         " and no default URL of Kramerius is set.");
+            } else if (krameriusProperties.getDefaultVersion() == null) {
+                throw new IllegalStateException("Failed to connect to " + endpoint +
+                        " and no default version of Kramerius is set.");
             } else {
                 krameriusInfoMap.put("url", krameriusProperties.getDefaultUrl());
+                krameriusInfoMap.put("version", krameriusProperties.getDefaultVersion());
                 log.warn("Failed to connect to {} and retrieve information about Kramerius instance. " +
-                        "Default URL of Kramerius is set to {}", krameriusProperties.getRegisterUrl(), krameriusProperties.getDefaultUrl());
+                        "Default URL of Kramerius is set to {} version: {}.", endpoint, krameriusProperties.getDefaultUrl(),
+                        krameriusProperties.getDefaultVersion());
             }
         }
 
