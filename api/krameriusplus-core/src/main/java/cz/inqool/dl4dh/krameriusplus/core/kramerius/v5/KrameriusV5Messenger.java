@@ -7,6 +7,7 @@ import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectCreateD
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.dto.DigitalObjectMapperVisitor;
 import cz.inqool.dl4dh.krameriusplus.core.kramerius.KrameriusMessenger;
 import cz.inqool.dl4dh.mods.ModsCollectionDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -73,14 +74,14 @@ public class KrameriusV5Messenger implements KrameriusMessenger {
 
     @Override
     public Alto getAlto(String pageId) {
-        String altoString = sanitizeAlto(getAltoRawStream(pageId, STRING_TYPE_REF));
+        String altoString = sanitizeAlto(getAltoRawStream(pageId));
 
         return JAXB.unmarshal(new StringReader(altoString), Alto.class);
     }
 
     @Override
     public String getAltoString(String pageId) {
-        return sanitizeAlto(getAltoRawStream(pageId, STRING_TYPE_REF));
+        return sanitizeAlto(getAltoRawStream(pageId));
     }
 
     private String sanitizeAlto(String altoRawStream) {
@@ -108,16 +109,16 @@ public class KrameriusV5Messenger implements KrameriusMessenger {
         return raw == null ? "" : raw;
     }
 
-    private <T> T getAltoRawStream(String pageId, ParameterizedTypeReference<T> typeReference) {
+    private String getAltoRawStream(String pageId) {
         try {
             return callInternal(
                     buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.getStreamId()),
-                    typeReference);
+                    KrameriusV5Messenger.STRING_TYPE_REF);
         } catch (KrameriusException exception) {
             if (NOT_FOUND.equals(exception.getErrorCode())) {
                 return callInternal(
                         buildUriPath(pageId, STREAMS_PATH_SEGMENT, ALTO.getStreamId().toLowerCase()),
-                        typeReference);
+                        KrameriusV5Messenger.STRING_TYPE_REF);
             } else {
                 throw exception;
             }
