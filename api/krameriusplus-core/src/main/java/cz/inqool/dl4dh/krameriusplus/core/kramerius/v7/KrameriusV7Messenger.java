@@ -30,7 +30,6 @@ import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.ALTO;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.MODS;
 import static cz.inqool.dl4dh.krameriusplus.core.kramerius.v7.StreamType.TEXT_OCR;
 
-// TODO: refactor with something safer than web client ex: https://spring.io/projects/spring-cloud-openfeign
 public class KrameriusV7Messenger implements KrameriusMessenger {
 
     private static final String ITEMS_PATH_SEGMENT = "items";
