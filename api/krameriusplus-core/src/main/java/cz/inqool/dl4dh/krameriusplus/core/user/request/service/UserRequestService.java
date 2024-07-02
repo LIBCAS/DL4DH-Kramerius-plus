@@ -89,7 +89,7 @@ public class UserRequestService implements UserRequestFacade {
             try {
                 FileRef fileRef = fileService.create(multipartFile.getInputStream(),
                         multipartFile.getSize(),
-                        multipartFile.getName(),
+                        multipartFile.getOriginalFilename(),
                         multipartFile.getContentType());
                 result.add(fileRef);
             } catch (IOException e) {

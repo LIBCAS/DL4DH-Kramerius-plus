@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static cz.inqool.dl4dh.krameriusplus.api.user.RoleNames.USER;
@@ -65,11 +67,11 @@ public class UserRequestApi {
         return userRequestFacade.checkFileAccessible(requestId, fileId);
     }
 
-    @PostMapping("/{requestId}/message")
+    @PostMapping(value = "/{requestId}/message", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createMessage(@PathVariable String requestId,
                                               @Valid @ModelAttribute MessageCreateDto messageCreateDto,
-                                              @RequestParam("files") MultipartFile[] multipartFiles) {
-        userRequestFacade.createMessage(requestId, messageCreateDto, Arrays.asList(multipartFiles));
+                                              @RequestParam(value = "files", required = false) MultipartFile[] multipartFiles) {
+        userRequestFacade.createMessage(requestId, messageCreateDto, multipartFiles != null ? Arrays.asList(multipartFiles) : new ArrayList<>());
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
