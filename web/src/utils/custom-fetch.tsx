@@ -1,4 +1,4 @@
-import {KEYCLOAK_TOKEN} from 'keycloak'
+import { KEYCLOAK_TOKEN } from 'keycloak'
 
 export const customFetch = async (
 	url: string,
