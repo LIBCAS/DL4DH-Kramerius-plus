@@ -1,26 +1,22 @@
 import {
-	Paper,
-	Grid,
-	Typography,
-	TextField,
-	Button,
-	ToggleButton,
-	ToggleButtonGroup,
-	Box,
-	Select,
-	SelectChangeEvent,
-	MenuItem,
-	FormControl,
-	InputLabel,
+    Box,
+    Button,
+    FormControl,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Paper,
+    Select,
+    SelectChangeEvent,
+    TextField,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography,
 } from '@mui/material'
-import { ChangeEvent, FC, useState } from 'react'
-import { CustomDateTimePicker } from './custom-date-time-picker'
-import { PublicationFilter } from '../../api/publication-api'
-import {
-	DigitalObjectModel,
-	DigitalObjectModelMapping,
-	publicationModelList,
-} from 'enums/publication-model'
+import {DigitalObjectModel, DigitalObjectModelMapping, publicationModelList,} from 'enums/publication-model'
+import {ChangeEvent, FC, useState} from 'react'
+import {PublicationFilter} from '../../api/publication-api'
+import {CustomDateTimePicker} from './custom-date-time-picker'
 
 type Props = {
 	onSubmit: (filter: PublicationFilter) => void

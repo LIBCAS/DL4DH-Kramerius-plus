@@ -1,9 +1,9 @@
-import { AppBar, Container, Toolbar } from '@mui/material'
-import { FC } from 'react'
-import { useInfo } from './info/info-context'
-import { NavbarInfo } from './navbar-info'
-import { NavbarUser } from './navbar-user'
-import { ToolbarMenu } from './toolbar-menu'
+import {AppBar, Container, Toolbar} from '@mui/material'
+import {FC} from 'react'
+import {useInfo} from './info/info-context'
+import {NavbarInfo} from './navbar-info'
+import {NavbarUser} from './navbar-user'
+import {ToolbarMenu} from './toolbar-menu'
 
 export type NavbarInnerItem = {
 	name: string
@@ -44,6 +44,12 @@ const pages: NavbarItem[] = [
 		name: 'Export requests',
 		label: 'Žádosti exportu',
 		path: '/exports',
+		onlyAuthenticated: true,
+	},
+	{
+		name: 'User requests',
+		label: 'Užívatelské žádosti',
+		path: '/requests',
 		onlyAuthenticated: true,
 	},
 ]

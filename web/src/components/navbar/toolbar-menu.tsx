@@ -1,11 +1,11 @@
 import MenuIcon from '@mui/icons-material/Menu'
-import { Box, IconButton, Menu, MenuItem } from '@mui/material'
-import { useKeycloak } from '@react-keycloak/web'
-import { KEYCLOAK_TOKEN } from 'keycloak'
-import { FC, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { NavbarInnerItem, NavbarItem } from './navbar'
-import { NavbarMenuItem } from './navbar-menu-item'
+import {Box, IconButton, Menu, MenuItem} from '@mui/material'
+import {useKeycloak} from '@react-keycloak/web'
+import {KEYCLOAK_TOKEN} from 'keycloak'
+import {FC, useState} from 'react'
+import {Link} from 'react-router-dom'
+import {NavbarInnerItem, NavbarItem} from './navbar'
+import {NavbarMenuItem} from './navbar-menu-item'
 
 export const ToolbarMenu: FC<{
 	pages: NavbarItem[]
@@ -70,7 +70,7 @@ export const ToolbarMenu: FC<{
 					display: { lg: 'flex', xs: 'none' },
 					justifyContent: 'space-between',
 					alignItems: 'center',
-					width: '50%',
+					width: '70%',
 				}}
 			>
 				{pages
