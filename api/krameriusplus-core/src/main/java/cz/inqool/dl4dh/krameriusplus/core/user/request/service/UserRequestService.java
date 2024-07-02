@@ -76,7 +76,7 @@ public class UserRequestService implements UserRequestFacade {
         userRequest = userRequestStore.saveAndFlush(userRequest);
 
         userRequest.setParts(createRequestParts(createDto, userRequest));
-        userRequest.setMessages(Set.of(doCreateMessage(userRequest,
+        userRequest.setMessages(List.of(doCreateMessage(userRequest,
                 new MessageCreateDto(createDto.getMessage()), currentUser,
                 multipartFiles)));
 
