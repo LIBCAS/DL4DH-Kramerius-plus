@@ -452,7 +452,7 @@
                 <constraints nullable="false" referencedTableName="kplus_user_request"
                              referencedColumnNames="id" foreignKeyName="user_request_message_request_FK"/>
             </column>
-            <column name="message" type="clob">
+            <column name="message" type="nclob">
                 <constraints nullable="false"/>
             </column>
             <column name="author_id" type="${id}">
@@ -488,7 +488,7 @@
             <column name="state" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="note" type="clob"/>
+            <column name="note" type="nclob"/>
             <column name="state_until" type="timestamp"/>
         </createTable>
 
