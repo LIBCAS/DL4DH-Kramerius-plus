@@ -1,10 +1,14 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.request.ListFilterDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.Sort;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestListDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestState;
+import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestType;
 import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageCreateDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +49,7 @@ public class UserRequestApi {
 
     @PostMapping(value = "/")
     public ResponseEntity<UserRequestDto> createUserRequest(@Valid @ModelAttribute UserRequestCreateDto createDto,
-                                            @RequestParam("files") MultipartFile[] multipartFiles) {
+                                                            @RequestParam("files") MultipartFile[] multipartFiles) {
         return new ResponseEntity<>(userRequestFacade
                 .createUserRequest(createDto, Arrays.asList(multipartFiles)), HttpStatus.CREATED);
     }
@@ -53,8 +57,28 @@ public class UserRequestApi {
     @GetMapping("/")
     public Result<UserRequestListDto> userRequest(@RequestParam(value = "page", defaultValue = "0") int page,
                                                   @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                                  @RequestParam(value = "viewDeleted", defaultValue = "false") boolean viewDeleted){
-        return userRequestFacade.listPage(Pageable.ofSize(pageSize).withPage(page), viewDeleted);
+                                                  @RequestParam(value = "year") Integer year,
+                                                  @RequestParam(value = "identification") Integer identification,
+                                                  @RequestParam(value = "state") UserRequestState state,
+                                                  @RequestParam(value = "type") UserRequestType type,
+                                                  @RequestParam(value = "username") String username,
+                                                  @RequestParam(value = "sortOrder", defaultValue = "DESC") Sort.Order order,
+                                                  @RequestParam(value = "sortField", defaultValue = "CREATED") Sort.Field field,
+                                                  @RequestParam(value = "rootFilterOperation", defaultValue = "OR") ListFilterDto.RootFilterOperation operation,
+                                                  @RequestParam(value = "viewDeleted", defaultValue = "false") boolean viewDeleted) {
+        return userRequestFacade.listPage(
+                Pageable.ofSize(pageSize).withPage(page),
+                viewDeleted,
+                ListFilterDto.builder()
+                        .rootFilterOperation(operation)
+                        .year(year)
+                        .identification(identification)
+                        .state(state)
+                        .type(type)
+                        .username(username)
+                        .order(order)
+                        .field(field)
+                        .build());
     }
 
     @GetMapping("/{requestId}")

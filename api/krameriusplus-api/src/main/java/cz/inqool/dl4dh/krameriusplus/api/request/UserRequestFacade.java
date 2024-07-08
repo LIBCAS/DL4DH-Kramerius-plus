@@ -12,7 +12,7 @@ public interface UserRequestFacade {
 
     UserRequestDto createUserRequest(UserRequestCreateDto createDto, List<MultipartFile> files);
 
-    Result<UserRequestListDto> listPage(Pageable pageable, boolean viewDeleted);
+    Result<UserRequestListDto> listPage(Pageable pageable, boolean viewDeleted, ListFilterDto filters);
 
     UserRequestDto findById(String id);
 

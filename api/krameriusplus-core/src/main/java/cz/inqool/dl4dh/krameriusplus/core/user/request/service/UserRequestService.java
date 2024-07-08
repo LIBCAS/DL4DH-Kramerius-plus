@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.user.request.service;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.request.ListFilterDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
@@ -116,14 +117,14 @@ public class UserRequestService implements UserRequestFacade {
     }
 
     @Override
-    public Result<UserRequestListDto> listPage(Pageable pageable, boolean viewDeleted) {
+    public Result<UserRequestListDto> listPage(Pageable pageable, boolean viewDeleted, ListFilterDto filters) {
         User currentUser = userProvider.getCurrentUser();
 
         Page<UserRequest> userRequests;
         if (currentUser.getRole().equals(UserRole.ADMIN)) {
-            userRequests = userRequestStore.findAll(pageable, viewDeleted);
+            userRequests = userRequestStore.findAll(pageable, filters, viewDeleted);
         } else {
-            userRequests = userRequestStore.findAllForUser(pageable, currentUser.getId(), viewDeleted);
+            userRequests = userRequestStore.findAllForUser(pageable, filters, currentUser.getId(), viewDeleted);
         }
 
         return new Result<>(pageable.getPageNumber(), pageable.getPageSize(),
