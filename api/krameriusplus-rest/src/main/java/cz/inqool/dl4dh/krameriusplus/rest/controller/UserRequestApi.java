@@ -57,14 +57,14 @@ public class UserRequestApi {
     @GetMapping("/")
     public Result<UserRequestListDto> userRequest(@RequestParam(value = "page", defaultValue = "0") int page,
                                                   @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                                  @RequestParam(value = "year") Integer year,
-                                                  @RequestParam(value = "identification") Integer identification,
-                                                  @RequestParam(value = "state") UserRequestState state,
-                                                  @RequestParam(value = "type") UserRequestType type,
-                                                  @RequestParam(value = "username") String username,
+                                                  @RequestParam(value = "year", required = false) Integer year,
+                                                  @RequestParam(value = "identification", required = false) Integer identification,
+                                                  @RequestParam(value = "state", required = false) UserRequestState state,
+                                                  @RequestParam(value = "type", required = false) UserRequestType type,
+                                                  @RequestParam(value = "username", required = false) String username,
                                                   @RequestParam(value = "sortOrder", defaultValue = "DESC") Sort.Order order,
                                                   @RequestParam(value = "sortField", defaultValue = "CREATED") Sort.Field field,
-                                                  @RequestParam(value = "rootFilterOperation", defaultValue = "OR") ListFilterDto.RootFilterOperation operation,
+                                                  @RequestParam(value = "rootFilterOperation", defaultValue = "AND") ListFilterDto.RootFilterOperation operation,
                                                   @RequestParam(value = "viewDeleted", defaultValue = "false") boolean viewDeleted) {
         return userRequestFacade.listPage(
                 Pageable.ofSize(pageSize).withPage(page),
