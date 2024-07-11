@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.core.user.request.service;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
+import cz.inqool.dl4dh.krameriusplus.api.request.ListFilterDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
@@ -37,6 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class UserRequestFacadeTest extends CoreBaseTest {
 
     @Autowired
@@ -118,7 +121,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         userRequestFacade.createUserRequest(userRequestCreateDto, new ArrayList<>());
         store.save(userRequest);
 
-        Result<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false);
+        Result<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false, ListFilterDto.builder().build());
 
         verify(userProvider, times(4)).getCurrentUser();
 
@@ -151,7 +154,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         store.save(userRequest);
 
         when(userProvider.getCurrentUser()).thenReturn(admin);
-        Result<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false);
+        Result<UserRequestListDto> userRequestListDtos = userRequestFacade.listPage(Pageable.ofSize(10), false, ListFilterDto.builder().build());
 
         assertThat(userRequestListDtos.getTotal()).isEqualTo(4);
     }
@@ -264,7 +267,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
         UserRequestDto retrieved = userRequestFacade.findById(userRequest.getId());
         assertThat(retrieved.getMessages().size()).isEqualTo(2);
         assertThat(retrieved.getMessages().stream().allMatch(message -> message.getFiles().size() == 1)).isTrue();
-        assertThat(retrieved.getMessages().stream().allMatch(message -> !message.getMessage().isBlank())).isTrue();
+        assertThat(retrieved.getMessages().stream().noneMatch(message -> message.getMessage().isBlank())).isTrue();
     }
 
     @Test

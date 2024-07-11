@@ -17,8 +17,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
@@ -49,8 +51,9 @@ public class UserRequest extends DatedObject {
     private Set<UserRequestPart> parts;
 
     @OneToMany(cascade = ALL, mappedBy = "userRequest")
+    @OrderBy("created DESC ")
     @JsonManagedReference
-    private Set<UserRequestMessage> messages;
+    private List<UserRequestMessage> messages;
 
     public String getRequestIdentification() {
         return created.atZone(ZoneId.systemDefault()).getYear() + "-" + String.format("%08d", identification);

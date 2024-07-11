@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @KeycloakConfiguration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(jsr250Enabled = true, prePostEnabled = true)
 public class KeycloakSecurityConfigurer extends KeycloakWebSecurityConfigurerAdapter {
 
     public static final String KEYCLOAK_ADMIN_ROLE = "dl4dh-admin";
