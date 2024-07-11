@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.request.ListFilterDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
@@ -135,13 +136,13 @@ class UserRequestApiTest {
     @WithMockUser(roles = {RoleNames.USER})
     @Test
     void listUserRequests_validRequest_callsFacade() throws Exception {
-        when(userRequestFacade.listPage(any(Pageable.class), eq(false)))
+        when(userRequestFacade.listPage(any(Pageable.class), eq(false), any(ListFilterDto.class)))
                 .thenReturn(new Result<>(0, 0, 0, new ArrayList<>()));
 
         mockMvc.perform(get(USER_REQUEST_PATH + "/").with(csrf()))
                 .andExpect(status().isOk());
 
-        verify(userRequestFacade, times(1)).listPage(any(Pageable.class), eq(false));
+        verify(userRequestFacade, times(1)).listPage(any(Pageable.class), eq(false), any(ListFilterDto.class));
     }
 
     @WithMockUser(roles = {RoleNames.USER})
