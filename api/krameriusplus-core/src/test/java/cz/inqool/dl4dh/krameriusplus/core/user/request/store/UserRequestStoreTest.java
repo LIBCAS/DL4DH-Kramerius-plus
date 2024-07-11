@@ -14,6 +14,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ import static cz.inqool.dl4dh.krameriusplus.api.request.UserRequestType.EXPORT;
 import static cz.inqool.dl4dh.krameriusplus.core.user.UserProvider.MOCK_USERNAME;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class UserRequestStoreTest extends CoreBaseTest {
 
     @Autowired
