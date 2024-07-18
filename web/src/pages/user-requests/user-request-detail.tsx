@@ -15,6 +15,7 @@ import { UserRequestActions } from 'modules/user-request/user-request-actions'
 import { UserRequestDetailInfo } from 'modules/user-request/user-request-detail-info'
 import { UserRequestItems } from 'modules/user-request/user-request-items'
 import { UserRequestMessages } from 'modules/user-request/user-request-messages'
+import { UserRequestStateChanges } from 'modules/user-request/user-request-state-changes'
 import { PageWrapper } from 'pages/page-wrapper'
 import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -22,7 +23,7 @@ import { useParams } from 'react-router-dom'
 export const UserRequestDetailPage: FC = () => {
 	const { id } = useParams()
 	const [request, setRequest] = useState<UserRequestDetailDto>()
-	const [items, setItems] = useState<string>('items')
+	const [view, setView] = useState<string>('items')
 
 	const { data, isLoading, error } = useQuery({
 		queryKey: ['GET', '/api/user-requests', id],
@@ -70,21 +71,26 @@ export const UserRequestDetailPage: FC = () => {
 							exclusive
 							fullWidth
 							size="small"
-							value={items}
-							onChange={(_, val) => setItems(val)}
+							value={view}
+							onChange={(_, val) => setView(val)}
 						>
 							<ToggleButton value={'items'}>Položky žádosti</ToggleButton>
 							<ToggleButton value={'messages'}>Správy žádosti</ToggleButton>
+							<ToggleButton value={'history'}>Historie změn</ToggleButton>
 						</ToggleButtonGroup>
 					</Grid>
 					<Grid item xs={12}>
-						{items === 'items' ? (
+						{view === 'items' && (
 							<UserRequestItems items={request.parts} requestId={request.id} />
-						) : (
+						)}
+						{view === 'messages' && (
 							<UserRequestMessages
 								messages={request.messages}
 								requestId={request.id}
 							/>
+						)}
+						{view === 'history' && (
+							<UserRequestStateChanges stateChanges={request.stateChanges} />
 						)}
 					</Grid>
 				</Grid>
@@ -93,4 +99,9 @@ export const UserRequestDetailPage: FC = () => {
 			)}
 		</PageWrapper>
 	)
+}
+
+export const getView = (view: string) => {
+	switch (view) {
+	}
 }

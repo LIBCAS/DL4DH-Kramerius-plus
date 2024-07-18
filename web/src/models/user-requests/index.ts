@@ -26,32 +26,43 @@ export const requestStates = [
 	'REJECTED',
 ]
 
+export const requestStatesEnum = z.enum([
+	'CREATED',
+	'IN_PROGRESS',
+	'APPROVED',
+	'WAITING_FOR_USER',
+	'PROLONGING',
+	'REJECTED',
+])
+
 export const UserRequestListDtoSchema = z.object({
 	id: z.string(),
 	created: z.coerce.date(),
 	updated: z.coerce.date(),
 	username: z.string(),
 	type: z.enum(['EXPORT', 'ENRICHMENT']),
-	state: z.enum([
-		'CREATED',
-		'IN_PROGRESS',
-		'APPROVED',
-		'WAITING_FOR_USER',
-		'PROLONGING',
-		'REJECTED',
-	]),
+	state: requestStatesEnum,
 	identification: z.string(),
+})
+
+export const StateChangeDtoSchema = z.object({
+	created: z.coerce.date(),
+	username: z.string(),
+	before: requestStatesEnum,
+	after: requestStatesEnum,
 })
 
 export const UserRequestDetailDtoSchema = UserRequestListDtoSchema.extend({
 	parts: z.array(UserRequestPartDtoSchema),
 	messages: z.array(MessageDtoSchema),
+	stateChanges: z.array(StateChangeDtoSchema),
 })
 
 export type UserRequestPartDto = z.infer<typeof UserRequestPartDtoSchema>
 export type MessageDto = z.infer<typeof MessageDtoSchema>
 export type UserRequestListDto = z.infer<typeof UserRequestListDtoSchema>
 export type UserRequestDetailDto = z.infer<typeof UserRequestDetailDtoSchema>
+export type UserRequestStateAuditDto = z.infer<typeof StateChangeDtoSchema>
 
 export function createPaginatedResponseSchema<ItemType extends z.ZodTypeAny>(
 	itemSchema: ItemType,
@@ -66,7 +77,9 @@ export function createPaginatedResponseSchema<ItemType extends z.ZodTypeAny>(
 
 export type DocumentState = 'WAITING' | 'APPROVED' | 'ENRICHED' | 'OTHER'
 
-export const getDocumentTransitions = (state: DocumentState) => {
+export const getDocumentTransitions = (
+	state: DocumentState,
+): DocumentState[] => {
 	switch (state) {
 		case 'WAITING':
 			return ['APPROVED']
