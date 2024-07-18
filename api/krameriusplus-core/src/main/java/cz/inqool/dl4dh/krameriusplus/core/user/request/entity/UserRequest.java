@@ -55,6 +55,11 @@ public class UserRequest extends DatedObject {
     @JsonManagedReference
     private List<UserRequestMessage> messages;
 
+    @OneToMany(cascade = ALL, mappedBy = "userRequest")
+    @OrderBy("created DESC ")
+    @JsonManagedReference
+    private List<UserRequestStateAudit> stateChanges;
+
     public String getRequestIdentification() {
         return created.atZone(ZoneId.systemDefault()).getYear() + "-" + String.format("%08d", identification);
     }

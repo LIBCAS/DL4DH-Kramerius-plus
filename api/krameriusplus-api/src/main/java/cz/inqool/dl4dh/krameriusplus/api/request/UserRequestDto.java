@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.request;
 
+import cz.inqool.dl4dh.krameriusplus.api.request.audit.StateAuditDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.part.UserRequestPartDto;
 import lombok.Getter;
@@ -30,4 +31,6 @@ public class UserRequestDto {
     private List<UserRequestPartDto> parts = new ArrayList<>();
 
     private List<MessageDto> messages = new ArrayList<>();
+
+    private List<StateAuditDto> stateChanges = new ArrayList<>();
 }

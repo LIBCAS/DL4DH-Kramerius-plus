@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.annotation.DirtiesContext;
 
 import javax.transaction.Transactional;
@@ -191,7 +192,7 @@ class UserRequestFacadeTest extends CoreBaseTest {
 
         when(userProvider.getCurrentUser()).thenReturn(user);
         assertThatThrownBy(() -> userRequestFacade.findById(userRequest.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AccessDeniedException.class);
     }
 
     @Test
