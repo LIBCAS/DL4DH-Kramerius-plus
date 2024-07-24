@@ -18,13 +18,16 @@ import cz.inqool.dl4dh.krameriusplus.core.user.UserProvider;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequest;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestMessage;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestPart;
+import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestStateAudit;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.mapper.UserRequestMapper;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestMessageStore;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestPartStore;
+import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestStateAuditStore;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.store.UserRequestStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +53,8 @@ public class UserRequestService implements UserRequestFacade {
 
     private final UserRequestMessageStore userRequestMessageStore;
 
+    private final UserRequestStateAuditStore userRequestStateAuditStore;
+
     private final FileService fileService;
 
     @Autowired
@@ -58,12 +63,14 @@ public class UserRequestService implements UserRequestFacade {
                               UserRequestStore userRequestStore,
                               UserRequestPartStore userRequestPartStore,
                               UserRequestMessageStore userRequestMessageStore,
+                              UserRequestStateAuditStore userRequestStateAuditStore,
                               FileService fileService) {
         this.userRequestMapper = userRequestMapper;
         this.userProvider = userProvider;
         this.userRequestStore = userRequestStore;
         this.userRequestPartStore = userRequestPartStore;
         this.userRequestMessageStore = userRequestMessageStore;
+        this.userRequestStateAuditStore = userRequestStateAuditStore;
         this.fileService = fileService;
     }
 
@@ -173,7 +180,11 @@ public class UserRequestService implements UserRequestFacade {
 
     @Override
     public boolean changeRequestState(String requestId, UserRequestState state, boolean forceTransition) {
-        if (!userProvider.getCurrentUser().getRole().equals(UserRole.ADMIN)) {
+        User loggedInUser = userProvider.getCurrentUser();
+
+        assert loggedInUser != null : "User must be logged in when changing request state.";
+
+        if (!loggedInUser.getRole().equals(UserRole.ADMIN)) {
             return false;
         }
 
@@ -186,10 +197,24 @@ public class UserRequestService implements UserRequestFacade {
             }
         }
 
+        createChangeAudit(userRequest, state, loggedInUser);
         userRequest.setState(state);
         userRequestStore.save(userRequest);
         return true;
     }
+
+    private void createChangeAudit(UserRequest userRequest, UserRequestState stateAfter, User author) {
+        UserRequestStateAudit userRequestStateAudit = new UserRequestStateAudit();
+        userRequestStateAudit.setAfter(stateAfter);
+
+        assert userRequest.getState() != null : "User request state cannot be null when creating audit, request id: " + userRequest.getId();
+
+        userRequestStateAudit.setBefore(userRequest.getState());
+        userRequestStateAudit.setUser(author);
+        userRequestStateAudit.setUserRequest(userRequest);
+        userRequestStateAuditStore.save(userRequestStateAudit);
+    }
+
 
     @Override
     public boolean changeDocumentState(String requestId, List<String> publicationIds, DocumentState state, boolean forceTransition) {
@@ -217,9 +242,8 @@ public class UserRequestService implements UserRequestFacade {
 
         boolean hasPermissionToView = hasPermissionsForRequest(userRequest);
 
-        // TODO: exception
         if (!hasPermissionToView) {
-            throw new IllegalArgumentException("user has no permission to view, todo: add better exception");
+            throw new AccessDeniedException("Logged in user does not have permission to view: " + id);
         }
 
         return userRequest;

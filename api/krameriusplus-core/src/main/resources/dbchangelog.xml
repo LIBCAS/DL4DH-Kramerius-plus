@@ -506,4 +506,40 @@
                              columnNames="message_id, file_id"
                              constraintName="user_request_message_files_UNIQUE"/>
     </changeSet>
+
+    <changeSet id="6" author="kollar">
+        <createTable tableName="kplus_user_request_state_audit">
+            <column name="id" type="${id}">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="user_request_state_audit_PK"/>
+            </column>
+
+            <!-- Dated Object -->
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+            <column name="deleted" type="timestamp"/>
+
+            <column name="user_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="user_request_history_user_FK"
+                             referencedColumnNames="id"
+                             referencedTableName="kplus_user"/>
+            </column>
+
+            <column name="user_request_id" type="${id}">
+                <constraints nullable="false"
+                             foreignKeyName="user_request_history_request_FK"
+                             referencedColumnNames="id"
+                             referencedTableName="kplus_user_request"/>
+            </column>
+
+            <column name="state_before" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="state_after" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

@@ -15,6 +15,8 @@ import { KrameriusJobInstanceDetailPage } from 'pages/job/kramerius-job-instance
 import { NotFoundPage } from 'pages/not-found-page'
 import { PublicationDetailPage } from 'pages/publication/publication-detail-page'
 import { PublicationListPage } from 'pages/publication/publication-list-page'
+import { UserRequestDetailPage } from 'pages/user-requests/user-request-detail'
+import { UserRequestListPage } from 'pages/user-requests/user-request-list'
 import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
@@ -71,6 +73,10 @@ const App = () => {
 									element={<ExportRequestDetailPage />}
 									path=":requestId"
 								/>
+							</Route>
+							<Route path="requests">
+								<Route element={<UserRequestListPage />} index />
+								<Route element={<UserRequestDetailPage />} path=":id" />
 							</Route>
 							<Route element={<NotFoundPage />} path="*" />
 						</Routes>

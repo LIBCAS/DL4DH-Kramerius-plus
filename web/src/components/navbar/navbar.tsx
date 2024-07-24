@@ -46,6 +46,12 @@ const pages: NavbarItem[] = [
 		path: '/exports',
 		onlyAuthenticated: true,
 	},
+	{
+		name: 'User requests',
+		label: 'Užívatelské žádosti',
+		path: '/requests',
+		onlyAuthenticated: true,
+	},
 ]
 
 export const Navbar: FC = () => {

@@ -70,7 +70,7 @@ export const ToolbarMenu: FC<{
 					display: { lg: 'flex', xs: 'none' },
 					justifyContent: 'space-between',
 					alignItems: 'center',
-					width: '50%',
+					width: '70%',
 				}}
 			>
 				{pages

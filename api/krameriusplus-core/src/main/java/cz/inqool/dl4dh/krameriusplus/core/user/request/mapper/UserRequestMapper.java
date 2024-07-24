@@ -2,9 +2,11 @@ package cz.inqool.dl4dh.krameriusplus.core.user.request.mapper;
 
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestListDto;
+import cz.inqool.dl4dh.krameriusplus.api.request.audit.StateAuditDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageDto;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequest;
 import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestMessage;
+import cz.inqool.dl4dh.krameriusplus.core.user.request.entity.UserRequestStateAudit;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -30,4 +32,9 @@ public interface UserRequestMapper {
             @Mapping(source = "author.username", target = "author")
     })
     MessageDto toDto(UserRequestMessage message);
+
+    @Mappings({
+            @Mapping(source = "user.username", target = "username")
+    })
+    StateAuditDto toDto(UserRequestStateAudit audit);
 }
