@@ -60,7 +60,7 @@ public class UserRequestService implements UserRequestFacade {
 
     private final FileService fileService;
 
-    private FileRefMapper fileRefMapper;
+    private final FileRefMapper fileRefMapper;
 
     @Autowired
     public UserRequestService(UserRequestMapper userRequestMapper,
@@ -69,7 +69,8 @@ public class UserRequestService implements UserRequestFacade {
                               UserRequestPartStore userRequestPartStore,
                               UserRequestMessageStore userRequestMessageStore,
                               UserRequestStateAuditStore userRequestStateAuditStore,
-                              FileService fileService) {
+                              FileService fileService,
+                              FileRefMapper fileRefMapper) {
         this.userRequestMapper = userRequestMapper;
         this.userProvider = userProvider;
         this.userRequestStore = userRequestStore;
@@ -77,6 +78,7 @@ public class UserRequestService implements UserRequestFacade {
         this.userRequestMessageStore = userRequestMessageStore;
         this.userRequestStateAuditStore = userRequestStateAuditStore;
         this.fileService = fileService;
+        this.fileRefMapper = fileRefMapper;
     }
 
     @Override
