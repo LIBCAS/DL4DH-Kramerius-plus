@@ -34,6 +34,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.api.user.RoleNames.USER;
 
@@ -58,7 +59,7 @@ public class UserRequestApi {
     public ResponseEntity<UserRequestDto> createUserRequest(@Valid @ModelAttribute UserRequestCreateDto createDto,
                                                             @RequestParam(name = "files", required = false) MultipartFile[] multipartFiles) {
         return new ResponseEntity<>(userRequestFacade
-                .createUserRequest(createDto, Arrays.asList(multipartFiles)), HttpStatus.CREATED);
+                .createUserRequest(createDto, multipartFiles != null ? Arrays.asList(multipartFiles) : new ArrayList<>()), HttpStatus.CREATED);
     }
 
     @GetMapping("/")
