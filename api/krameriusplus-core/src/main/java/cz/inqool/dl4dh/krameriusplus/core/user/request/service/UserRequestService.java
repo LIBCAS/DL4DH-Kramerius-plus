@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.core.user.request.service;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.domain.FileRefDto;
 import cz.inqool.dl4dh.krameriusplus.api.exception.MissingObjectException;
 import cz.inqool.dl4dh.krameriusplus.api.request.ListFilterDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestCreateDto;
@@ -12,6 +13,7 @@ import cz.inqool.dl4dh.krameriusplus.api.request.document.DocumentState;
 import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageCreateDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.UserRole;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileRef;
+import cz.inqool.dl4dh.krameriusplus.core.file.FileRefMapper;
 import cz.inqool.dl4dh.krameriusplus.core.file.FileService;
 import cz.inqool.dl4dh.krameriusplus.core.user.User;
 import cz.inqool.dl4dh.krameriusplus.core.user.UserProvider;
@@ -36,6 +38,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,6 +59,8 @@ public class UserRequestService implements UserRequestFacade {
     private final UserRequestStateAuditStore userRequestStateAuditStore;
 
     private final FileService fileService;
+
+    private FileRefMapper fileRefMapper;
 
     @Autowired
     public UserRequestService(UserRequestMapper userRequestMapper,
@@ -159,6 +164,23 @@ public class UserRequestService implements UserRequestFacade {
                 .anyMatch(file -> file.getId().equals(fileId));
 
         return hasPermission && exists;
+    }
+
+    @Override
+    public FileRefDto downloadFile(String requestId, String fileId) {
+        UserRequest request = userRequestStore.findById(requestId)
+                .orElseThrow(() -> new MissingObjectException(UserRequest.class, requestId));
+
+        boolean hasPermission = hasPermissionsForRequest(request);
+
+        Optional<FileRef> file = request.getMessages().stream()
+                .flatMap(message -> message.getFiles().stream())
+                .filter(f -> f.getId().equals(fileId)).findFirst();
+
+        if (file.isPresent() && hasPermission) {
+            return fileRefMapper.toDto(file.get());
+        }
+        return null;
     }
 
     @Override

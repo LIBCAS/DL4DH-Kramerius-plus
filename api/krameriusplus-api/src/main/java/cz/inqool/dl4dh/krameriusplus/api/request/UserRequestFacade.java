@@ -1,6 +1,7 @@
 package cz.inqool.dl4dh.krameriusplus.api.request;
 
 import cz.inqool.dl4dh.krameriusplus.api.Result;
+import cz.inqool.dl4dh.krameriusplus.api.domain.FileRefDto;
 import cz.inqool.dl4dh.krameriusplus.api.request.document.DocumentState;
 import cz.inqool.dl4dh.krameriusplus.api.request.message.MessageCreateDto;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ public interface UserRequestFacade {
     UserRequestDto findById(String id);
 
     boolean checkFileAccessible(String requestId, String fileId);
+
+    FileRefDto downloadFile(String requestId, String fileId);
 
     void createMessage(String requestId, MessageCreateDto messageCreateDto, List<MultipartFile> files);
 
