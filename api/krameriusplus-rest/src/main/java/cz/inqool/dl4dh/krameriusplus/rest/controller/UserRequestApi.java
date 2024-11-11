@@ -49,7 +49,7 @@ public class UserRequestApi {
 
     @PostMapping(value = "/")
     public ResponseEntity<UserRequestDto> createUserRequest(@Valid @ModelAttribute UserRequestCreateDto createDto,
-                                                            @RequestParam("files") MultipartFile[] multipartFiles) {
+                                                            @RequestParam(name = "files", required = false) MultipartFile[] multipartFiles) {
         return new ResponseEntity<>(userRequestFacade
                 .createUserRequest(createDto, Arrays.asList(multipartFiles)), HttpStatus.CREATED);
     }
