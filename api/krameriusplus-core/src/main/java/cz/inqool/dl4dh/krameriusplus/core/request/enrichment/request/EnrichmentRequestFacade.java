@@ -33,8 +33,8 @@ public class EnrichmentRequestFacade implements EnrichmentFacade {
 
     @Override
     @Transactional(readOnly = true) // Important for fetching LOB values (StepError::stackTrace)
-    public Result<EnrichmentRequestDto> list(String publicationId, String name, String owner, int page, int pageSize) {
-        return service.list(publicationId, name, owner, page, pageSize);
+    public Result<EnrichmentRequestDto> list(String publicationId, String name, String owner, String state, int page, int pageSize) {
+        return service.list(publicationId, name, owner, state, page, pageSize);
     }
 
     @Override

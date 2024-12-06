@@ -48,8 +48,9 @@ public class EnrichmentApi {
                                              @RequestParam(value = "page", defaultValue = "0") int page,
                                              @RequestParam(value = "publicationId", required = false) String publicationId,
                                              @RequestParam(value = "name", required = false) String name,
-                                             @RequestParam(value = "owner", required = false) String owner) {
-        return facade.list(publicationId, name, owner, page, pageSize);
+                                             @RequestParam(value = "owner", required = false) String owner,
+                                             @RequestParam(value = "state", required = false) String state) {
+        return facade.list(publicationId, name, owner, state, page, pageSize);
     }
 
     @Operation(summary = "Cancel an enrichment request.")

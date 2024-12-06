@@ -16,7 +16,7 @@ public interface EnrichmentFacade {
 
     EnrichmentRequestDto find(String enrichmentRequestId);
 
-    Result<EnrichmentRequestDto> list(String publicationId, String name, String owner, int page, int pageSize);
+    Result<EnrichmentRequestDto> list(String publicationId, String name, String owner,  String state, int page, int pageSize);
 
     EnrichmentRequestDto cancel(String id);
 }
