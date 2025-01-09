@@ -25,7 +25,8 @@ export type CurrentConfig = {
 export const EnrichmentConfigs: FC<{
 	configs: EnrichmentJobConfig[]
 	setConfigs: (configs: EnrichmentJobConfig[]) => void
-}> = ({ configs, setConfigs }) => {
+	disabled?: boolean
+}> = ({ disabled, configs, setConfigs }) => {
 	const [currentConfig, setCurrentConfig] = useState<EnrichmentJobConfig>()
 
 	const onNewConfigClick = (jobType: EnrichmentKrameriusJob) => {
@@ -91,13 +92,16 @@ export const EnrichmentConfigs: FC<{
 			<Grid item xs={12}>
 				<ConfigList
 					configs={configs}
+					disabled={disabled}
 					onClick={onExistingConfigClick}
 					onRemove={onExistingConfigRemove}
 				/>
 			</Grid>
-			<Grid item xs={12}>
-				<ConfigButtons onClick={onNewConfigClick} />
-			</Grid>
+			{!disabled && (
+				<Grid item xs={12}>
+					<ConfigButtons onClick={onNewConfigClick} />
+				</Grid>
+			)}
 
 			<Dialog
 				fullWidth
