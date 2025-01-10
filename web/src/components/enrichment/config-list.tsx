@@ -6,9 +6,10 @@ type Props = {
 	configs?: EnrichmentJobConfig[]
 	onClick: (id: string) => void
 	onRemove: (id: string) => void
+	disabled?: boolean
 }
 
-export const ConfigList = ({ configs, onClick, onRemove }: Props) => {
+export const ConfigList = ({ configs, onClick, onRemove, disabled }: Props) => {
 	const handleOnClick = (id: string) => () => {
 		onClick(id)
 	}
@@ -24,6 +25,7 @@ export const ConfigList = ({ configs, onClick, onRemove }: Props) => {
 					<ConfigListItem
 						key={i}
 						config={config}
+						disabled={disabled}
 						index={i}
 						onClick={handleOnClick(config.id)}
 						onRemove={handleOnRemove(config.id)}

@@ -16,11 +16,21 @@ type Props = {
 	index: number
 	onClick: () => void
 	onRemove: () => void
+	disabled?: boolean
 }
 
-export const ConfigListItem = ({ config, index, onClick, onRemove }: Props) => {
+export const ConfigListItem = ({
+	config,
+	index,
+	onClick,
+	onRemove,
+	disabled,
+}: Props) => {
 	return (
-		<ListItem button onClick={onClick}>
+		<ListItem
+			style={{ cursor: disabled ? undefined : 'pointer' }}
+			onClick={disabled ? undefined : onClick}
+		>
 			<ListItemAvatar>
 				<Avatar>{index + 1}</Avatar>
 			</ListItemAvatar>
@@ -28,11 +38,13 @@ export const ConfigListItem = ({ config, index, onClick, onRemove }: Props) => {
 				primary={<ConfigPrimaryText krameriusJob={config.jobType} />}
 				secondary={<ConfigSecondaryText config={config} />}
 			/>
-			<ListItemSecondaryAction>
-				<IconButton aria-label="delete" edge="end" onClick={onRemove}>
-					<DeleteIcon />
-				</IconButton>
-			</ListItemSecondaryAction>
+			{!disabled && (
+				<ListItemSecondaryAction>
+					<IconButton aria-label="delete" edge="end" onClick={onRemove}>
+						<DeleteIcon />
+					</IconButton>
+				</ListItemSecondaryAction>
+			)}
 		</ListItem>
 	)
 }

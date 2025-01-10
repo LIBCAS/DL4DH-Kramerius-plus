@@ -18,6 +18,7 @@ import {
 	RequestStateMapping,
 } from 'models/request/request'
 import { Link, useNavigate } from 'react-router-dom'
+import _ from 'lodash'
 
 const columns: GridColDef<EnrichmentRequest>[] = [
 	{
@@ -107,17 +108,25 @@ export const EnrichmentRequestGrid: FC<{
 				selection={selection}
 				toolbar={({
 					onClearSelection,
-					onClearCompleted,
 					onEnrchichmentRequestClick,
+					onSelectPartialFailed,
+					onSelectFailed,
 				}) => {
 					return (
 						<GridToolbarContainer>
 							<Button onClick={() => onClearSelection?.()}>Zrušit výběr</Button>
-							<Button onClick={() => onClearCompleted?.()}>
-								Zrušit výběr dokončených
+							<Button onClick={() => onSelectPartialFailed?.()}>
+								Označit částečně selhané
 							</Button>
-							<Button onClick={() => onEnrchichmentRequestClick?.()}>
-								Obohatit označené
+							<Button onClick={() => onSelectFailed?.()}>
+								Označit selhané
+							</Button>
+							<Button
+								disabled={selection.length === 0}
+								variant="contained"
+								onClick={() => onEnrchichmentRequestClick?.()}
+							>
+								Obohatit označené ({selection.length})
 							</Button>
 						</GridToolbarContainer>
 					)
@@ -130,6 +139,22 @@ export const EnrichmentRequestGrid: FC<{
 								id => data?.items.find(p => p.id === id)?.state !== 'COMPLETED',
 							)
 							return filtered
+						}),
+					onSelectPartialFailed: () =>
+						setSelection(prev => {
+							const partialFailed =
+								data?.items
+									.filter(item => item.state === 'PARTIAL')
+									.map(item => item.id) ?? []
+							return _.uniq([...prev, ...partialFailed])
+						}),
+					onSelectFailed: () =>
+						setSelection(prev => {
+							const partialFailed =
+								data?.items
+									.filter(item => item.state === 'FAILED')
+									.map(item => item.id) ?? []
+							return _.uniq([...prev, ...partialFailed])
 						}),
 					onEnrchichmentRequestClick: () => {
 						const requests = selection
