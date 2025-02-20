@@ -1,14 +1,13 @@
 package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
 import cz.inqool.dl4dh.krameriusplus.api.KrameriusInfo;
+import cz.inqool.dl4dh.krameriusplus.api.job.JobListenerFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,12 +23,15 @@ public class InfoApi {
 
     private final KrameriusInfo krameriusInstance;
 
+    private final JobListenerFacade jobListenerFacade;
+
     private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @Autowired
-    public InfoApi(BuildProperties buildProperties, KrameriusInfo krameriusInstance) {
+    public InfoApi(BuildProperties buildProperties, KrameriusInfo krameriusInstance, JobListenerFacade jobListenerFacade) {
         this.buildProperties = buildProperties;
         this.krameriusInstance = krameriusInstance;
+        this.jobListenerFacade = jobListenerFacade;
     }
 
     @Operation(summary = "Get information about current version, last build time of Kramerius+ and about current " +
@@ -48,6 +50,21 @@ public class InfoApi {
         );
 
         return ResponseEntity.ok(responseBody);
+    }
+
+    @GetMapping("/listeners")
+    public ResponseEntity<String> getListenersStatus() {
+        return ResponseEntity.ok(jobListenerFacade.status());
+    }
+
+    @PostMapping("/listeners")
+    public void startListeners() {
+        jobListenerFacade.start();
+    }
+
+    @DeleteMapping("/listeners")
+    public void stopListeners() {
+        jobListenerFacade.stop();
     }
 
 }
