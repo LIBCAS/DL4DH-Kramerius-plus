@@ -57,14 +57,4 @@ public class InfoApi {
         return ResponseEntity.ok(jobListenerFacade.status());
     }
 
-    @PostMapping("/listeners")
-    public void startListeners() {
-        jobListenerFacade.start();
-    }
-
-    @DeleteMapping("/listeners")
-    public void stopListeners() {
-        jobListenerFacade.stop();
-    }
-
 }

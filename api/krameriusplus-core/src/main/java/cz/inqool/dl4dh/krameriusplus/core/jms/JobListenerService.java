@@ -26,7 +26,7 @@ public class JobListenerService implements JobListenerFacade {
 
     private JmsListenerEndpointRegistry registry;
 
-    @Value("${system.enrichment.time.from:22:00}")
+    @Value("${system.enrichment.time.from:00:01}")
     private String enrichFrom;
 
     @Value("${system.enrichment.time.to:05:00}")
