@@ -4,12 +4,16 @@ import cz.inqool.dl4dh.krameriusplus.api.job.JobListenerFacade;
 import cz.inqool.dl4dh.krameriusplus.core.job.runner.JobRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.listener.MessageListenerContainer;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.JobQueue.*;
@@ -22,37 +26,75 @@ public class JobListenerService implements JobListenerFacade {
 
     private JmsListenerEndpointRegistry registry;
 
+    @Value("${system.enrichment.time.from:22:00}")
+    private String enrichFrom;
+
+    @Value("${system.enrichment.time.to:05:00}")
+    private String enrichTo;
+
+    private Calendar stringToDate(String time) {
+        Calendar calendar = Calendar.getInstance();
+        String[] parts = time.split(":");
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
+        calendar.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
+        calendar.set(Calendar.SECOND, Integer.parseInt(parts[2]));
+        return calendar;
+    }
+
+    @Scheduled(fixedDelay = 5000)
+    public void refresh() {
+        Calendar calendarFrom = stringToDate(enrichFrom+":00");
+        Calendar calendarTo = stringToDate(enrichTo+":59");
+        Calendar calendarNow = Calendar.getInstance();
+        Date now = calendarNow.getTime();
+
+        if (calendarFrom.after(calendarTo)) {
+            calendarTo.add(Calendar.DATE, 1);
+        }
+
+        if (now.after(calendarFrom.getTime()) && now.before(calendarTo.getTime())) {
+            start();
+        }
+        else {
+            stop();
+        }
+    }
+
     public void start() {
         Arrays.stream(new String[]{ENRICHMENT_QUEUE,}).forEach( id -> {
-            MessageListenerContainer container = registry.getListenerContainer("abc");
+            MessageListenerContainer container = registry.getListenerContainer(id);
             if (container != null) {
-                container.start();
+                if (!container.isRunning()) {
+                    container.start();
+                }
             }
             else {
-                log.error("JobListenerService.start: Job listener container not found");
+                log.error("JobListenerService.start: Job listener "+ id +" container not found");
             }
         });
     }
 
     public void stop() {
         Arrays.stream(new String[]{ENRICHMENT_QUEUE}).forEach( id -> {
-            MessageListenerContainer container = registry.getListenerContainer("abc");
+            MessageListenerContainer container = registry.getListenerContainer(id);
             if (container != null) {
-                container.stop();
+                if (container.isRunning()) {
+                    container.stop();
+                }
             }
             else {
-                log.error("JobListenerService.stop: Job listener container not found");
+                log.error("JobListenerService.stop: Job listener "+ id +" container not found");
             }
         });
     }
 
     public String status() {
         return Arrays.stream(new String[]{ENRICHMENT_QUEUE, EXPORT_QUEUE, DEFAULT_QUEUE, PRIORITY_QUEUE}).map(id -> {
-            MessageListenerContainer container = registry.getListenerContainer("abc");
+            MessageListenerContainer container = registry.getListenerContainer(id);
             if (container == null) {
                 return "Queue listener "+id+" does not exist";
             }
-            return container.isRunning() ? "running" : "stopped";
+            return "Queue listener " + id + " is " + (container.isRunning() ? "running" : "stopped");
         }).collect(Collectors.joining("\n"));
     }
 

@@ -30,5 +30,8 @@ system:
   enrichment:
     ndk:
       path: .
+    time:
+      from: '22:00'
+      to: '05:00'
   security:
     secret: placeholder
