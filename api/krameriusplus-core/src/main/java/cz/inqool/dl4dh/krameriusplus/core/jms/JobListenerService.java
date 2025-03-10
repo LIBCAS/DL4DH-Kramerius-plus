@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.api.batch.JobQueue.*;
@@ -88,14 +89,15 @@ public class JobListenerService implements JobListenerFacade {
         });
     }
 
-    public String status() {
-        return Arrays.stream(new String[]{ENRICHMENT_QUEUE, EXPORT_QUEUE, DEFAULT_QUEUE, PRIORITY_QUEUE}).map(id -> {
-            MessageListenerContainer container = registry.getListenerContainer(id);
-            if (container == null) {
-                return "Queue listener "+id+" does not exist";
-            }
-            return "Queue listener " + id + " is " + (container.isRunning() ? "running" : "stopped");
-        }).collect(Collectors.joining("\n"));
+    public Map<String, Boolean> status() {
+        return Arrays.stream(new String[]{ENRICHMENT_QUEUE, EXPORT_QUEUE, DEFAULT_QUEUE, PRIORITY_QUEUE})
+                .collect(Collectors.toMap(id -> id, id -> {
+                    MessageListenerContainer container = registry.getListenerContainer(id);
+                    if (container == null) {
+                        return false;
+                    }
+                    return container.isRunning();
+                }));
     }
 
     @JmsListener(id = ENRICHMENT_QUEUE, destination = ENRICHMENT_QUEUE, concurrency = "3-5")

@@ -4,6 +4,7 @@ import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestFacade;
 import cz.inqool.dl4dh.krameriusplus.api.request.UserRequestState;
 import cz.inqool.dl4dh.krameriusplus.api.request.document.ChangeDocumentStatesDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.RoleNames;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class UserRequestAdminApi {
         this.userRequestFacade = userRequestFacade;
     }
 
-
+    @Operation(summary = "Update a user request state")
     @PutMapping("/{requestId}")
     public ResponseEntity<Void> changeState(@PathVariable String requestId,
                                             @RequestParam UserRequestState state,
@@ -44,6 +45,7 @@ public class UserRequestAdminApi {
         }
     }
 
+    @Operation(summary = "Update a state of a document in a user request")
     @PutMapping("/{requestId}/document")
     public ResponseEntity<Void> changeDocumentState(@PathVariable String requestId,
                                                     @Valid @RequestBody ChangeDocumentStatesDto dto) {

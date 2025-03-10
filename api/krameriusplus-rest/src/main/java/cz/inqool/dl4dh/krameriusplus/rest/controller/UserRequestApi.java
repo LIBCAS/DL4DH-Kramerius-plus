@@ -34,7 +34,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static cz.inqool.dl4dh.krameriusplus.api.user.RoleNames.USER;
 
@@ -55,6 +54,7 @@ public class UserRequestApi {
         this.userRequestFacade = userRequestFacade;
     }
 
+    @Operation(summary = "Create a new user request")
     @PostMapping(value = "/")
     public ResponseEntity<UserRequestDto> createUserRequest(@Valid @ModelAttribute UserRequestCreateDto createDto,
                                                             @RequestParam(name = "files", required = false) MultipartFile[] multipartFiles) {
@@ -62,6 +62,7 @@ public class UserRequestApi {
                 .createUserRequest(createDto, multipartFiles != null ? Arrays.asList(multipartFiles) : new ArrayList<>()), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Get list of all current user requests")
     @GetMapping("/")
     public Result<UserRequestListDto> userRequest(@RequestParam(value = "page", defaultValue = "0") int page,
                                                   @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
@@ -89,6 +90,7 @@ public class UserRequestApi {
                         .build());
     }
 
+    @Operation(summary = "Get a user request info")
     @GetMapping("/{requestId}")
     public UserRequestDto findUserRequest(@PathVariable String requestId) {
         return userRequestFacade.findById(requestId);
@@ -110,6 +112,7 @@ public class UserRequestApi {
                 .body(new InputStreamResource(fileFacade.getFileContent(fileRef.getId())));
     }
 
+    @Operation(summary = "Create a new message to a user request")
     @PostMapping(value = "/{requestId}/message", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createMessage(@PathVariable String requestId,
                                               @Valid @ModelAttribute MessageCreateDto messageCreateDto,

@@ -52,8 +52,9 @@ public class InfoApi {
         return ResponseEntity.ok(responseBody);
     }
 
+    @Operation(summary = "Get queues names and their running states")
     @GetMapping("/listeners")
-    public ResponseEntity<String> getListenersStatus() {
+    public ResponseEntity<Map<String, Boolean>> getListenersStatus() {
         return ResponseEntity.ok(jobListenerFacade.status());
     }
 

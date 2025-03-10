@@ -2,6 +2,7 @@ package cz.inqool.dl4dh.krameriusplus.rest.controller;
 
 import cz.inqool.dl4dh.krameriusplus.api.user.UserDto;
 import cz.inqool.dl4dh.krameriusplus.api.user.UserFacade;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ public class UserApi {
         this.facade = facade;
     }
 
+    @Operation(summary = "Get current user info")
     @GetMapping("/me")
     public UserDto me() {
         return facade.getCurrent();
