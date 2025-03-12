@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Box, Button, Chip, Paper } from '@mui/material'
 import {
 	GridColDef,
@@ -93,9 +93,24 @@ export const EnrichmentRequestGrid: FC<{
 	pagination: GridPaginationModel
 	onPaginationChange: (pagination: GridPaginationModel) => void
 }> = ({ isLoading, data, pagination, onPaginationChange }) => {
-	const [selection, setSelection] = useState<GridRowSelectionModel>([])
-
 	const navigate = useNavigate()
+
+	const [selection, setSelection] = useState<GridRowSelectionModel>([])
+	const [selectedRequests, setSelectedRequests] = useState<EnrichmentRequest[]>(
+		[],
+	)
+
+	useEffect(() => {
+		const toAdd =
+			data?.items.filter?.(item => selection.find(id => id === item.id)) ?? []
+		setSelectedRequests(prev => {
+			// filter unchecked
+			const withoutUnchecked =
+				prev.filter(p => selection.find(id => id === p.id)) ?? []
+
+			return _.uniqBy([...withoutUnchecked, ...toAdd], 'id')
+		})
+	}, [data?.items, selection])
 
 	return (
 		<Paper>
@@ -157,11 +172,9 @@ export const EnrichmentRequestGrid: FC<{
 							return _.uniq([...prev, ...partialFailed])
 						}),
 					onEnrchichmentRequestClick: () => {
-						const requests = selection
-							.map(id => data?.items.find(item => id === item.id))
-							.filter(f => f !== undefined) as EnrichmentRequest[]
-
-						navigate('/enrichment/new', { state: { requests } })
+						navigate('/enrichment/new', {
+							state: { requests: selectedRequests },
+						})
 					},
 				}}
 				onPaginationChange={onPaginationChange}
