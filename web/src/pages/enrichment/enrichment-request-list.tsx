@@ -8,12 +8,14 @@ import { EnrichmentRequestGrid } from 'modules/enrichment-request/enrichment-req
 import { FC, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { PageWrapper } from '../page-wrapper'
+import { RequestState } from '../../models/request/request'
 
 export type EnrichmentRequestFilterDto = {
 	name?: string
 	owner?: string
 	isFinished?: boolean
 	publicationId?: string
+	state?: RequestState | ''
 }
 
 export const EnrichmentRequestList: FC = () => {
