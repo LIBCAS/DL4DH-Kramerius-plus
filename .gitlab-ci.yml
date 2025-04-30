@@ -6,9 +6,7 @@ stages:
 test:
   stage: test
   tags:
-    - maven
-    - java11
-    - lessmemory
+    - runner-6
   script:
     - "cd api"
     - "mvn test"
@@ -21,8 +19,7 @@ api-build:
     - master
   when: manual
   tags:
-    - eas
-    - docker
+    - runner-6
   variables:
     IMAGE_NAME: kramerius/api
   script:
