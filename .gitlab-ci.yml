@@ -21,9 +21,7 @@ api-build:
     - master
   when: manual
   tags:
-    - maven
-    - java11
-    - lessmemory
+    - eas
     - docker
   variables:
     IMAGE_NAME: kramerius/api
