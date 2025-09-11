@@ -41,6 +41,9 @@ public class KrameriusInfoConfig {
                     .block();
 
             notNull(krameriusInfoMap, () -> new IllegalStateException("Request to '" + endpoint + "' did not return any results."));
+            if (krameriusProperties.getDefaultUrl() != null) {
+                krameriusInfoMap.put("url", krameriusProperties.getDefaultUrl());
+            }
         } catch (Exception e) {
             if (krameriusProperties.getDefaultUrl() == null) {
                 throw new IllegalStateException("Failed to connect to " + endpoint +

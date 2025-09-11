@@ -4,7 +4,9 @@ import cz.inqool.dl4dh.krameriusplus.api.domain.DatedObjectCreateDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,7 @@ public abstract class RequestCreateDto extends DatedObjectCreateDto {
     /**
      * List of root publication UUIDs to process in the request
      */
-    @NotEmpty(message = "PublicationIds cannot be empty.")
-    private List<String> publicationIds = new ArrayList<>();
+    @NotNull
+    @Size(min = 1, message = "PublicationIds cannot be empty.")
+    private List<@NotBlank(message = "PublicationIds cannot be blank.") String> publicationIds = new ArrayList<>();
 }
