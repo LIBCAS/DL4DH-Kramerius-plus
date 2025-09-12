@@ -9,7 +9,7 @@ export const enrich = async (
 	configs: EnrichmentJobConfig[],
 	name?: string,
 ): Promise<Response> => {
-	const trimmedIds = publicationIds.map(id => id.trim())
+	const trimmedIds = publicationIds.map(id => id.trim()).filter(id => id !== '')
 	return await customFetch('/api/enrichment/enrich', {
 		method: 'POST',
 		body: JSON.stringify({ publicationIds: trimmedIds, name, configs }),
