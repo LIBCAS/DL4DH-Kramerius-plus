@@ -26,5 +26,5 @@ public class ModsMetadata {
     private List<ModsIdentifier> identifiers = new ArrayList<>();
 
     // Additional field for TEI
-    private List<ProcessedBy> processed_by = new ArrayList<>();
+    private List<ProcessedBy> processedBy = new ArrayList<>();
 }

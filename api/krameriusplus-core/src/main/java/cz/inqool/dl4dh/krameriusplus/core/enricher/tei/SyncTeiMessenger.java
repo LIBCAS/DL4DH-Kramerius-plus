@@ -11,7 +11,6 @@ import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.ExternalSystem;
 import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.ProcessedBy;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
-import org.apache.tomcat.jni.Proc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
@@ -61,7 +60,7 @@ public class SyncTeiMessenger implements TeiMessenger {
                     processedBy.setFrom(publication.getCreated().toString());
                     processedBy.setTo(publication.getUpdated().toString());
                 }
-                metadata.getProcessed_by().add(processedBy);
+                metadata.getProcessedBy().add(processedBy);
             }
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/convert/header").build())
                     .contentType(MediaType.APPLICATION_JSON)
