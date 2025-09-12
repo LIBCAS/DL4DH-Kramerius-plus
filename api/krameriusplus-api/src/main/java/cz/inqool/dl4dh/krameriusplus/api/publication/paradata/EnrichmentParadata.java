@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication.paradata;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
@@ -27,4 +28,7 @@ public abstract class EnrichmentParadata {
 
     @Transient
     public abstract ExternalSystem getExternalSystem();
+
+    @JsonIgnore
+    public abstract ProcessedBy transformToProcessedBy();
 }

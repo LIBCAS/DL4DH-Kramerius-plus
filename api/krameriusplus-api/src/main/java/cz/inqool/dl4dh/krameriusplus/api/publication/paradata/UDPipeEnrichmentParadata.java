@@ -19,4 +19,9 @@ public class UDPipeEnrichmentParadata extends EnrichmentParadata {
     public ExternalSystem getExternalSystem() {
         return ExternalSystem.UD_PIPE;
     }
+
+    @Override
+    public ProcessedBy transformToProcessedBy() {
+        return new ProcessedBy("UDPipe", null, null, null, null, "UDPipe, model: "+model);
+    }
 }

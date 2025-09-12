@@ -1,5 +1,6 @@
 package cz.inqool.dl4dh.krameriusplus.api.publication.mods;
 
+import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.ProcessedBy;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,4 +24,7 @@ public class ModsMetadata {
     private List<ModsPhysicalDescription> physicalDescriptions = new ArrayList<>();
 
     private List<ModsIdentifier> identifiers = new ArrayList<>();
+
+    // Additional field for TEI
+    private List<ProcessedBy> processed_by = new ArrayList<>();
 }

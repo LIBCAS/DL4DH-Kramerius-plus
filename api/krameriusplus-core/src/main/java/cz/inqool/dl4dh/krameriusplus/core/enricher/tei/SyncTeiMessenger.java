@@ -5,8 +5,13 @@ import cz.inqool.dl4dh.krameriusplus.api.export.params.AltoParam;
 import cz.inqool.dl4dh.krameriusplus.api.export.params.NameTagParam;
 import cz.inqool.dl4dh.krameriusplus.api.export.params.TeiParams;
 import cz.inqool.dl4dh.krameriusplus.api.export.params.UdPipeParam;
+import cz.inqool.dl4dh.krameriusplus.api.publication.mods.ModsMetadata;
+import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.EnrichmentParadata;
+import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.ExternalSystem;
+import cz.inqool.dl4dh.krameriusplus.api.publication.paradata.ProcessedBy;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.page.Page;
 import cz.inqool.dl4dh.krameriusplus.core.digitalobject.publication.Publication;
+import org.apache.tomcat.jni.Proc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
@@ -21,6 +26,7 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.InputStream;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static cz.inqool.dl4dh.krameriusplus.api.exception.EnrichingException.ErrorCode.TEI_ERROR;
@@ -48,9 +54,18 @@ public class SyncTeiMessenger implements TeiMessenger {
     @Override
     public String convertHeader(Publication publication) {
         try {
+            ModsMetadata metadata = publication.getModsMetadata();
+            for (Map.Entry<ExternalSystem, EnrichmentParadata> paradata : publication.getParadata().entrySet()) {
+                ProcessedBy processedBy = paradata.getValue().transformToProcessedBy();
+                if (processedBy.getFrom() == null && processedBy.getTo() == null && processedBy.getWhen() == null) {
+                    processedBy.setFrom(publication.getCreated().toString());
+                    processedBy.setTo(publication.getUpdated().toString());
+                }
+                metadata.getProcessed_by().add(processedBy);
+            }
             return webClient.post().uri(uriBuilder -> uriBuilder.path("/convert/header").build())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromValue(publication.getModsMetadata()))
+                    .body(BodyInserters.fromValue(metadata))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();

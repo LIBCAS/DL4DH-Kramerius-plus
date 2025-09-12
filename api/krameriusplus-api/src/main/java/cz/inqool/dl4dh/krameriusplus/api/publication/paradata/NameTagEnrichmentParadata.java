@@ -15,4 +15,9 @@ public class NameTagEnrichmentParadata extends EnrichmentParadata {
     public ExternalSystem getExternalSystem() {
         return ExternalSystem.NAME_TAG;
     }
+
+    @Override
+    public ProcessedBy transformToProcessedBy() {
+        return new ProcessedBy("NameTag", null, null, null, null, "NameTag, model: "+model);
+    }
 }

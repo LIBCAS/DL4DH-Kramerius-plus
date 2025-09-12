@@ -19,4 +19,9 @@ public class OCREnrichmentParadata extends EnrichmentParadata {
     public ExternalSystem getExternalSystem() {
         return ExternalSystem.OCR;
     }
+
+    @Override
+    public ProcessedBy transformToProcessedBy() {
+        return new ProcessedBy("OCR", version, null, null, ocrPerformedDate, "Creator: "+creator);
+    }
 }
